@@ -1,0 +1,63 @@
+{
+  "name": "detent",
+  "version": "0.0.1",
+  "description": "A CLI tool to check HTTP requests against a permission config",
+  "author": "Imbue <hynek@imbue.com>",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/imbue-ai/detent.git"
+  },
+  "homepage": "https://github.com/imbue-ai/detent#readme",
+  "bugs": {
+    "url": "https://github.com/imbue-ai/detent/issues"
+  },
+  "type": "module",
+  "main": "dist/src/index.js",
+  "types": "dist/src/index.d.ts",
+  "bin": {
+    "detent": "./dist/src/cli.js"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "prepublishOnly": "npm run build",
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "lint": "eslint src tests scripts",
+    "lint:fix": "eslint src tests scripts --fix",
+    "format": "prettier --write \"src/**/*.ts\" \"tests/**/*.ts\" \"scripts/**/*.ts\"",
+    "format:check": "prettier --check \"src/**/*.ts\" \"tests/**/*.ts\" \"scripts/**/*.ts\"",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "start": "node dist/cli.js"
+  },
+  "keywords": [
+    "cli",
+    "curl",
+    "api",
+    "permission",
+    "check",
+    "agents",
+    "imbue"
+  ],
+  "license": "MIT",
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "commander": "^12.0.0"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.39.2",
+    "@types/node": "^20.0.0",
+    "eslint": "^9.39.2",
+    "prettier": "^3.8.1",
+    "typescript": "^5.3.0",
+    "typescript-eslint": "^8.53.1",
+    "vitest": "^4.0.18"
+  }
+}
