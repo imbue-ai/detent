@@ -7,9 +7,9 @@ Define named permissions for accessing third-party services and check HTTP reque
 ```bash
 # Store rules.
 echo '{
-  "permissions": {
-      "api.github.com": ["read-pull-requests", "read-issues"],
-      "api.linear.app": ["read-teams", "read-issues", "write-issues"]
+  "rules": {
+    {"github-api": ["github-read-issues", "github-write-comments"]},
+    {"slack-api": ["get-method-only"]}
   }
 }' > ~/.config/detent/config.json
 
