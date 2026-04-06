@@ -1,7 +1,7 @@
 {
   "name": "detent",
   "version": "0.0.1",
-  "description": "A CLI tool to check HTTP requests against a permission config",
+  "description": "A CLI tool to validate HTTP requests against a set of permission rules.",
   "author": "Imbue <hynek@imbue.com>",
   "repository": {
     "type": "git",
