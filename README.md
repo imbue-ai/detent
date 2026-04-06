@@ -119,4 +119,4 @@ simply evaluated from top to bottom. The first matching rule
 determines the outcome: if the request falls under any of the permissions
 
 
-### Canonization
+### Canonical strings
