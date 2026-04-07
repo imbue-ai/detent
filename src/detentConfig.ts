@@ -1,4 +1,4 @@
-import { readFileSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 import { RequestPattern, RequestPatternError } from './requestPattern.js';
 import { decomposeRequest } from './decomposedRequest.js';
 import { builtinPatterns } from './environment.js';
@@ -49,6 +49,10 @@ export class DetentConfig {
 }
 
 export function readRawConfig(configPath: string): RawConfig {
+  if (!existsSync(configPath)) {
+    return { patterns: {}, rules: [] };
+  }
+
   let content: string;
   try {
     content = readFileSync(configPath, 'utf-8');
