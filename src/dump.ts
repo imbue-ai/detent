@@ -1,4 +1,4 @@
-import { readRawConfig } from './detentConfig.js';
+import { readRawConfig } from './config.js';
 import { builtinPatterns } from './builtinPatterns.js';
 import { resolveConfigPath, useBuiltinPatterns } from './environment.js';
 

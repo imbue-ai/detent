@@ -3,7 +3,7 @@ import { writeFileSync, mkdirSync, rmSync } from 'node:fs';
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';
 import { check } from '../src/check.js';
-import { DetentConfig, DetentConfigError } from '../src/detentConfig.js';
+import { Config, ConfigError } from '../src/config.js';
 import { RequestPattern, RequestPatternError } from '../src/requestPattern.js';
 import { decomposeRequest } from '../src/decomposedRequest.js';
 import type { DecomposedRequest } from '../src/decomposedRequest.js';
@@ -174,7 +174,7 @@ describe('RequestPattern', () => {
   });
 });
 
-describe('DetentConfig', () => {
+describe('Config', () => {
   let tempDir: string;
 
   beforeEach(() => {
@@ -197,7 +197,7 @@ describe('DetentConfig', () => {
 
   it('rejects all requests when no rules are defined', async () => {
     const configPath = writeConfig({ patterns: {}, rules: [] });
-    const config = new DetentConfig(configPath, true);
+    const config = new Config(configPath, true);
     const request = new Request('https://example.com');
     expect(await config.check(request)).toBe(false);
   });
@@ -210,7 +210,7 @@ describe('DetentConfig', () => {
       },
       rules: [{ 'github-api': ['get-only'] }],
     });
-    const config = new DetentConfig(configPath, true);
+    const config = new Config(configPath, true);
     const request = new Request('https://api.github.com/repos');
     expect(await config.check(request)).toBe(true);
   });
@@ -223,7 +223,7 @@ describe('DetentConfig', () => {
       },
       rules: [{ 'github-api': ['get-only'] }],
     });
-    const config = new DetentConfig(configPath, true);
+    const config = new Config(configPath, true);
     const request = new Request('https://api.github.com/repos', { method: 'DELETE' });
     expect(await config.check(request)).toBe(false);
   });
@@ -236,7 +236,7 @@ describe('DetentConfig', () => {
       },
       rules: [{ 'github-api': ['get-only'] }],
     });
-    const config = new DetentConfig(configPath, true);
+    const config = new Config(configPath, true);
     const request = new Request('https://slack.com/api/chat.postMessage');
     expect(await config.check(request)).toBe(false);
   });
@@ -250,13 +250,13 @@ describe('DetentConfig', () => {
       },
       rules: [{ 'all-https': ['get-only'] }, { 'all-https': ['any-method'] }],
     });
-    const config = new DetentConfig(configPath, true);
+    const config = new Config(configPath, true);
     // POST should be rejected by first rule, second rule never evaluated
     const request = new Request('https://example.com', { method: 'POST' });
     expect(await config.check(request)).toBe(false);
   });
 
-  it('throws DetentConfigError when permissions value is a string instead of an array', () => {
+  it('throws ConfigError when permissions value is a string instead of an array', () => {
     const configPath = writeConfig({
       patterns: {
         'github-api': { domain: { const: 'api.github.com' } },
@@ -264,14 +264,14 @@ describe('DetentConfig', () => {
       },
       rules: [{ 'github-api': 'get-only' }],
     });
-    expect(() => new DetentConfig(configPath, true)).toThrow(DetentConfigError);
+    expect(() => new Config(configPath, true)).toThrow(ConfigError);
   });
 
   it('treats missing patterns as implicitly empty', async () => {
     const configPath = writeConfig({
       rules: [],
     });
-    const config = new DetentConfig(configPath, true);
+    const config = new Config(configPath, true);
     const request = new Request('https://example.com');
     expect(await config.check(request)).toBe(false);
   });
@@ -280,52 +280,52 @@ describe('DetentConfig', () => {
     const configPath = writeConfig({
       patterns: { scope: { domain: { const: 'example.com' } } },
     });
-    const config = new DetentConfig(configPath, true);
+    const config = new Config(configPath, true);
     const request = new Request('https://example.com');
     expect(await config.check(request)).toBe(false);
   });
 
   it('treats completely empty object as valid config', async () => {
     const configPath = writeConfig({});
-    const config = new DetentConfig(configPath, true);
+    const config = new Config(configPath, true);
     const request = new Request('https://example.com');
     expect(await config.check(request)).toBe(false);
   });
 
-  it('throws DetentConfigError for unknown top-level keys', () => {
+  it('throws ConfigError for unknown top-level keys', () => {
     const configPath = writeConfig({
       patterns: {},
       rules: [],
       unknown: 'value',
     });
-    expect(() => new DetentConfig(configPath, true)).toThrow(DetentConfigError);
+    expect(() => new Config(configPath, true)).toThrow(ConfigError);
   });
 
-  it('throws DetentConfigError when rules is not an array', () => {
+  it('throws ConfigError when rules is not an array', () => {
     const configPath = writeConfig({
       rules: 'not-an-array',
     });
-    expect(() => new DetentConfig(configPath, true)).toThrow(DetentConfigError);
+    expect(() => new Config(configPath, true)).toThrow(ConfigError);
   });
 
-  it('throws DetentConfigError when patterns is not an object', () => {
+  it('throws ConfigError when patterns is not an object', () => {
     const configPath = writeConfig({
       patterns: 'not-an-object',
     });
-    expect(() => new DetentConfig(configPath, true)).toThrow(DetentConfigError);
+    expect(() => new Config(configPath, true)).toThrow(ConfigError);
   });
 
-  it('throws DetentConfigError when include contains non-strings', () => {
+  it('throws ConfigError when include contains non-strings', () => {
     const configPath = writeConfig({
       include: [42],
     });
-    expect(() => new DetentConfig(configPath, true)).toThrow(DetentConfigError);
+    expect(() => new Config(configPath, true)).toThrow(ConfigError);
   });
 
-  it('throws DetentConfigError when config is an array instead of an object', () => {
+  it('throws ConfigError when config is an array instead of an object', () => {
     const configPath = join(tempDir, 'config.json');
     writeFileSync(configPath, JSON.stringify([1, 2, 3]));
-    expect(() => new DetentConfig(configPath, true)).toThrow(DetentConfigError);
+    expect(() => new Config(configPath, true)).toThrow(ConfigError);
   });
 
   it('validates included config files as well', () => {
@@ -335,25 +335,25 @@ describe('DetentConfig', () => {
     const configPath = writeConfig({
       include: ['included.json'],
     });
-    expect(() => new DetentConfig(configPath, true)).toThrow(DetentConfigError);
+    expect(() => new Config(configPath, true)).toThrow(ConfigError);
   });
 
-  it('throws DetentConfigError when a pattern contains an unknown property name', () => {
+  it('throws ConfigError when a pattern contains an unknown property name', () => {
     const configPath = writeConfig({
       patterns: {
         'bad-pattern': { methd: { const: 'GET' } },
       },
     });
-    expect(() => new DetentConfig(configPath, true)).toThrow(DetentConfigError);
+    expect(() => new Config(configPath, true)).toThrow(ConfigError);
   });
 
-  it('throws DetentConfigError when a pattern property value is not an object', () => {
+  it('throws ConfigError when a pattern property value is not an object', () => {
     const configPath = writeConfig({
       patterns: {
         'bad-pattern': { method: 'GET' },
       },
     });
-    expect(() => new DetentConfig(configPath, true)).toThrow(DetentConfigError);
+    expect(() => new Config(configPath, true)).toThrow(ConfigError);
   });
 
   it('accepts patterns using all valid DecomposedRequest fields', () => {
@@ -371,7 +371,7 @@ describe('DetentConfig', () => {
         },
       },
     });
-    expect(() => new DetentConfig(configPath, true)).not.toThrow();
+    expect(() => new Config(configPath, true)).not.toThrow();
   });
 
   it('validates patterns inside included config files', () => {
@@ -388,7 +388,7 @@ describe('DetentConfig', () => {
     const configPath = writeConfig({
       include: ['included.json'],
     });
-    expect(() => new DetentConfig(configPath, true)).toThrow(DetentConfigError);
+    expect(() => new Config(configPath, true)).toThrow(ConfigError);
   });
 
   it('treats missing patterns and rules in included files as implicitly empty', async () => {
@@ -404,21 +404,21 @@ describe('DetentConfig', () => {
       rules: [{ scope: ['permission'] }],
     });
 
-    const config = new DetentConfig(configPath, true);
+    const config = new Config(configPath, true);
     const request = new Request('https://example.com');
     expect(await config.check(request)).toBe(true);
   });
 
   it('treats missing config file as implicitly empty and rejects all requests', async () => {
-    const config = new DetentConfig('/nonexistent/path.json', true);
+    const config = new Config('/nonexistent/path.json', true);
     const request = new Request('https://example.com');
     expect(await config.check(request)).toBe(false);
   });
 
-  it('throws DetentConfigError for invalid JSON', () => {
+  it('throws ConfigError for invalid JSON', () => {
     const configPath = join(tempDir, 'bad.json');
     writeFileSync(configPath, 'not json');
-    expect(() => new DetentConfig(configPath, true)).toThrow(DetentConfigError);
+    expect(() => new Config(configPath, true)).toThrow(ConfigError);
   });
 
   it('throws RequestPatternError for unknown pattern name in rule scope', () => {
@@ -426,7 +426,7 @@ describe('DetentConfig', () => {
       patterns: {},
       rules: [{ 'unknown-scope': ['also-unknown'] }],
     });
-    expect(() => new DetentConfig(configPath, true)).toThrow(RequestPatternError);
+    expect(() => new Config(configPath, true)).toThrow(RequestPatternError);
   });
 
   it('throws RequestPatternError for unknown pattern name in permissions', () => {
@@ -436,10 +436,10 @@ describe('DetentConfig', () => {
       },
       rules: [{ 'github-api': ['nonexistent-permission'] }],
     });
-    expect(() => new DetentConfig(configPath, true)).toThrow(RequestPatternError);
+    expect(() => new Config(configPath, true)).toThrow(RequestPatternError);
   });
 
-  it('throws DetentConfigError for rule with multiple keys', () => {
+  it('throws ConfigError for rule with multiple keys', () => {
     const configPath = writeConfig({
       patterns: {
         a: { method: { const: 'GET' } },
@@ -447,7 +447,7 @@ describe('DetentConfig', () => {
       },
       rules: [{ a: ['b'], b: ['a'] }],
     });
-    expect(() => new DetentConfig(configPath, true)).toThrow(DetentConfigError);
+    expect(() => new Config(configPath, true)).toThrow(ConfigError);
   });
 
   it('supports multiple permissions in a single rule', async () => {
@@ -459,7 +459,7 @@ describe('DetentConfig', () => {
       },
       rules: [{ 'github-api': ['get-only', 'post-only'] }],
     });
-    const config = new DetentConfig(configPath, true);
+    const config = new Config(configPath, true);
 
     const getRequest = new Request('https://api.github.com/repos');
     expect(await config.check(getRequest)).toBe(true);
@@ -492,7 +492,7 @@ describe('DetentConfig', () => {
       rules: [{ 'github-api': ['get-only'] }],
     });
 
-    const config = new DetentConfig(configPath, true);
+    const config = new Config(configPath, true);
 
     // Included rule allows GET to slack
     const slackGet = new Request('https://slack.com/api/conversations.list');
@@ -527,7 +527,7 @@ describe('DetentConfig', () => {
       rules: [{ scope: ['permission'] }],
     });
 
-    const config = new DetentConfig(configPath, true);
+    const config = new Config(configPath, true);
 
     // Parent overrides the scope pattern, so parent.com matches
     const parentRequest = new Request('https://parent.com/test');
@@ -560,7 +560,7 @@ describe('DetentConfig', () => {
       rules: [{ 'all-https': ['any-method'] }],
     });
 
-    const config = new DetentConfig(configPath, true);
+    const config = new Config(configPath, true);
 
     // The included rule matches first and only allows GET
     const postRequest = new Request('https://example.com', { method: 'POST' });
@@ -594,7 +594,7 @@ describe('DetentConfig', () => {
       include: ['middle.json'],
     });
 
-    const config = new DetentConfig(configPath, true);
+    const config = new Config(configPath, true);
 
     const getRequest = new Request('https://example.com/test');
     expect(await config.check(getRequest)).toBe(true);
@@ -603,19 +603,19 @@ describe('DetentConfig', () => {
     expect(await config.check(postRequest)).toBe(false);
   });
 
-  it('throws DetentConfigError on circular includes', () => {
+  it('throws ConfigError on circular includes', () => {
     const aPath = join(tempDir, 'a.json');
     const bPath = join(tempDir, 'b.json');
 
     writeFileSync(aPath, JSON.stringify({ include: ['b.json'] }));
     writeFileSync(bPath, JSON.stringify({ include: ['a.json'] }));
 
-    expect(() => new DetentConfig(aPath, true)).toThrow(DetentConfigError);
+    expect(() => new Config(aPath, true)).toThrow(ConfigError);
   });
 
-  it('throws DetentConfigError when a config includes itself', () => {
+  it('throws ConfigError when a config includes itself', () => {
     const configPath = writeConfig({ include: ['config.json'] });
-    expect(() => new DetentConfig(configPath, true)).toThrow(DetentConfigError);
+    expect(() => new Config(configPath, true)).toThrow(ConfigError);
   });
 
   it('resolves relative include paths from the directory of the including config', async () => {
@@ -648,7 +648,7 @@ describe('DetentConfig', () => {
       include: ['sub/middle.json'],
     });
 
-    const config = new DetentConfig(configPath, true);
+    const config = new Config(configPath, true);
 
     const getRequest = new Request('https://example.com/test');
     expect(await config.check(getRequest)).toBe(true);
@@ -683,7 +683,7 @@ describe('DetentConfig', () => {
       include: ['first.json', 'second.json'],
     });
 
-    const config = new DetentConfig(configPath, true);
+    const config = new Config(configPath, true);
 
     const firstGet = new Request('https://first.com/test');
     expect(await config.check(firstGet)).toBe(true);

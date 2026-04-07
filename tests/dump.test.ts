@@ -3,7 +3,7 @@ import { writeFileSync, mkdirSync, rmSync } from 'node:fs';
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';
 import { dump } from '../src/dump.js';
-import { DetentConfigError } from '../src/detentConfig.js';
+import { ConfigError } from '../src/config.js';
 
 describe('dump', () => {
   let tempDir: string;
@@ -68,10 +68,10 @@ describe('dump', () => {
     }
   });
 
-  it('throws DetentConfigError for invalid JSON', () => {
+  it('throws ConfigError for invalid JSON', () => {
     const configPath = join(tempDir, 'bad.json');
     writeFileSync(configPath, 'not json');
-    expect(() => dump(configPath)).toThrow(DetentConfigError);
+    expect(() => dump(configPath)).toThrow(ConfigError);
   });
 
   it('excludes builtin patterns when DETENT_DO_NOT_USE_BUILTIN_PATTERNS is set', () => {

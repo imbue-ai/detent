@@ -5,10 +5,10 @@ import { RequestPattern, RequestPatternError } from './requestPattern.js';
 import { decomposeRequest } from './decomposedRequest.js';
 import { builtinPatterns } from './builtinPatterns.js';
 
-export class DetentConfigError extends Error {
+export class ConfigError extends Error {
   constructor(message: string) {
     super(message);
-    this.name = 'DetentConfigError';
+    this.name = 'ConfigError';
   }
 }
 
@@ -67,7 +67,7 @@ interface ResolvedRule {
   readonly permissions: readonly RequestPattern[];
 }
 
-export class DetentConfig {
+export class Config {
   private readonly rules: readonly ResolvedRule[];
 
   constructor(configPath: string, doNotUseBuiltinPatterns: boolean) {
@@ -109,7 +109,7 @@ function readSingleRawConfig(configPath: string): RawConfig {
     content = readFileSync(configPath, 'utf-8');
   } catch (error: unknown) {
     const message = error instanceof Error ? error.message : String(error);
-    throw new DetentConfigError(`Failed to read config file "${configPath}": ${message}`);
+    throw new ConfigError(`Failed to read config file "${configPath}": ${message}`);
   }
 
   let parsed: unknown;
@@ -117,14 +117,14 @@ function readSingleRawConfig(configPath: string): RawConfig {
     parsed = JSON.parse(content);
   } catch (error: unknown) {
     const message = error instanceof Error ? error.message : String(error);
-    throw new DetentConfigError(`Failed to parse config file "${configPath}": ${message}`);
+    throw new ConfigError(`Failed to parse config file "${configPath}": ${message}`);
   }
 
   if (!validateRawConfig(parsed)) {
     const errors = (validateRawConfig.errors ?? [])
       .map((error) => `${error.instancePath || '/'}: ${error.message ?? 'unknown error'}`)
       .join('; ');
-    throw new DetentConfigError(`Invalid config file "${configPath}": ${errors}`);
+    throw new ConfigError(`Invalid config file "${configPath}": ${errors}`);
   }
 
   const validated = parsed as {
@@ -145,7 +145,7 @@ function readRawConfigRecursive(configPath: string, visitedPaths: readonly strin
 
   if (visitedPaths.includes(absolutePath)) {
     const cycle = [...visitedPaths, absolutePath].join(' -> ');
-    throw new DetentConfigError(`Circular include detected: ${cycle}`);
+    throw new ConfigError(`Circular include detected: ${cycle}`);
   }
 
   const currentConfig = readSingleRawConfig(absolutePath);
@@ -202,7 +202,7 @@ function resolveRules(
   return rawConfig.rules.map((ruleObject, index) => {
     const entries = Object.entries(ruleObject);
     if (entries.length !== 1) {
-      throw new DetentConfigError(
+      throw new ConfigError(
         `Rule at index ${String(index)} must have exactly one key, got ${String(entries.length)}`
       );
     }
