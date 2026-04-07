@@ -53,9 +53,10 @@ describe('dump', () => {
     expect(result.rules).toEqual([]);
   });
 
-  it('returns empty patterns and rules for missing config file', () => {
+  it('returns builtin patterns and empty rules for missing config file', () => {
     const result = dump('/nonexistent/path.json');
-    expect(result.patterns).toEqual({});
+    // Built-in patterns are still included even without a config file
+    expect(result.patterns).toHaveProperty('any', {});
     expect(result.rules).toEqual([]);
   });
 

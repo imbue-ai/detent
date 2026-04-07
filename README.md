@@ -7,10 +7,10 @@ Define named permissions for accessing third-party services and check HTTP reque
 ```bash
 # Store rules.
 echo '{
-  "rules": {
+  "rules": [
     {"github-api": ["github-read-issues", "github-write-comments"]},
     {"slack-api": ["get-method-only"]}
-  }
+  ]
 }' > ~/.config/detent/config.json
 
 # Check requests.
@@ -27,9 +27,14 @@ npm install -g detent
 
 ## Motivation
 
-As a user, I want to let agents work with third party tools, for instance via Latchkey. However, giving them full access to services like Slack, GitHub, or Gmail feels risky. I need an easy way of restricting agent access even if the services do not natively support it. For example: only allow read operations.
+As a user, I want to let agents work with third party tools, for
+instance via Latchkey. However, giving them full access to
+services like Slack, GitHub, or Gmail feels risky. I need an
+easy way of restricting agent access even if the services do not
+natively support it. For example: only allow read operations.
 
-This could also be true not just for end users but for application developers who want to use agents under the hood.
+This could also be true not just for end users but for
+application developers who want to use agents under the hood.
 
 
 ## Details and architecture
@@ -61,7 +66,7 @@ const request = new Request("https://api.example.com/users", {
   body: JSON.stringify({ name: "alice" }),
 });
 
-const result = check(request);
+const result = await check(request);
 ```
 
 
@@ -74,7 +79,7 @@ if necessary.
 
 ### Matching requests
 
-An HTTP(s) request can be represented as an object that has several well defined properties: `protocol`, `domain`, `port`, `path`, `headers`, queryParams` and `body`. Using this representation, the `detent` tool uses [JSON schemas](https://json-schema.org/) to:
+An HTTP(s) request can be represented as an object that has several well defined properties: `protocol`, `domain`, `port`, `path`, `method`, `headers`, `queryParams` and `body`. Using this representation, the `detent` tool uses [JSON schemas](https://json-schema.org/) to:
 
 1. Match requests to permission checks.
 2. Define the "acceptable" shape of a request that is subject to a permission check.
@@ -146,21 +151,21 @@ the request determines the outcome: if the request matches any
 of the permissions in the rule, it's approved. Otherwise, it's
 rejected. Further rules are not evaluated. By default, requests
 that don't match any rule get rejected. If you want to allow
-them by default, append the rule `{"any": "any"}` to the very
+them by default, append the rule `{"any": ["any"]}` to the very
 end of your rule list.
 
 
 ### Built-in permissions
 
-Detent comes with many pattern definitions out of the box that are
-automatically available and recognized in rule bodies. Run
+Detent comes with many pattern definitions out of the box that
+are automatically available and recognized in rule bodies. Run
 `detent dump` to see your current config enriched with all the
-existing built-in patterns. If you only want to list the
-pattern names, run `detent dump | jq '.patterns | keys'`.
+existing built-in patterns. If you only want to list the pattern
+names, run `detent dump | jq '.patterns | keys'`.
 
 If you don't want the built-in patterns to apply, set the
 `DETENT_DO_NOT_USE_BUILTIN_PATTERNS` environment variable to
 a non-empty value.
 
 
-### Canonical strings
+
