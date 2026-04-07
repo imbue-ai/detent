@@ -16,11 +16,12 @@ echo '{
 # Check requests.
 # (The verdict is determined by the exit code.)
 detent curl -s https://api.github.com/repos/octocat/Hello-World/issues/1
-case $? in
-  0) echo "Approved" ;;
-  1) echo "Not approved" ;;
-  *) echo "Error" ;;
-esac
+```
+
+## Installation
+
+```bash
+npm install -g detent
 ```
 
 
@@ -35,23 +36,52 @@ This could also be true not just for end users but for application developers wh
 
 Detent is a command line tool and a Typescript library. It allows users to:
 
-1. Define named permissions for domains / third-party services.
+1. Define named permissions for outgoing HTTP requests.
 2. Check that a given request is allowed given the defined permissions.
+
+### Usage
+
+Store your permission setup in a config file as documented
+below. Then assemble a `curl` invocation defining the HTTP
+request you want to send and call `detent curl ...` to check its
+admissibility.  All the arguments that come after `detent curl`
+are interpreted as part of the desired `curl` call.  Detent
+returns 0 if the request is allowed based on the config, 1 if
+it's not allowed and 2 or higher in case of errors.  No requests
+are actually sent.
+
+Alternatively, use `detent` as a library:
+
+```ts
+import { check } from "detent";
+
+const request = new Request("https://api.example.com/users", {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify({ name: "alice" }),
+});
+
+const result = check(request);
+```
+
 
 ### Configuration
 
-All the configuration as described below goes to `~/.config/detent/config.json`. Use the `DETENT_CONFIG` environment variable to override the location of `config.json` if necessary.
+All the configuration as described below goes to
+`~/.config/detent/config.json`. Use the `DETENT_CONFIG`
+environment variable to override the location of `config.json`
+if necessary.
 
 ### Matching requests
 
 An HTTP(s) request can be represented as an object that has several well defined properties: `protocol`, `domain`, `port`, `path`, `headers`, queryParams` and `body`. Using this representation, the `detent` tool uses [JSON schemas](https://json-schema.org/) to:
 
-1. Define the "acceptable" shape of a request that is subject to a permission check.
-2. Match requests to permission checks to be applied.
+1. Match requests to permission checks.
+2. Define the "acceptable" shape of a request that is subject to a permission check.
 
-#### Request matches 
+#### Request patterns 
 
-A "request match" is defined by two things, a name and a request json schema (the part that's applicable for the request object's `properties`). For example:
+A "request pattern" is defined by a json schema (the part that's applicable for the request object's `properties`). For example:
 
 ```json
 {
@@ -65,7 +95,7 @@ This would match all GET requests, regardless of the domain, path, or anything e
 
 ### Permission checks.
 
-Once defined, request matches can be combined in a two-level rules hierarchy, like this:
+Once defined, request patterns can be combined in a two-level rules hierarchy, like this:
 
 ```json
 {
@@ -76,11 +106,16 @@ Once defined, request matches can be combined in a two-level rules hierarchy, li
 }
 ```
 
-For the config to work, you would need to define all the necessary request matches, like this:
+In each rule, the key defines scope ("should a given request be
+subject to this rule") and each value represents a list of permissions
+allowed by this rule. The last line in the example above would
+thus say that "only GET requests are allowed to the slack API".
+
+For the config to work, you would need to define all the necessary request patterns, like this:
 
 ```json
 {
-  "definitions": {
+  "patterns": {
     "github-api": {
       "domain": {
         "const": "api.github.com"
@@ -103,20 +138,29 @@ For the config to work, you would need to define all the necessary request match
 }
 ```
 
-### Built-in permissions
-
-Detent comes with many match definitions out of the box that are automatically available and recognized in rule bodies. Run `detent dump` to see your current config enriched with all the existing built-in definitions.
-
-If you don't want the built-in definitions to apply, set the
-`DETENT_DO_NOT_USE_BUILTIN_DEFINITIONS` environment variable to
-a non-empty value.
-
-
 ### Rule resolution, default outcomes
 
-When a request gets checked, the rules in your config are
-simply evaluated from top to bottom. The first matching rule
-determines the outcome: if the request falls under any of the permissions
+When a request gets checked, the rules in your config are simply
+evaluated from top to bottom. The first rule whose scope matches
+the request determines the outcome: if the request matches any
+of the permissions in the rule, it's approved. Otherwise, it's
+rejected. Further rules are not evaluated. By default, requests
+that don't match any rule get rejected. If you want to allow
+them by default, append the rule `{"any": "any"}` to the very
+end of your rule list.
+
+
+### Built-in permissions
+
+Detent comes with many pattern definitions out of the box that are
+automatically available and recognized in rule bodies. Run
+`detent dump` to see your current config enriched with all the
+existing built-in patterns. If you only want to list the
+pattern names, run `detent dump | jq '.patterns | keys'`.
+
+If you don't want the built-in patterns to apply, set the
+`DETENT_DO_NOT_USE_BUILTIN_PATTERNS` environment variable to
+a non-empty value.
 
 
 ### Canonical strings
