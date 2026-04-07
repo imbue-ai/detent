@@ -37,19 +37,19 @@ describe('dump', () => {
 
     const result = dump(configPath);
 
-    expect(result.patterns).toEqual({
-      'github-api': { domain: { const: 'api.github.com' } },
-      'get-only': { method: { const: 'GET' } },
-    });
+    expect(result.patterns).toHaveProperty('github-api', { domain: { const: 'api.github.com' } });
+    expect(result.patterns).toHaveProperty('get-only', { method: { const: 'GET' } });
+    // Builtin patterns are also present
+    expect(result.patterns).toHaveProperty('any', {});
     expect(result.rules).toEqual([{ 'github-api': ['get-only'] }]);
   });
 
-  it('returns empty patterns and rules for minimal config', () => {
+  it('returns builtin patterns and empty rules for minimal config', () => {
     const configPath = writeConfig({});
 
     const result = dump(configPath);
 
-    expect(result.patterns).toEqual({});
+    expect(result.patterns).toHaveProperty('any', {});
     expect(result.rules).toEqual([]);
   });
 
