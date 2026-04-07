@@ -24,14 +24,14 @@ const defaultConfigPath = resolveConfigPath();
 program
   .name('detent')
   .description(
-    `Check HTTP requests against permission rules. Returns 0 if allowed, 1 if denied, 2+ on error.\n\nConfig: ${defaultConfigPath} (override with DETENT_CONFIG)`
+    `Check HTTP requests against permission rules. Returns 0 if allowed, 1 if denied, 2+ on error.`
   )
   .version(packageJson.version)
   .addHelpText(
     'after',
     `
 Environment variables:
-  DETENT_CONFIG                        Path to config file (default: ~/.config/detent/config.json)
+  DETENT_CONFIG                        Path to config file (default: ${defaultConfigPath})
   DETENT_DO_NOT_USE_BUILTIN_PATTERNS   When set to any non-empty value, disables built-in patterns`
   );
 
