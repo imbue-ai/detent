@@ -238,8 +238,10 @@ describe('DetentConfig', () => {
     expect(() => new DetentConfig(configPath, true)).toThrow(DetentConfigError);
   });
 
-  it('throws DetentConfigError for missing config file', () => {
-    expect(() => new DetentConfig('/nonexistent/path.json', true)).toThrow(DetentConfigError);
+  it('treats missing config file as implicitly empty and rejects all requests', async () => {
+    const config = new DetentConfig('/nonexistent/path.json', true);
+    const request = new Request('https://example.com');
+    expect(await config.check(request)).toBe(false);
   });
 
   it('throws DetentConfigError for invalid JSON', () => {

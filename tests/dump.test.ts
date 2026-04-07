@@ -53,8 +53,10 @@ describe('dump', () => {
     expect(result.rules).toEqual([]);
   });
 
-  it('throws DetentConfigError for missing config file', () => {
-    expect(() => dump('/nonexistent/path.json')).toThrow(DetentConfigError);
+  it('returns empty patterns and rules for missing config file', () => {
+    const result = dump('/nonexistent/path.json');
+    expect(result.patterns).toEqual({});
+    expect(result.rules).toEqual([]);
   });
 
   it('throws DetentConfigError for invalid JSON', () => {
