@@ -163,4 +163,27 @@ If you don't want the built-in patterns to apply, set the
 a non-empty value.
 
 
+### Including other config files
+
+Use the `include` key to split your configuration across
+multiple files. Paths are resolved relative to the directory of
+the config that contains the `include`.
+
+```json
+{
+  "include": ["shared/example.json", "shared/another_example.json"],
+  "rules": [
+    {"github-api": ["github-read-issues"]}
+  ]
+}
+```
+
+Included configs are merged recursively: patterns and rules from
+all included files are collected first (in list order), then the
+including config's own patterns and rules are applied on top.
+This means the parent config's patterns override equally-named
+included patterns, and its rules are evaluated after included
+rules. Circular includes are detected and rejected.
+
+
 ### Canonical strings

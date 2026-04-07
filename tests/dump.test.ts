@@ -54,9 +54,18 @@ describe('dump', () => {
   });
 
   it('returns empty patterns and rules for missing config file', () => {
-    const result = dump('/nonexistent/path.json');
-    expect(result.patterns).toEqual({});
-    expect(result.rules).toEqual([]);
+    // eslint-disable-next-line @typescript-eslint/dot-notation
+    const previous = process.env['DETENT_DO_NOT_USE_BUILTIN_PATTERNS'];
+    try {
+      // eslint-disable-next-line @typescript-eslint/dot-notation
+      process.env['DETENT_DO_NOT_USE_BUILTIN_PATTERNS'] = '1';
+      const result = dump('/nonexistent/path.json');
+      expect(result.patterns).toEqual({});
+      expect(result.rules).toEqual([]);
+    } finally {
+      // eslint-disable-next-line @typescript-eslint/dot-notation
+      process.env['DETENT_DO_NOT_USE_BUILTIN_PATTERNS'] = previous;
+    }
   });
 
   it('throws DetentConfigError for invalid JSON', () => {
@@ -101,5 +110,47 @@ describe('dump', () => {
     const result = dump(configPath);
 
     expect(result.rules).toEqual([{ scope1: ['perm1'] }, { scope2: ['perm1', 'perm2'] }]);
+  });
+
+  it('includes patterns and rules from included config files', () => {
+    const includedPath = join(tempDir, 'included.json');
+    writeFileSync(
+      includedPath,
+      JSON.stringify({
+        patterns: {
+          'included-scope': { domain: { const: 'included.com' } },
+          'included-perm': { method: { const: 'GET' } },
+        },
+        rules: [{ 'included-scope': ['included-perm'] }],
+      })
+    );
+
+    const configPath = writeConfig({
+      include: ['included.json'],
+      patterns: {
+        'own-scope': { domain: { const: 'own.com' } },
+      },
+      rules: [{ 'own-scope': ['included-perm'] }],
+    });
+
+    // eslint-disable-next-line @typescript-eslint/dot-notation
+    const previous = process.env['DETENT_DO_NOT_USE_BUILTIN_PATTERNS'];
+    try {
+      // eslint-disable-next-line @typescript-eslint/dot-notation
+      process.env['DETENT_DO_NOT_USE_BUILTIN_PATTERNS'] = '1';
+      const result = dump(configPath);
+
+      expect(result.patterns).toHaveProperty('included-scope');
+      expect(result.patterns).toHaveProperty('included-perm');
+      expect(result.patterns).toHaveProperty('own-scope');
+      // Included rules come first, then own rules
+      expect(result.rules).toEqual([
+        { 'included-scope': ['included-perm'] },
+        { 'own-scope': ['included-perm'] },
+      ]);
+    } finally {
+      // eslint-disable-next-line @typescript-eslint/dot-notation
+      process.env['DETENT_DO_NOT_USE_BUILTIN_PATTERNS'] = previous;
+    }
   });
 });

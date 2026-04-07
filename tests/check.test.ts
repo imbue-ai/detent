@@ -299,6 +299,230 @@ describe('DetentConfig', () => {
     const deleteRequest = new Request('https://api.github.com/repos', { method: 'DELETE' });
     expect(await config.check(deleteRequest)).toBe(false);
   });
+
+  it('merges patterns and rules from included config files', async () => {
+    const includedPath = join(tempDir, 'included.json');
+    writeFileSync(
+      includedPath,
+      JSON.stringify({
+        patterns: {
+          'slack-api': { domain: { const: 'slack.com' } },
+          'get-only': { method: { const: 'GET' } },
+        },
+        rules: [{ 'slack-api': ['get-only'] }],
+      })
+    );
+
+    const configPath = writeConfig({
+      include: ['included.json'],
+      patterns: {
+        'github-api': { domain: { const: 'api.github.com' } },
+      },
+      rules: [{ 'github-api': ['get-only'] }],
+    });
+
+    const config = new DetentConfig(configPath, true);
+
+    // Included rule allows GET to slack
+    const slackGet = new Request('https://slack.com/api/conversations.list');
+    expect(await config.check(slackGet)).toBe(true);
+
+    // Parent rule allows GET to github using pattern from included config
+    const githubGet = new Request('https://api.github.com/repos');
+    expect(await config.check(githubGet)).toBe(true);
+
+    // POST to slack is rejected by the included rule
+    const slackPost = new Request('https://slack.com/api/chat.postMessage', { method: 'POST' });
+    expect(await config.check(slackPost)).toBe(false);
+  });
+
+  it('parent patterns override included patterns with the same name', async () => {
+    const includedPath = join(tempDir, 'included.json');
+    writeFileSync(
+      includedPath,
+      JSON.stringify({
+        patterns: {
+          scope: { domain: { const: 'included.com' } },
+          permission: { method: { const: 'GET' } },
+        },
+      })
+    );
+
+    const configPath = writeConfig({
+      include: ['included.json'],
+      patterns: {
+        scope: { domain: { const: 'parent.com' } },
+      },
+      rules: [{ scope: ['permission'] }],
+    });
+
+    const config = new DetentConfig(configPath, true);
+
+    // Parent overrides the scope pattern, so parent.com matches
+    const parentRequest = new Request('https://parent.com/test');
+    expect(await config.check(parentRequest)).toBe(true);
+
+    // included.com no longer matches scope because parent overrode it
+    const includedRequest = new Request('https://included.com/test');
+    expect(await config.check(includedRequest)).toBe(false);
+  });
+
+  it('included rules come before parent rules in evaluation order', async () => {
+    const includedPath = join(tempDir, 'included.json');
+    writeFileSync(
+      includedPath,
+      JSON.stringify({
+        patterns: {
+          'all-https': { protocol: { const: 'https' } },
+          'get-only': { method: { const: 'GET' } },
+        },
+        rules: [{ 'all-https': ['get-only'] }],
+      })
+    );
+
+    const configPath = writeConfig({
+      include: ['included.json'],
+      patterns: {
+        'any-method': {},
+      },
+      // This rule would allow everything, but it's appended after included rules
+      rules: [{ 'all-https': ['any-method'] }],
+    });
+
+    const config = new DetentConfig(configPath, true);
+
+    // The included rule matches first and only allows GET
+    const postRequest = new Request('https://example.com', { method: 'POST' });
+    expect(await config.check(postRequest)).toBe(false);
+  });
+
+  it('resolves includes recursively', async () => {
+    const deepIncludedPath = join(tempDir, 'deep.json');
+    writeFileSync(
+      deepIncludedPath,
+      JSON.stringify({
+        patterns: {
+          'deep-pattern': { method: { const: 'GET' } },
+        },
+      })
+    );
+
+    const middlePath = join(tempDir, 'middle.json');
+    writeFileSync(
+      middlePath,
+      JSON.stringify({
+        include: ['deep.json'],
+        patterns: {
+          'middle-scope': { domain: { const: 'example.com' } },
+        },
+        rules: [{ 'middle-scope': ['deep-pattern'] }],
+      })
+    );
+
+    const configPath = writeConfig({
+      include: ['middle.json'],
+    });
+
+    const config = new DetentConfig(configPath, true);
+
+    const getRequest = new Request('https://example.com/test');
+    expect(await config.check(getRequest)).toBe(true);
+
+    const postRequest = new Request('https://example.com/test', { method: 'POST' });
+    expect(await config.check(postRequest)).toBe(false);
+  });
+
+  it('throws DetentConfigError on circular includes', () => {
+    const aPath = join(tempDir, 'a.json');
+    const bPath = join(tempDir, 'b.json');
+
+    writeFileSync(aPath, JSON.stringify({ include: ['b.json'] }));
+    writeFileSync(bPath, JSON.stringify({ include: ['a.json'] }));
+
+    expect(() => new DetentConfig(aPath, true)).toThrow(DetentConfigError);
+  });
+
+  it('throws DetentConfigError when a config includes itself', () => {
+    const configPath = writeConfig({ include: ['config.json'] });
+    expect(() => new DetentConfig(configPath, true)).toThrow(DetentConfigError);
+  });
+
+  it('resolves relative include paths from the directory of the including config', async () => {
+    const subDir = join(tempDir, 'sub');
+    mkdirSync(subDir, { recursive: true });
+
+    const subIncludedPath = join(subDir, 'sub-included.json');
+    writeFileSync(
+      subIncludedPath,
+      JSON.stringify({
+        patterns: {
+          'sub-permission': { method: { const: 'GET' } },
+        },
+      })
+    );
+
+    const middlePath = join(subDir, 'middle.json');
+    writeFileSync(
+      middlePath,
+      JSON.stringify({
+        include: ['sub-included.json'],
+        patterns: {
+          'sub-scope': { domain: { const: 'example.com' } },
+        },
+        rules: [{ 'sub-scope': ['sub-permission'] }],
+      })
+    );
+
+    const configPath = writeConfig({
+      include: ['sub/middle.json'],
+    });
+
+    const config = new DetentConfig(configPath, true);
+
+    const getRequest = new Request('https://example.com/test');
+    expect(await config.check(getRequest)).toBe(true);
+  });
+
+  it('merges patterns and rules from multiple includes in order', async () => {
+    const firstPath = join(tempDir, 'first.json');
+    writeFileSync(
+      firstPath,
+      JSON.stringify({
+        patterns: {
+          'first-scope': { domain: { const: 'first.com' } },
+          'get-only': { method: { const: 'GET' } },
+        },
+        rules: [{ 'first-scope': ['get-only'] }],
+      })
+    );
+
+    const secondPath = join(tempDir, 'second.json');
+    writeFileSync(
+      secondPath,
+      JSON.stringify({
+        patterns: {
+          'second-scope': { domain: { const: 'second.com' } },
+          'post-only': { method: { const: 'POST' } },
+        },
+        rules: [{ 'second-scope': ['post-only'] }],
+      })
+    );
+
+    const configPath = writeConfig({
+      include: ['first.json', 'second.json'],
+    });
+
+    const config = new DetentConfig(configPath, true);
+
+    const firstGet = new Request('https://first.com/test');
+    expect(await config.check(firstGet)).toBe(true);
+
+    const secondPost = new Request('https://second.com/test', { method: 'POST' });
+    expect(await config.check(secondPost)).toBe(true);
+
+    const firstPost = new Request('https://first.com/test', { method: 'POST' });
+    expect(await config.check(firstPost)).toBe(false);
+  });
 });
 
 describe('check (top-level function)', () => {
