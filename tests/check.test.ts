@@ -4,7 +4,7 @@ import { join } from 'node:path';
 import { tmpdir } from 'node:os';
 import { check } from '../src/check.js';
 import { Config, ConfigError } from '../src/config.js';
-import { RequestPattern, RequestPatternError } from '../src/requestPattern.js';
+import { RequestPattern, RequestPatternError } from '../src/patterns/requestPattern.js';
 import { decomposeRequest } from '../src/decomposedRequest.js';
 import type { DecomposedRequest } from '../src/decomposedRequest.js';
 

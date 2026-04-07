@@ -1,9 +1,8 @@
 import { existsSync, readFileSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 import { Ajv, type ValidateFunction } from 'ajv';
-import { RequestPattern, RequestPatternError } from './requestPattern.js';
+import { RequestPattern, RequestPatternError, builtinPatterns } from './patterns/requestPattern.js';
 import { decomposeRequest } from './decomposedRequest.js';
-import { builtinPatterns } from './builtinPatterns.js';
 
 export class ConfigError extends Error {
   constructor(message: string) {
@@ -183,8 +182,8 @@ function buildPatternMap(
   const patterns = new Map<string, RequestPattern>();
 
   if (!doNotUseBuiltinPatterns) {
-    for (const [name, schema] of Object.entries(builtinPatterns)) {
-      patterns.set(name, new RequestPattern(name, schema));
+    for (const [name, pattern] of Object.entries(builtinPatterns)) {
+      patterns.set(name, pattern);
     }
   }
 

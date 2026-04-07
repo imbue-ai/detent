@@ -1,5 +1,5 @@
 import { readRawConfig } from './config.js';
-import { builtinPatterns } from './builtinPatterns.js';
+import { builtinPatterns } from './patterns/requestPattern.js';
 import { resolveConfigPath, useBuiltinPatterns } from './environment.js';
 
 export interface DumpedConfig {
@@ -14,8 +14,8 @@ export function dump(configPath?: string): DumpedConfig {
   const mergedPatterns: Record<string, Record<string, unknown>> = {};
 
   if (useBuiltinPatterns()) {
-    for (const [name, schema] of Object.entries(builtinPatterns)) {
-      mergedPatterns[name] = schema;
+    for (const [name, pattern] of Object.entries(builtinPatterns)) {
+      mergedPatterns[name] = pattern.schemaProperties;
     }
   }
 
