@@ -79,7 +79,14 @@ if necessary.
 
 ### Matching requests
 
-An HTTP(s) request can be represented as an object that has several well defined properties: `protocol`, `domain`, `port`, `path`, `method`, `headers`, `queryParams` and `body`. Using this representation, the `detent` tool uses [JSON schemas](https://json-schema.org/) to:
+An HTTP(s) request can be represented as an object that has
+several well defined properties: `protocol`, `domain`, `port`,
+`path`, `method`, `headers`, `queryParams` and `body`.  Several
+fields are normalized to canonical form before matching:
+`method` is always uppercase (e.g.  `"GET"`), `protocol`,
+`domain` and `headers` keys are always lowercase (e.g. `"content-type"`).
+Patterns must use these canonical forms. Using this
+representation, the `detent` tool uses [JSON schemas] (https://json-schema.org/) to:
 
 1. Match requests to permission checks.
 2. Define the "acceptable" shape of a request that is subject to a permission check.

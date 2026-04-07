@@ -1,5 +1,11 @@
 /**
  * A plain-object representation of an HTTP request, suitable for JSON schema validation.
+ *
+ * Canonical forms (enforced by decomposeRequest):
+ *  - protocol: lowercase  (e.g. "https")
+ *  - domain:   lowercase  (e.g. "api.github.com")
+ *  - method:   UPPERCASE  (e.g. "GET")
+ *  - headers:  keys are lowercase (e.g. "content-type")
  */
 export interface DecomposedRequest {
   readonly protocol: string;
@@ -17,7 +23,7 @@ export async function decomposeRequest(request: Request): Promise<DecomposedRequ
 
   const headers: Record<string, string> = {};
   request.headers.forEach((value, key) => {
-    headers[key] = value;
+    headers[key.toLowerCase()] = value;
   });
 
   const queryParams: Record<string, string> = {};
@@ -25,7 +31,8 @@ export async function decomposeRequest(request: Request): Promise<DecomposedRequ
     queryParams[key] = value;
   });
 
-  const protocol = url.protocol.replace(/:$/, '');
+  const protocol = url.protocol.replace(/:$/, '').toLowerCase();
+  const domain = url.hostname.toLowerCase();
   const defaultPort = protocol === 'https' ? 443 : 80;
   const port = url.port === '' ? defaultPort : Number(url.port);
 
@@ -37,10 +44,10 @@ export async function decomposeRequest(request: Request): Promise<DecomposedRequ
 
   return {
     protocol,
-    domain: url.hostname,
+    domain,
     port,
     path: url.pathname,
-    method: request.method,
+    method: request.method.toUpperCase(),
     headers,
     queryParams,
     body,

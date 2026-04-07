@@ -47,6 +47,35 @@ describe('decomposeRequest', () => {
     expect(data.body).toBe('{"name":"alice"}');
     expect(data.method).toBe('POST');
   });
+
+  it('uppercases the method even when the Request object does not normalize it', async () => {
+    // The Fetch API only auto-uppercases the six standard methods
+    // (DELETE, GET, HEAD, OPTIONS, POST, PUT). Others like PATCH
+    // are left as-is. decomposeRequest must uppercase all methods.
+    const request = new Request('https://example.com/api', { method: 'patch' });
+    // Confirm the Request object didn't uppercase it
+    expect(request.method).toBe('patch');
+    const data = await decomposeRequest(request);
+    expect(data.method).toBe('PATCH');
+  });
+
+  it('lowercases header keys', async () => {
+    const request = new Request('https://example.com', {
+      headers: { 'X-Custom-Header': 'value', Authorization: 'Bearer tok' },
+    });
+    const data = await decomposeRequest(request);
+    expect(Object.keys(data.headers).every((k) => k === k.toLowerCase())).toBe(true);
+    expect(data.headers).toHaveProperty('x-custom-header', 'value');
+    expect(data.headers).toHaveProperty('authorization', 'Bearer tok');
+  });
+
+  it('lowercases protocol and domain', async () => {
+    // URL constructor already normalizes these, but verify the contract
+    const request = new Request('HTTPS://API.GITHUB.COM/path');
+    const data = await decomposeRequest(request);
+    expect(data.protocol).toBe('https');
+    expect(data.domain).toBe('api.github.com');
+  });
 });
 
 describe('RequestPattern', () => {
