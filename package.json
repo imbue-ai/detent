@@ -24,7 +24,7 @@
   ],
   "scripts": {
     "prepublishOnly": "npm run build",
-    "build": "tsc && cp -r src/patterns/builtin dist/src/patterns/builtin",
+    "build": "tsc && cp -r src/patterns/builtin dist/src/patterns/builtin && chmod +x dist/src/cli.js",
     "dev": "tsc --watch",
     "lint": "eslint src tests",
     "lint:fix": "eslint src tests --fix",
