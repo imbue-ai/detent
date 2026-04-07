@@ -267,6 +267,148 @@ describe('DetentConfig', () => {
     expect(() => new DetentConfig(configPath, true)).toThrow(DetentConfigError);
   });
 
+  it('treats missing patterns as implicitly empty', async () => {
+    const configPath = writeConfig({
+      rules: [],
+    });
+    const config = new DetentConfig(configPath, true);
+    const request = new Request('https://example.com');
+    expect(await config.check(request)).toBe(false);
+  });
+
+  it('treats missing rules as implicitly empty', async () => {
+    const configPath = writeConfig({
+      patterns: { scope: { domain: { const: 'example.com' } } },
+    });
+    const config = new DetentConfig(configPath, true);
+    const request = new Request('https://example.com');
+    expect(await config.check(request)).toBe(false);
+  });
+
+  it('treats completely empty object as valid config', async () => {
+    const configPath = writeConfig({});
+    const config = new DetentConfig(configPath, true);
+    const request = new Request('https://example.com');
+    expect(await config.check(request)).toBe(false);
+  });
+
+  it('throws DetentConfigError for unknown top-level keys', () => {
+    const configPath = writeConfig({
+      patterns: {},
+      rules: [],
+      unknown: 'value',
+    });
+    expect(() => new DetentConfig(configPath, true)).toThrow(DetentConfigError);
+  });
+
+  it('throws DetentConfigError when rules is not an array', () => {
+    const configPath = writeConfig({
+      rules: 'not-an-array',
+    });
+    expect(() => new DetentConfig(configPath, true)).toThrow(DetentConfigError);
+  });
+
+  it('throws DetentConfigError when patterns is not an object', () => {
+    const configPath = writeConfig({
+      patterns: 'not-an-object',
+    });
+    expect(() => new DetentConfig(configPath, true)).toThrow(DetentConfigError);
+  });
+
+  it('throws DetentConfigError when include contains non-strings', () => {
+    const configPath = writeConfig({
+      include: [42],
+    });
+    expect(() => new DetentConfig(configPath, true)).toThrow(DetentConfigError);
+  });
+
+  it('throws DetentConfigError when config is an array instead of an object', () => {
+    const configPath = join(tempDir, 'config.json');
+    writeFileSync(configPath, JSON.stringify([1, 2, 3]));
+    expect(() => new DetentConfig(configPath, true)).toThrow(DetentConfigError);
+  });
+
+  it('validates included config files as well', () => {
+    const includedPath = join(tempDir, 'included.json');
+    writeFileSync(includedPath, JSON.stringify({ rules: 'not-an-array' }));
+
+    const configPath = writeConfig({
+      include: ['included.json'],
+    });
+    expect(() => new DetentConfig(configPath, true)).toThrow(DetentConfigError);
+  });
+
+  it('throws DetentConfigError when a pattern contains an unknown property name', () => {
+    const configPath = writeConfig({
+      patterns: {
+        'bad-pattern': { methd: { const: 'GET' } },
+      },
+    });
+    expect(() => new DetentConfig(configPath, true)).toThrow(DetentConfigError);
+  });
+
+  it('throws DetentConfigError when a pattern property value is not an object', () => {
+    const configPath = writeConfig({
+      patterns: {
+        'bad-pattern': { method: 'GET' },
+      },
+    });
+    expect(() => new DetentConfig(configPath, true)).toThrow(DetentConfigError);
+  });
+
+  it('accepts patterns using all valid DecomposedRequest fields', () => {
+    const configPath = writeConfig({
+      patterns: {
+        'all-fields': {
+          protocol: { const: 'https' },
+          domain: { const: 'example.com' },
+          port: { const: 443 },
+          path: { const: '/test' },
+          method: { const: 'GET' },
+          headers: { type: 'object' },
+          queryParams: { type: 'object' },
+          body: { type: 'string' },
+        },
+      },
+    });
+    expect(() => new DetentConfig(configPath, true)).not.toThrow();
+  });
+
+  it('validates patterns inside included config files', () => {
+    const includedPath = join(tempDir, 'included.json');
+    writeFileSync(
+      includedPath,
+      JSON.stringify({
+        patterns: {
+          'bad-pattern': { unknownField: { const: 'value' } },
+        },
+      })
+    );
+
+    const configPath = writeConfig({
+      include: ['included.json'],
+    });
+    expect(() => new DetentConfig(configPath, true)).toThrow(DetentConfigError);
+  });
+
+  it('treats missing patterns and rules in included files as implicitly empty', async () => {
+    const includedPath = join(tempDir, 'included.json');
+    writeFileSync(includedPath, JSON.stringify({}));
+
+    const configPath = writeConfig({
+      include: ['included.json'],
+      patterns: {
+        scope: { domain: { const: 'example.com' } },
+        permission: { method: { const: 'GET' } },
+      },
+      rules: [{ scope: ['permission'] }],
+    });
+
+    const config = new DetentConfig(configPath, true);
+    const request = new Request('https://example.com');
+    expect(await config.check(request)).toBe(true);
+  });
+
   it('treats missing config file as implicitly empty and rejects all requests', async () => {
     const config = new DetentConfig('/nonexistent/path.json', true);
     const request = new Request('https://example.com');
