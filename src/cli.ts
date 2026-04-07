@@ -22,13 +22,13 @@ program
   .description('Check a curl-style HTTP request against permission rules')
   .allowUnknownOption()
   .allowExcessArguments()
-  .action((_options: unknown, command: Command) => {
+  .action(async (_options: unknown, command: Command) => {
     try {
       const curlArgs = command.args as readonly string[];
       const request = parseCurlArgs(curlArgs);
       // eslint-disable-next-line @typescript-eslint/dot-notation
       const configPath = process.env['DETENT_CONFIG'];
-      const allowed = check(request, configPath);
+      const allowed = await check(request, configPath);
       process.exitCode = allowed ? EXIT_CODE_ALLOWED : EXIT_CODE_DENIED;
     } catch (error: unknown) {
       if (error instanceof Error) {
