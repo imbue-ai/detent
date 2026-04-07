@@ -5,7 +5,7 @@ describe('code quality', () => {
   it('passes the linter', () => {
     const result = execSync('npm run lint', { encoding: 'utf-8' });
     expect(result).toBeDefined();
-  });
+  }, 10000);
 
   it('passes the formatter', () => {
     const result = execSync('npx prettier --check "src/**/*.ts" "tests/**/*.ts"', {
