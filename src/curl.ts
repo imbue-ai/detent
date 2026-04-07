@@ -1,7 +1,7 @@
 export class CurlParseError extends Error {
   constructor(message: string) {
     super(message);
-    this.name = "CurlParseError";
+    this.name = 'CurlParseError';
   }
 }
 
@@ -10,33 +10,33 @@ export class CurlParseError extends Error {
  * Derived from `curl --help all` — every short flag shown with `<...>`.
  */
 const SHORT_FLAGS_WITH_VALUE = new Set([
-  "-A", // user-agent
-  "-b", // cookie
-  "-c", // cookie-jar
-  "-C", // continue-at
-  "-d", // data
-  "-D", // dump-header
-  "-E", // cert
-  "-F", // form
-  "-h", // help
-  "-H", // header
-  "-K", // config
-  "-m", // max-time
-  "-o", // output
-  "-P", // ftp-port
-  "-Q", // quote
-  "-r", // range
-  "-e", // referer
-  "-t", // telnet-option
-  "-T", // upload-file
-  "-u", // user
-  "-U", // proxy-user
-  "-w", // write-out
-  "-X", // request
-  "-x", // proxy
-  "-Y", // speed-limit
-  "-y", // speed-time
-  "-z", // time-cond
+  '-A', // user-agent
+  '-b', // cookie
+  '-c', // cookie-jar
+  '-C', // continue-at
+  '-d', // data
+  '-D', // dump-header
+  '-E', // cert
+  '-F', // form
+  '-h', // help
+  '-H', // header
+  '-K', // config
+  '-m', // max-time
+  '-o', // output
+  '-P', // ftp-port
+  '-Q', // quote
+  '-r', // range
+  '-e', // referer
+  '-t', // telnet-option
+  '-T', // upload-file
+  '-u', // user
+  '-U', // proxy-user
+  '-w', // write-out
+  '-X', // request
+  '-x', // proxy
+  '-Y', // speed-limit
+  '-y', // speed-time
+  '-z', // time-cond
 ]);
 
 /**
@@ -44,146 +44,142 @@ const SHORT_FLAGS_WITH_VALUE = new Set([
  * Derived from `curl --help all` — every long flag shown with `<...>`.
  */
 const LONG_FLAGS_WITH_VALUE = new Set([
-  "--abstract-unix-socket",
-  "--alt-svc",
-  "--aws-sigv4",
-  "--cacert",
-  "--capath",
-  "--cert",
-  "--cert-type",
-  "--ciphers",
-  "--config",
-  "--connect-timeout",
-  "--connect-to",
-  "--continue-at",
-  "--cookie",
-  "--cookie-jar",
-  "--create-file-mode",
-  "--crlfile",
-  "--curves",
-  "--data",
-  "--data-ascii",
-  "--data-binary",
-  "--data-raw",
-  "--data-urlencode",
-  "--delegation",
-  "--dns-interface",
-  "--dns-ipv4-addr",
-  "--dns-ipv6-addr",
-  "--dns-servers",
-  "--doh-url",
-  "--dump-header",
-  "--egd-file",
-  "--engine",
-  "--etag-compare",
-  "--etag-save",
-  "--expect100-timeout",
-  "--form",
-  "--form-string",
-  "--ftp-account",
-  "--ftp-alternative-to-user",
-  "--ftp-method",
-  "--ftp-port",
-  "--ftp-ssl-ccc-mode",
-  "--happy-eyeballs-timeout-ms",
-  "--header",
-  "--help",
-  "--hostpubmd5",
-  "--hostpubsha256",
-  "--hsts",
-  "--interface",
-  "--json",
-  "--keepalive-time",
-  "--key",
-  "--key-type",
-  "--krb",
-  "--libcurl",
-  "--limit-rate",
-  "--local-port",
-  "--login-options",
-  "--mail-auth",
-  "--mail-from",
-  "--mail-rcpt",
-  "--max-filesize",
-  "--max-redirs",
-  "--max-time",
-  "--netrc-file",
-  "--noproxy",
-  "--oauth2-bearer",
-  "--output",
-  "--output-dir",
-  "--parallel-max",
-  "--pass",
-  "--pinnedpubkey",
-  "--preproxy",
-  "--proto",
-  "--proto-default",
-  "--proto-redir",
-  "--proxy",
-  "--proxy-cacert",
-  "--proxy-capath",
-  "--proxy-cert",
-  "--proxy-cert-type",
-  "--proxy-ciphers",
-  "--proxy-crlfile",
-  "--proxy-header",
-  "--proxy-key",
-  "--proxy-key-type",
-  "--proxy-pass",
-  "--proxy-pinnedpubkey",
-  "--proxy-service-name",
-  "--proxy-tls13-ciphers",
-  "--proxy-tlsauthtype",
-  "--proxy-tlspassword",
-  "--proxy-tlsuser",
-  "--proxy-user",
-  "--proxy1.0",
-  "--pubkey",
-  "--quote",
-  "--random-file",
-  "--range",
-  "--rate",
-  "--referer",
-  "--request",
-  "--request-target",
-  "--resolve",
-  "--retry",
-  "--retry-delay",
-  "--retry-max-time",
-  "--sasl-authzid",
-  "--service-name",
-  "--socks4",
-  "--socks4a",
-  "--socks5",
-  "--socks5-gssapi-service",
-  "--socks5-hostname",
-  "--speed-limit",
-  "--speed-time",
-  "--stderr",
-  "--telnet-option",
-  "--tftp-blksize",
-  "--time-cond",
-  "--tls-max",
-  "--tls13-ciphers",
-  "--tlsauthtype",
-  "--tlspassword",
-  "--tlsuser",
-  "--trace",
-  "--trace-ascii",
-  "--unix-socket",
-  "--upload-file",
-  "--url",
-  "--url-query",
-  "--user",
-  "--user-agent",
-  "--write-out",
+  '--abstract-unix-socket',
+  '--alt-svc',
+  '--aws-sigv4',
+  '--cacert',
+  '--capath',
+  '--cert',
+  '--cert-type',
+  '--ciphers',
+  '--config',
+  '--connect-timeout',
+  '--connect-to',
+  '--continue-at',
+  '--cookie',
+  '--cookie-jar',
+  '--create-file-mode',
+  '--crlfile',
+  '--curves',
+  '--data',
+  '--data-ascii',
+  '--data-binary',
+  '--data-raw',
+  '--data-urlencode',
+  '--delegation',
+  '--dns-interface',
+  '--dns-ipv4-addr',
+  '--dns-ipv6-addr',
+  '--dns-servers',
+  '--doh-url',
+  '--dump-header',
+  '--egd-file',
+  '--engine',
+  '--etag-compare',
+  '--etag-save',
+  '--expect100-timeout',
+  '--form',
+  '--form-string',
+  '--ftp-account',
+  '--ftp-alternative-to-user',
+  '--ftp-method',
+  '--ftp-port',
+  '--ftp-ssl-ccc-mode',
+  '--happy-eyeballs-timeout-ms',
+  '--header',
+  '--help',
+  '--hostpubmd5',
+  '--hostpubsha256',
+  '--hsts',
+  '--interface',
+  '--json',
+  '--keepalive-time',
+  '--key',
+  '--key-type',
+  '--krb',
+  '--libcurl',
+  '--limit-rate',
+  '--local-port',
+  '--login-options',
+  '--mail-auth',
+  '--mail-from',
+  '--mail-rcpt',
+  '--max-filesize',
+  '--max-redirs',
+  '--max-time',
+  '--netrc-file',
+  '--noproxy',
+  '--oauth2-bearer',
+  '--output',
+  '--output-dir',
+  '--parallel-max',
+  '--pass',
+  '--pinnedpubkey',
+  '--preproxy',
+  '--proto',
+  '--proto-default',
+  '--proto-redir',
+  '--proxy',
+  '--proxy-cacert',
+  '--proxy-capath',
+  '--proxy-cert',
+  '--proxy-cert-type',
+  '--proxy-ciphers',
+  '--proxy-crlfile',
+  '--proxy-header',
+  '--proxy-key',
+  '--proxy-key-type',
+  '--proxy-pass',
+  '--proxy-pinnedpubkey',
+  '--proxy-service-name',
+  '--proxy-tls13-ciphers',
+  '--proxy-tlsauthtype',
+  '--proxy-tlspassword',
+  '--proxy-tlsuser',
+  '--proxy-user',
+  '--proxy1.0',
+  '--pubkey',
+  '--quote',
+  '--random-file',
+  '--range',
+  '--rate',
+  '--referer',
+  '--request',
+  '--request-target',
+  '--resolve',
+  '--retry',
+  '--retry-delay',
+  '--retry-max-time',
+  '--sasl-authzid',
+  '--service-name',
+  '--socks4',
+  '--socks4a',
+  '--socks5',
+  '--socks5-gssapi-service',
+  '--socks5-hostname',
+  '--speed-limit',
+  '--speed-time',
+  '--stderr',
+  '--telnet-option',
+  '--tftp-blksize',
+  '--time-cond',
+  '--tls-max',
+  '--tls13-ciphers',
+  '--tlsauthtype',
+  '--tlspassword',
+  '--tlsuser',
+  '--trace',
+  '--trace-ascii',
+  '--unix-socket',
+  '--upload-file',
+  '--url',
+  '--url-query',
+  '--user',
+  '--user-agent',
+  '--write-out',
 ]);
 
-function consumeNextArg(
-  args: readonly string[],
-  index: number,
-  flag: string,
-): string {
+function consumeNextArg(args: readonly string[], index: number, flag: string): string {
   const value = args[index + 1];
   if (value === undefined) {
     throw new CurlParseError(`Missing value for ${flag}`);
@@ -205,57 +201,56 @@ export function parseCurlArgs(args: readonly string[]): Request {
     const arg = args[i]!;
 
     // -- Long flags --
-    if (arg.startsWith("--")) {
-      if (arg === "--request") {
+    if (arg.startsWith('--')) {
+      if (arg === '--request') {
         method = consumeNextArg(args, i, arg);
         i++;
-      } else if (arg === "--header") {
+      } else if (arg === '--header') {
         const value = consumeNextArg(args, i, arg);
         i++;
-        const colonIndex = value.indexOf(":");
+        const colonIndex = value.indexOf(':');
         if (colonIndex === -1) {
           throw new CurlParseError(`Invalid header format: ${value}`);
         }
-        headers[value.slice(0, colonIndex).trim()] =
-          value.slice(colonIndex + 1).trim();
+        headers[value.slice(0, colonIndex).trim()] = value.slice(colonIndex + 1).trim();
       } else if (
-        arg === "--data" ||
-        arg === "--data-ascii" ||
-        arg === "--data-binary" ||
-        arg === "--data-raw" ||
-        arg === "--data-urlencode"
+        arg === '--data' ||
+        arg === '--data-ascii' ||
+        arg === '--data-binary' ||
+        arg === '--data-raw' ||
+        arg === '--data-urlencode'
       ) {
         bodyParts.push(consumeNextArg(args, i, arg));
         i++;
-      } else if (arg === "--form" || arg === "--form-string") {
+      } else if (arg === '--form' || arg === '--form-string') {
         // -F/--form sends multipart/form-data, implies POST
         consumeNextArg(args, i, arg); // consume but we don't reconstruct multipart
         i++;
         hasFormData = true;
-      } else if (arg === "--json") {
+      } else if (arg === '--json') {
         bodyParts.push(consumeNextArg(args, i, arg));
         i++;
         hasJsonFlag = true;
-      } else if (arg === "--url") {
+      } else if (arg === '--url') {
         url = consumeNextArg(args, i, arg);
         i++;
-      } else if (arg === "--user-agent") {
-        headers["User-Agent"] = consumeNextArg(args, i, arg);
+      } else if (arg === '--user-agent') {
+        headers['User-Agent'] = consumeNextArg(args, i, arg);
         i++;
-      } else if (arg === "--referer") {
+      } else if (arg === '--referer') {
         headers.Referer = consumeNextArg(args, i, arg);
         i++;
-      } else if (arg === "--cookie") {
+      } else if (arg === '--cookie') {
         headers.Cookie = consumeNextArg(args, i, arg);
         i++;
-      } else if (arg === "--upload-file") {
+      } else if (arg === '--upload-file') {
         consumeNextArg(args, i, arg);
         i++;
         // --upload-file implies PUT
-        method ??= "PUT";
-      } else if (arg === "--head") {
+        method ??= 'PUT';
+      } else if (arg === '--head') {
         isHead = true;
-      } else if (arg === "--get") {
+      } else if (arg === '--get') {
         isGet = true;
       } else if (LONG_FLAGS_WITH_VALUE.has(arg)) {
         consumeNextArg(args, i, arg); // skip the value
@@ -266,42 +261,41 @@ export function parseCurlArgs(args: readonly string[]): Request {
     }
 
     // -- Short flags --
-    if (arg.startsWith("-") && arg.length > 1) {
-      if (arg === "-X") {
+    if (arg.startsWith('-') && arg.length > 1) {
+      if (arg === '-X') {
         method = consumeNextArg(args, i, arg);
         i++;
-      } else if (arg === "-H") {
+      } else if (arg === '-H') {
         const value = consumeNextArg(args, i, arg);
         i++;
-        const colonIndex = value.indexOf(":");
+        const colonIndex = value.indexOf(':');
         if (colonIndex === -1) {
           throw new CurlParseError(`Invalid header format: ${value}`);
         }
-        headers[value.slice(0, colonIndex).trim()] =
-          value.slice(colonIndex + 1).trim();
-      } else if (arg === "-d") {
+        headers[value.slice(0, colonIndex).trim()] = value.slice(colonIndex + 1).trim();
+      } else if (arg === '-d') {
         bodyParts.push(consumeNextArg(args, i, arg));
         i++;
-      } else if (arg === "-F") {
+      } else if (arg === '-F') {
         consumeNextArg(args, i, arg);
         i++;
         hasFormData = true;
-      } else if (arg === "-T") {
+      } else if (arg === '-T') {
         consumeNextArg(args, i, arg);
         i++;
-        method ??= "PUT";
-      } else if (arg === "-A") {
-        headers["User-Agent"] = consumeNextArg(args, i, arg);
+        method ??= 'PUT';
+      } else if (arg === '-A') {
+        headers['User-Agent'] = consumeNextArg(args, i, arg);
         i++;
-      } else if (arg === "-e") {
+      } else if (arg === '-e') {
         headers.Referer = consumeNextArg(args, i, arg);
         i++;
-      } else if (arg === "-b") {
+      } else if (arg === '-b') {
         headers.Cookie = consumeNextArg(args, i, arg);
         i++;
-      } else if (arg === "-I") {
+      } else if (arg === '-I') {
         isHead = true;
-      } else if (arg === "-G") {
+      } else if (arg === '-G') {
         isGet = true;
       } else if (SHORT_FLAGS_WITH_VALUE.has(arg)) {
         consumeNextArg(args, i, arg);
@@ -316,7 +310,7 @@ export function parseCurlArgs(args: readonly string[]): Request {
   }
 
   if (url === undefined) {
-    throw new CurlParseError("No URL provided in curl arguments");
+    throw new CurlParseError('No URL provided in curl arguments');
   }
 
   // Determine the effective method
@@ -325,28 +319,25 @@ export function parseCurlArgs(args: readonly string[]): Request {
   if (method !== undefined) {
     effectiveMethod = method;
   } else if (isHead) {
-    effectiveMethod = "HEAD";
+    effectiveMethod = 'HEAD';
   } else if (isGet) {
-    effectiveMethod = "GET";
+    effectiveMethod = 'GET';
   } else if (hasBody) {
-    effectiveMethod = "POST";
+    effectiveMethod = 'POST';
   } else {
-    effectiveMethod = "GET";
+    effectiveMethod = 'GET';
   }
 
   // When -G is used, data goes into the query string, not the body
   if (isGet && bodyParts.length > 0) {
     const parsed = new URL(url);
     for (const part of bodyParts) {
-      for (const pair of part.split("&")) {
-        const equalsIndex = pair.indexOf("=");
+      for (const pair of part.split('&')) {
+        const equalsIndex = pair.indexOf('=');
         if (equalsIndex === -1) {
-          parsed.searchParams.append(pair, "");
+          parsed.searchParams.append(pair, '');
         } else {
-          parsed.searchParams.append(
-            pair.slice(0, equalsIndex),
-            pair.slice(equalsIndex + 1),
-          );
+          parsed.searchParams.append(pair.slice(0, equalsIndex), pair.slice(equalsIndex + 1));
         }
       }
     }
@@ -354,12 +345,11 @@ export function parseCurlArgs(args: readonly string[]): Request {
   }
 
   // Set implicit content-type headers
-  if (hasJsonFlag && !("Content-Type" in headers)) {
-    headers["Content-Type"] = "application/json";
+  if (hasJsonFlag && !('Content-Type' in headers)) {
+    headers['Content-Type'] = 'application/json';
   }
 
-  const body =
-    !isGet && bodyParts.length > 0 ? bodyParts.join("&") : undefined;
+  const body = !isGet && bodyParts.length > 0 ? bodyParts.join('&') : undefined;
 
   const init: RequestInit = {
     method: effectiveMethod,
