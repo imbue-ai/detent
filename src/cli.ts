@@ -7,8 +7,10 @@ import { check } from './check.js';
 import { dump } from './dump.js';
 import { resolveConfigPath } from './environment.js';
 
+// Use createRequire instead of JSON import to avoid experimental warnings in some Node versions.
+// The path is ../../ because this runs from dist/src/cli.js after compilation.
 const require = createRequire(import.meta.url);
-const packageJson = require('../package.json') as { version: string };
+const packageJson = require('../../package.json') as { version: string };
 
 const EXIT_CODE_ALLOWED = 0;
 const EXIT_CODE_DENIED = 1;

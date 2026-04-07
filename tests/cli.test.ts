@@ -7,7 +7,7 @@ import { tmpdir } from 'node:os';
 
 const execFileAsync = promisify(execFile);
 
-const cliPath = new URL('../src/cli.ts', import.meta.url).pathname;
+const cliPath = new URL('../dist/src/cli.js', import.meta.url).pathname;
 
 describe('CLI', () => {
   let tempDir: string;
@@ -35,9 +35,11 @@ describe('CLI', () => {
       })
     );
     const { stdout: _stdout } = await execFileAsync(
-      'npx',
-      ['tsx', cliPath, 'curl', 'https://example.com'],
-      { env: { ...process.env, DETENT_CONFIG: configPath } }
+      'node',
+      [cliPath, 'curl', 'https://example.com'],
+      {
+        env: { ...process.env, DETENT_CONFIG: configPath },
+      }
     );
     // exit code 0 means allowed (no throw)
   });
@@ -50,7 +52,7 @@ describe('CLI', () => {
         rules: [{ everything: ['allow-all'] }],
       })
     );
-    const { stdout } = await execFileAsync('npx', ['tsx', cliPath, 'dump'], {
+    const { stdout } = await execFileAsync('node', [cliPath, 'dump'], {
       env: { ...process.env, DETENT_CONFIG: configPath },
     });
     const parsed = JSON.parse(stdout) as { patterns: object; rules: object[] };
@@ -68,7 +70,7 @@ describe('CLI', () => {
       })
     );
     try {
-      await execFileAsync('npx', ['tsx', cliPath, 'curl'], {
+      await execFileAsync('node', [cliPath, 'curl'], {
         env: { ...process.env, DETENT_CONFIG: configPath },
       });
       expect.fail('Should have exited with non-zero');
