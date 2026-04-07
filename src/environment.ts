@@ -1,9 +1,6 @@
 import { homedir } from 'node:os';
 import { join } from 'node:path';
 
-// Builtin patterns — currently empty; will be populated in future increments.
-export const builtinPatterns: Readonly<Record<string, Record<string, unknown>>> = {};
-
 function defaultConfigPath(): string {
   // eslint-disable-next-line @typescript-eslint/dot-notation
   const configHome = process.env['XDG_CONFIG_HOME'] ?? join(homedir(), '.config');

@@ -1,5 +1,6 @@
 import { readRawConfig } from './detentConfig.js';
-import { builtinPatterns, resolveConfigPath, useBuiltinPatterns } from './environment.js';
+import { builtinPatterns } from './builtinPatterns.js';
+import { resolveConfigPath, useBuiltinPatterns } from './environment.js';
 
 export interface DumpedConfig {
   readonly patterns: Readonly<Record<string, Record<string, unknown>>>;

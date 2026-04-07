@@ -1,7 +1,7 @@
 import { readFileSync } from 'node:fs';
 import { RequestPattern, RequestPatternError } from './requestPattern.js';
 import { decomposeRequest } from './decomposedRequest.js';
-import { builtinPatterns } from './environment.js';
+import { builtinPatterns } from './builtinPatterns.js';
 
 export class DetentConfigError extends Error {
   constructor(message: string) {
