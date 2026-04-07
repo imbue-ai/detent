@@ -42,6 +42,23 @@ describe('CLI', () => {
     // exit code 0 means allowed (no throw)
   });
 
+  it('exits 0 and outputs JSON for dump subcommand', async () => {
+    writeFileSync(
+      configPath,
+      JSON.stringify({
+        patterns: { everything: {}, 'allow-all': {} },
+        rules: [{ everything: ['allow-all'] }],
+      })
+    );
+    const { stdout } = await execFileAsync('npx', ['tsx', cliPath, 'dump'], {
+      env: { ...process.env, DETENT_CONFIG: configPath },
+    });
+    const parsed = JSON.parse(stdout) as { patterns: object; rules: object[] };
+    expect(parsed.patterns).toHaveProperty('everything');
+    expect(parsed.patterns).toHaveProperty('allow-all');
+    expect(parsed.rules).toEqual([{ everything: ['allow-all'] }]);
+  });
+
   it('exits 2 for curl with no URL', async () => {
     writeFileSync(
       configPath,

@@ -1,12 +1,18 @@
 import { readFileSync } from 'node:fs';
 import { RequestPattern, RequestPatternError } from './requestPattern.js';
 import { decomposeRequest } from './decomposedRequest.js';
+import { builtinPatterns } from './environment.js';
 
 export class DetentConfigError extends Error {
   constructor(message: string) {
     super(message);
     this.name = 'DetentConfigError';
   }
+}
+
+export interface RawConfig {
+  readonly patterns?: Readonly<Record<string, Record<string, unknown>>>;
+  readonly rules?: readonly Readonly<Record<string, string | readonly string[]>>[];
 }
 
 interface ResolvedRule {
@@ -18,7 +24,7 @@ export class DetentConfig {
   private readonly rules: readonly ResolvedRule[];
 
   constructor(configPath: string, doNotUseBuiltinPatterns: boolean) {
-    const rawConfig = readConfigFile(configPath);
+    const rawConfig = readRawConfig(configPath);
     const patterns = buildPatternMap(rawConfig, doNotUseBuiltinPatterns);
     this.rules = resolveRules(rawConfig, patterns);
   }
@@ -42,12 +48,7 @@ export class DetentConfig {
   }
 }
 
-interface RawConfig {
-  readonly patterns?: Readonly<Record<string, Record<string, unknown>>>;
-  readonly rules?: readonly Readonly<Record<string, string | readonly string[]>>[];
-}
-
-function readConfigFile(configPath: string): RawConfig {
+export function readRawConfig(configPath: string): RawConfig {
   let content: string;
   try {
     content = readFileSync(configPath, 'utf-8');
@@ -133,6 +134,3 @@ function resolvePattern(
   }
   return pattern;
 }
-
-// Builtin patterns — currently empty; will be populated in future increments.
-const builtinPatterns: Readonly<Record<string, Record<string, unknown>>> = {};
