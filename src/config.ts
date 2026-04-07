@@ -121,7 +121,17 @@ function readSingleRawConfig(configPath: string): RawConfig {
 
   if (!validateRawConfig(parsed)) {
     const errors = (validateRawConfig.errors ?? [])
-      .map((error) => `${error.instancePath || '/'}: ${error.message ?? 'unknown error'}`)
+      .map((error) => {
+        const path = error.instancePath || '/';
+        const message = error.message ?? 'unknown error';
+        if (
+          error.keyword === 'additionalProperties' &&
+          typeof error.params.additionalProperty === 'string'
+        ) {
+          return `${path}: unknown property "${error.params.additionalProperty}"`;
+        }
+        return `${path}: ${message}`;
+      })
       .join('; ');
     throw new ConfigError(`Invalid config file "${configPath}": ${errors}`);
   }

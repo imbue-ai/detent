@@ -74,6 +74,25 @@ describe('dump', () => {
     expect(() => dump(configPath)).toThrow(ConfigError);
   });
 
+  it('names unknown top-level properties in error message', () => {
+    const configPath = writeConfig({
+      rulez: [{ 'github-api': ['github-read-issues'] }],
+    });
+
+    expect(() => dump(configPath)).toThrow(/unknown property "rulez"/);
+  });
+
+  it('names unknown nested properties in error message', () => {
+    const configPath = writeConfig({
+      patterns: {
+        'my-pattern': { methud: { const: 'GET' } },
+      },
+      rules: [],
+    });
+
+    expect(() => dump(configPath)).toThrow(/unknown property "methud"/);
+  });
+
   it('excludes builtin patterns when DETENT_DO_NOT_USE_BUILTIN_PATTERNS is set', () => {
     const configPath = writeConfig({
       patterns: {
