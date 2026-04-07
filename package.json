@@ -33,7 +33,7 @@
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "test:watch": "vitest",
-    "start": "node dist/cli.js"
+    "start": "node dist/src/cli.js"
   },
   "keywords": [
     "cli",
