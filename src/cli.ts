@@ -1,8 +1,12 @@
 #!/usr/bin/env node
 
+import { createRequire } from 'node:module';
 import { Command } from 'commander';
 import { parseCurlArgs } from './curl.js';
 import { check } from './check.js';
+
+const require = createRequire(import.meta.url);
+const packageJson = require('../package.json') as { version: string };
 
 const EXIT_CODE_ALLOWED = 0;
 const EXIT_CODE_DENIED = 1;
@@ -15,7 +19,7 @@ program
   .description(
     'Check HTTP requests against permission rules. Returns 0 if allowed, 1 if denied, 2+ on error.'
   )
-  .version('0.0.1');
+  .version(packageJson.version);
 
 program
   .command('curl')
