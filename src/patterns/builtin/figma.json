@@ -1,0 +1,125 @@
+{
+  "figma": {
+    "domain": {
+      "const": "api.figma.com"
+    }
+  },
+  "figma-read-all": {
+    "method": {
+      "const": "GET"
+    }
+  },
+  "figma-write-all": {
+    "method": {
+      "enum": ["POST", "PUT", "PATCH", "DELETE"]
+    }
+  },
+  "figma-read-files": {
+    "method": {
+      "const": "GET"
+    },
+    "path": {
+      "type": "string",
+      "pattern": "^/v[0-9]+/(files|images)/[^/]+(/nodes|/images|/meta|/versions)?$"
+    }
+  },
+  "figma-read-comments": {
+    "method": {
+      "const": "GET"
+    },
+    "path": {
+      "type": "string",
+      "pattern": "^/v[0-9]+/files/[^/]+/comments(/.*)?$"
+    }
+  },
+  "figma-write-comments": {
+    "method": {
+      "enum": ["POST", "DELETE"]
+    },
+    "path": {
+      "type": "string",
+      "pattern": "^/v[0-9]+/files/[^/]+/comments(/.*)?$"
+    }
+  },
+  "figma-read-projects": {
+    "method": {
+      "const": "GET"
+    },
+    "path": {
+      "type": "string",
+      "pattern": "^/v[0-9]+/(teams/[^/]+/projects|projects/[^/]+/files)$"
+    }
+  },
+  "figma-read-components": {
+    "method": {
+      "const": "GET"
+    },
+    "path": {
+      "type": "string",
+      "pattern": "^/v[0-9]+/(components/[^/]+|component_sets/[^/]+|styles/[^/]+|teams/[^/]+/(components|component_sets|styles)|files/[^/]+/(components|component_sets|styles))$"
+    }
+  },
+  "figma-read-webhooks": {
+    "method": {
+      "const": "GET"
+    },
+    "path": {
+      "type": "string",
+      "pattern": "^/v[0-9]+/(webhooks|teams/[^/]+/webhooks)(/.*)?$"
+    }
+  },
+  "figma-write-webhooks": {
+    "method": {
+      "enum": ["POST", "PUT", "DELETE"]
+    },
+    "path": {
+      "type": "string",
+      "pattern": "^/v[0-9]+/(webhooks|teams/[^/]+/webhooks)(/.*)?$"
+    }
+  },
+  "figma-read-variables": {
+    "method": {
+      "const": "GET"
+    },
+    "path": {
+      "type": "string",
+      "pattern": "^/v[0-9]+/files/[^/]+/variables(/.*)?$"
+    }
+  },
+  "figma-write-variables": {
+    "method": {
+      "const": "POST"
+    },
+    "path": {
+      "type": "string",
+      "pattern": "^/v[0-9]+/files/[^/]+/variables$"
+    }
+  },
+  "figma-read-dev-resources": {
+    "method": {
+      "const": "GET"
+    },
+    "path": {
+      "type": "string",
+      "pattern": "^/v[0-9]+/(files/[^/]+/dev_resources|dev_resources)(/.*)?$"
+    }
+  },
+  "figma-write-dev-resources": {
+    "method": {
+      "enum": ["POST", "PUT", "DELETE"]
+    },
+    "path": {
+      "type": "string",
+      "pattern": "^/v[0-9]+/(files/[^/]+/dev_resources|dev_resources)(/.*)?$"
+    }
+  },
+  "figma-read-library-analytics": {
+    "method": {
+      "const": "GET"
+    },
+    "path": {
+      "type": "string",
+      "pattern": "^/v[0-9]+/analytics/libraries(/.*)?$"
+    }
+  }
+}
