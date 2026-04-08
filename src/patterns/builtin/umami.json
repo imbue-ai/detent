@@ -20,7 +20,7 @@
     },
     "path": {
       "type": "string",
-      "pattern": "^/v[0-9]+/websites(/[^/]+)?$"
+      "pattern": "^(/v[0-9]+|/api)/websites(/[^/]+)?$"
     }
   },
   "umami-write-websites": {
@@ -29,7 +29,7 @@
     },
     "path": {
       "type": "string",
-      "pattern": "^/v[0-9]+/websites(/.*)?$"
+      "pattern": "^(/v[0-9]+|/api)/websites(/.*)?$"
     }
   },
   "umami-read-stats": {
@@ -38,7 +38,7 @@
     },
     "path": {
       "type": "string",
-      "pattern": "^/v[0-9]+/websites/[^/]+/(active|daterange|events|event-data|metrics|pageviews|stats|sessions|session-data)(/.*)?$"
+      "pattern": "^(/v[0-9]+|/api)/websites/[^/]+/(active|daterange|events|event-data|metrics|pageviews|stats|sessions|session-data)(/.*)?$"
     }
   },
   "umami-read-reports": {
@@ -47,7 +47,7 @@
     },
     "path": {
       "type": "string",
-      "pattern": "^/v[0-9]+/reports(/.*)?$"
+      "pattern": "^(/v[0-9]+|/api)/reports(/.*)?$"
     }
   },
   "umami-write-reports": {
@@ -56,7 +56,7 @@
     },
     "path": {
       "type": "string",
-      "pattern": "^/v[0-9]+/reports(/.*)?$"
+      "pattern": "^(/v[0-9]+|/api)/reports(/.*)?$"
     }
   },
   "umami-read-teams": {
@@ -65,7 +65,7 @@
     },
     "path": {
       "type": "string",
-      "pattern": "^/v[0-9]+/teams(/.*)?$"
+      "pattern": "^(/v[0-9]+|/api)/teams(/.*)?$"
     }
   },
   "umami-write-teams": {
@@ -74,7 +74,7 @@
     },
     "path": {
       "type": "string",
-      "pattern": "^/v[0-9]+/teams(/.*)?$"
+      "pattern": "^(/v[0-9]+|/api)/teams(/.*)?$"
     }
   },
   "umami-read-me": {
@@ -83,7 +83,7 @@
     },
     "path": {
       "type": "string",
-      "pattern": "^/v[0-9]+/me(/.*)?$"
+      "pattern": "^(/v[0-9]+|/api)/me(/.*)?$"
     }
   }
 }

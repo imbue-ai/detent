@@ -32,27 +32,38 @@ describe('builtin patterns: calendly', () => {
     expect(builtinPatterns.calendly!.match(request)).toBe(false);
   });
 
-  it('calendly-read-all matches GET requests', () => {
-    expectPatternExists('calendly-read-all');
-    const get = makeRequest({ method: 'GET' });
-    const post = makeRequest({ method: 'POST' });
-    expect(builtinPatterns['calendly-read-all']!.match(get)).toBe(true);
-    expect(builtinPatterns['calendly-read-all']!.match(post)).toBe(false);
+  it('calendly-read-event-types matches GET to /event_types path', () => {
+    expectPatternExists('calendly-read-event-types');
+    expect(
+      builtinPatterns['calendly-read-event-types']!.match(
+        makeRequest({ method: 'GET', path: '/event_types' })
+      )
+    ).toBe(true);
+    expect(
+      builtinPatterns['calendly-read-event-types']!.match(
+        makeRequest({ method: 'GET', path: '/scheduled_events' })
+      )
+    ).toBe(false);
   });
 
-  it('calendly-write-all matches POST but not GET', () => {
-    expectPatternExists('calendly-write-all');
-    const post = makeRequest({ method: 'POST' });
-    const get = makeRequest({ method: 'GET' });
-    expect(builtinPatterns['calendly-write-all']!.match(post)).toBe(true);
-    expect(builtinPatterns['calendly-write-all']!.match(get)).toBe(false);
+  it('calendly-write-webhooks matches POST to /webhook_subscriptions path', () => {
+    expectPatternExists('calendly-write-webhooks');
+    expect(
+      builtinPatterns['calendly-write-webhooks']!.match(
+        makeRequest({ method: 'POST', path: '/webhook_subscriptions' })
+      )
+    ).toBe(true);
+    expect(
+      builtinPatterns['calendly-write-webhooks']!.match(
+        makeRequest({ method: 'POST', path: '/event_types' })
+      )
+    ).toBe(false);
   });
 });
 
 describe('builtin patterns: coolify', () => {
   it('coolify scope matches the coolify API domain', () => {
     expectPatternExists('coolify');
-    // Coolify is self-hosted; the scope pattern should match the relevant domain or path
     const request = makeRequest({ domain: 'app.coolify.io', path: '/api/v1/servers' });
     expect(builtinPatterns.coolify!.match(request)).toBe(true);
   });
@@ -88,19 +99,32 @@ describe('builtin patterns: discord', () => {
     expect(builtinPatterns.discord!.match(request)).toBe(false);
   });
 
-  it('discord-read-all matches GET requests', () => {
-    expectPatternExists('discord-read-all');
-    const get = makeRequest({ method: 'GET' });
-    expect(builtinPatterns['discord-read-all']!.match(get)).toBe(true);
-    expect(builtinPatterns['discord-read-all']!.match(makeRequest({ method: 'DELETE' }))).toBe(
-      false
-    );
+  it('discord-read-guilds matches GET to guilds path', () => {
+    expectPatternExists('discord-read-guilds');
+    expect(
+      builtinPatterns['discord-read-guilds']!.match(
+        makeRequest({ method: 'GET', path: '/api/v10/guilds/123456' })
+      )
+    ).toBe(true);
+    expect(
+      builtinPatterns['discord-read-guilds']!.match(
+        makeRequest({ method: 'GET', path: '/api/v10/channels/123' })
+      )
+    ).toBe(false);
   });
 
-  it('discord-write-all matches POST and rejects GET', () => {
-    expectPatternExists('discord-write-all');
-    expect(builtinPatterns['discord-write-all']!.match(makeRequest({ method: 'POST' }))).toBe(true);
-    expect(builtinPatterns['discord-write-all']!.match(makeRequest({ method: 'GET' }))).toBe(false);
+  it('discord-write-messages matches POST to channel messages path', () => {
+    expectPatternExists('discord-write-messages');
+    expect(
+      builtinPatterns['discord-write-messages']!.match(
+        makeRequest({ method: 'POST', path: '/api/v10/channels/123/messages' })
+      )
+    ).toBe(true);
+    expect(
+      builtinPatterns['discord-write-messages']!.match(
+        makeRequest({ method: 'POST', path: '/api/v10/guilds/456' })
+      )
+    ).toBe(false);
   });
 });
 
@@ -126,14 +150,16 @@ describe('builtin patterns: dropbox', () => {
     ).toBe(false);
   });
 
-  it('dropbox-files-write matches write paths like upload', () => {
-    expectPatternExists('dropbox-files-write');
+  it('dropbox-sharing-read matches sharing read paths', () => {
+    expectPatternExists('dropbox-sharing-read');
     expect(
-      builtinPatterns['dropbox-files-write']!.match(makeRequest({ path: '/2/files/upload' }))
+      builtinPatterns['dropbox-sharing-read']!.match(
+        makeRequest({ path: '/2/sharing/list_folders' })
+      )
     ).toBe(true);
     expect(
-      builtinPatterns['dropbox-files-write']!.match(
-        makeRequest({ path: '/2/files/list_folder' })
+      builtinPatterns['dropbox-sharing-read']!.match(
+        makeRequest({ path: '/2/sharing/add_folder_member' })
       )
     ).toBe(false);
   });
@@ -151,16 +177,27 @@ describe('builtin patterns: figma', () => {
     expect(builtinPatterns.figma!.match(request)).toBe(false);
   });
 
-  it('figma-read-all accepts GET and rejects POST', () => {
-    expectPatternExists('figma-read-all');
-    expect(builtinPatterns['figma-read-all']!.match(makeRequest({ method: 'GET' }))).toBe(true);
-    expect(builtinPatterns['figma-read-all']!.match(makeRequest({ method: 'POST' }))).toBe(false);
+  it('figma-read-files matches GET to /v1/files path', () => {
+    expectPatternExists('figma-read-files');
+    expect(
+      builtinPatterns['figma-read-files']!.match(
+        makeRequest({ method: 'GET', path: '/v1/files/abc123' })
+      )
+    ).toBe(true);
+    expect(
+      builtinPatterns['figma-read-files']!.match(
+        makeRequest({ method: 'GET', path: '/v1/projects/456' })
+      )
+    ).toBe(false);
   });
 
-  it('figma-write-all accepts DELETE and rejects GET', () => {
-    expectPatternExists('figma-write-all');
-    expect(builtinPatterns['figma-write-all']!.match(makeRequest({ method: 'DELETE' }))).toBe(true);
-    expect(builtinPatterns['figma-write-all']!.match(makeRequest({ method: 'GET' }))).toBe(false);
+  it('figma-write-comments matches POST to comments path', () => {
+    expectPatternExists('figma-write-comments');
+    expect(
+      builtinPatterns['figma-write-comments']!.match(
+        makeRequest({ method: 'POST', path: '/v1/files/abc123/comments' })
+      )
+    ).toBe(true);
   });
 });
 
@@ -176,16 +213,32 @@ describe('builtin patterns: github', () => {
     expect(builtinPatterns.github!.match(request)).toBe(false);
   });
 
-  it('github-read-all matches GET and rejects PUT', () => {
-    expectPatternExists('github-read-all');
-    expect(builtinPatterns['github-read-all']!.match(makeRequest({ method: 'GET' }))).toBe(true);
-    expect(builtinPatterns['github-read-all']!.match(makeRequest({ method: 'PUT' }))).toBe(false);
+  it('github-read-issues matches issues path but not pulls', () => {
+    expectPatternExists('github-read-issues');
+    expect(
+      builtinPatterns['github-read-issues']!.match(
+        makeRequest({ method: 'GET', path: '/repos/octocat/Hello-World/issues' })
+      )
+    ).toBe(true);
+    expect(
+      builtinPatterns['github-read-issues']!.match(
+        makeRequest({ method: 'GET', path: '/repos/octocat/Hello-World/pulls' })
+      )
+    ).toBe(false);
   });
 
-  it('github-write-all matches PATCH and rejects GET', () => {
-    expectPatternExists('github-write-all');
-    expect(builtinPatterns['github-write-all']!.match(makeRequest({ method: 'PATCH' }))).toBe(true);
-    expect(builtinPatterns['github-write-all']!.match(makeRequest({ method: 'GET' }))).toBe(false);
+  it('github-search matches /search paths', () => {
+    expectPatternExists('github-search');
+    expect(
+      builtinPatterns['github-search']!.match(
+        makeRequest({ method: 'GET', path: '/search/repositories' })
+      )
+    ).toBe(true);
+    expect(
+      builtinPatterns['github-search']!.match(
+        makeRequest({ method: 'GET', path: '/repos/octocat/Hello-World' })
+      )
+    ).toBe(false);
   });
 });
 
@@ -201,15 +254,32 @@ describe('builtin patterns: gitlab', () => {
     expect(builtinPatterns.gitlab!.match(request)).toBe(false);
   });
 
-  it('gitlab-read-all matches GET requests', () => {
-    expectPatternExists('gitlab-read-all');
-    expect(builtinPatterns['gitlab-read-all']!.match(makeRequest({ method: 'GET' }))).toBe(true);
+  it('gitlab-read-merge-requests matches merge_requests path', () => {
+    expectPatternExists('gitlab-read-merge-requests');
+    expect(
+      builtinPatterns['gitlab-read-merge-requests']!.match(
+        makeRequest({ method: 'GET', path: '/api/v4/projects/42/merge_requests' })
+      )
+    ).toBe(true);
+    expect(
+      builtinPatterns['gitlab-read-merge-requests']!.match(
+        makeRequest({ method: 'GET', path: '/api/v4/projects/42/issues' })
+      )
+    ).toBe(false);
   });
 
-  it('gitlab-write-all rejects GET and accepts POST', () => {
-    expectPatternExists('gitlab-write-all');
-    expect(builtinPatterns['gitlab-write-all']!.match(makeRequest({ method: 'GET' }))).toBe(false);
-    expect(builtinPatterns['gitlab-write-all']!.match(makeRequest({ method: 'POST' }))).toBe(true);
+  it('gitlab-write-issues matches POST to issues path', () => {
+    expectPatternExists('gitlab-write-issues');
+    expect(
+      builtinPatterns['gitlab-write-issues']!.match(
+        makeRequest({ method: 'POST', path: '/api/v4/projects/42/issues' })
+      )
+    ).toBe(true);
+    expect(
+      builtinPatterns['gitlab-write-issues']!.match(
+        makeRequest({ method: 'POST', path: '/api/v4/projects/42/merge_requests' })
+      )
+    ).toBe(false);
   });
 });
 
@@ -223,23 +293,26 @@ describe('builtin patterns: google-analytics', () => {
     expect(builtinPatterns['google-analytics']!.match(request)).toBe(true);
   });
 
-  it('google-analytics-read-all matches GET requests', () => {
-    expectPatternExists('google-analytics-read-all');
+  it('google-analytics-run-reports matches POST to runReport path', () => {
+    expectPatternExists('google-analytics-run-reports');
     expect(
-      builtinPatterns['google-analytics-read-all']!.match(makeRequest({ method: 'GET' }))
+      builtinPatterns['google-analytics-run-reports']!.match(
+        makeRequest({ method: 'POST', path: '/v1beta/properties/12345:runReport' })
+      )
     ).toBe(true);
-    expect(
-      builtinPatterns['google-analytics-read-all']!.match(makeRequest({ method: 'POST' }))
-    ).toBe(false);
   });
 
-  it('google-analytics-write-all matches DELETE and rejects GET', () => {
-    expectPatternExists('google-analytics-write-all');
+  it('google-analytics-read-properties matches GET to properties path', () => {
+    expectPatternExists('google-analytics-read-properties');
     expect(
-      builtinPatterns['google-analytics-write-all']!.match(makeRequest({ method: 'DELETE' }))
+      builtinPatterns['google-analytics-read-properties']!.match(
+        makeRequest({ method: 'GET', path: '/v1beta/properties' })
+      )
     ).toBe(true);
     expect(
-      builtinPatterns['google-analytics-write-all']!.match(makeRequest({ method: 'GET' }))
+      builtinPatterns['google-analytics-read-properties']!.match(
+        makeRequest({ method: 'GET', path: '/v1beta/accounts' })
+      )
     ).toBe(false);
   });
 });
@@ -262,18 +335,27 @@ describe('builtin patterns: google-calendar', () => {
     expect(builtinPatterns['google-calendar']!.match(request)).toBe(false);
   });
 
-  it('google-calendar-read-all matches GET requests', () => {
-    expectPatternExists('google-calendar-read-all');
-    expect(builtinPatterns['google-calendar-read-all']!.match(makeRequest({ method: 'GET' }))).toBe(
-      true
-    );
+  it('google-calendar-read-events matches GET with events path', () => {
+    expectPatternExists('google-calendar-read-events');
+    expect(
+      builtinPatterns['google-calendar-read-events']!.match(
+        makeRequest({ method: 'GET', path: '/calendar/v3/calendars/primary/events' })
+      )
+    ).toBe(true);
+    expect(
+      builtinPatterns['google-calendar-read-events']!.match(
+        makeRequest({ method: 'GET', path: '/calendar/v3/users/me/calendarList' })
+      )
+    ).toBe(false);
   });
 
-  it('google-calendar-write-all rejects GET', () => {
-    expectPatternExists('google-calendar-write-all');
+  it('google-calendar-query-freebusy matches POST to freeBusy endpoint', () => {
+    expectPatternExists('google-calendar-query-freebusy');
     expect(
-      builtinPatterns['google-calendar-write-all']!.match(makeRequest({ method: 'GET' }))
-    ).toBe(false);
+      builtinPatterns['google-calendar-query-freebusy']!.match(
+        makeRequest({ method: 'POST', path: '/calendar/v3/freeBusy' })
+      )
+    ).toBe(true);
   });
 });
 
@@ -326,21 +408,22 @@ describe('builtin patterns: google-docs', () => {
     expect(builtinPatterns['google-docs']!.match(request)).toBe(false);
   });
 
-  it('google-docs-read-all matches GET', () => {
-    expectPatternExists('google-docs-read-all');
-    expect(builtinPatterns['google-docs-read-all']!.match(makeRequest({ method: 'GET' }))).toBe(
-      true
-    );
+  it('google-docs-read-documents matches GET to /v1/documents path', () => {
+    expectPatternExists('google-docs-read-documents');
+    expect(
+      builtinPatterns['google-docs-read-documents']!.match(
+        makeRequest({ method: 'GET', path: '/v1/documents/abc123' })
+      )
+    ).toBe(true);
   });
 
-  it('google-docs-write-all accepts POST and rejects GET', () => {
-    expectPatternExists('google-docs-write-all');
-    expect(builtinPatterns['google-docs-write-all']!.match(makeRequest({ method: 'POST' }))).toBe(
-      true
-    );
-    expect(builtinPatterns['google-docs-write-all']!.match(makeRequest({ method: 'GET' }))).toBe(
-      false
-    );
+  it('google-docs-create-documents matches POST to /v1/documents', () => {
+    expectPatternExists('google-docs-create-documents');
+    expect(
+      builtinPatterns['google-docs-create-documents']!.match(
+        makeRequest({ method: 'POST', path: '/v1/documents' })
+      )
+    ).toBe(true);
   });
 });
 
@@ -362,18 +445,27 @@ describe('builtin patterns: google-drive', () => {
     expect(builtinPatterns['google-drive']!.match(request)).toBe(false);
   });
 
-  it('google-drive-read-all matches GET requests', () => {
-    expectPatternExists('google-drive-read-all');
-    expect(builtinPatterns['google-drive-read-all']!.match(makeRequest({ method: 'GET' }))).toBe(
-      true
-    );
+  it('google-drive-read-files matches GET to files path', () => {
+    expectPatternExists('google-drive-read-files');
+    expect(
+      builtinPatterns['google-drive-read-files']!.match(
+        makeRequest({ method: 'GET', path: '/drive/v3/files' })
+      )
+    ).toBe(true);
+    expect(
+      builtinPatterns['google-drive-read-files']!.match(
+        makeRequest({ method: 'GET', path: '/drive/v3/about' })
+      )
+    ).toBe(false);
   });
 
-  it('google-drive-write-all rejects GET requests', () => {
-    expectPatternExists('google-drive-write-all');
-    expect(builtinPatterns['google-drive-write-all']!.match(makeRequest({ method: 'GET' }))).toBe(
-      false
-    );
+  it('google-drive-write-comments matches POST to comments path', () => {
+    expectPatternExists('google-drive-write-comments');
+    expect(
+      builtinPatterns['google-drive-write-comments']!.match(
+        makeRequest({ method: 'POST', path: '/drive/v3/files/abc123/comments' })
+      )
+    ).toBe(true);
   });
 });
 
@@ -392,21 +484,27 @@ describe('builtin patterns: google-gmail', () => {
     expect(builtinPatterns['google-gmail']!.match(request)).toBe(false);
   });
 
-  it('google-gmail-read-all matches GET', () => {
-    expectPatternExists('google-gmail-read-all');
-    expect(builtinPatterns['google-gmail-read-all']!.match(makeRequest({ method: 'GET' }))).toBe(
-      true
-    );
+  it('google-gmail-read-messages matches GET with messages path', () => {
+    expectPatternExists('google-gmail-read-messages');
+    expect(
+      builtinPatterns['google-gmail-read-messages']!.match(
+        makeRequest({ method: 'GET', path: '/gmail/v1/users/me/messages' })
+      )
+    ).toBe(true);
+    expect(
+      builtinPatterns['google-gmail-read-messages']!.match(
+        makeRequest({ method: 'GET', path: '/gmail/v1/users/me/labels' })
+      )
+    ).toBe(false);
   });
 
-  it('google-gmail-write-all accepts PUT and rejects GET', () => {
-    expectPatternExists('google-gmail-write-all');
-    expect(builtinPatterns['google-gmail-write-all']!.match(makeRequest({ method: 'PUT' }))).toBe(
-      true
-    );
-    expect(builtinPatterns['google-gmail-write-all']!.match(makeRequest({ method: 'GET' }))).toBe(
-      false
-    );
+  it('google-gmail-send-messages matches POST to messages/send path', () => {
+    expectPatternExists('google-gmail-send-messages');
+    expect(
+      builtinPatterns['google-gmail-send-messages']!.match(
+        makeRequest({ method: 'POST', path: '/gmail/v1/users/me/messages/send' })
+      )
+    ).toBe(true);
   });
 });
 
@@ -425,11 +523,18 @@ describe('builtin patterns: google-people', () => {
     expect(builtinPatterns['google-people']!.match(request)).toBe(false);
   });
 
-  it('google-people-read-all matches GET requests', () => {
-    expectPatternExists('google-people-read-all');
-    expect(builtinPatterns['google-people-read-all']!.match(makeRequest({ method: 'GET' }))).toBe(
-      true
-    );
+  it('google-people-read-contacts matches GET to people path', () => {
+    expectPatternExists('google-people-read-contacts');
+    expect(
+      builtinPatterns['google-people-read-contacts']!.match(
+        makeRequest({ method: 'GET', path: '/v1/people/me/connections' })
+      )
+    ).toBe(true);
+    expect(
+      builtinPatterns['google-people-read-contacts']!.match(
+        makeRequest({ method: 'GET', path: '/v1/contactGroups' })
+      )
+    ).toBe(false);
   });
 });
 
@@ -448,21 +553,22 @@ describe('builtin patterns: google-sheets', () => {
     expect(builtinPatterns['google-sheets']!.match(request)).toBe(false);
   });
 
-  it('google-sheets-read-all matches GET requests', () => {
-    expectPatternExists('google-sheets-read-all');
-    expect(builtinPatterns['google-sheets-read-all']!.match(makeRequest({ method: 'GET' }))).toBe(
-      true
-    );
+  it('google-sheets-read-values matches GET with values path', () => {
+    expectPatternExists('google-sheets-read-values');
+    expect(
+      builtinPatterns['google-sheets-read-values']!.match(
+        makeRequest({ method: 'GET', path: '/v4/spreadsheets/abc123/values/Sheet1!A1:B10' })
+      )
+    ).toBe(true);
   });
 
-  it('google-sheets-write-all accepts PUT and rejects GET', () => {
-    expectPatternExists('google-sheets-write-all');
-    expect(builtinPatterns['google-sheets-write-all']!.match(makeRequest({ method: 'PUT' }))).toBe(
-      true
-    );
-    expect(builtinPatterns['google-sheets-write-all']!.match(makeRequest({ method: 'GET' }))).toBe(
-      false
-    );
+  it('google-sheets-create-spreadsheets matches POST to spreadsheets', () => {
+    expectPatternExists('google-sheets-create-spreadsheets');
+    expect(
+      builtinPatterns['google-sheets-create-spreadsheets']!.match(
+        makeRequest({ method: 'POST', path: '/v4/spreadsheets' })
+      )
+    ).toBe(true);
   });
 });
 
@@ -489,19 +595,32 @@ describe('builtin patterns: mailchimp', () => {
     expect(builtinPatterns.mailchimp!.match(request)).toBe(true);
   });
 
-  it('mailchimp-read-all matches GET requests', () => {
-    expectPatternExists('mailchimp-read-all');
-    expect(builtinPatterns['mailchimp-read-all']!.match(makeRequest({ method: 'GET' }))).toBe(true);
+  it('mailchimp-read-campaigns matches GET to campaigns path', () => {
+    expectPatternExists('mailchimp-read-campaigns');
+    expect(
+      builtinPatterns['mailchimp-read-campaigns']!.match(
+        makeRequest({ method: 'GET', path: '/3.0/campaigns' })
+      )
+    ).toBe(true);
+    expect(
+      builtinPatterns['mailchimp-read-campaigns']!.match(
+        makeRequest({ method: 'GET', path: '/3.0/lists' })
+      )
+    ).toBe(false);
   });
 
-  it('mailchimp-write-all accepts DELETE and rejects GET', () => {
-    expectPatternExists('mailchimp-write-all');
-    expect(builtinPatterns['mailchimp-write-all']!.match(makeRequest({ method: 'DELETE' }))).toBe(
-      true
-    );
-    expect(builtinPatterns['mailchimp-write-all']!.match(makeRequest({ method: 'GET' }))).toBe(
-      false
-    );
+  it('mailchimp-write-lists matches POST to lists path', () => {
+    expectPatternExists('mailchimp-write-lists');
+    expect(
+      builtinPatterns['mailchimp-write-lists']!.match(
+        makeRequest({ method: 'POST', path: '/3.0/lists' })
+      )
+    ).toBe(true);
+    expect(
+      builtinPatterns['mailchimp-write-lists']!.match(
+        makeRequest({ method: 'POST', path: '/3.0/campaigns' })
+      )
+    ).toBe(false);
   });
 });
 
@@ -517,15 +636,28 @@ describe('builtin patterns: notion', () => {
     expect(builtinPatterns.notion!.match(request)).toBe(false);
   });
 
-  it('notion-read-all matches GET requests', () => {
-    expectPatternExists('notion-read-all');
-    expect(builtinPatterns['notion-read-all']!.match(makeRequest({ method: 'GET' }))).toBe(true);
+  it('notion-read-pages matches GET to /v1/pages path', () => {
+    expectPatternExists('notion-read-pages');
+    expect(
+      builtinPatterns['notion-read-pages']!.match(
+        makeRequest({ method: 'GET', path: '/v1/pages/abc123' })
+      )
+    ).toBe(true);
+    expect(
+      builtinPatterns['notion-read-pages']!.match(
+        makeRequest({ method: 'GET', path: '/v1/databases/abc123' })
+      )
+    ).toBe(false);
   });
 
-  it('notion-write-all accepts PATCH and rejects GET', () => {
-    expectPatternExists('notion-write-all');
-    expect(builtinPatterns['notion-write-all']!.match(makeRequest({ method: 'PATCH' }))).toBe(true);
-    expect(builtinPatterns['notion-write-all']!.match(makeRequest({ method: 'GET' }))).toBe(false);
+  it('notion-search matches POST to /v1/search', () => {
+    expectPatternExists('notion-search');
+    expect(
+      builtinPatterns['notion-search']!.match(makeRequest({ method: 'POST', path: '/v1/search' }))
+    ).toBe(true);
+    expect(
+      builtinPatterns['notion-search']!.match(makeRequest({ method: 'POST', path: '/v1/pages' }))
+    ).toBe(false);
   });
 });
 
@@ -544,16 +676,27 @@ describe('builtin patterns: sentry', () => {
     expect(builtinPatterns.sentry!.match(request)).toBe(false);
   });
 
-  it('sentry-read-all matches GET requests', () => {
-    expectPatternExists('sentry-read-all');
-    expect(builtinPatterns['sentry-read-all']!.match(makeRequest({ method: 'GET' }))).toBe(true);
-    expect(builtinPatterns['sentry-read-all']!.match(makeRequest({ method: 'PUT' }))).toBe(false);
+  it('sentry-read-issues matches GET with issues path', () => {
+    expectPatternExists('sentry-read-issues');
+    expect(
+      builtinPatterns['sentry-read-issues']!.match(
+        makeRequest({ method: 'GET', path: '/api/0/organizations/my-org/issues/' })
+      )
+    ).toBe(true);
+    expect(
+      builtinPatterns['sentry-read-issues']!.match(
+        makeRequest({ method: 'GET', path: '/api/0/organizations/my-org/releases/' })
+      )
+    ).toBe(false);
   });
 
-  it('sentry-write-all accepts POST and rejects GET', () => {
-    expectPatternExists('sentry-write-all');
-    expect(builtinPatterns['sentry-write-all']!.match(makeRequest({ method: 'POST' }))).toBe(true);
-    expect(builtinPatterns['sentry-write-all']!.match(makeRequest({ method: 'GET' }))).toBe(false);
+  it('sentry-write-projects matches POST to projects path', () => {
+    expectPatternExists('sentry-write-projects');
+    expect(
+      builtinPatterns['sentry-write-projects']!.match(
+        makeRequest({ method: 'POST', path: '/api/0/teams/my-org/my-team/projects/' })
+      )
+    ).toBe(true);
   });
 });
 
@@ -572,16 +715,24 @@ describe('builtin patterns: slack', () => {
     expect(builtinPatterns.slack!.match(request)).toBe(false);
   });
 
-  it('slack-chat matches chat-related API paths', () => {
+  it('slack-chat matches chat method paths but not conversations', () => {
     expectPatternExists('slack-chat');
-    const request = makeRequest({ path: '/api/chat.postMessage' });
-    expect(builtinPatterns['slack-chat']!.match(request)).toBe(true);
+    expect(
+      builtinPatterns['slack-chat']!.match(makeRequest({ path: '/api/chat.postMessage' }))
+    ).toBe(true);
+    expect(
+      builtinPatterns['slack-chat']!.match(makeRequest({ path: '/api/conversations.list' }))
+    ).toBe(false);
   });
 
-  it('slack-conversations matches conversations-related API paths', () => {
-    expectPatternExists('slack-conversations');
-    const request = makeRequest({ path: '/api/conversations.list' });
-    expect(builtinPatterns['slack-conversations']!.match(request)).toBe(true);
+  it('slack-users matches users method paths but not chat', () => {
+    expectPatternExists('slack-users');
+    expect(builtinPatterns['slack-users']!.match(makeRequest({ path: '/api/users.list' }))).toBe(
+      true
+    );
+    expect(
+      builtinPatterns['slack-users']!.match(makeRequest({ path: '/api/chat.postMessage' }))
+    ).toBe(false);
   });
 });
 
@@ -600,16 +751,32 @@ describe('builtin patterns: stripe', () => {
     expect(builtinPatterns.stripe!.match(request)).toBe(false);
   });
 
-  it('stripe-read-all matches GET and rejects POST', () => {
-    expectPatternExists('stripe-read-all');
-    expect(builtinPatterns['stripe-read-all']!.match(makeRequest({ method: 'GET' }))).toBe(true);
-    expect(builtinPatterns['stripe-read-all']!.match(makeRequest({ method: 'POST' }))).toBe(false);
+  it('stripe-read-customers matches GET to /v1/customers path', () => {
+    expectPatternExists('stripe-read-customers');
+    expect(
+      builtinPatterns['stripe-read-customers']!.match(
+        makeRequest({ method: 'GET', path: '/v1/customers' })
+      )
+    ).toBe(true);
+    expect(
+      builtinPatterns['stripe-read-customers']!.match(
+        makeRequest({ method: 'GET', path: '/v1/products' })
+      )
+    ).toBe(false);
   });
 
-  it('stripe-write-all accepts POST and rejects GET', () => {
-    expectPatternExists('stripe-write-all');
-    expect(builtinPatterns['stripe-write-all']!.match(makeRequest({ method: 'POST' }))).toBe(true);
-    expect(builtinPatterns['stripe-write-all']!.match(makeRequest({ method: 'GET' }))).toBe(false);
+  it('stripe-write-payments matches POST to payment_intents path', () => {
+    expectPatternExists('stripe-write-payments');
+    expect(
+      builtinPatterns['stripe-write-payments']!.match(
+        makeRequest({ method: 'POST', path: '/v1/payment_intents' })
+      )
+    ).toBe(true);
+    expect(
+      builtinPatterns['stripe-write-payments']!.match(
+        makeRequest({ method: 'POST', path: '/v1/customers' })
+      )
+    ).toBe(false);
   });
 });
 
@@ -633,6 +800,20 @@ describe('builtin patterns: telegram', () => {
     const request = makeRequest({ path: '/bot123456:ABC-DEF/sendMessage' });
     expect(builtinPatterns['telegram-send-messages']!.match(request)).toBe(true);
   });
+
+  it('telegram-updates matches getUpdates path', () => {
+    expectPatternExists('telegram-updates');
+    expect(
+      builtinPatterns['telegram-updates']!.match(
+        makeRequest({ path: '/bot123456:ABC-DEF/getUpdates' })
+      )
+    ).toBe(true);
+    expect(
+      builtinPatterns['telegram-updates']!.match(
+        makeRequest({ path: '/bot123456:ABC-DEF/sendMessage' })
+      )
+    ).toBe(false);
+  });
 });
 
 describe('builtin patterns: umami', () => {
@@ -645,16 +826,51 @@ describe('builtin patterns: umami', () => {
     expect(builtinPatterns.umami!.match(request)).toBe(true);
   });
 
-  it('umami-read-all matches GET requests', () => {
-    expectPatternExists('umami-read-all');
-    expect(builtinPatterns['umami-read-all']!.match(makeRequest({ method: 'GET' }))).toBe(true);
-    expect(builtinPatterns['umami-read-all']!.match(makeRequest({ method: 'POST' }))).toBe(false);
+  it('umami-read-websites matches cloud /v1/websites path', () => {
+    expectPatternExists('umami-read-websites');
+    expect(
+      builtinPatterns['umami-read-websites']!.match(
+        makeRequest({ method: 'GET', path: '/v1/websites' })
+      )
+    ).toBe(true);
+    expect(
+      builtinPatterns['umami-read-websites']!.match(
+        makeRequest({ method: 'GET', path: '/v1/teams' })
+      )
+    ).toBe(false);
   });
 
-  it('umami-write-all matches POST and rejects GET', () => {
-    expectPatternExists('umami-write-all');
-    expect(builtinPatterns['umami-write-all']!.match(makeRequest({ method: 'POST' }))).toBe(true);
-    expect(builtinPatterns['umami-write-all']!.match(makeRequest({ method: 'GET' }))).toBe(false);
+  it('umami-read-websites matches self-hosted /api/websites path', () => {
+    expectPatternExists('umami-read-websites');
+    expect(
+      builtinPatterns['umami-read-websites']!.match(
+        makeRequest({ method: 'GET', path: '/api/websites' })
+      )
+    ).toBe(true);
+    expect(
+      builtinPatterns['umami-read-websites']!.match(
+        makeRequest({ method: 'GET', path: '/api/teams' })
+      )
+    ).toBe(false);
+  });
+
+  it('umami-write-teams matches both cloud and self-hosted paths', () => {
+    expectPatternExists('umami-write-teams');
+    expect(
+      builtinPatterns['umami-write-teams']!.match(
+        makeRequest({ method: 'POST', path: '/v1/teams' })
+      )
+    ).toBe(true);
+    expect(
+      builtinPatterns['umami-write-teams']!.match(
+        makeRequest({ method: 'POST', path: '/api/teams' })
+      )
+    ).toBe(true);
+    expect(
+      builtinPatterns['umami-write-teams']!.match(
+        makeRequest({ method: 'POST', path: '/api/websites' })
+      )
+    ).toBe(false);
   });
 });
 
@@ -673,14 +889,32 @@ describe('builtin patterns: yelp', () => {
     expect(builtinPatterns.yelp!.match(request)).toBe(false);
   });
 
-  it('yelp-read-all matches GET requests', () => {
-    expectPatternExists('yelp-read-all');
-    expect(builtinPatterns['yelp-read-all']!.match(makeRequest({ method: 'GET' }))).toBe(true);
+  it('yelp-read-businesses matches GET to /v3/businesses path', () => {
+    expectPatternExists('yelp-read-businesses');
+    expect(
+      builtinPatterns['yelp-read-businesses']!.match(
+        makeRequest({ method: 'GET', path: '/v3/businesses/search' })
+      )
+    ).toBe(true);
+    expect(
+      builtinPatterns['yelp-read-businesses']!.match(
+        makeRequest({ method: 'GET', path: '/v3/events' })
+      )
+    ).toBe(false);
   });
 
-  it('yelp-write-all rejects GET', () => {
-    expectPatternExists('yelp-write-all');
-    expect(builtinPatterns['yelp-write-all']!.match(makeRequest({ method: 'GET' }))).toBe(false);
+  it('yelp-autocomplete matches /v3/autocomplete path', () => {
+    expectPatternExists('yelp-autocomplete');
+    expect(
+      builtinPatterns['yelp-autocomplete']!.match(
+        makeRequest({ method: 'GET', path: '/v3/autocomplete' })
+      )
+    ).toBe(true);
+    expect(
+      builtinPatterns['yelp-autocomplete']!.match(
+        makeRequest({ method: 'GET', path: '/v3/businesses/search' })
+      )
+    ).toBe(false);
   });
 });
 
@@ -699,15 +933,31 @@ describe('builtin patterns: zoom', () => {
     expect(builtinPatterns.zoom!.match(request)).toBe(false);
   });
 
-  it('zoom-read-all matches GET and rejects DELETE', () => {
-    expectPatternExists('zoom-read-all');
-    expect(builtinPatterns['zoom-read-all']!.match(makeRequest({ method: 'GET' }))).toBe(true);
-    expect(builtinPatterns['zoom-read-all']!.match(makeRequest({ method: 'DELETE' }))).toBe(false);
+  it('zoom-read-meetings matches GET to meetings path', () => {
+    expectPatternExists('zoom-read-meetings');
+    expect(
+      builtinPatterns['zoom-read-meetings']!.match(
+        makeRequest({ method: 'GET', path: '/v2/meetings/123456' })
+      )
+    ).toBe(true);
+    expect(
+      builtinPatterns['zoom-read-meetings']!.match(
+        makeRequest({ method: 'GET', path: '/v2/users/me' })
+      )
+    ).toBe(false);
   });
 
-  it('zoom-write-all accepts PUT and rejects GET', () => {
-    expectPatternExists('zoom-write-all');
-    expect(builtinPatterns['zoom-write-all']!.match(makeRequest({ method: 'PUT' }))).toBe(true);
-    expect(builtinPatterns['zoom-write-all']!.match(makeRequest({ method: 'GET' }))).toBe(false);
+  it('zoom-write-recordings matches DELETE to recordings path', () => {
+    expectPatternExists('zoom-write-recordings');
+    expect(
+      builtinPatterns['zoom-write-recordings']!.match(
+        makeRequest({ method: 'DELETE', path: '/v2/meetings/123456/recordings' })
+      )
+    ).toBe(true);
+    expect(
+      builtinPatterns['zoom-write-recordings']!.match(
+        makeRequest({ method: 'DELETE', path: '/v2/meetings/123456' })
+      )
+    ).toBe(false);
   });
 });
