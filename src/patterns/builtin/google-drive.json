@@ -1,0 +1,84 @@
+{
+  "google-drive": {
+    "domain": {
+      "const": "www.googleapis.com"
+    },
+    "path": {
+      "type": "string",
+      "pattern": "^/(upload/)?drive/"
+    }
+  },
+  "google-drive-read-all": {
+    "method": {
+      "const": "GET"
+    }
+  },
+  "google-drive-write-all": {
+    "method": {
+      "enum": ["POST", "PUT", "PATCH", "DELETE"]
+    }
+  },
+  "google-drive-read-files": {
+    "method": {
+      "const": "GET"
+    },
+    "path": {
+      "type": "string",
+      "pattern": "^/drive/v[0-9]+/files(/[^/]+)?$"
+    }
+  },
+  "google-drive-write-files": {
+    "method": {
+      "enum": ["POST", "PUT", "PATCH", "DELETE"]
+    },
+    "path": {
+      "type": "string",
+      "pattern": "^/(upload/)?drive/v[0-9]+/files(/[^/]+)?$"
+    }
+  },
+  "google-drive-read-permissions": {
+    "method": {
+      "const": "GET"
+    },
+    "path": {
+      "type": "string",
+      "pattern": "^/drive/v[0-9]+/files/[^/]+/permissions(/.*)?$"
+    }
+  },
+  "google-drive-write-permissions": {
+    "method": {
+      "enum": ["POST", "PUT", "PATCH", "DELETE"]
+    },
+    "path": {
+      "type": "string",
+      "pattern": "^/drive/v[0-9]+/files/[^/]+/permissions(/.*)?$"
+    }
+  },
+  "google-drive-read-comments": {
+    "method": {
+      "const": "GET"
+    },
+    "path": {
+      "type": "string",
+      "pattern": "^/drive/v[0-9]+/files/[^/]+/comments(/.*)?$"
+    }
+  },
+  "google-drive-write-comments": {
+    "method": {
+      "enum": ["POST", "PUT", "PATCH", "DELETE"]
+    },
+    "path": {
+      "type": "string",
+      "pattern": "^/drive/v[0-9]+/files/[^/]+/comments(/.*)?$"
+    }
+  },
+  "google-drive-read-about": {
+    "method": {
+      "const": "GET"
+    },
+    "path": {
+      "type": "string",
+      "pattern": "^/drive/v[0-9]+/about$"
+    }
+  }
+}
