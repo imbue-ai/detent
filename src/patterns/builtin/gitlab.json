@@ -1,0 +1,134 @@
+{
+  "gitlab": {
+    "domain": {
+      "const": "gitlab.com"
+    }
+  },
+  "gitlab-read-all": {
+    "method": {
+      "const": "GET"
+    }
+  },
+  "gitlab-write-all": {
+    "method": {
+      "enum": ["POST", "PUT", "PATCH", "DELETE"]
+    }
+  },
+  "gitlab-read-projects": {
+    "method": {
+      "const": "GET"
+    },
+    "path": {
+      "type": "string",
+      "pattern": "^/api/v[0-9]+/projects(/[^/]+)?$"
+    }
+  },
+  "gitlab-write-projects": {
+    "method": {
+      "enum": ["POST", "PUT", "PATCH", "DELETE"]
+    },
+    "path": {
+      "type": "string",
+      "pattern": "^/api/v[0-9]+/projects(/[^/]+)?$"
+    }
+  },
+  "gitlab-read-repository": {
+    "method": {
+      "const": "GET"
+    },
+    "path": {
+      "type": "string",
+      "pattern": "^/api/v[0-9]+/projects/[^/]+/repository(/.*)?$"
+    }
+  },
+  "gitlab-write-repository": {
+    "method": {
+      "enum": ["POST", "PUT", "PATCH", "DELETE"]
+    },
+    "path": {
+      "type": "string",
+      "pattern": "^/api/v[0-9]+/projects/[^/]+/repository(/.*)?$"
+    }
+  },
+  "gitlab-read-merge-requests": {
+    "method": {
+      "const": "GET"
+    },
+    "path": {
+      "type": "string",
+      "pattern": "^/api/v[0-9]+/(projects/[^/]+/)?merge_requests(/.*)?$"
+    }
+  },
+  "gitlab-write-merge-requests": {
+    "method": {
+      "enum": ["POST", "PUT", "PATCH", "DELETE"]
+    },
+    "path": {
+      "type": "string",
+      "pattern": "^/api/v[0-9]+/(projects/[^/]+/)?merge_requests(/.*)?$"
+    }
+  },
+  "gitlab-read-issues": {
+    "method": {
+      "const": "GET"
+    },
+    "path": {
+      "type": "string",
+      "pattern": "^/api/v[0-9]+/((projects|groups)/[^/]+/)?issues(/.*)?$"
+    }
+  },
+  "gitlab-write-issues": {
+    "method": {
+      "enum": ["POST", "PUT", "PATCH", "DELETE"]
+    },
+    "path": {
+      "type": "string",
+      "pattern": "^/api/v[0-9]+/((projects|groups)/[^/]+/)?issues(/.*)?$"
+    }
+  },
+  "gitlab-read-pipelines": {
+    "method": {
+      "const": "GET"
+    },
+    "path": {
+      "type": "string",
+      "pattern": "^/api/v[0-9]+/projects/[^/]+/(pipelines|jobs)(/.*)?$"
+    }
+  },
+  "gitlab-write-pipelines": {
+    "method": {
+      "enum": ["POST", "PUT", "PATCH", "DELETE"]
+    },
+    "path": {
+      "type": "string",
+      "pattern": "^/api/v[0-9]+/projects/[^/]+/(pipelines|jobs)(/.*)?$"
+    }
+  },
+  "gitlab-read-users": {
+    "method": {
+      "const": "GET"
+    },
+    "path": {
+      "type": "string",
+      "pattern": "^/api/v[0-9]+/users?(/.*)?$"
+    }
+  },
+  "gitlab-read-groups": {
+    "method": {
+      "const": "GET"
+    },
+    "path": {
+      "type": "string",
+      "pattern": "^/api/v[0-9]+/groups(/.*)?$"
+    }
+  },
+  "gitlab-write-groups": {
+    "method": {
+      "enum": ["POST", "PUT", "PATCH", "DELETE"]
+    },
+    "path": {
+      "type": "string",
+      "pattern": "^/api/v[0-9]+/groups(/.*)?$"
+    }
+  }
+}
