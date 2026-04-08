@@ -4,17 +4,17 @@
       "const": "gmail.googleapis.com"
     }
   },
-  "gmail-read-all": {
+  "google-gmail-read-all": {
     "method": {
       "const": "GET"
     }
   },
-  "gmail-write-all": {
+  "google-gmail-write-all": {
     "method": {
       "enum": ["POST", "PUT", "PATCH", "DELETE"]
     }
   },
-  "gmail-read-messages": {
+  "google-gmail-read-messages": {
     "method": {
       "const": "GET"
     },
@@ -23,7 +23,7 @@
       "pattern": "^/gmail/v[0-9]+/users/[^/]+/messages(/.*)?$"
     }
   },
-  "gmail-write-messages": {
+  "google-gmail-write-messages": {
     "method": {
       "enum": ["POST", "PUT", "PATCH", "DELETE"]
     },
@@ -32,7 +32,7 @@
       "pattern": "^/gmail/v[0-9]+/users/[^/]+/messages(/.*)?$"
     }
   },
-  "gmail-send-messages": {
+  "google-gmail-send-messages": {
     "method": {
       "const": "POST"
     },
@@ -41,7 +41,7 @@
       "pattern": "^/gmail/v[0-9]+/users/[^/]+/messages/send$"
     }
   },
-  "gmail-read-threads": {
+  "google-gmail-read-threads": {
     "method": {
       "const": "GET"
     },
@@ -50,7 +50,7 @@
       "pattern": "^/gmail/v[0-9]+/users/[^/]+/threads(/.*)?$"
     }
   },
-  "gmail-write-threads": {
+  "google-gmail-write-threads": {
     "method": {
       "enum": ["POST", "PUT", "PATCH", "DELETE"]
     },
@@ -59,7 +59,7 @@
       "pattern": "^/gmail/v[0-9]+/users/[^/]+/threads(/.*)?$"
     }
   },
-  "gmail-read-labels": {
+  "google-gmail-read-labels": {
     "method": {
       "const": "GET"
     },
@@ -68,7 +68,7 @@
       "pattern": "^/gmail/v[0-9]+/users/[^/]+/labels(/.*)?$"
     }
   },
-  "gmail-write-labels": {
+  "google-gmail-write-labels": {
     "method": {
       "enum": ["POST", "PUT", "PATCH", "DELETE"]
     },
@@ -77,7 +77,7 @@
       "pattern": "^/gmail/v[0-9]+/users/[^/]+/labels(/.*)?$"
     }
   },
-  "gmail-read-drafts": {
+  "google-gmail-read-drafts": {
     "method": {
       "const": "GET"
     },
@@ -86,7 +86,7 @@
       "pattern": "^/gmail/v[0-9]+/users/[^/]+/drafts(/.*)?$"
     }
   },
-  "gmail-write-drafts": {
+  "google-gmail-write-drafts": {
     "method": {
       "enum": ["POST", "PUT", "PATCH", "DELETE"]
     },
@@ -95,7 +95,7 @@
       "pattern": "^/gmail/v[0-9]+/users/[^/]+/drafts(/.*)?$"
     }
   },
-  "gmail-read-settings": {
+  "google-gmail-read-settings": {
     "method": {
       "const": "GET"
     },
@@ -104,7 +104,7 @@
       "pattern": "^/gmail/v[0-9]+/users/[^/]+/settings(/.*)?$"
     }
   },
-  "gmail-write-settings": {
+  "google-gmail-write-settings": {
     "method": {
       "enum": ["POST", "PUT", "PATCH", "DELETE"]
     },
@@ -113,7 +113,7 @@
       "pattern": "^/gmail/v[0-9]+/users/[^/]+/settings(/.*)?$"
     }
   },
-  "gmail-read-history": {
+  "google-gmail-read-history": {
     "method": {
       "const": "GET"
     },
@@ -122,7 +122,7 @@
       "pattern": "^/gmail/v[0-9]+/users/[^/]+/history$"
     }
   },
-  "gmail-read-profile": {
+  "google-gmail-read-profile": {
     "method": {
       "const": "GET"
     },
