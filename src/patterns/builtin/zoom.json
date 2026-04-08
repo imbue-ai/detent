@@ -1,0 +1,98 @@
+{
+  "zoom": {
+    "domain": {
+      "const": "api.zoom.us"
+    }
+  },
+  "zoom-read-all": {
+    "method": {
+      "const": "GET"
+    }
+  },
+  "zoom-write-all": {
+    "method": {
+      "enum": ["POST", "PUT", "PATCH", "DELETE"]
+    }
+  },
+  "zoom-read-meetings": {
+    "method": {
+      "const": "GET"
+    },
+    "path": {
+      "type": "string",
+      "pattern": "^/v[0-9]+/(meetings|past_meetings|live_meetings|users/[^/]+/meetings|users/[^/]+/upcoming_meetings)(/.*)?$"
+    }
+  },
+  "zoom-write-meetings": {
+    "method": {
+      "enum": ["POST", "PUT", "PATCH", "DELETE"]
+    },
+    "path": {
+      "type": "string",
+      "pattern": "^/v[0-9]+/(meetings|past_meetings|live_meetings|users/[^/]+/meetings|users/[^/]+/upcoming_meetings)(/.*)?$"
+    }
+  },
+  "zoom-read-webinars": {
+    "method": {
+      "const": "GET"
+    },
+    "path": {
+      "type": "string",
+      "pattern": "^/v[0-9]+/(webinars|past_webinars|live_webinars|users/[^/]+/webinars)(/.*)?$"
+    }
+  },
+  "zoom-write-webinars": {
+    "method": {
+      "enum": ["POST", "PUT", "PATCH", "DELETE"]
+    },
+    "path": {
+      "type": "string",
+      "pattern": "^/v[0-9]+/(webinars|past_webinars|live_webinars|users/[^/]+/webinars)(/.*)?$"
+    }
+  },
+  "zoom-read-recordings": {
+    "method": {
+      "const": "GET"
+    },
+    "path": {
+      "type": "string",
+      "pattern": "^/v[0-9]+/(meetings/[^/]+/recordings|users/[^/]+/recordings)(/.*)?$"
+    }
+  },
+  "zoom-write-recordings": {
+    "method": {
+      "enum": ["POST", "PUT", "PATCH", "DELETE"]
+    },
+    "path": {
+      "type": "string",
+      "pattern": "^/v[0-9]+/(meetings/[^/]+/recordings|users/[^/]+/recordings)(/.*)?$"
+    }
+  },
+  "zoom-read-reports": {
+    "method": {
+      "const": "GET"
+    },
+    "path": {
+      "type": "string",
+      "pattern": "^/v[0-9]+/report(/.*)?$"
+    }
+  },
+  "zoom-read-users": {
+    "method": {
+      "const": "GET"
+    },
+    "path": {
+      "type": "string",
+      "pattern": "^/v[0-9]+/users(/.*)?$"
+    }
+  },
+  "zoom-write-users": {
+    "method": {
+      "enum": ["POST", "PUT", "PATCH", "DELETE"]
+    },
+    "path": {
+      "type": "string",
+      "pattern": "^/v[0-9]+/users(/.*)?$"
+    }
+  }
+}
