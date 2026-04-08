@@ -1,0 +1,179 @@
+{
+  "stripe": {
+    "domain": {
+      "const": "api.stripe.com"
+    }
+  },
+  "stripe-read-all": {
+    "method": {
+      "const": "GET"
+    }
+  },
+  "stripe-write-all": {
+    "method": {
+      "enum": ["POST", "PUT", "PATCH", "DELETE"]
+    }
+  },
+  "stripe-read-customers": {
+    "method": {
+      "const": "GET"
+    },
+    "path": {
+      "type": "string",
+      "pattern": "^/v1/customers(/.*)?$"
+    }
+  },
+  "stripe-write-customers": {
+    "method": {
+      "enum": ["POST", "PUT", "PATCH", "DELETE"]
+    },
+    "path": {
+      "type": "string",
+      "pattern": "^/v1/customers(/.*)?$"
+    }
+  },
+  "stripe-read-payments": {
+    "method": {
+      "const": "GET"
+    },
+    "path": {
+      "type": "string",
+      "pattern": "^/v1/(charges|payment_intents|setup_intents|setup_attempts)(/.*)?$"
+    }
+  },
+  "stripe-write-payments": {
+    "method": {
+      "enum": ["POST", "PUT", "PATCH", "DELETE"]
+    },
+    "path": {
+      "type": "string",
+      "pattern": "^/v1/(charges|payment_intents|setup_intents)(/.*)?$"
+    }
+  },
+  "stripe-read-subscriptions": {
+    "method": {
+      "const": "GET"
+    },
+    "path": {
+      "type": "string",
+      "pattern": "^/v1/(subscriptions|subscription_items|subscription_schedules)(/.*)?$"
+    }
+  },
+  "stripe-write-subscriptions": {
+    "method": {
+      "enum": ["POST", "PUT", "PATCH", "DELETE"]
+    },
+    "path": {
+      "type": "string",
+      "pattern": "^/v1/(subscriptions|subscription_items|subscription_schedules)(/.*)?$"
+    }
+  },
+  "stripe-read-invoices": {
+    "method": {
+      "const": "GET"
+    },
+    "path": {
+      "type": "string",
+      "pattern": "^/v1/(invoices|invoiceitems)(/.*)?$"
+    }
+  },
+  "stripe-write-invoices": {
+    "method": {
+      "enum": ["POST", "PUT", "PATCH", "DELETE"]
+    },
+    "path": {
+      "type": "string",
+      "pattern": "^/v1/(invoices|invoiceitems)(/.*)?$"
+    }
+  },
+  "stripe-read-products": {
+    "method": {
+      "const": "GET"
+    },
+    "path": {
+      "type": "string",
+      "pattern": "^/v1/(products|prices)(/.*)?$"
+    }
+  },
+  "stripe-write-products": {
+    "method": {
+      "enum": ["POST", "PUT", "PATCH", "DELETE"]
+    },
+    "path": {
+      "type": "string",
+      "pattern": "^/v1/(products|prices)(/.*)?$"
+    }
+  },
+  "stripe-read-balance": {
+    "method": {
+      "const": "GET"
+    },
+    "path": {
+      "type": "string",
+      "pattern": "^/v1/(balance|balance_transactions)(/.*)?$"
+    }
+  },
+  "stripe-read-refunds": {
+    "method": {
+      "const": "GET"
+    },
+    "path": {
+      "type": "string",
+      "pattern": "^/v1/refunds(/.*)?$"
+    }
+  },
+  "stripe-write-refunds": {
+    "method": {
+      "enum": ["POST", "PUT", "PATCH", "DELETE"]
+    },
+    "path": {
+      "type": "string",
+      "pattern": "^/v1/refunds(/.*)?$"
+    }
+  },
+  "stripe-read-disputes": {
+    "method": {
+      "const": "GET"
+    },
+    "path": {
+      "type": "string",
+      "pattern": "^/v1/disputes(/.*)?$"
+    }
+  },
+  "stripe-write-disputes": {
+    "method": {
+      "enum": ["POST", "PUT", "PATCH", "DELETE"]
+    },
+    "path": {
+      "type": "string",
+      "pattern": "^/v1/disputes(/.*)?$"
+    }
+  },
+  "stripe-read-payouts": {
+    "method": {
+      "const": "GET"
+    },
+    "path": {
+      "type": "string",
+      "pattern": "^/v1/payouts(/.*)?$"
+    }
+  },
+  "stripe-write-payouts": {
+    "method": {
+      "enum": ["POST", "PUT", "PATCH", "DELETE"]
+    },
+    "path": {
+      "type": "string",
+      "pattern": "^/v1/payouts(/.*)?$"
+    }
+  },
+  "stripe-read-events": {
+    "method": {
+      "const": "GET"
+    },
+    "path": {
+      "type": "string",
+      "pattern": "^/v1/events(/.*)?$"
+    }
+  }
+}
