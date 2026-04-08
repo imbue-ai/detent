@@ -1,0 +1,89 @@
+{
+  "umami": {
+    "domain": {
+      "const": "api.umami.is"
+    }
+  },
+  "umami-read-all": {
+    "method": {
+      "const": "GET"
+    }
+  },
+  "umami-write-all": {
+    "method": {
+      "enum": ["POST", "PUT", "PATCH", "DELETE"]
+    }
+  },
+  "umami-read-websites": {
+    "method": {
+      "const": "GET"
+    },
+    "path": {
+      "type": "string",
+      "pattern": "^/v[0-9]+/websites(/[^/]+)?$"
+    }
+  },
+  "umami-write-websites": {
+    "method": {
+      "enum": ["POST", "PUT", "PATCH", "DELETE"]
+    },
+    "path": {
+      "type": "string",
+      "pattern": "^/v[0-9]+/websites(/.*)?$"
+    }
+  },
+  "umami-read-stats": {
+    "method": {
+      "const": "GET"
+    },
+    "path": {
+      "type": "string",
+      "pattern": "^/v[0-9]+/websites/[^/]+/(active|daterange|events|event-data|metrics|pageviews|stats|sessions|session-data)(/.*)?$"
+    }
+  },
+  "umami-read-reports": {
+    "method": {
+      "const": "GET"
+    },
+    "path": {
+      "type": "string",
+      "pattern": "^/v[0-9]+/reports(/.*)?$"
+    }
+  },
+  "umami-write-reports": {
+    "method": {
+      "enum": ["POST", "PUT", "PATCH", "DELETE"]
+    },
+    "path": {
+      "type": "string",
+      "pattern": "^/v[0-9]+/reports(/.*)?$"
+    }
+  },
+  "umami-read-teams": {
+    "method": {
+      "const": "GET"
+    },
+    "path": {
+      "type": "string",
+      "pattern": "^/v[0-9]+/teams(/.*)?$"
+    }
+  },
+  "umami-write-teams": {
+    "method": {
+      "enum": ["POST", "PUT", "PATCH", "DELETE"]
+    },
+    "path": {
+      "type": "string",
+      "pattern": "^/v[0-9]+/teams(/.*)?$"
+    }
+  },
+  "umami-read-me": {
+    "method": {
+      "const": "GET"
+    },
+    "path": {
+      "type": "string",
+      "pattern": "^/v[0-9]+/me(/.*)?$"
+    }
+  }
+}
