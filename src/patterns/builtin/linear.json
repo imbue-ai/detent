@@ -1,0 +1,82 @@
+{
+  "linear": {
+    "domain": {
+      "const": "api.linear.app"
+    }
+  },
+  "linear-read-all": {
+    "body": {
+      "type": "string",
+      "pattern": "\"query\"\\s*:\\s*\"(?!(\\s|\\\\[nrt])*mutation)"
+    }
+  },
+  "linear-write-all": {
+    "body": {
+      "type": "string",
+      "pattern": "\"query\"\\s*:\\s*\"(\\s|\\\\[nrt])*mutation"
+    }
+  },
+  "linear-read-issues": {
+    "body": {
+      "type": "string",
+      "allOf": [
+        { "pattern": "\"query\"\\s*:\\s*\"(?!(\\s|\\\\[nrt])*mutation)" },
+        { "pattern": "\\bissues?[\\s({]|\\bissueSearch[\\s({]" }
+      ]
+    }
+  },
+  "linear-write-issues": {
+    "body": {
+      "type": "string",
+      "allOf": [
+        { "pattern": "\"query\"\\s*:\\s*\"(\\s|\\\\[nrt])*mutation" },
+        { "pattern": "\\bissue(Create|Update|Delete|Archive|Unarchive|BatchUpdate)[\\s({]" }
+      ]
+    }
+  },
+  "linear-read-projects": {
+    "body": {
+      "type": "string",
+      "allOf": [
+        { "pattern": "\"query\"\\s*:\\s*\"(?!(\\s|\\\\[nrt])*mutation)" },
+        { "pattern": "\\bprojects?[\\s({]" }
+      ]
+    }
+  },
+  "linear-write-projects": {
+    "body": {
+      "type": "string",
+      "allOf": [
+        { "pattern": "\"query\"\\s*:\\s*\"(\\s|\\\\[nrt])*mutation" },
+        { "pattern": "\\bproject(Create|Update|Delete|Archive|Unarchive)[\\s({]" }
+      ]
+    }
+  },
+  "linear-read-comments": {
+    "body": {
+      "type": "string",
+      "allOf": [
+        { "pattern": "\"query\"\\s*:\\s*\"(?!(\\s|\\\\[nrt])*mutation)" },
+        { "pattern": "\\bcomments?[\\s({]" }
+      ]
+    }
+  },
+  "linear-write-comments": {
+    "body": {
+      "type": "string",
+      "allOf": [
+        { "pattern": "\"query\"\\s*:\\s*\"(\\s|\\\\[nrt])*mutation" },
+        { "pattern": "\\bcomment(Create|Update|Delete)[\\s({]" }
+      ]
+    }
+  },
+  "linear-read-viewer": {
+    "body": {
+      "type": "string",
+      "allOf": [
+        { "pattern": "\"query\"\\s*:\\s*\"(?!(\\s|\\\\[nrt])*mutation)" },
+        { "pattern": "\\bviewer[\\s({]" }
+      ]
+    }
+  }
+}
