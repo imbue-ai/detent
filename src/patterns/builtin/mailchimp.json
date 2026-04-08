@@ -1,0 +1,135 @@
+{
+  "mailchimp": {
+    "domain": {
+      "type": "string",
+      "pattern": "^([^.]+\\.)?api\\.mailchimp\\.com$"
+    }
+  },
+  "mailchimp-read-all": {
+    "method": {
+      "const": "GET"
+    }
+  },
+  "mailchimp-write-all": {
+    "method": {
+      "enum": ["POST", "PUT", "PATCH", "DELETE"]
+    }
+  },
+  "mailchimp-read-campaigns": {
+    "method": {
+      "const": "GET"
+    },
+    "path": {
+      "type": "string",
+      "pattern": "^/[0-9.]+/campaigns(/.*)?$"
+    }
+  },
+  "mailchimp-write-campaigns": {
+    "method": {
+      "enum": ["POST", "PUT", "PATCH", "DELETE"]
+    },
+    "path": {
+      "type": "string",
+      "pattern": "^/[0-9.]+/campaigns(/.*)?$"
+    }
+  },
+  "mailchimp-read-lists": {
+    "method": {
+      "const": "GET"
+    },
+    "path": {
+      "type": "string",
+      "pattern": "^/[0-9.]+/lists(/.*)?$"
+    }
+  },
+  "mailchimp-write-lists": {
+    "method": {
+      "enum": ["POST", "PUT", "PATCH", "DELETE"]
+    },
+    "path": {
+      "type": "string",
+      "pattern": "^/[0-9.]+/lists(/.*)?$"
+    }
+  },
+  "mailchimp-read-templates": {
+    "method": {
+      "const": "GET"
+    },
+    "path": {
+      "type": "string",
+      "pattern": "^/[0-9.]+/templates(/.*)?$"
+    }
+  },
+  "mailchimp-write-templates": {
+    "method": {
+      "enum": ["POST", "PUT", "PATCH", "DELETE"]
+    },
+    "path": {
+      "type": "string",
+      "pattern": "^/[0-9.]+/templates(/.*)?$"
+    }
+  },
+  "mailchimp-read-automations": {
+    "method": {
+      "const": "GET"
+    },
+    "path": {
+      "type": "string",
+      "pattern": "^/[0-9.]+/automations(/.*)?$"
+    }
+  },
+  "mailchimp-write-automations": {
+    "method": {
+      "enum": ["POST", "PUT", "PATCH", "DELETE"]
+    },
+    "path": {
+      "type": "string",
+      "pattern": "^/[0-9.]+/automations(/.*)?$"
+    }
+  },
+  "mailchimp-read-reports": {
+    "method": {
+      "const": "GET"
+    },
+    "path": {
+      "type": "string",
+      "pattern": "^/[0-9.]+/reports(/.*)?$"
+    }
+  },
+  "mailchimp-read-file-manager": {
+    "method": {
+      "const": "GET"
+    },
+    "path": {
+      "type": "string",
+      "pattern": "^/[0-9.]+/file-manager(/.*)?$"
+    }
+  },
+  "mailchimp-write-file-manager": {
+    "method": {
+      "enum": ["POST", "PUT", "PATCH", "DELETE"]
+    },
+    "path": {
+      "type": "string",
+      "pattern": "^/[0-9.]+/file-manager(/.*)?$"
+    }
+  },
+  "mailchimp-read-ecommerce": {
+    "method": {
+      "const": "GET"
+    },
+    "path": {
+      "type": "string",
+      "pattern": "^/[0-9.]+/ecommerce(/.*)?$"
+    }
+  },
+  "mailchimp-write-ecommerce": {
+    "method": {
+      "enum": ["POST", "PUT", "PATCH", "DELETE"]
+    },
+    "path": {
+      "type": "string",
+      "pattern": "^/[0-9.]+/ecommerce(/.*)?$"
+    }
+  }
+}
