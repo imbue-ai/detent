@@ -1,0 +1,89 @@
+{
+  "sentry": {
+    "domain": {
+      "const": "sentry.io"
+    }
+  },
+  "sentry-read-all": {
+    "method": {
+      "const": "GET"
+    }
+  },
+  "sentry-write-all": {
+    "method": {
+      "enum": ["POST", "PUT", "PATCH", "DELETE"]
+    }
+  },
+  "sentry-read-issues": {
+    "method": {
+      "const": "GET"
+    },
+    "path": {
+      "type": "string",
+      "pattern": "^/api/0/(issues|organizations/[^/]+/issues|projects/[^/]+/[^/]+/(issues|events))(/.*)?$"
+    }
+  },
+  "sentry-write-issues": {
+    "method": {
+      "enum": ["POST", "PUT", "PATCH", "DELETE"]
+    },
+    "path": {
+      "type": "string",
+      "pattern": "^/api/0/(issues|organizations/[^/]+/issues|projects/[^/]+/[^/]+/issues)(/.*)?$"
+    }
+  },
+  "sentry-read-projects": {
+    "method": {
+      "const": "GET"
+    },
+    "path": {
+      "type": "string",
+      "pattern": "^/api/0/projects(/.*)?$"
+    }
+  },
+  "sentry-write-projects": {
+    "method": {
+      "enum": ["POST", "PUT", "PATCH", "DELETE"]
+    },
+    "path": {
+      "type": "string",
+      "pattern": "^/api/0/(projects|teams/[^/]+/[^/]+/projects)(/.*)?$"
+    }
+  },
+  "sentry-read-organizations": {
+    "method": {
+      "const": "GET"
+    },
+    "path": {
+      "type": "string",
+      "pattern": "^/api/0/organizations(/[^/]+)?/?$"
+    }
+  },
+  "sentry-read-teams": {
+    "method": {
+      "const": "GET"
+    },
+    "path": {
+      "type": "string",
+      "pattern": "^/api/0/(teams|organizations/[^/]+/teams)(/.*)?$"
+    }
+  },
+  "sentry-read-releases": {
+    "method": {
+      "const": "GET"
+    },
+    "path": {
+      "type": "string",
+      "pattern": "^/api/0/(organizations/[^/]+/releases|projects/[^/]+/[^/]+/releases)(/.*)?$"
+    }
+  },
+  "sentry-write-releases": {
+    "method": {
+      "enum": ["POST", "PUT", "PATCH", "DELETE"]
+    },
+    "path": {
+      "type": "string",
+      "pattern": "^/api/0/(organizations/[^/]+/releases|projects/[^/]+/[^/]+/releases)(/.*)?$"
+    }
+  }
+}
