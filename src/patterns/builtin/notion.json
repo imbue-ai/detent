@@ -1,0 +1,116 @@
+{
+  "notion": {
+    "domain": {
+      "const": "api.notion.com"
+    }
+  },
+  "notion-read-all": {
+    "method": {
+      "const": "GET"
+    }
+  },
+  "notion-write-all": {
+    "method": {
+      "enum": ["POST", "PUT", "PATCH", "DELETE"]
+    }
+  },
+  "notion-read-pages": {
+    "method": {
+      "const": "GET"
+    },
+    "path": {
+      "type": "string",
+      "pattern": "^/v1/pages(/.*)?$"
+    }
+  },
+  "notion-write-pages": {
+    "method": {
+      "enum": ["POST", "PATCH"]
+    },
+    "path": {
+      "type": "string",
+      "pattern": "^/v1/pages(/.*)?$"
+    }
+  },
+  "notion-read-blocks": {
+    "method": {
+      "const": "GET"
+    },
+    "path": {
+      "type": "string",
+      "pattern": "^/v1/blocks(/.*)?$"
+    }
+  },
+  "notion-write-blocks": {
+    "method": {
+      "enum": ["PATCH", "DELETE"]
+    },
+    "path": {
+      "type": "string",
+      "pattern": "^/v1/blocks(/.*)?$"
+    }
+  },
+  "notion-read-databases": {
+    "method": {
+      "const": "GET"
+    },
+    "path": {
+      "type": "string",
+      "pattern": "^/v1/databases(/.*)?$"
+    }
+  },
+  "notion-write-databases": {
+    "method": {
+      "enum": ["POST", "PATCH"]
+    },
+    "path": {
+      "type": "string",
+      "pattern": "^/v1/databases(/.*)?$"
+    }
+  },
+  "notion-query-databases": {
+    "method": {
+      "const": "POST"
+    },
+    "path": {
+      "type": "string",
+      "pattern": "^/v1/databases/[^/]+/query$"
+    }
+  },
+  "notion-read-users": {
+    "method": {
+      "const": "GET"
+    },
+    "path": {
+      "type": "string",
+      "pattern": "^/v1/users(/.*)?$"
+    }
+  },
+  "notion-read-comments": {
+    "method": {
+      "const": "GET"
+    },
+    "path": {
+      "type": "string",
+      "pattern": "^/v1/comments(/.*)?$"
+    }
+  },
+  "notion-write-comments": {
+    "method": {
+      "const": "POST"
+    },
+    "path": {
+      "type": "string",
+      "pattern": "^/v1/comments$"
+    }
+  },
+  "notion-search": {
+    "method": {
+      "const": "POST"
+    },
+    "path": {
+      "type": "string",
+      "pattern": "^/v1/search$"
+    }
+  }
+}
