@@ -1,0 +1,53 @@
+{
+  "google-docs": {
+    "domain": {
+      "const": "docs.googleapis.com"
+    }
+  },
+  "google-docs-read-all": {
+    "method": {
+      "const": "GET"
+    }
+  },
+  "google-docs-write-all": {
+    "method": {
+      "enum": ["POST", "PUT", "PATCH", "DELETE"]
+    }
+  },
+  "google-docs-read-documents": {
+    "method": {
+      "const": "GET"
+    },
+    "path": {
+      "type": "string",
+      "pattern": "^/v[0-9]+/documents/[^/]+$"
+    }
+  },
+  "google-docs-write-documents": {
+    "method": {
+      "enum": ["POST", "PUT", "PATCH", "DELETE"]
+    },
+    "path": {
+      "type": "string",
+      "pattern": "^/v[0-9]+/documents(/.*)?$"
+    }
+  },
+  "google-docs-create-documents": {
+    "method": {
+      "const": "POST"
+    },
+    "path": {
+      "type": "string",
+      "pattern": "^/v[0-9]+/documents$"
+    }
+  },
+  "google-docs-update-documents": {
+    "method": {
+      "const": "POST"
+    },
+    "path": {
+      "type": "string",
+      "pattern": "^/v[0-9]+/documents/[^/]+:batchUpdate$"
+    }
+  }
+}
