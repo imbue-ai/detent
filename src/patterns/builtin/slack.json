@@ -1,0 +1,61 @@
+{
+  "slack": {
+    "domain": {
+      "const": "slack.com"
+    }
+  },
+  "slack-chat": {
+    "path": {
+      "type": "string",
+      "pattern": "^/api/chat\\..+$"
+    }
+  },
+  "slack-conversations": {
+    "path": {
+      "type": "string",
+      "pattern": "^/api/conversations\\..+$"
+    }
+  },
+  "slack-users": {
+    "path": {
+      "type": "string",
+      "pattern": "^/api/users\\..+$"
+    }
+  },
+  "slack-files": {
+    "path": {
+      "type": "string",
+      "pattern": "^/api/files\\..+$"
+    }
+  },
+  "slack-reactions": {
+    "path": {
+      "type": "string",
+      "pattern": "^/api/reactions\\..+$"
+    }
+  },
+  "slack-search": {
+    "path": {
+      "type": "string",
+      "pattern": "^/api/search\\..+$"
+    }
+  },
+  "slack-pins": {
+    "path": {
+      "type": "string",
+      "pattern": "^/api/pins\\..+$"
+    }
+  },
+  "slack-bookmarks": {
+    "path": {
+      "type": "string",
+      "pattern": "^/api/bookmarks\\..+$"
+    }
+  },
+  "slack-reminders": {
+    "path": {
+      "type": "string",
+      "pattern": "^/api/reminders\\..+$"
+    }
+  }
+}
