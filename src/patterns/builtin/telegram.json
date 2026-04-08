@@ -1,0 +1,49 @@
+{
+  "telegram": {
+    "domain": {
+      "const": "api.telegram.org"
+    }
+  },
+  "telegram-send-messages": {
+    "path": {
+      "type": "string",
+      "pattern": "^/(bot[^/]+/)?(sendMessage|sendPhoto|sendAudio|sendDocument|sendVideo|sendAnimation|sendVoice|sendVideoNote|sendPaidMedia|sendMediaGroup|sendLocation|sendVenue|sendContact|sendPoll|sendChecklist|sendDice|sendMessageDraft|sendChatAction|forwardMessage|forwardMessages|copyMessage|copyMessages)$"
+    }
+  },
+  "telegram-manage-messages": {
+    "path": {
+      "type": "string",
+      "pattern": "^/(bot[^/]+/)?(editMessageText|editMessageCaption|editMessageMedia|editMessageLiveLocation|editMessageChecklist|editMessageReplyMarkup|stopMessageLiveLocation|stopPoll|setMessageReaction|deleteMessage|deleteMessages)$"
+    }
+  },
+  "telegram-updates": {
+    "path": {
+      "type": "string",
+      "pattern": "^/(bot[^/]+/)?(getUpdates|setWebhook|deleteWebhook|getWebhookInfo)$"
+    }
+  },
+  "telegram-manage-chats": {
+    "path": {
+      "type": "string",
+      "pattern": "^/(bot[^/]+/)?(banChatMember|unbanChatMember|restrictChatMember|promoteChatMember|setChatAdministratorCustomTitle|setChatMemberTag|banChatSenderChat|unbanChatSenderChat|setChatPermissions|exportChatInviteLink|createChatInviteLink|editChatInviteLink|createChatSubscriptionInviteLink|editChatSubscriptionInviteLink|revokeChatInviteLink|approveChatJoinRequest|declineChatJoinRequest|setChatPhoto|deleteChatPhoto|setChatTitle|setChatDescription|pinChatMessage|unpinChatMessage|unpinAllChatMessages|leaveChat|getChat|getChatAdministrators|getChatMemberCount|getChatMember|setChatStickerSet|deleteChatStickerSet|getForumTopicIconStickers|createForumTopic|editForumTopic|closeForumTopic|reopenForumTopic|deleteForumTopic|unpinAllForumTopicMessages|editGeneralForumTopic|closeGeneralForumTopic|reopenGeneralForumTopic|hideGeneralForumTopic|unhideGeneralForumTopic|unpinAllGeneralForumTopicMessages|answerCallbackQuery|getUserChatBoosts|getBusinessConnection)$"
+    }
+  },
+  "telegram-bot-info": {
+    "path": {
+      "type": "string",
+      "pattern": "^/(bot[^/]+/)?(getMe|logOut|close|setMyCommands|deleteMyCommands|getMyCommands|setMyName|getMyName|setMyDescription|getMyDescription|setMyShortDescription|getMyShortDescription|setMyProfilePhoto|removeMyProfilePhoto|setChatMenuButton|getChatMenuButton|setMyDefaultAdministratorRights|getMyDefaultAdministratorRights|getManagedBotToken|replaceManagedBotToken)$"
+    }
+  },
+  "telegram-stickers": {
+    "path": {
+      "type": "string",
+      "pattern": "^/(bot[^/]+/)?(sendSticker|getStickerSet|getCustomEmojiStickers|uploadStickerFile|createNewStickerSet|addStickerToSet|setStickerPositionInSet|deleteStickerFromSet|replaceStickerInSet|setStickerEmojiList|setStickerKeywords|setStickerMaskPosition|setStickerSetTitle|setStickerSetThumbnail|setCustomEmojiStickerSetThumbnail|deleteStickerSet)$"
+    }
+  },
+  "telegram-payments": {
+    "path": {
+      "type": "string",
+      "pattern": "^/(bot[^/]+/)?(sendInvoice|createInvoiceLink|answerShippingQuery|answerPreCheckoutQuery|getMyStarBalance|getStarTransactions|refundStarPayment|editUserStarSubscription)$"
+    }
+  }
+}
