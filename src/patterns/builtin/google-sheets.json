@@ -1,0 +1,71 @@
+{
+  "google-sheets": {
+    "domain": {
+      "enum": ["sheets.googleapis.com", "drive.googleapis.com"]
+    }
+  },
+  "google-sheets-read-all": {
+    "method": {
+      "const": "GET"
+    }
+  },
+  "google-sheets-write-all": {
+    "method": {
+      "enum": ["POST", "PUT", "PATCH", "DELETE"]
+    }
+  },
+  "google-sheets-read-spreadsheets": {
+    "method": {
+      "const": "GET"
+    },
+    "path": {
+      "type": "string",
+      "pattern": "^/v[0-9]+/spreadsheets/[^/]+$"
+    }
+  },
+  "google-sheets-create-spreadsheets": {
+    "method": {
+      "const": "POST"
+    },
+    "path": {
+      "type": "string",
+      "pattern": "^/v[0-9]+/spreadsheets$"
+    }
+  },
+  "google-sheets-update-spreadsheets": {
+    "method": {
+      "const": "POST"
+    },
+    "path": {
+      "type": "string",
+      "pattern": "^/v[0-9]+/spreadsheets/[^/:]+:batchUpdate$"
+    }
+  },
+  "google-sheets-read-values": {
+    "method": {
+      "const": "GET"
+    },
+    "path": {
+      "type": "string",
+      "pattern": "^/v[0-9]+/spreadsheets/[^/]+/values(/.+|:.+)$"
+    }
+  },
+  "google-sheets-write-values": {
+    "method": {
+      "enum": ["POST", "PUT"]
+    },
+    "path": {
+      "type": "string",
+      "pattern": "^/v[0-9]+/spreadsheets/[^/]+/values(/.+|:.+)$"
+    }
+  },
+  "google-sheets-list-files": {
+    "method": {
+      "const": "GET"
+    },
+    "path": {
+      "type": "string",
+      "pattern": "^/drive/v[0-9]+/files(/[^/]+)?$"
+    }
+  }
+}
