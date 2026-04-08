@@ -1,0 +1,122 @@
+{
+  "coolify": {
+    "domain": {
+      "const": "app.coolify.io"
+    }
+  },
+  "coolify-read-all": {
+    "method": {
+      "const": "GET"
+    }
+  },
+  "coolify-write-all": {
+    "method": {
+      "enum": ["POST", "PUT", "PATCH", "DELETE"]
+    }
+  },
+  "coolify-read-applications": {
+    "method": {
+      "const": "GET"
+    },
+    "path": {
+      "type": "string",
+      "pattern": "^/api/v[0-9]+/applications(/.*)?$"
+    }
+  },
+  "coolify-write-applications": {
+    "method": {
+      "enum": ["POST", "PUT", "PATCH", "DELETE"]
+    },
+    "path": {
+      "type": "string",
+      "pattern": "^/api/v[0-9]+/applications(/.*)?$"
+    }
+  },
+  "coolify-deployments": {
+    "path": {
+      "type": "string",
+      "pattern": "^/api/v[0-9]+/deploy(ments)?(/.*)?$"
+    }
+  },
+  "coolify-read-databases": {
+    "method": {
+      "const": "GET"
+    },
+    "path": {
+      "type": "string",
+      "pattern": "^/api/v[0-9]+/databases(/.*)?$"
+    }
+  },
+  "coolify-write-databases": {
+    "method": {
+      "enum": ["POST", "PUT", "PATCH", "DELETE"]
+    },
+    "path": {
+      "type": "string",
+      "pattern": "^/api/v[0-9]+/databases(/.*)?$"
+    }
+  },
+  "coolify-read-servers": {
+    "method": {
+      "const": "GET"
+    },
+    "path": {
+      "type": "string",
+      "pattern": "^/api/v[0-9]+/servers(/.*)?$"
+    }
+  },
+  "coolify-write-servers": {
+    "method": {
+      "enum": ["POST", "PUT", "PATCH", "DELETE"]
+    },
+    "path": {
+      "type": "string",
+      "pattern": "^/api/v[0-9]+/servers(/.*)?$"
+    }
+  },
+  "coolify-read-services": {
+    "method": {
+      "const": "GET"
+    },
+    "path": {
+      "type": "string",
+      "pattern": "^/api/v[0-9]+/services(/.*)?$"
+    }
+  },
+  "coolify-write-services": {
+    "method": {
+      "enum": ["POST", "PUT", "PATCH", "DELETE"]
+    },
+    "path": {
+      "type": "string",
+      "pattern": "^/api/v[0-9]+/services(/.*)?$"
+    }
+  },
+  "coolify-read-projects": {
+    "method": {
+      "const": "GET"
+    },
+    "path": {
+      "type": "string",
+      "pattern": "^/api/v[0-9]+/projects(/.*)?$"
+    }
+  },
+  "coolify-write-projects": {
+    "method": {
+      "enum": ["POST", "PUT", "PATCH", "DELETE"]
+    },
+    "path": {
+      "type": "string",
+      "pattern": "^/api/v[0-9]+/projects(/.*)?$"
+    }
+  },
+  "coolify-read-teams": {
+    "method": {
+      "const": "GET"
+    },
+    "path": {
+      "type": "string",
+      "pattern": "^/api/v[0-9]+/teams(/.*)?$"
+    }
+  }
+}
