@@ -1,0 +1,35 @@
+{
+  "google-directions": {
+    "domain": {
+      "const": "routes.googleapis.com"
+    }
+  },
+  "google-directions-read-all": {
+    "method": {
+      "const": "GET"
+    }
+  },
+  "google-directions-write-all": {
+    "method": {
+      "enum": ["POST", "PUT", "PATCH", "DELETE"]
+    }
+  },
+  "google-directions-compute-routes": {
+    "method": {
+      "const": "POST"
+    },
+    "path": {
+      "type": "string",
+      "pattern": "^/directions/v[0-9]+:computeRoutes$"
+    }
+  },
+  "google-directions-compute-route-matrix": {
+    "method": {
+      "const": "POST"
+    },
+    "path": {
+      "type": "string",
+      "pattern": "^/distanceMatrix/v[0-9]+:computeRouteMatrix$"
+    }
+  }
+}
