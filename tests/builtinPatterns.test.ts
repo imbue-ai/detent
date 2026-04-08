@@ -20,6 +20,199 @@ function expectPatternExists(name: string) {
   expect(builtinPatterns[name], `Expected builtin pattern "${name}" to exist`).toBeDefined();
 }
 
+describe('builtin patterns: aws', () => {
+  it('aws scope matches regional endpoints', () => {
+    expectPatternExists('aws');
+    expect(builtinPatterns.aws!.match(makeRequest({ domain: 'ec2.us-east-1.amazonaws.com' }))).toBe(
+      true
+    );
+    expect(builtinPatterns.aws!.match(makeRequest({ domain: 's3.us-west-2.amazonaws.com' }))).toBe(
+      true
+    );
+  });
+
+  it('aws scope matches global endpoints without region', () => {
+    expect(builtinPatterns.aws!.match(makeRequest({ domain: 'ec2.amazonaws.com' }))).toBe(true);
+    expect(builtinPatterns.aws!.match(makeRequest({ domain: 'iam.amazonaws.com' }))).toBe(true);
+  });
+
+  it('aws scope rejects unrelated domains', () => {
+    expect(builtinPatterns.aws!.match(makeRequest({ domain: 'amazonaws.example.com' }))).toBe(
+      false
+    );
+  });
+
+  it('aws-read-all matches GET and HEAD but not POST', () => {
+    expectPatternExists('aws-read-all');
+    expect(builtinPatterns['aws-read-all']!.match(makeRequest({ method: 'GET' }))).toBe(true);
+    expect(builtinPatterns['aws-read-all']!.match(makeRequest({ method: 'HEAD' }))).toBe(true);
+    expect(builtinPatterns['aws-read-all']!.match(makeRequest({ method: 'POST' }))).toBe(false);
+  });
+
+  it('aws-write-all matches POST, PUT, PATCH, DELETE but not GET', () => {
+    expectPatternExists('aws-write-all');
+    expect(builtinPatterns['aws-write-all']!.match(makeRequest({ method: 'POST' }))).toBe(true);
+    expect(builtinPatterns['aws-write-all']!.match(makeRequest({ method: 'DELETE' }))).toBe(true);
+    expect(builtinPatterns['aws-write-all']!.match(makeRequest({ method: 'GET' }))).toBe(false);
+  });
+
+  it('service-specific patterns match regional endpoints', () => {
+    const regionalEndpoints: Record<string, string> = {
+      'aws-ec2': 'ec2.us-east-1.amazonaws.com',
+      'aws-lambda': 'lambda.us-west-2.amazonaws.com',
+      'aws-dynamodb': 'dynamodb.eu-west-1.amazonaws.com',
+      'aws-cloudformation': 'cloudformation.us-east-1.amazonaws.com',
+      'aws-logs': 'logs.us-east-1.amazonaws.com',
+      'aws-cloudwatch': 'monitoring.us-east-1.amazonaws.com',
+      'aws-sns': 'sns.us-east-1.amazonaws.com',
+      'aws-sqs': 'sqs.us-east-1.amazonaws.com',
+      'aws-ssm': 'ssm.us-east-1.amazonaws.com',
+      'aws-secretsmanager': 'secretsmanager.us-east-1.amazonaws.com',
+      'aws-ecs': 'ecs.us-east-1.amazonaws.com',
+      'aws-ecr': 'ecr.us-east-1.amazonaws.com',
+      'aws-eks': 'eks.us-east-1.amazonaws.com',
+      'aws-bedrock': 'bedrock.us-east-1.amazonaws.com',
+      'aws-rds': 'rds.us-east-1.amazonaws.com',
+      'aws-kms': 'kms.us-east-1.amazonaws.com',
+      'aws-elb': 'elasticloadbalancing.us-east-1.amazonaws.com',
+      'aws-cloudtrail': 'cloudtrail.us-east-1.amazonaws.com',
+      'aws-eventbridge': 'events.us-east-1.amazonaws.com',
+      'aws-kinesis': 'kinesis.us-east-1.amazonaws.com',
+      'aws-s3': 's3.us-east-1.amazonaws.com',
+      'aws-iam': 'iam.us-east-1.amazonaws.com',
+      'aws-sts': 'sts.us-east-1.amazonaws.com',
+      'aws-route53': 'route53.us-east-1.amazonaws.com',
+      'aws-cloudfront': 'cloudfront.us-east-1.amazonaws.com',
+    };
+
+    for (const [pattern, domain] of Object.entries(regionalEndpoints)) {
+      expectPatternExists(pattern);
+      expect(
+        builtinPatterns[pattern]!.match(makeRequest({ domain })),
+        `Expected "${pattern}" to match regional domain "${domain}"`
+      ).toBe(true);
+    }
+  });
+
+  it('service-specific patterns match global endpoints without region', () => {
+    const globalEndpoints: Record<string, string> = {
+      'aws-ec2': 'ec2.amazonaws.com',
+      'aws-lambda': 'lambda.amazonaws.com',
+      'aws-dynamodb': 'dynamodb.amazonaws.com',
+      'aws-cloudformation': 'cloudformation.amazonaws.com',
+      'aws-logs': 'logs.amazonaws.com',
+      'aws-cloudwatch': 'monitoring.amazonaws.com',
+      'aws-sns': 'sns.amazonaws.com',
+      'aws-sqs': 'sqs.amazonaws.com',
+      'aws-ssm': 'ssm.amazonaws.com',
+      'aws-secretsmanager': 'secretsmanager.amazonaws.com',
+      'aws-ecs': 'ecs.amazonaws.com',
+      'aws-ecr': 'ecr.amazonaws.com',
+      'aws-eks': 'eks.amazonaws.com',
+      'aws-bedrock': 'bedrock.amazonaws.com',
+      'aws-rds': 'rds.amazonaws.com',
+      'aws-kms': 'kms.amazonaws.com',
+      'aws-elb': 'elasticloadbalancing.amazonaws.com',
+      'aws-cloudtrail': 'cloudtrail.amazonaws.com',
+      'aws-eventbridge': 'events.amazonaws.com',
+      'aws-kinesis': 'kinesis.amazonaws.com',
+      'aws-s3': 's3.amazonaws.com',
+      'aws-iam': 'iam.amazonaws.com',
+      'aws-sts': 'sts.amazonaws.com',
+      'aws-route53': 'route53.amazonaws.com',
+      'aws-cloudfront': 'cloudfront.amazonaws.com',
+    };
+
+    for (const [pattern, domain] of Object.entries(globalEndpoints)) {
+      expectPatternExists(pattern);
+      expect(
+        builtinPatterns[pattern]!.match(makeRequest({ domain })),
+        `Expected "${pattern}" to match global domain "${domain}"`
+      ).toBe(true);
+    }
+  });
+
+  it('service-specific patterns match FIPS endpoints', () => {
+    expectPatternExists('aws-ec2');
+    expect(
+      builtinPatterns['aws-ec2']!.match(makeRequest({ domain: 'ec2-fips.us-east-1.amazonaws.com' }))
+    ).toBe(true);
+
+    expectPatternExists('aws-s3');
+    expect(
+      builtinPatterns['aws-s3']!.match(makeRequest({ domain: 's3-fips.us-east-1.amazonaws.com' }))
+    ).toBe(true);
+  });
+
+  it('service-specific patterns reject unrelated services', () => {
+    expect(
+      builtinPatterns['aws-ec2']!.match(makeRequest({ domain: 'lambda.us-east-1.amazonaws.com' }))
+    ).toBe(false);
+    expect(
+      builtinPatterns['aws-lambda']!.match(makeRequest({ domain: 'ec2.us-east-1.amazonaws.com' }))
+    ).toBe(false);
+  });
+
+  it('aws-s3 matches bucket-style domains', () => {
+    expectPatternExists('aws-s3');
+    expect(
+      builtinPatterns['aws-s3']!.match(
+        makeRequest({ domain: 'my-bucket.s3.us-east-1.amazonaws.com' })
+      )
+    ).toBe(true);
+    expect(
+      builtinPatterns['aws-s3']!.match(makeRequest({ domain: 'my-bucket.s3.amazonaws.com' }))
+    ).toBe(true);
+  });
+
+  it('aws-s3-read matches GET to S3 and rejects POST', () => {
+    expectPatternExists('aws-s3-read');
+    expect(
+      builtinPatterns['aws-s3-read']!.match(
+        makeRequest({ domain: 's3.us-east-1.amazonaws.com', method: 'GET' })
+      )
+    ).toBe(true);
+    expect(
+      builtinPatterns['aws-s3-read']!.match(
+        makeRequest({ domain: 's3.us-east-1.amazonaws.com', method: 'POST' })
+      )
+    ).toBe(false);
+  });
+
+  it('aws-s3-write matches POST to S3 and rejects GET', () => {
+    expectPatternExists('aws-s3-write');
+    expect(
+      builtinPatterns['aws-s3-write']!.match(
+        makeRequest({ domain: 's3.us-east-1.amazonaws.com', method: 'PUT' })
+      )
+    ).toBe(true);
+    expect(
+      builtinPatterns['aws-s3-write']!.match(
+        makeRequest({ domain: 's3.us-east-1.amazonaws.com', method: 'GET' })
+      )
+    ).toBe(false);
+  });
+
+  it('aws-ecr matches prefixed domains', () => {
+    expectPatternExists('aws-ecr');
+    expect(
+      builtinPatterns['aws-ecr']!.match(makeRequest({ domain: 'api.ecr.us-east-1.amazonaws.com' }))
+    ).toBe(true);
+    expect(
+      builtinPatterns['aws-ecr']!.match(makeRequest({ domain: 'dkr.ecr.us-east-1.amazonaws.com' }))
+    ).toBe(true);
+  });
+
+  it('aws-bedrock matches runtime subdomain', () => {
+    expectPatternExists('aws-bedrock');
+    expect(
+      builtinPatterns['aws-bedrock']!.match(
+        makeRequest({ domain: 'bedrock-runtime.us-east-1.amazonaws.com' })
+      )
+    ).toBe(true);
+  });
+});
+
 describe('builtin patterns: calendly', () => {
   it('calendly scope matches api.calendly.com', () => {
     expectPatternExists('calendly');

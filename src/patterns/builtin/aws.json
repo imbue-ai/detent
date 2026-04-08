@@ -42,7 +42,7 @@
   "aws-ec2": {
     "domain": {
       "type": "string",
-      "pattern": "^ec2(-[a-z]+)?\\.[a-z0-9.-]+\\.amazonaws\\.com$"
+      "pattern": "^ec2(-[a-z]+)?(\\.[a-z0-9.-]+)?\\.amazonaws\\.com$"
     }
   },
   "aws-iam": {
@@ -60,55 +60,55 @@
   "aws-lambda": {
     "domain": {
       "type": "string",
-      "pattern": "^lambda(-[a-z]+)?\\.[a-z0-9.-]+\\.amazonaws\\.com$"
+      "pattern": "^lambda(-[a-z]+)?(\\.[a-z0-9.-]+)?\\.amazonaws\\.com$"
     }
   },
   "aws-dynamodb": {
     "domain": {
       "type": "string",
-      "pattern": "^dynamodb(-[a-z]+)?\\.[a-z0-9.-]+\\.amazonaws\\.com$"
+      "pattern": "^dynamodb(-[a-z]+)?(\\.[a-z0-9.-]+)?\\.amazonaws\\.com$"
     }
   },
   "aws-cloudformation": {
     "domain": {
       "type": "string",
-      "pattern": "^cloudformation(-[a-z]+)?\\.[a-z0-9.-]+\\.amazonaws\\.com$"
+      "pattern": "^cloudformation(-[a-z]+)?(\\.[a-z0-9.-]+)?\\.amazonaws\\.com$"
     }
   },
   "aws-logs": {
     "domain": {
       "type": "string",
-      "pattern": "^logs(-[a-z]+)?\\.[a-z0-9.-]+\\.amazonaws\\.com$"
+      "pattern": "^logs(-[a-z]+)?(\\.[a-z0-9.-]+)?\\.amazonaws\\.com$"
     }
   },
   "aws-cloudwatch": {
     "domain": {
       "type": "string",
-      "pattern": "^monitoring(-[a-z]+)?\\.[a-z0-9.-]+\\.amazonaws\\.com$"
+      "pattern": "^monitoring(-[a-z]+)?(\\.[a-z0-9.-]+)?\\.amazonaws\\.com$"
     }
   },
   "aws-sns": {
     "domain": {
       "type": "string",
-      "pattern": "^sns(-[a-z]+)?\\.[a-z0-9.-]+\\.amazonaws\\.com$"
+      "pattern": "^sns(-[a-z]+)?(\\.[a-z0-9.-]+)?\\.amazonaws\\.com$"
     }
   },
   "aws-sqs": {
     "domain": {
       "type": "string",
-      "pattern": "^sqs(-[a-z]+)?\\.[a-z0-9.-]+\\.amazonaws\\.com$"
+      "pattern": "^sqs(-[a-z]+)?(\\.[a-z0-9.-]+)?\\.amazonaws\\.com$"
     }
   },
   "aws-ssm": {
     "domain": {
       "type": "string",
-      "pattern": "^ssm(-[a-z]+)?\\.[a-z0-9.-]+\\.amazonaws\\.com$"
+      "pattern": "^ssm(-[a-z]+)?(\\.[a-z0-9.-]+)?\\.amazonaws\\.com$"
     }
   },
   "aws-secretsmanager": {
     "domain": {
       "type": "string",
-      "pattern": "^secretsmanager(-[a-z]+)?\\.[a-z0-9.-]+\\.amazonaws\\.com$"
+      "pattern": "^secretsmanager(-[a-z]+)?(\\.[a-z0-9.-]+)?\\.amazonaws\\.com$"
     }
   },
   "aws-route53": {
@@ -120,25 +120,25 @@
   "aws-ecs": {
     "domain": {
       "type": "string",
-      "pattern": "^ecs(-[a-z]+)?\\.[a-z0-9.-]+\\.amazonaws\\.com$"
+      "pattern": "^ecs(-[a-z]+)?(\\.[a-z0-9.-]+)?\\.amazonaws\\.com$"
     }
   },
   "aws-ecr": {
     "domain": {
       "type": "string",
-      "pattern": "^((api|dkr)\\.)?ecr(-[a-z]+)?\\.[a-z0-9.-]+\\.amazonaws\\.com$"
+      "pattern": "^((api|dkr)\\.)?ecr(-[a-z]+)?(\\.[a-z0-9.-]+)?\\.amazonaws\\.com$"
     }
   },
   "aws-eks": {
     "domain": {
       "type": "string",
-      "pattern": "^eks(-[a-z]+)?\\.[a-z0-9.-]+\\.amazonaws\\.com$"
+      "pattern": "^eks(-[a-z]+)?(\\.[a-z0-9.-]+)?\\.amazonaws\\.com$"
     }
   },
   "aws-bedrock": {
     "domain": {
       "type": "string",
-      "pattern": "^bedrock(-[a-z]+)*\\.[a-z0-9.-]+\\.amazonaws\\.com$"
+      "pattern": "^bedrock(-[a-z]+)*(\\.[a-z0-9.-]+)?\\.amazonaws\\.com$"
     }
   },
   "aws-cloudfront": {
@@ -150,37 +150,37 @@
   "aws-rds": {
     "domain": {
       "type": "string",
-      "pattern": "^rds(-[a-z]+)?\\.[a-z0-9.-]+\\.amazonaws\\.com$"
+      "pattern": "^rds(-[a-z]+)?(\\.[a-z0-9.-]+)?\\.amazonaws\\.com$"
     }
   },
   "aws-kms": {
     "domain": {
       "type": "string",
-      "pattern": "^kms(-[a-z]+)?\\.[a-z0-9.-]+\\.amazonaws\\.com$"
+      "pattern": "^kms(-[a-z]+)?(\\.[a-z0-9.-]+)?\\.amazonaws\\.com$"
     }
   },
   "aws-elb": {
     "domain": {
       "type": "string",
-      "pattern": "^elasticloadbalancing(-[a-z]+)?\\.[a-z0-9.-]+\\.amazonaws\\.com$"
+      "pattern": "^elasticloadbalancing(-[a-z]+)?(\\.[a-z0-9.-]+)?\\.amazonaws\\.com$"
     }
   },
   "aws-cloudtrail": {
     "domain": {
       "type": "string",
-      "pattern": "^cloudtrail(-[a-z]+)?\\.[a-z0-9.-]+\\.amazonaws\\.com$"
+      "pattern": "^cloudtrail(-[a-z]+)?(\\.[a-z0-9.-]+)?\\.amazonaws\\.com$"
     }
   },
   "aws-eventbridge": {
     "domain": {
       "type": "string",
-      "pattern": "^events(-[a-z]+)?\\.[a-z0-9.-]+\\.amazonaws\\.com$"
+      "pattern": "^events(-[a-z]+)?(\\.[a-z0-9.-]+)?\\.amazonaws\\.com$"
     }
   },
   "aws-kinesis": {
     "domain": {
       "type": "string",
-      "pattern": "^kinesis(-[a-z]+)?\\.[a-z0-9.-]+\\.amazonaws\\.com$"
+      "pattern": "^kinesis(-[a-z]+)?(\\.[a-z0-9.-]+)?\\.amazonaws\\.com$"
     }
   }
 }
