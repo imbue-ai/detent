@@ -1,0 +1,80 @@
+{
+  "google-analytics": {
+    "domain": {
+      "enum": ["analyticsdata.googleapis.com", "analyticsadmin.googleapis.com"]
+    }
+  },
+  "google-analytics-read-all": {
+    "method": {
+      "const": "GET"
+    }
+  },
+  "google-analytics-write-all": {
+    "method": {
+      "enum": ["POST", "PUT", "PATCH", "DELETE"]
+    }
+  },
+  "google-analytics-run-reports": {
+    "method": {
+      "const": "POST"
+    },
+    "path": {
+      "type": "string",
+      "pattern": "^/v[0-9]+[a-z]*/(properties|accounts)/[^/]+:(runReport|batchRunReports|runPivotReport|batchRunPivotReports|runRealtimeReport|checkCompatibility|runAccessReport)$"
+    }
+  },
+  "google-analytics-read-metadata": {
+    "method": {
+      "const": "GET"
+    },
+    "path": {
+      "type": "string",
+      "pattern": "^/v[0-9]+[a-z]*/properties/[^/]+/metadata$"
+    }
+  },
+  "google-analytics-read-accounts": {
+    "method": {
+      "const": "GET"
+    },
+    "path": {
+      "type": "string",
+      "pattern": "^/v[0-9]+[a-z]*/(accounts|accountSummaries)(/.*)?$"
+    }
+  },
+  "google-analytics-read-properties": {
+    "method": {
+      "const": "GET"
+    },
+    "path": {
+      "type": "string",
+      "pattern": "^/v[0-9]+[a-z]*/properties(/[^/]+)?$"
+    }
+  },
+  "google-analytics-write-properties": {
+    "method": {
+      "enum": ["POST", "PUT", "PATCH", "DELETE"]
+    },
+    "path": {
+      "type": "string",
+      "pattern": "^/v[0-9]+[a-z]*/properties(/[^/]+)?$"
+    }
+  },
+  "google-analytics-read-data-streams": {
+    "method": {
+      "const": "GET"
+    },
+    "path": {
+      "type": "string",
+      "pattern": "^/v[0-9]+[a-z]*/properties/[^/]+/dataStreams(/.*)?$"
+    }
+  },
+  "google-analytics-write-data-streams": {
+    "method": {
+      "enum": ["POST", "PUT", "PATCH", "DELETE"]
+    },
+    "path": {
+      "type": "string",
+      "pattern": "^/v[0-9]+[a-z]*/properties/[^/]+/dataStreams(/.*)?$"
+    }
+  }
+}
