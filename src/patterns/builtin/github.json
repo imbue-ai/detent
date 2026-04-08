@@ -1,0 +1,125 @@
+{
+  "github": {
+    "domain": {
+      "const": "api.github.com"
+    }
+  },
+  "github-read-all": {
+    "method": {
+      "const": "GET"
+    }
+  },
+  "github-write-all": {
+    "method": {
+      "enum": ["POST", "PUT", "PATCH", "DELETE"]
+    }
+  },
+  "github-read-repos": {
+    "method": {
+      "const": "GET"
+    },
+    "path": {
+      "type": "string",
+      "pattern": "^/repos(/.*)?$"
+    }
+  },
+  "github-write-repos": {
+    "method": {
+      "enum": ["POST", "PUT", "PATCH", "DELETE"]
+    },
+    "path": {
+      "type": "string",
+      "pattern": "^/repos(/.*)?$"
+    }
+  },
+  "github-read-issues": {
+    "method": {
+      "const": "GET"
+    },
+    "path": {
+      "type": "string",
+      "pattern": "^/(repos/[^/]+/[^/]+/issues|issues)(/.*)?$"
+    }
+  },
+  "github-write-issues": {
+    "method": {
+      "enum": ["POST", "PUT", "PATCH", "DELETE"]
+    },
+    "path": {
+      "type": "string",
+      "pattern": "^/repos/[^/]+/[^/]+/issues(/.*)?$"
+    }
+  },
+  "github-read-pulls": {
+    "method": {
+      "const": "GET"
+    },
+    "path": {
+      "type": "string",
+      "pattern": "^/repos/[^/]+/[^/]+/pulls(/.*)?$"
+    }
+  },
+  "github-write-pulls": {
+    "method": {
+      "enum": ["POST", "PUT", "PATCH", "DELETE"]
+    },
+    "path": {
+      "type": "string",
+      "pattern": "^/repos/[^/]+/[^/]+/pulls(/.*)?$"
+    }
+  },
+  "github-read-gists": {
+    "method": {
+      "const": "GET"
+    },
+    "path": {
+      "type": "string",
+      "pattern": "^/gists(/.*)?$"
+    }
+  },
+  "github-write-gists": {
+    "method": {
+      "enum": ["POST", "PUT", "PATCH", "DELETE"]
+    },
+    "path": {
+      "type": "string",
+      "pattern": "^/gists(/.*)?$"
+    }
+  },
+  "github-read-user": {
+    "method": {
+      "const": "GET"
+    },
+    "path": {
+      "type": "string",
+      "pattern": "^/user(/.*)?$"
+    }
+  },
+  "github-search": {
+    "method": {
+      "const": "GET"
+    },
+    "path": {
+      "type": "string",
+      "pattern": "^/search(/.*)?$"
+    }
+  },
+  "github-read-notifications": {
+    "method": {
+      "const": "GET"
+    },
+    "path": {
+      "type": "string",
+      "pattern": "^/notifications(/.*)?$"
+    }
+  },
+  "github-write-notifications": {
+    "method": {
+      "enum": ["PUT", "PATCH", "DELETE"]
+    },
+    "path": {
+      "type": "string",
+      "pattern": "^/notifications(/.*)?$"
+    }
+  }
+}
