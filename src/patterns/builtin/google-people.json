@@ -1,0 +1,71 @@
+{
+  "google-people": {
+    "domain": {
+      "const": "people.googleapis.com"
+    }
+  },
+  "google-people-read-all": {
+    "method": {
+      "const": "GET"
+    }
+  },
+  "google-people-write-all": {
+    "method": {
+      "enum": ["POST", "PUT", "PATCH", "DELETE"]
+    }
+  },
+  "google-people-read-contacts": {
+    "method": {
+      "const": "GET"
+    },
+    "path": {
+      "type": "string",
+      "pattern": "^/v[0-9]+/people(/.*)?$"
+    }
+  },
+  "google-people-write-contacts": {
+    "method": {
+      "enum": ["POST", "PUT", "PATCH", "DELETE"]
+    },
+    "path": {
+      "type": "string",
+      "pattern": "^/v[0-9]+/people(/.*)?$"
+    }
+  },
+  "google-people-read-contact-groups": {
+    "method": {
+      "const": "GET"
+    },
+    "path": {
+      "type": "string",
+      "pattern": "^/v[0-9]+/contactGroups(/.*)?$"
+    }
+  },
+  "google-people-write-contact-groups": {
+    "method": {
+      "enum": ["POST", "PUT", "PATCH", "DELETE"]
+    },
+    "path": {
+      "type": "string",
+      "pattern": "^/v[0-9]+/contactGroups(/.*)?$"
+    }
+  },
+  "google-people-read-other-contacts": {
+    "method": {
+      "const": "GET"
+    },
+    "path": {
+      "type": "string",
+      "pattern": "^/v[0-9]+/otherContacts(/.*)?$"
+    }
+  },
+  "google-people-write-other-contacts": {
+    "method": {
+      "enum": ["POST", "PUT", "PATCH", "DELETE"]
+    },
+    "path": {
+      "type": "string",
+      "pattern": "^/v[0-9]+/otherContacts(/.*)?$"
+    }
+  }
+}
