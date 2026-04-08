@@ -1,0 +1,120 @@
+{
+  "google-calendar": {
+    "domain": {
+      "const": "www.googleapis.com"
+    },
+    "path": {
+      "type": "string",
+      "pattern": "^/calendar/"
+    }
+  },
+  "google-calendar-read-all": {
+    "method": {
+      "const": "GET"
+    }
+  },
+  "google-calendar-write-all": {
+    "method": {
+      "enum": ["POST", "PUT", "PATCH", "DELETE"]
+    }
+  },
+  "google-calendar-read-events": {
+    "method": {
+      "const": "GET"
+    },
+    "path": {
+      "type": "string",
+      "pattern": "^/calendar/v[0-9]+/calendars/[^/]+/events(/.*)?$"
+    }
+  },
+  "google-calendar-write-events": {
+    "method": {
+      "enum": ["POST", "PUT", "PATCH", "DELETE"]
+    },
+    "path": {
+      "type": "string",
+      "pattern": "^/calendar/v[0-9]+/calendars/[^/]+/events(/.*)?$"
+    }
+  },
+  "google-calendar-read-calendars": {
+    "method": {
+      "const": "GET"
+    },
+    "path": {
+      "type": "string",
+      "pattern": "^/calendar/v[0-9]+/calendars/[^/]+$"
+    }
+  },
+  "google-calendar-write-calendars": {
+    "method": {
+      "enum": ["POST", "PUT", "PATCH", "DELETE"]
+    },
+    "path": {
+      "type": "string",
+      "pattern": "^/calendar/v[0-9]+/calendars(/[^/]+(/clear)?)?$"
+    }
+  },
+  "google-calendar-read-calendar-list": {
+    "method": {
+      "const": "GET"
+    },
+    "path": {
+      "type": "string",
+      "pattern": "^/calendar/v[0-9]+/users/me/calendarList(/.*)?$"
+    }
+  },
+  "google-calendar-write-calendar-list": {
+    "method": {
+      "enum": ["POST", "PUT", "PATCH", "DELETE"]
+    },
+    "path": {
+      "type": "string",
+      "pattern": "^/calendar/v[0-9]+/users/me/calendarList(/.*)?$"
+    }
+  },
+  "google-calendar-read-settings": {
+    "method": {
+      "const": "GET"
+    },
+    "path": {
+      "type": "string",
+      "pattern": "^/calendar/v[0-9]+/users/me/settings(/.*)?$"
+    }
+  },
+  "google-calendar-read-acl": {
+    "method": {
+      "const": "GET"
+    },
+    "path": {
+      "type": "string",
+      "pattern": "^/calendar/v[0-9]+/calendars/[^/]+/acl(/.*)?$"
+    }
+  },
+  "google-calendar-write-acl": {
+    "method": {
+      "enum": ["POST", "PUT", "PATCH", "DELETE"]
+    },
+    "path": {
+      "type": "string",
+      "pattern": "^/calendar/v[0-9]+/calendars/[^/]+/acl(/.*)?$"
+    }
+  },
+  "google-calendar-query-freebusy": {
+    "method": {
+      "const": "POST"
+    },
+    "path": {
+      "type": "string",
+      "pattern": "^/calendar/v[0-9]+/freeBusy$"
+    }
+  },
+  "google-calendar-read-colors": {
+    "method": {
+      "const": "GET"
+    },
+    "path": {
+      "type": "string",
+      "pattern": "^/calendar/v[0-9]+/colors$"
+    }
+  }
+}
