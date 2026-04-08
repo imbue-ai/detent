@@ -1,0 +1,80 @@
+{
+  "yelp": {
+    "domain": {
+      "const": "api.yelp.com"
+    }
+  },
+  "yelp-read-all": {
+    "method": {
+      "const": "GET"
+    }
+  },
+  "yelp-write-all": {
+    "method": {
+      "enum": ["POST", "PUT", "PATCH", "DELETE"]
+    }
+  },
+  "yelp-read-businesses": {
+    "method": {
+      "const": "GET"
+    },
+    "path": {
+      "type": "string",
+      "pattern": "^/v3/(businesses|transactions)(/.*)?$"
+    }
+  },
+  "yelp-write-businesses": {
+    "method": {
+      "enum": ["POST", "PUT", "PATCH", "DELETE"]
+    },
+    "path": {
+      "type": "string",
+      "pattern": "^/v3/(businesses|transactions)(/.*)?$"
+    }
+  },
+  "yelp-read-reviews": {
+    "method": {
+      "const": "GET"
+    },
+    "path": {
+      "type": "string",
+      "pattern": "^/v3/businesses/[^/]+/(reviews|review_highlights)(/.*)?$"
+    }
+  },
+  "yelp-read-events": {
+    "method": {
+      "const": "GET"
+    },
+    "path": {
+      "type": "string",
+      "pattern": "^/v3/events(/.*)?$"
+    }
+  },
+  "yelp-read-categories": {
+    "method": {
+      "const": "GET"
+    },
+    "path": {
+      "type": "string",
+      "pattern": "^/v3/categories(/.*)?$"
+    }
+  },
+  "yelp-autocomplete": {
+    "method": {
+      "const": "GET"
+    },
+    "path": {
+      "type": "string",
+      "pattern": "^/v3/autocomplete$"
+    }
+  },
+  "yelp-ai-chat": {
+    "method": {
+      "const": "POST"
+    },
+    "path": {
+      "type": "string",
+      "pattern": "^/ai/chat(/.*)?$"
+    }
+  }
+}
