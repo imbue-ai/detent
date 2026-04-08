@@ -1,0 +1,80 @@
+{
+  "discord": {
+    "domain": {
+      "const": "discord.com"
+    }
+  },
+  "discord-read-all": {
+    "method": {
+      "const": "GET"
+    }
+  },
+  "discord-write-all": {
+    "method": {
+      "enum": ["POST", "PUT", "PATCH", "DELETE"]
+    }
+  },
+  "discord-read-messages": {
+    "method": {
+      "const": "GET"
+    },
+    "path": {
+      "type": "string",
+      "pattern": "^/api/v[0-9]+/channels/[^/]+/messages(/.*)?$"
+    }
+  },
+  "discord-write-messages": {
+    "method": {
+      "enum": ["POST", "PUT", "PATCH", "DELETE"]
+    },
+    "path": {
+      "type": "string",
+      "pattern": "^/api/v[0-9]+/channels/[^/]+/messages(/.*)?$"
+    }
+  },
+  "discord-read-channels": {
+    "method": {
+      "const": "GET"
+    },
+    "path": {
+      "type": "string",
+      "pattern": "^/api/v[0-9]+/channels(/.*)?$"
+    }
+  },
+  "discord-write-channels": {
+    "method": {
+      "enum": ["POST", "PUT", "PATCH", "DELETE"]
+    },
+    "path": {
+      "type": "string",
+      "pattern": "^/api/v[0-9]+/channels(/.*)?$"
+    }
+  },
+  "discord-read-guilds": {
+    "method": {
+      "const": "GET"
+    },
+    "path": {
+      "type": "string",
+      "pattern": "^/api/v[0-9]+/guilds(/.*)?$"
+    }
+  },
+  "discord-write-guilds": {
+    "method": {
+      "enum": ["POST", "PUT", "PATCH", "DELETE"]
+    },
+    "path": {
+      "type": "string",
+      "pattern": "^/api/v[0-9]+/guilds(/.*)?$"
+    }
+  },
+  "discord-read-users": {
+    "method": {
+      "const": "GET"
+    },
+    "path": {
+      "type": "string",
+      "pattern": "^/api/v[0-9]+/users(/.*)?$"
+    }
+  }
+}
