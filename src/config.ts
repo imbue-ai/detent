@@ -1,7 +1,12 @@
 import { existsSync, readFileSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 import { Ajv, type ValidateFunction } from 'ajv';
-import { RequestPattern, RequestPatternError, builtinPatterns } from './patterns/requestPattern.js';
+import {
+  RequestPattern,
+  RequestPatternError,
+  PatternRegistry,
+  getAllBuiltinSchemas,
+} from './patterns/requestPattern.js';
 import { decomposeRequest } from './decomposedRequest.js';
 
 export class ConfigError extends Error {
@@ -66,13 +71,29 @@ interface ResolvedRule {
   readonly permissions: readonly RequestPattern[];
 }
 
+export function createPatternRegistry(
+  rawConfig: RawConfig,
+  doNotUseBuiltinPatterns: boolean
+): PatternRegistry {
+  const schemas: Record<string, Record<string, unknown>> = {};
+
+  if (!doNotUseBuiltinPatterns) {
+    Object.assign(schemas, getAllBuiltinSchemas());
+  }
+
+  // User patterns override builtins with the same name.
+  Object.assign(schemas, rawConfig.patterns);
+
+  return new PatternRegistry(schemas);
+}
+
 export class Config {
   private readonly rules: readonly ResolvedRule[];
 
   constructor(configPath: string, doNotUseBuiltinPatterns: boolean) {
     const rawConfig = readRawConfig(configPath);
-    const patterns = buildPatternMap(rawConfig, doNotUseBuiltinPatterns);
-    this.rules = resolveRules(rawConfig, patterns);
+    const registry = createPatternRegistry(rawConfig, doNotUseBuiltinPatterns);
+    this.rules = resolveRules(rawConfig, registry);
   }
 
   async check(request: Request): Promise<boolean> {
@@ -185,29 +206,11 @@ function readRawConfigRecursive(configPath: string, visitedPaths: readonly strin
   return { patterns: mergedPatterns, rules: mergedRules };
 }
 
-function buildPatternMap(
-  rawConfig: RawConfig,
-  doNotUseBuiltinPatterns: boolean
-): ReadonlyMap<string, RequestPattern> {
-  const patterns = new Map<string, RequestPattern>();
-
-  if (!doNotUseBuiltinPatterns) {
-    for (const [name, pattern] of Object.entries(builtinPatterns)) {
-      patterns.set(name, pattern);
-    }
-  }
-
-  for (const [name, schema] of Object.entries(rawConfig.patterns)) {
-    patterns.set(name, new RequestPattern(name, schema));
-  }
-
-  return patterns;
+export function validateRules(rawConfig: RawConfig, registry: PatternRegistry): void {
+  resolveRules(rawConfig, registry);
 }
 
-function resolveRules(
-  rawConfig: RawConfig,
-  patterns: ReadonlyMap<string, RequestPattern>
-): readonly ResolvedRule[] {
+function resolveRules(rawConfig: RawConfig, registry: PatternRegistry): readonly ResolvedRule[] {
   return rawConfig.rules.map((ruleObject, index) => {
     const entries = Object.entries(ruleObject);
     if (entries.length !== 1) {
@@ -217,12 +220,12 @@ function resolveRules(
     }
 
     const [scopeName, permissionNames] = entries[0]!;
-    const scope = resolvePattern(scopeName, patterns, `scope of rule at index ${String(index)}`);
+    const scope = resolvePattern(scopeName, registry, `scope of rule at index ${String(index)}`);
 
     const permissions = permissionNames.map((permissionName) =>
       resolvePattern(
         permissionName,
-        patterns,
+        registry,
         `permission "${permissionName}" in rule at index ${String(index)}`
       )
     );
@@ -231,12 +234,8 @@ function resolveRules(
   });
 }
 
-function resolvePattern(
-  name: string,
-  patterns: ReadonlyMap<string, RequestPattern>,
-  context: string
-): RequestPattern {
-  const pattern = patterns.get(name);
+function resolvePattern(name: string, registry: PatternRegistry, context: string): RequestPattern {
+  const pattern = registry.get(name);
   if (pattern === undefined) {
     throw new RequestPatternError(`Unknown pattern "${name}" used in ${context}`);
   }
