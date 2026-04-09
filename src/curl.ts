@@ -187,6 +187,27 @@ function consumeNextArg(args: readonly string[], index: number, flag: string): s
   return value;
 }
 
+/**
+ * Split a combined short flag into its flag and inline value.
+ * Curl allows value-taking short flags to have their value attached directly,
+ * e.g. `-XPOST` is equivalent to `-X POST`.
+ *
+ * Returns the inline value if the flag is known to take a value, or undefined
+ * if the flag is boolean (no value) or not recognized.
+ */
+function extractInlineShortFlagValue(
+  arg: string
+): { flag: string; inlineValue: string } | undefined {
+  if (arg.length <= 2) {
+    return undefined;
+  }
+  const flag = arg.slice(0, 2);
+  if (SHORT_FLAGS_WITH_VALUE.has(flag)) {
+    return { flag, inlineValue: arg.slice(2) };
+  }
+  return undefined;
+}
+
 export function parseCurlArgs(args: readonly string[]): Request {
   let method: string | undefined;
   let url: string | undefined;
@@ -262,44 +283,48 @@ export function parseCurlArgs(args: readonly string[]): Request {
 
     // -- Short flags --
     if (arg.startsWith('-') && arg.length > 1) {
-      if (arg === '-X') {
-        method = consumeNextArg(args, i, arg);
+      // Handle combined short flags like `-XPOST` (equivalent to `-X POST`).
+      const inlineResult = extractInlineShortFlagValue(arg);
+      const shortFlag = inlineResult !== undefined ? inlineResult.flag : arg;
+
+      const consumeShortFlagValue = (flag: string): string => {
+        if (inlineResult !== undefined) {
+          return inlineResult.inlineValue;
+        }
+        const value = consumeNextArg(args, i, flag);
         i++;
-      } else if (arg === '-H') {
-        const value = consumeNextArg(args, i, arg);
-        i++;
+        return value;
+      };
+
+      if (shortFlag === '-X') {
+        method = consumeShortFlagValue(shortFlag);
+      } else if (shortFlag === '-H') {
+        const value = consumeShortFlagValue(shortFlag);
         const colonIndex = value.indexOf(':');
         if (colonIndex === -1) {
           throw new CurlParseError(`Invalid header format: ${value}`);
         }
         headers[value.slice(0, colonIndex).trim()] = value.slice(colonIndex + 1).trim();
-      } else if (arg === '-d') {
-        bodyParts.push(consumeNextArg(args, i, arg));
-        i++;
-      } else if (arg === '-F') {
-        consumeNextArg(args, i, arg);
-        i++;
+      } else if (shortFlag === '-d') {
+        bodyParts.push(consumeShortFlagValue(shortFlag));
+      } else if (shortFlag === '-F') {
+        consumeShortFlagValue(shortFlag);
         hasFormData = true;
-      } else if (arg === '-T') {
-        consumeNextArg(args, i, arg);
-        i++;
+      } else if (shortFlag === '-T') {
+        consumeShortFlagValue(shortFlag);
         method ??= 'PUT';
-      } else if (arg === '-A') {
-        headers['User-Agent'] = consumeNextArg(args, i, arg);
-        i++;
-      } else if (arg === '-e') {
-        headers.Referer = consumeNextArg(args, i, arg);
-        i++;
-      } else if (arg === '-b') {
-        headers.Cookie = consumeNextArg(args, i, arg);
-        i++;
-      } else if (arg === '-I') {
+      } else if (shortFlag === '-A') {
+        headers['User-Agent'] = consumeShortFlagValue(shortFlag);
+      } else if (shortFlag === '-e') {
+        headers.Referer = consumeShortFlagValue(shortFlag);
+      } else if (shortFlag === '-b') {
+        headers.Cookie = consumeShortFlagValue(shortFlag);
+      } else if (shortFlag === '-I') {
         isHead = true;
-      } else if (arg === '-G') {
+      } else if (shortFlag === '-G') {
         isGet = true;
-      } else if (SHORT_FLAGS_WITH_VALUE.has(arg)) {
-        consumeNextArg(args, i, arg);
-        i++;
+      } else if (SHORT_FLAGS_WITH_VALUE.has(shortFlag)) {
+        consumeShortFlagValue(shortFlag);
       }
       // Boolean short flags are simply ignored
       continue;

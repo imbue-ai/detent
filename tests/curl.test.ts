@@ -46,6 +46,16 @@ describe('parseCurlArgs', () => {
       expect(request.method).toBe('GET');
     });
 
+    it('parses combined short flag -XPOST (value attached without space)', () => {
+      const request = parseCurlArgs(['-XPOST', 'https://example.com']);
+      expect(request.method).toBe('POST');
+    });
+
+    it('parses combined short flag -XDELETE', () => {
+      const request = parseCurlArgs(['-XDELETE', 'https://example.com/resource']);
+      expect(request.method).toBe('DELETE');
+    });
+
     it('uses GET for -G even with data', () => {
       const request = parseCurlArgs(['-G', '-d', 'q=test', 'https://example.com']);
       expect(request.method).toBe('GET');
@@ -132,12 +142,24 @@ describe('parseCurlArgs', () => {
       const request = parseCurlArgs(['-b', 'session=abc123', 'https://example.com']);
       expect(request.headers.get('Cookie')).toBe('session=abc123');
     });
+
+    it('parses combined -HContent-Type:application/json (value attached without space)', () => {
+      const request = parseCurlArgs(['-HContent-Type: application/json', 'https://example.com']);
+      expect(request.headers.get('Content-Type')).toBe('application/json');
+    });
   });
 
   describe('body data', () => {
     it('parses body with -d and defaults to POST', () => {
       const request = parseCurlArgs(['-d', '{"key":"value"}', 'https://example.com']);
       expect(request.method).toBe('POST');
+    });
+
+    it('parses combined -d with value attached (no space)', async () => {
+      const request = parseCurlArgs(['-d{"key":"value"}', 'https://example.com']);
+      expect(request.method).toBe('POST');
+      const body = await request.text();
+      expect(body).toBe('{"key":"value"}');
     });
 
     it('parses body with --data-raw', () => {
