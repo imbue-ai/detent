@@ -65,7 +65,7 @@
     },
     "path": {
       "type": "string",
-      "pattern": "^/v1/databases(/.*)?$"
+      "pattern": "^/v1/databases(/[^/]+)?$"
     }
   },
   "notion-query-databases": {
