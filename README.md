@@ -40,7 +40,7 @@ Detent is meant to address this. Users or developers can easily specify
 permissions, from broad ones ("only read access to my Slack") to
 more specific ones ("only read access to GitHub issues for this one repository").
 
-## Integration
+## Integrations
 
 Checking permissions is only useful if the results are
 respected. To be effective, Detent needs to be integrated in
@@ -224,3 +224,22 @@ including config's own patterns and rules are applied on top.
 This means the parent config's patterns override equally-named
 included patterns, and its rules are evaluated after included
 rules. Circular includes are detected and rejected.
+
+
+## Contribution
+
+Contributions of all kinds are welcome!
+
+## Disclaimer
+
+We're providing the preconfigured pattern definitions for
+convenience but it's likely that some of them may not work
+entirely as intended. We hope that the community will help us refine the
+built-in permission definitions over time. In the meantime,
+preferably double-check builtin definitions before using them
+and when possible, use API tokens with reduced permission
+scopes.
+
+We still think the tool is useful as it is as a protection
+against accidental agent actions and the first line of defense
+against malicious or compromised agents.
