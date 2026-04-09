@@ -1,5 +1,5 @@
 {
-  "google-drive": {
+  "google-drive-api": {
     "domain": {
       "const": "www.googleapis.com"
     },

@@ -1,5 +1,5 @@
 {
-  "google-people": {
+  "google-people-api": {
     "domain": {
       "const": "people.googleapis.com"
     }

@@ -1,5 +1,5 @@
 {
-  "google-analytics": {
+  "google-analytics-api": {
     "domain": {
       "enum": ["analyticsdata.googleapis.com", "analyticsadmin.googleapis.com"]
     }

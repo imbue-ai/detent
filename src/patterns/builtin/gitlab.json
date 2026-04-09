@@ -1,5 +1,5 @@
 {
-  "gitlab": {
+  "gitlab-api": {
     "domain": {
       "const": "gitlab.com"
     }

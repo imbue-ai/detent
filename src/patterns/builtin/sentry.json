@@ -1,5 +1,5 @@
 {
-  "sentry": {
+  "sentry-api": {
     "domain": {
       "const": "sentry.io"
     }

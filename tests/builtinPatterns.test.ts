@@ -235,14 +235,14 @@ describe('builtin patterns: aws', () => {
 
 describe('builtin patterns: calendly', () => {
   it('calendly scope matches api.calendly.com', () => {
-    expectPatternExists('calendly');
+    expectPatternExists('calendly-api');
     const request = makeRequest({ domain: 'api.calendly.com', path: '/users/me' });
-    expect(builtinRegistry.get('calendly')!.match(request)).toBe(true);
+    expect(builtinRegistry.get('calendly-api')!.match(request)).toBe(true);
   });
 
   it('calendly scope rejects unrelated domains', () => {
     const request = makeRequest({ domain: 'calendly.example.com' });
-    expect(builtinRegistry.get('calendly')!.match(request)).toBe(false);
+    expect(builtinRegistry.get('calendly-api')!.match(request)).toBe(false);
   });
 
   it('calendly-read-event-types matches GET to /event_types path', () => {
@@ -276,9 +276,9 @@ describe('builtin patterns: calendly', () => {
 
 describe('builtin patterns: coolify', () => {
   it('coolify scope matches the coolify API domain', () => {
-    expectPatternExists('coolify');
+    expectPatternExists('coolify-api');
     const request = makeRequest({ domain: 'app.coolify.io', path: '/api/v1/servers' });
-    expect(builtinRegistry.get('coolify')!.match(request)).toBe(true);
+    expect(builtinRegistry.get('coolify-api')!.match(request)).toBe(true);
   });
 
   it('coolify-read-all matches GET requests', () => {
@@ -302,14 +302,14 @@ describe('builtin patterns: coolify', () => {
 
 describe('builtin patterns: discord', () => {
   it('discord scope matches discord.com', () => {
-    expectPatternExists('discord');
+    expectPatternExists('discord-api');
     const request = makeRequest({ domain: 'discord.com', path: '/api/v10/channels/123' });
-    expect(builtinRegistry.get('discord')!.match(request)).toBe(true);
+    expect(builtinRegistry.get('discord-api')!.match(request)).toBe(true);
   });
 
   it('discord scope rejects unrelated domains', () => {
     const request = makeRequest({ domain: 'discordapp.example.com' });
-    expect(builtinRegistry.get('discord')!.match(request)).toBe(false);
+    expect(builtinRegistry.get('discord-api')!.match(request)).toBe(false);
   });
 
   it('discord-read-guilds matches GET to guilds path', () => {
@@ -343,14 +343,14 @@ describe('builtin patterns: discord', () => {
 
 describe('builtin patterns: dropbox', () => {
   it('dropbox scope matches api.dropboxapi.com', () => {
-    expectPatternExists('dropbox');
+    expectPatternExists('dropbox-api');
     const request = makeRequest({ domain: 'api.dropboxapi.com', path: '/2/files/list_folder' });
-    expect(builtinRegistry.get('dropbox')!.match(request)).toBe(true);
+    expect(builtinRegistry.get('dropbox-api')!.match(request)).toBe(true);
   });
 
   it('dropbox scope rejects unrelated domains', () => {
     const request = makeRequest({ domain: 'dropbox.example.com' });
-    expect(builtinRegistry.get('dropbox')!.match(request)).toBe(false);
+    expect(builtinRegistry.get('dropbox-api')!.match(request)).toBe(false);
   });
 
   it('dropbox-files-read matches read paths like list_folder', () => {
@@ -382,14 +382,14 @@ describe('builtin patterns: dropbox', () => {
 
 describe('builtin patterns: figma', () => {
   it('figma scope matches api.figma.com', () => {
-    expectPatternExists('figma');
+    expectPatternExists('figma-api');
     const request = makeRequest({ domain: 'api.figma.com', path: '/v1/files/abc123' });
-    expect(builtinRegistry.get('figma')!.match(request)).toBe(true);
+    expect(builtinRegistry.get('figma-api')!.match(request)).toBe(true);
   });
 
   it('figma scope rejects unrelated domains', () => {
     const request = makeRequest({ domain: 'figma.example.com' });
-    expect(builtinRegistry.get('figma')!.match(request)).toBe(false);
+    expect(builtinRegistry.get('figma-api')!.match(request)).toBe(false);
   });
 
   it('figma-read-files matches GET to /v1/files path', () => {
@@ -418,14 +418,14 @@ describe('builtin patterns: figma', () => {
 
 describe('builtin patterns: github', () => {
   it('github scope matches api.github.com', () => {
-    expectPatternExists('github');
+    expectPatternExists('github-api');
     const request = makeRequest({ domain: 'api.github.com', path: '/repos/octocat/hello' });
-    expect(builtinRegistry.get('github')!.match(request)).toBe(true);
+    expect(builtinRegistry.get('github-api')!.match(request)).toBe(true);
   });
 
   it('github scope rejects unrelated domains', () => {
     const request = makeRequest({ domain: 'github.example.com' });
-    expect(builtinRegistry.get('github')!.match(request)).toBe(false);
+    expect(builtinRegistry.get('github-api')!.match(request)).toBe(false);
   });
 
   it('github-read-issues matches issues path but not pulls', () => {
@@ -459,14 +459,14 @@ describe('builtin patterns: github', () => {
 
 describe('builtin patterns: gitlab', () => {
   it('gitlab scope matches gitlab.com', () => {
-    expectPatternExists('gitlab');
+    expectPatternExists('gitlab-api');
     const request = makeRequest({ domain: 'gitlab.com', path: '/api/v4/projects' });
-    expect(builtinRegistry.get('gitlab')!.match(request)).toBe(true);
+    expect(builtinRegistry.get('gitlab-api')!.match(request)).toBe(true);
   });
 
   it('gitlab scope rejects unrelated domains', () => {
     const request = makeRequest({ domain: 'gitlab.example.com' });
-    expect(builtinRegistry.get('gitlab')!.match(request)).toBe(false);
+    expect(builtinRegistry.get('gitlab-api')!.match(request)).toBe(false);
   });
 
   it('gitlab-read-merge-requests matches merge_requests path', () => {
@@ -500,12 +500,12 @@ describe('builtin patterns: gitlab', () => {
 
 describe('builtin patterns: google-analytics', () => {
   it('google-analytics scope matches analyticsadmin.googleapis.com', () => {
-    expectPatternExists('google-analytics');
+    expectPatternExists('google-analytics-api');
     const request = makeRequest({
       domain: 'analyticsadmin.googleapis.com',
       path: '/v1beta/accounts',
     });
-    expect(builtinRegistry.get('google-analytics')!.match(request)).toBe(true);
+    expect(builtinRegistry.get('google-analytics-api')!.match(request)).toBe(true);
   });
 
   it('google-analytics-run-reports matches POST to runReport path', () => {
@@ -534,12 +534,12 @@ describe('builtin patterns: google-analytics', () => {
 
 describe('builtin patterns: google-calendar', () => {
   it('google-calendar scope matches www.googleapis.com with calendar path', () => {
-    expectPatternExists('google-calendar');
+    expectPatternExists('google-calendar-api');
     const request = makeRequest({
       domain: 'www.googleapis.com',
       path: '/calendar/v3/calendars/primary/events',
     });
-    expect(builtinRegistry.get('google-calendar')!.match(request)).toBe(true);
+    expect(builtinRegistry.get('google-calendar-api')!.match(request)).toBe(true);
   });
 
   it('google-calendar scope rejects www.googleapis.com with non-calendar path', () => {
@@ -547,7 +547,7 @@ describe('builtin patterns: google-calendar', () => {
       domain: 'www.googleapis.com',
       path: '/drive/v3/files',
     });
-    expect(builtinRegistry.get('google-calendar')!.match(request)).toBe(false);
+    expect(builtinRegistry.get('google-calendar-api')!.match(request)).toBe(false);
   });
 
   it('google-calendar-read-events matches GET with events path', () => {
@@ -576,17 +576,17 @@ describe('builtin patterns: google-calendar', () => {
 
 describe('builtin patterns: google-directions', () => {
   it('google-directions scope matches routes.googleapis.com', () => {
-    expectPatternExists('google-directions');
+    expectPatternExists('google-directions-api');
     const request = makeRequest({
       domain: 'routes.googleapis.com',
       path: '/directions/v2:computeRoutes',
     });
-    expect(builtinRegistry.get('google-directions')!.match(request)).toBe(true);
+    expect(builtinRegistry.get('google-directions-api')!.match(request)).toBe(true);
   });
 
   it('google-directions scope rejects unrelated domains', () => {
     const request = makeRequest({ domain: 'maps.googleapis.com' });
-    expect(builtinRegistry.get('google-directions')!.match(request)).toBe(false);
+    expect(builtinRegistry.get('google-directions-api')!.match(request)).toBe(false);
   });
 
   it('google-directions-compute-routes matches POST to the correct path', () => {
@@ -612,17 +612,17 @@ describe('builtin patterns: google-directions', () => {
 
 describe('builtin patterns: google-docs', () => {
   it('google-docs scope matches docs.googleapis.com', () => {
-    expectPatternExists('google-docs');
+    expectPatternExists('google-docs-api');
     const request = makeRequest({
       domain: 'docs.googleapis.com',
       path: '/v1/documents/abc123',
     });
-    expect(builtinRegistry.get('google-docs')!.match(request)).toBe(true);
+    expect(builtinRegistry.get('google-docs-api')!.match(request)).toBe(true);
   });
 
   it('google-docs scope rejects unrelated domains', () => {
     const request = makeRequest({ domain: 'sheets.googleapis.com' });
-    expect(builtinRegistry.get('google-docs')!.match(request)).toBe(false);
+    expect(builtinRegistry.get('google-docs-api')!.match(request)).toBe(false);
   });
 
   it('google-docs-read-documents matches GET to /v1/documents path', () => {
@@ -646,12 +646,12 @@ describe('builtin patterns: google-docs', () => {
 
 describe('builtin patterns: google-drive', () => {
   it('google-drive scope matches www.googleapis.com with drive path', () => {
-    expectPatternExists('google-drive');
+    expectPatternExists('google-drive-api');
     const request = makeRequest({
       domain: 'www.googleapis.com',
       path: '/drive/v3/files',
     });
-    expect(builtinRegistry.get('google-drive')!.match(request)).toBe(true);
+    expect(builtinRegistry.get('google-drive-api')!.match(request)).toBe(true);
   });
 
   it('google-drive scope rejects www.googleapis.com with non-drive path', () => {
@@ -659,7 +659,7 @@ describe('builtin patterns: google-drive', () => {
       domain: 'www.googleapis.com',
       path: '/calendar/v3/calendars',
     });
-    expect(builtinRegistry.get('google-drive')!.match(request)).toBe(false);
+    expect(builtinRegistry.get('google-drive-api')!.match(request)).toBe(false);
   });
 
   it('google-drive-read-files matches GET to files path', () => {
@@ -688,17 +688,17 @@ describe('builtin patterns: google-drive', () => {
 
 describe('builtin patterns: google-gmail', () => {
   it('google-gmail scope matches gmail.googleapis.com', () => {
-    expectPatternExists('google-gmail');
+    expectPatternExists('google-gmail-api');
     const request = makeRequest({
       domain: 'gmail.googleapis.com',
       path: '/gmail/v1/users/me/messages',
     });
-    expect(builtinRegistry.get('google-gmail')!.match(request)).toBe(true);
+    expect(builtinRegistry.get('google-gmail-api')!.match(request)).toBe(true);
   });
 
   it('google-gmail scope rejects unrelated domains', () => {
     const request = makeRequest({ domain: 'mail.google.com' });
-    expect(builtinRegistry.get('google-gmail')!.match(request)).toBe(false);
+    expect(builtinRegistry.get('google-gmail-api')!.match(request)).toBe(false);
   });
 
   it('google-gmail-read-messages matches GET with messages path', () => {
@@ -758,17 +758,17 @@ describe('builtin patterns: google-gmail', () => {
 
 describe('builtin patterns: google-people', () => {
   it('google-people scope matches people.googleapis.com', () => {
-    expectPatternExists('google-people');
+    expectPatternExists('google-people-api');
     const request = makeRequest({
       domain: 'people.googleapis.com',
       path: '/v1/people/me',
     });
-    expect(builtinRegistry.get('google-people')!.match(request)).toBe(true);
+    expect(builtinRegistry.get('google-people-api')!.match(request)).toBe(true);
   });
 
   it('google-people scope rejects unrelated domains', () => {
     const request = makeRequest({ domain: 'contacts.googleapis.com' });
-    expect(builtinRegistry.get('google-people')!.match(request)).toBe(false);
+    expect(builtinRegistry.get('google-people-api')!.match(request)).toBe(false);
   });
 
   it('google-people-read-contacts matches GET to people path', () => {
@@ -833,17 +833,17 @@ describe('builtin patterns: google-people', () => {
 
 describe('builtin patterns: google-sheets', () => {
   it('google-sheets scope matches sheets.googleapis.com', () => {
-    expectPatternExists('google-sheets');
+    expectPatternExists('google-sheets-api');
     const request = makeRequest({
       domain: 'sheets.googleapis.com',
       path: '/v4/spreadsheets/abc123',
     });
-    expect(builtinRegistry.get('google-sheets')!.match(request)).toBe(true);
+    expect(builtinRegistry.get('google-sheets-api')!.match(request)).toBe(true);
   });
 
   it('google-sheets scope rejects unrelated domains', () => {
     const request = makeRequest({ domain: 'docs.googleapis.com' });
-    expect(builtinRegistry.get('google-sheets')!.match(request)).toBe(false);
+    expect(builtinRegistry.get('google-sheets-api')!.match(request)).toBe(false);
   });
 
   it('google-sheets-read-values matches GET with values path', () => {
@@ -867,25 +867,25 @@ describe('builtin patterns: google-sheets', () => {
 
 describe('builtin patterns: linear', () => {
   it('linear scope matches api.linear.app', () => {
-    expectPatternExists('linear');
+    expectPatternExists('linear-api');
     const request = makeRequest({ domain: 'api.linear.app', path: '/graphql' });
-    expect(builtinRegistry.get('linear')!.match(request)).toBe(true);
+    expect(builtinRegistry.get('linear-api')!.match(request)).toBe(true);
   });
 
   it('linear scope rejects unrelated domains', () => {
     const request = makeRequest({ domain: 'linear.example.com' });
-    expect(builtinRegistry.get('linear')!.match(request)).toBe(false);
+    expect(builtinRegistry.get('linear-api')!.match(request)).toBe(false);
   });
 });
 
 describe('builtin patterns: mailchimp', () => {
   it('mailchimp scope matches the mailchimp API domain', () => {
-    expectPatternExists('mailchimp');
+    expectPatternExists('mailchimp-api');
     const request = makeRequest({
       domain: 'server.api.mailchimp.com',
       path: '/3.0/campaigns',
     });
-    expect(builtinRegistry.get('mailchimp')!.match(request)).toBe(true);
+    expect(builtinRegistry.get('mailchimp-api')!.match(request)).toBe(true);
   });
 
   it('mailchimp-read-campaigns matches GET to campaigns path', () => {
@@ -919,14 +919,14 @@ describe('builtin patterns: mailchimp', () => {
 
 describe('builtin patterns: notion', () => {
   it('notion scope matches api.notion.com', () => {
-    expectPatternExists('notion');
+    expectPatternExists('notion-api');
     const request = makeRequest({ domain: 'api.notion.com', path: '/v1/pages' });
-    expect(builtinRegistry.get('notion')!.match(request)).toBe(true);
+    expect(builtinRegistry.get('notion-api')!.match(request)).toBe(true);
   });
 
   it('notion scope rejects unrelated domains', () => {
     const request = makeRequest({ domain: 'notion.example.com' });
-    expect(builtinRegistry.get('notion')!.match(request)).toBe(false);
+    expect(builtinRegistry.get('notion-api')!.match(request)).toBe(false);
   });
 
   it('notion-read-pages matches GET to /v1/pages path', () => {
@@ -993,17 +993,17 @@ describe('builtin patterns: notion', () => {
 
 describe('builtin patterns: sentry', () => {
   it('sentry scope matches sentry.io', () => {
-    expectPatternExists('sentry');
+    expectPatternExists('sentry-api');
     const request = makeRequest({
       domain: 'sentry.io',
       path: '/api/0/organizations/my-org/issues/',
     });
-    expect(builtinRegistry.get('sentry')!.match(request)).toBe(true);
+    expect(builtinRegistry.get('sentry-api')!.match(request)).toBe(true);
   });
 
   it('sentry scope rejects unrelated domains', () => {
     const request = makeRequest({ domain: 'sentry.example.com' });
-    expect(builtinRegistry.get('sentry')!.match(request)).toBe(false);
+    expect(builtinRegistry.get('sentry-api')!.match(request)).toBe(false);
   });
 
   it('sentry-read-issues matches GET with issues path', () => {
@@ -1032,17 +1032,17 @@ describe('builtin patterns: sentry', () => {
 
 describe('builtin patterns: slack', () => {
   it('slack scope matches slack.com', () => {
-    expectPatternExists('slack');
+    expectPatternExists('slack-api');
     const request = makeRequest({
       domain: 'slack.com',
       path: '/api/chat.postMessage',
     });
-    expect(builtinRegistry.get('slack')!.match(request)).toBe(true);
+    expect(builtinRegistry.get('slack-api')!.match(request)).toBe(true);
   });
 
   it('slack scope rejects unrelated domains', () => {
     const request = makeRequest({ domain: 'slack.example.com' });
-    expect(builtinRegistry.get('slack')!.match(request)).toBe(false);
+    expect(builtinRegistry.get('slack-api')!.match(request)).toBe(false);
   });
 
   it('slack-read-all matches known read methods across all families', () => {
@@ -1511,17 +1511,17 @@ describe('builtin patterns: slack', () => {
 
 describe('builtin patterns: stripe', () => {
   it('stripe scope matches api.stripe.com', () => {
-    expectPatternExists('stripe');
+    expectPatternExists('stripe-api');
     const request = makeRequest({
       domain: 'api.stripe.com',
       path: '/v1/charges',
     });
-    expect(builtinRegistry.get('stripe')!.match(request)).toBe(true);
+    expect(builtinRegistry.get('stripe-api')!.match(request)).toBe(true);
   });
 
   it('stripe scope rejects unrelated domains', () => {
     const request = makeRequest({ domain: 'stripe.example.com' });
-    expect(builtinRegistry.get('stripe')!.match(request)).toBe(false);
+    expect(builtinRegistry.get('stripe-api')!.match(request)).toBe(false);
   });
 
   it('stripe-read-customers matches GET to /v1/customers path', () => {
@@ -1555,17 +1555,17 @@ describe('builtin patterns: stripe', () => {
 
 describe('builtin patterns: telegram', () => {
   it('telegram scope matches api.telegram.org', () => {
-    expectPatternExists('telegram');
+    expectPatternExists('telegram-api');
     const request = makeRequest({
       domain: 'api.telegram.org',
       path: '/bot123456:ABC-DEF/sendMessage',
     });
-    expect(builtinRegistry.get('telegram')!.match(request)).toBe(true);
+    expect(builtinRegistry.get('telegram-api')!.match(request)).toBe(true);
   });
 
   it('telegram scope rejects unrelated domains', () => {
     const request = makeRequest({ domain: 'telegram.example.com' });
-    expect(builtinRegistry.get('telegram')!.match(request)).toBe(false);
+    expect(builtinRegistry.get('telegram-api')!.match(request)).toBe(false);
   });
 
   it('telegram-send-messages matches sendMessage paths', () => {
@@ -1591,12 +1591,12 @@ describe('builtin patterns: telegram', () => {
 
 describe('builtin patterns: umami', () => {
   it('umami scope matches the umami API domain', () => {
-    expectPatternExists('umami');
+    expectPatternExists('umami-api');
     const request = makeRequest({
       domain: 'api.umami.is',
       path: '/api/websites',
     });
-    expect(builtinRegistry.get('umami')!.match(request)).toBe(true);
+    expect(builtinRegistry.get('umami-api')!.match(request)).toBe(true);
   });
 
   it('umami-read-websites matches cloud /v1/websites path', () => {
@@ -1649,17 +1649,17 @@ describe('builtin patterns: umami', () => {
 
 describe('builtin patterns: yelp', () => {
   it('yelp scope matches api.yelp.com', () => {
-    expectPatternExists('yelp');
+    expectPatternExists('yelp-api');
     const request = makeRequest({
       domain: 'api.yelp.com',
       path: '/v3/businesses/search',
     });
-    expect(builtinRegistry.get('yelp')!.match(request)).toBe(true);
+    expect(builtinRegistry.get('yelp-api')!.match(request)).toBe(true);
   });
 
   it('yelp scope rejects unrelated domains', () => {
     const request = makeRequest({ domain: 'yelp.example.com' });
-    expect(builtinRegistry.get('yelp')!.match(request)).toBe(false);
+    expect(builtinRegistry.get('yelp-api')!.match(request)).toBe(false);
   });
 
   it('yelp-read-businesses matches GET to /v3/businesses path', () => {
@@ -1693,17 +1693,17 @@ describe('builtin patterns: yelp', () => {
 
 describe('builtin patterns: zoom', () => {
   it('zoom scope matches api.zoom.us', () => {
-    expectPatternExists('zoom');
+    expectPatternExists('zoom-api');
     const request = makeRequest({
       domain: 'api.zoom.us',
       path: '/v2/users/me/meetings',
     });
-    expect(builtinRegistry.get('zoom')!.match(request)).toBe(true);
+    expect(builtinRegistry.get('zoom-api')!.match(request)).toBe(true);
   });
 
   it('zoom scope rejects unrelated domains', () => {
     const request = makeRequest({ domain: 'zoom.example.com' });
-    expect(builtinRegistry.get('zoom')!.match(request)).toBe(false);
+    expect(builtinRegistry.get('zoom-api')!.match(request)).toBe(false);
   });
 
   it('zoom-read-meetings matches GET to meetings path', () => {

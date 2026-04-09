@@ -1,5 +1,5 @@
 {
-  "google-gmail": {
+  "google-gmail-api": {
     "domain": {
       "const": "gmail.googleapis.com"
     }

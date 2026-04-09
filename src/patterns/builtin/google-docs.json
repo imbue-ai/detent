@@ -1,5 +1,5 @@
 {
-  "google-docs": {
+  "google-docs-api": {
     "domain": {
       "const": "docs.googleapis.com"
     }

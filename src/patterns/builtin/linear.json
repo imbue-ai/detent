@@ -1,5 +1,5 @@
 {
-  "linear": {
+  "linear-api": {
     "domain": {
       "const": "api.linear.app"
     }

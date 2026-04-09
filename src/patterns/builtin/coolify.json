@@ -1,5 +1,5 @@
 {
-  "coolify": {
+  "coolify-api": {
     "domain": {
       "const": "app.coolify.io"
     }

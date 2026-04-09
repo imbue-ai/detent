@@ -1,5 +1,5 @@
 {
-  "discord": {
+  "discord-api": {
     "domain": {
       "const": "discord.com"
     }

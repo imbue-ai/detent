@@ -1,5 +1,5 @@
 {
-  "notion": {
+  "notion-api": {
     "domain": {
       "const": "api.notion.com"
     }

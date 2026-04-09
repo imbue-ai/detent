@@ -1,5 +1,5 @@
 {
-  "slack": {
+  "slack-api": {
     "domain": {
       "const": "slack.com"
     }

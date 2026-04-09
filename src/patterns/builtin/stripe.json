@@ -1,5 +1,5 @@
 {
-  "stripe": {
+  "stripe-api": {
     "domain": {
       "const": "api.stripe.com"
     }

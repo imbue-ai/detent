@@ -1,5 +1,5 @@
 {
-  "google-directions": {
+  "google-directions-api": {
     "domain": {
       "const": "routes.googleapis.com"
     }

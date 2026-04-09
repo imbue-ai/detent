@@ -1,5 +1,5 @@
 {
-  "figma": {
+  "figma-api": {
     "domain": {
       "const": "api.figma.com"
     }

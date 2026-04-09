@@ -1,5 +1,5 @@
 {
-  "calendly": {
+  "calendly-api": {
     "domain": {
       "const": "api.calendly.com"
     }

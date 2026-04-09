@@ -1,5 +1,5 @@
 {
-  "telegram": {
+  "telegram-api": {
     "domain": {
       "const": "api.telegram.org"
     }

@@ -1,5 +1,5 @@
 {
-  "google-calendar": {
+  "google-calendar-api": {
     "domain": {
       "const": "www.googleapis.com"
     },

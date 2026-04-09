@@ -1,5 +1,5 @@
 {
-  "google-sheets": {
+  "google-sheets-api": {
     "domain": {
       "const": "sheets.googleapis.com"
     }

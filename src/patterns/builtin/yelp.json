@@ -1,5 +1,5 @@
 {
-  "yelp": {
+  "yelp-api": {
     "domain": {
       "const": "api.yelp.com"
     }

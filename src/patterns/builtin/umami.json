@@ -1,5 +1,5 @@
 {
-  "umami": {
+  "umami-api": {
     "domain": {
       "const": "api.umami.is"
     }
