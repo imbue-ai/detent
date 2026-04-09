@@ -1,7 +1,7 @@
 import { readdirSync, readFileSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { Ajv, type ValidateFunction } from 'ajv';
+import { Validator } from '@cfworker/json-schema';
 import { decomposedRequestPropertyNames } from '../decomposedRequest.js';
 import type { DecomposedRequest } from '../decomposedRequest.js';
 
@@ -54,9 +54,6 @@ function findInvalidPropertyName(schema: Record<string, unknown>): string | unde
   return undefined;
 }
 
-
-const ajv = new Ajv({ allErrors: true });
-
 /**
  * A request pattern wraps a JSON schema that can be matched against a DecomposedRequest object.
  * The schema is a standard JSON Schema object schema (without the outer `type: "object"`
@@ -65,7 +62,7 @@ const ajv = new Ajv({ allErrors: true });
 export class RequestPattern {
   readonly name: string;
   readonly schema: Readonly<Record<string, unknown>>;
-  private readonly validate: ValidateFunction;
+  private readonly validator: Validator;
 
   constructor(name: string, schema: Record<string, unknown>) {
     this.name = name;
@@ -84,16 +81,11 @@ export class RequestPattern {
       ...schema,
     };
 
-    try {
-      this.validate = ajv.compile(fullSchema);
-    } catch (error: unknown) {
-      const message = error instanceof Error ? error.message : String(error);
-      throw new RequestPatternError(`Invalid schema for pattern "${name}": ${message}`);
-    }
+    this.validator = new Validator(fullSchema, '2020-12', true);
   }
 
   match(decomposedRequest: DecomposedRequest): boolean {
-    return this.validate(decomposedRequest);
+    return this.validator.validate(decomposedRequest).valid;
   }
 }
 

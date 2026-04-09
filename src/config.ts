@@ -1,6 +1,6 @@
 import { existsSync, readFileSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
-import { Ajv, type ValidateFunction } from 'ajv';
+import { Validator } from '@cfworker/json-schema';
 import {
   RequestPattern,
   RequestPatternError,
@@ -47,7 +47,7 @@ const rawConfigSchema = {
   additionalProperties: false,
 } as const;
 
-const validateRawConfig: ValidateFunction = new Ajv({ allErrors: true }).compile(rawConfigSchema);
+const rawConfigValidator = new Validator(rawConfigSchema, '2020-12', false);
 
 interface ResolvedRule {
   readonly scope: RequestPattern;
@@ -123,18 +123,12 @@ function readSingleRawConfig(configPath: string): RawConfig {
     throw new ConfigError(`Failed to parse config file "${configPath}": ${message}`);
   }
 
-  if (!validateRawConfig(parsed)) {
-    const errors = (validateRawConfig.errors ?? [])
+  const validationResult = rawConfigValidator.validate(parsed);
+  if (!validationResult.valid) {
+    const errors = validationResult.errors
       .map((error) => {
-        const path = error.instancePath || '/';
-        const message = error.message ?? 'unknown error';
-        if (
-          error.keyword === 'additionalProperties' &&
-          typeof error.params.additionalProperty === 'string'
-        ) {
-          return `${path}: unknown property "${error.params.additionalProperty}"`;
-        }
-        return `${path}: ${message}`;
+        const path = error.instanceLocation || '#';
+        return `${path}: ${error.error}`;
       })
       .join('; ');
     throw new ConfigError(`Invalid config file "${configPath}": ${errors}`);

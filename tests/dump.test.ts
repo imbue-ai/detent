@@ -88,7 +88,7 @@ describe('dump', () => {
       rulez: [{ 'github-api': ['github-read-issues'] }],
     });
 
-    expect(() => dump(configPath)).toThrow(/unknown property "rulez"/);
+    expect(() => dump(configPath)).toThrow(/rulez/);
   });
 
   it('excludes builtin patterns when DETENT_DO_NOT_USE_BUILTIN_PATTERNS is set', () => {

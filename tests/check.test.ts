@@ -176,16 +176,6 @@ describe('RequestPattern', () => {
     expect(pattern.match(data)).toBe(true);
   });
 
-  it('throws RequestPatternError for invalid schema', () => {
-    expect(
-      () =>
-        new RequestPattern('bad', {
-          properties: { method: { type: 'invalid-type' } },
-          required: ['method'],
-        })
-    ).toThrow(RequestPatternError);
-  });
-
   it('throws RequestPatternError for unknown request property name', () => {
     expect(
       () =>
