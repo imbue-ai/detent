@@ -52,8 +52,11 @@ describe('decomposeRequest', () => {
     // The Fetch API only auto-uppercases the six standard methods
     // (DELETE, GET, HEAD, OPTIONS, POST, PUT). Others like PATCH
     // are left as-is. decomposeRequest must uppercase all methods.
-    const request = new Request('https://example.com/api', { method: 'patch' });
-    // Confirm the Request object didn't uppercase it
+    // We simulate this by overriding the method property to avoid
+    // an undici warning when constructing a Request with lowercase 'patch'.
+    const request = new Request('https://example.com/api', { method: 'PATCH' });
+    Object.defineProperty(request, 'method', { value: 'patch' });
+    // Confirm the Request object has the lowercase method
     expect(request.method).toBe('patch');
     const data = await decomposeRequest(request);
     expect(data.method).toBe('PATCH');
