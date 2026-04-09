@@ -1053,8 +1053,10 @@ describe('builtin patterns: slack', () => {
       '/api/conversations.history',
       '/api/conversations.info',
       '/api/conversations.list',
+      '/api/conversations.listConnectInvites',
       '/api/conversations.members',
       '/api/conversations.replies',
+      '/api/conversations.requestSharedInvite.list',
       '/api/users.conversations',
       '/api/users.getPresence',
       '/api/users.identity',
@@ -1064,7 +1066,6 @@ describe('builtin patterns: slack', () => {
       '/api/users.profile.get',
       '/api/files.info',
       '/api/files.list',
-      '/api/files.getUploadURLExternal',
       '/api/files.remote.info',
       '/api/files.remote.list',
       '/api/reactions.get',
@@ -1092,7 +1093,7 @@ describe('builtin patterns: slack', () => {
       '/api/conversations.kick',
       '/api/conversations.archive',
       '/api/users.setPresence',
-      '/api/files.upload',
+      '/api/files.getUploadURLExternal',
       '/api/files.delete',
       '/api/reactions.add',
       '/api/pins.add',
@@ -1110,42 +1111,49 @@ describe('builtin patterns: slack', () => {
   it('slack-write-all matches known write methods across all families', () => {
     expectPatternExists('slack-write-all');
     const writeMethods = [
+      '/api/chat.appendStream',
       '/api/chat.delete',
       '/api/chat.deleteScheduledMessage',
       '/api/chat.meMessage',
       '/api/chat.postEphemeral',
       '/api/chat.postMessage',
       '/api/chat.scheduleMessage',
+      '/api/chat.startStream',
+      '/api/chat.stopStream',
       '/api/chat.unfurl',
       '/api/chat.update',
+      '/api/conversations.acceptSharedInvite',
+      '/api/conversations.approveSharedInvite',
       '/api/conversations.archive',
+      '/api/conversations.canvasCreate',
       '/api/conversations.close',
       '/api/conversations.create',
+      '/api/conversations.declineSharedInvite',
+      '/api/conversations.externalInvitePermissions.set',
       '/api/conversations.invite',
+      '/api/conversations.inviteShared',
       '/api/conversations.join',
       '/api/conversations.kick',
       '/api/conversations.leave',
       '/api/conversations.mark',
       '/api/conversations.open',
       '/api/conversations.rename',
+      '/api/conversations.requestSharedInvite.approve',
+      '/api/conversations.requestSharedInvite.deny',
       '/api/conversations.setPurpose',
       '/api/conversations.setTopic',
       '/api/conversations.unarchive',
-      '/api/users.deletePhoto',
-      '/api/users.setActive',
-      '/api/users.setPhoto',
       '/api/users.setPresence',
       '/api/users.profile.set',
-      '/api/files.comments.delete',
       '/api/files.completeUploadExternal',
       '/api/files.delete',
+      '/api/files.getUploadURLExternal',
       '/api/files.remote.add',
       '/api/files.remote.remove',
       '/api/files.remote.share',
       '/api/files.remote.update',
       '/api/files.revokePublicURL',
       '/api/files.sharedPublicURL',
-      '/api/files.upload',
       '/api/reactions.add',
       '/api/reactions.remove',
       '/api/pins.add',
@@ -1219,6 +1227,17 @@ describe('builtin patterns: slack', () => {
     expect(
       builtinRegistry
         .get('slack-chat-write')!
+        .match(makeRequest({ path: '/api/chat.appendStream' }))
+    ).toBe(true);
+    expect(
+      builtinRegistry.get('slack-chat-write')!.match(makeRequest({ path: '/api/chat.startStream' }))
+    ).toBe(true);
+    expect(
+      builtinRegistry.get('slack-chat-write')!.match(makeRequest({ path: '/api/chat.stopStream' }))
+    ).toBe(true);
+    expect(
+      builtinRegistry
+        .get('slack-chat-write')!
         .match(makeRequest({ path: '/api/chat.getPermalink' }))
     ).toBe(false);
   });
@@ -1234,6 +1253,16 @@ describe('builtin patterns: slack', () => {
       builtinRegistry
         .get('slack-conversations-read')!
         .match(makeRequest({ path: '/api/conversations.history' }))
+    ).toBe(true);
+    expect(
+      builtinRegistry
+        .get('slack-conversations-read')!
+        .match(makeRequest({ path: '/api/conversations.listConnectInvites' }))
+    ).toBe(true);
+    expect(
+      builtinRegistry
+        .get('slack-conversations-read')!
+        .match(makeRequest({ path: '/api/conversations.requestSharedInvite.list' }))
     ).toBe(true);
     expect(
       builtinRegistry
@@ -1263,6 +1292,36 @@ describe('builtin patterns: slack', () => {
       builtinRegistry
         .get('slack-conversations-write')!
         .match(makeRequest({ path: '/api/conversations.create' }))
+    ).toBe(true);
+    expect(
+      builtinRegistry
+        .get('slack-conversations-write')!
+        .match(makeRequest({ path: '/api/conversations.acceptSharedInvite' }))
+    ).toBe(true);
+    expect(
+      builtinRegistry
+        .get('slack-conversations-write')!
+        .match(makeRequest({ path: '/api/conversations.canvasCreate' }))
+    ).toBe(true);
+    expect(
+      builtinRegistry
+        .get('slack-conversations-write')!
+        .match(makeRequest({ path: '/api/conversations.inviteShared' }))
+    ).toBe(true);
+    expect(
+      builtinRegistry
+        .get('slack-conversations-write')!
+        .match(makeRequest({ path: '/api/conversations.externalInvitePermissions.set' }))
+    ).toBe(true);
+    expect(
+      builtinRegistry
+        .get('slack-conversations-write')!
+        .match(makeRequest({ path: '/api/conversations.requestSharedInvite.approve' }))
+    ).toBe(true);
+    expect(
+      builtinRegistry
+        .get('slack-conversations-write')!
+        .match(makeRequest({ path: '/api/conversations.requestSharedInvite.deny' }))
     ).toBe(true);
     expect(
       builtinRegistry
@@ -1332,7 +1391,9 @@ describe('builtin patterns: slack', () => {
         .match(makeRequest({ path: '/api/files.remote.info' }))
     ).toBe(true);
     expect(
-      builtinRegistry.get('slack-files-read')!.match(makeRequest({ path: '/api/files.upload' }))
+      builtinRegistry
+        .get('slack-files-read')!
+        .match(makeRequest({ path: '/api/files.getUploadURLExternal' }))
     ).toBe(false);
     expect(
       builtinRegistry.get('slack-files-read')!.match(makeRequest({ path: '/api/files.delete' }))
@@ -1342,7 +1403,14 @@ describe('builtin patterns: slack', () => {
   it('slack-files-write matches write file methods but not read', () => {
     expectPatternExists('slack-files-write');
     expect(
-      builtinRegistry.get('slack-files-write')!.match(makeRequest({ path: '/api/files.upload' }))
+      builtinRegistry
+        .get('slack-files-write')!
+        .match(makeRequest({ path: '/api/files.getUploadURLExternal' }))
+    ).toBe(true);
+    expect(
+      builtinRegistry
+        .get('slack-files-write')!
+        .match(makeRequest({ path: '/api/files.completeUploadExternal' }))
     ).toBe(true);
     expect(
       builtinRegistry.get('slack-files-write')!.match(makeRequest({ path: '/api/files.delete' }))

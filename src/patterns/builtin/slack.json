@@ -7,13 +7,13 @@
   "slack-read-all": {
     "path": {
       "type": "string",
-      "pattern": "^/api/(chat\\.(getPermalink|scheduledMessages\\.list)|conversations\\.(history|info|list|members|replies)|users\\.(conversations|getPresence|identity|info|list|lookupByEmail|profile\\.get)|files\\.(info|list|getUploadURLExternal|remote\\.(info|list))|reactions\\.(get|list)|search\\.(all|files|messages)|pins\\.list|bookmarks\\.list|reminders\\.(info|list))$"
+      "pattern": "^/api/(chat\\.(getPermalink|scheduledMessages\\.list)|conversations\\.(history|info|list|listConnectInvites|members|replies|requestSharedInvite\\.list)|users\\.(conversations|getPresence|identity|info|list|lookupByEmail|profile\\.get)|files\\.(info|list|remote\\.(info|list))|reactions\\.(get|list)|search\\.(all|files|messages)|pins\\.list|bookmarks\\.list|reminders\\.(info|list))$"
     }
   },
   "slack-write-all": {
     "path": {
       "type": "string",
-      "pattern": "^/api/(chat\\.(delete|deleteScheduledMessage|meMessage|postEphemeral|postMessage|scheduleMessage|unfurl|update)|conversations\\.(archive|close|create|invite|join|kick|leave|mark|open|rename|setPurpose|setTopic|unarchive)|users\\.(deletePhoto|setActive|setPhoto|setPresence|profile\\.set)|files\\.(comments\\.delete|completeUploadExternal|delete|remote\\.(add|remove|share|update)|revokePublicURL|sharedPublicURL|upload)|reactions\\.(add|remove)|pins\\.(add|remove)|bookmarks\\.(add|edit|remove)|reminders\\.(add|complete|delete))$"
+      "pattern": "^/api/(chat\\.(appendStream|delete|deleteScheduledMessage|meMessage|postEphemeral|postMessage|scheduleMessage|startStream|stopStream|unfurl|update)|conversations\\.(acceptSharedInvite|approveSharedInvite|archive|canvasCreate|close|create|declineSharedInvite|externalInvitePermissions\\.set|invite|inviteShared|join|kick|leave|mark|open|rename|requestSharedInvite\\.(approve|deny)|setPurpose|setTopic|unarchive)|users\\.(setPresence|profile\\.set)|files\\.(completeUploadExternal|delete|getUploadURLExternal|remote\\.(add|remove|share|update)|revokePublicURL|sharedPublicURL)|reactions\\.(add|remove)|pins\\.(add|remove)|bookmarks\\.(add|edit|remove)|reminders\\.(add|complete|delete))$"
     }
   },
   "slack-chat-read": {
@@ -25,19 +25,19 @@
   "slack-chat-write": {
     "path": {
       "type": "string",
-      "pattern": "^/api/chat\\.(delete|deleteScheduledMessage|meMessage|postEphemeral|postMessage|scheduleMessage|unfurl|update)$"
+      "pattern": "^/api/chat\\.(appendStream|delete|deleteScheduledMessage|meMessage|postEphemeral|postMessage|scheduleMessage|startStream|stopStream|unfurl|update)$"
     }
   },
   "slack-conversations-read": {
     "path": {
       "type": "string",
-      "pattern": "^/api/conversations\\.(history|info|list|members|replies)$"
+      "pattern": "^/api/conversations\\.(history|info|list|listConnectInvites|members|replies|requestSharedInvite\\.list)$"
     }
   },
   "slack-conversations-write": {
     "path": {
       "type": "string",
-      "pattern": "^/api/conversations\\.(archive|close|create|invite|join|kick|leave|mark|open|rename|setPurpose|setTopic|unarchive)$"
+      "pattern": "^/api/conversations\\.(acceptSharedInvite|approveSharedInvite|archive|canvasCreate|close|create|declineSharedInvite|externalInvitePermissions\\.set|invite|inviteShared|join|kick|leave|mark|open|rename|requestSharedInvite\\.(approve|deny)|setPurpose|setTopic|unarchive)$"
     }
   },
   "slack-users-read": {
@@ -49,19 +49,19 @@
   "slack-users-write": {
     "path": {
       "type": "string",
-      "pattern": "^/api/users\\.(deletePhoto|setActive|setPhoto|setPresence|profile\\.set)$"
+      "pattern": "^/api/users\\.(setPresence|profile\\.set)$"
     }
   },
   "slack-files-read": {
     "path": {
       "type": "string",
-      "pattern": "^/api/files\\.(info|list|getUploadURLExternal|remote\\.(info|list))$"
+      "pattern": "^/api/files\\.(info|list|remote\\.(info|list))$"
     }
   },
   "slack-files-write": {
     "path": {
       "type": "string",
-      "pattern": "^/api/files\\.(comments\\.delete|completeUploadExternal|delete|remote\\.(add|remove|share|update)|revokePublicURL|sharedPublicURL|upload)$"
+      "pattern": "^/api/files\\.(completeUploadExternal|delete|getUploadURLExternal|remote\\.(add|remove|share|update)|revokePublicURL|sharedPublicURL)$"
     }
   },
   "slack-reactions-read": {
