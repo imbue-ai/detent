@@ -153,7 +153,7 @@ Once defined, request patterns can be combined in a two-level rules hierarchy, l
 
 ```json
 {
-  "patterns" {...},
+  "patterns": {...},
   "rules": [
     {"github-api": ["github-read-issues-detent", "github-write-comments-detent", ...] },
     {"slack-api": ["slack-read-all"] }
