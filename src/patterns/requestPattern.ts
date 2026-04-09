@@ -54,6 +54,9 @@ function findInvalidPropertyName(schema: Record<string, unknown>): string | unde
   return undefined;
 }
 
+
+const ajv = new Ajv({ allErrors: true });
+
 /**
  * A request pattern wraps a JSON schema that can be matched against a DecomposedRequest object.
  * The schema is a standard JSON Schema object schema (without the outer `type: "object"`
@@ -81,7 +84,6 @@ export class RequestPattern {
       ...schema,
     };
 
-    const ajv = new Ajv({ allErrors: true });
     try {
       this.validate = ajv.compile(fullSchema);
     } catch (error: unknown) {
