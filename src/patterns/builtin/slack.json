@@ -4,58 +4,118 @@
       "const": "slack.com"
     }
   },
-  "slack-chat": {
+  "slack-read-all": {
     "path": {
       "type": "string",
-      "pattern": "^/api/chat\\..+$"
+      "pattern": "^/api/(chat\\.(getPermalink|scheduledMessages\\.list)|conversations\\.(history|info|list|members|replies)|users\\.(conversations|getPresence|identity|info|list|lookupByEmail|profile\\.get)|files\\.(info|list|getUploadURLExternal|remote\\.(info|list))|reactions\\.(get|list)|search\\.(all|files|messages)|pins\\.list|bookmarks\\.list|reminders\\.(info|list))$"
     }
   },
-  "slack-conversations": {
+  "slack-write-all": {
     "path": {
       "type": "string",
-      "pattern": "^/api/conversations\\..+$"
+      "pattern": "^/api/(chat\\.(delete|deleteScheduledMessage|meMessage|postEphemeral|postMessage|scheduleMessage|unfurl|update)|conversations\\.(archive|close|create|invite|join|kick|leave|mark|open|rename|setPurpose|setTopic|unarchive)|users\\.(deletePhoto|setActive|setPhoto|setPresence|profile\\.set)|files\\.(comments\\.delete|completeUploadExternal|delete|remote\\.(add|remove|share|update)|revokePublicURL|sharedPublicURL|upload)|reactions\\.(add|remove)|pins\\.(add|remove)|bookmarks\\.(add|edit|remove)|reminders\\.(add|complete|delete))$"
     }
   },
-  "slack-users": {
+  "slack-chat-read": {
     "path": {
       "type": "string",
-      "pattern": "^/api/users\\..+$"
+      "pattern": "^/api/chat\\.(getPermalink|scheduledMessages\\.list)$"
     }
   },
-  "slack-files": {
+  "slack-chat-write": {
     "path": {
       "type": "string",
-      "pattern": "^/api/files\\..+$"
+      "pattern": "^/api/chat\\.(delete|deleteScheduledMessage|meMessage|postEphemeral|postMessage|scheduleMessage|unfurl|update)$"
     }
   },
-  "slack-reactions": {
+  "slack-conversations-read": {
     "path": {
       "type": "string",
-      "pattern": "^/api/reactions\\..+$"
+      "pattern": "^/api/conversations\\.(history|info|list|members|replies)$"
+    }
+  },
+  "slack-conversations-write": {
+    "path": {
+      "type": "string",
+      "pattern": "^/api/conversations\\.(archive|close|create|invite|join|kick|leave|mark|open|rename|setPurpose|setTopic|unarchive)$"
+    }
+  },
+  "slack-users-read": {
+    "path": {
+      "type": "string",
+      "pattern": "^/api/users\\.(conversations|getPresence|identity|info|list|lookupByEmail|profile\\.get)$"
+    }
+  },
+  "slack-users-write": {
+    "path": {
+      "type": "string",
+      "pattern": "^/api/users\\.(deletePhoto|setActive|setPhoto|setPresence|profile\\.set)$"
+    }
+  },
+  "slack-files-read": {
+    "path": {
+      "type": "string",
+      "pattern": "^/api/files\\.(info|list|getUploadURLExternal|remote\\.(info|list))$"
+    }
+  },
+  "slack-files-write": {
+    "path": {
+      "type": "string",
+      "pattern": "^/api/files\\.(comments\\.delete|completeUploadExternal|delete|remote\\.(add|remove|share|update)|revokePublicURL|sharedPublicURL|upload)$"
+    }
+  },
+  "slack-reactions-read": {
+    "path": {
+      "type": "string",
+      "pattern": "^/api/reactions\\.(get|list)$"
+    }
+  },
+  "slack-reactions-write": {
+    "path": {
+      "type": "string",
+      "pattern": "^/api/reactions\\.(add|remove)$"
     }
   },
   "slack-search": {
     "path": {
       "type": "string",
-      "pattern": "^/api/search\\..+$"
+      "pattern": "^/api/search\\.(all|files|messages)$"
     }
   },
-  "slack-pins": {
+  "slack-pins-read": {
     "path": {
       "type": "string",
-      "pattern": "^/api/pins\\..+$"
+      "pattern": "^/api/pins\\.list$"
     }
   },
-  "slack-bookmarks": {
+  "slack-pins-write": {
     "path": {
       "type": "string",
-      "pattern": "^/api/bookmarks\\..+$"
+      "pattern": "^/api/pins\\.(add|remove)$"
     }
   },
-  "slack-reminders": {
+  "slack-bookmarks-read": {
     "path": {
       "type": "string",
-      "pattern": "^/api/reminders\\..+$"
+      "pattern": "^/api/bookmarks\\.list$"
+    }
+  },
+  "slack-bookmarks-write": {
+    "path": {
+      "type": "string",
+      "pattern": "^/api/bookmarks\\.(add|edit|remove)$"
+    }
+  },
+  "slack-reminders-read": {
+    "path": {
+      "type": "string",
+      "pattern": "^/api/reminders\\.(info|list)$"
+    }
+  },
+  "slack-reminders-write": {
+    "path": {
+      "type": "string",
+      "pattern": "^/api/reminders\\.(add|complete|delete)$"
     }
   }
 }

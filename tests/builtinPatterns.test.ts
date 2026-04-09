@@ -726,32 +726,32 @@ describe('builtin patterns: google-gmail', () => {
 
   it('google-gmail-send-messages matches upload variant', () => {
     expect(
-      builtinPatterns['google-gmail-send-messages']!.match(
-        makeRequest({ method: 'POST', path: '/upload/gmail/v1/users/me/messages/send' })
-      )
+      builtinRegistry
+        .get('google-gmail-send-messages')!
+        .match(makeRequest({ method: 'POST', path: '/upload/gmail/v1/users/me/messages/send' }))
     ).toBe(true);
   });
 
   it('google-gmail-write-messages matches upload variant', () => {
     expectPatternExists('google-gmail-write-messages');
     expect(
-      builtinPatterns['google-gmail-write-messages']!.match(
-        makeRequest({ method: 'POST', path: '/upload/gmail/v1/users/me/messages' })
-      )
+      builtinRegistry
+        .get('google-gmail-write-messages')!
+        .match(makeRequest({ method: 'POST', path: '/upload/gmail/v1/users/me/messages' }))
     ).toBe(true);
   });
 
   it('google-gmail-write-drafts matches upload variant', () => {
     expectPatternExists('google-gmail-write-drafts');
     expect(
-      builtinPatterns['google-gmail-write-drafts']!.match(
-        makeRequest({ method: 'POST', path: '/upload/gmail/v1/users/me/drafts' })
-      )
+      builtinRegistry
+        .get('google-gmail-write-drafts')!
+        .match(makeRequest({ method: 'POST', path: '/upload/gmail/v1/users/me/drafts' }))
     ).toBe(true);
     expect(
-      builtinPatterns['google-gmail-write-drafts']!.match(
-        makeRequest({ method: 'PUT', path: '/upload/gmail/v1/users/me/drafts/abc123' })
-      )
+      builtinRegistry
+        .get('google-gmail-write-drafts')!
+        .match(makeRequest({ method: 'PUT', path: '/upload/gmail/v1/users/me/drafts/abc123' }))
     ).toBe(true);
   });
 });
@@ -787,46 +787,46 @@ describe('builtin patterns: google-people', () => {
 
   it('google-people-read-contacts matches GET to colon-method paths', () => {
     expect(
-      builtinPatterns['google-people-read-contacts']!.match(
-        makeRequest({ method: 'GET', path: '/v1/people:batchGet' })
-      )
+      builtinRegistry
+        .get('google-people-read-contacts')!
+        .match(makeRequest({ method: 'GET', path: '/v1/people:batchGet' }))
     ).toBe(true);
     expect(
-      builtinPatterns['google-people-read-contacts']!.match(
-        makeRequest({ method: 'GET', path: '/v1/people:searchContacts' })
-      )
+      builtinRegistry
+        .get('google-people-read-contacts')!
+        .match(makeRequest({ method: 'GET', path: '/v1/people:searchContacts' }))
     ).toBe(true);
   });
 
   it('google-people-write-contacts matches POST to colon-method paths', () => {
     expectPatternExists('google-people-write-contacts');
     expect(
-      builtinPatterns['google-people-write-contacts']!.match(
-        makeRequest({ method: 'POST', path: '/v1/people:createContact' })
-      )
+      builtinRegistry
+        .get('google-people-write-contacts')!
+        .match(makeRequest({ method: 'POST', path: '/v1/people:createContact' }))
     ).toBe(true);
     expect(
-      builtinPatterns['google-people-write-contacts']!.match(
-        makeRequest({ method: 'POST', path: '/v1/people:batchDeleteContacts' })
-      )
+      builtinRegistry
+        .get('google-people-write-contacts')!
+        .match(makeRequest({ method: 'POST', path: '/v1/people:batchDeleteContacts' }))
     ).toBe(true);
   });
 
   it('google-people-read-contact-groups matches GET to colon-method paths', () => {
     expectPatternExists('google-people-read-contact-groups');
     expect(
-      builtinPatterns['google-people-read-contact-groups']!.match(
-        makeRequest({ method: 'GET', path: '/v1/contactGroups:batchGet' })
-      )
+      builtinRegistry
+        .get('google-people-read-contact-groups')!
+        .match(makeRequest({ method: 'GET', path: '/v1/contactGroups:batchGet' }))
     ).toBe(true);
   });
 
   it('google-people-read-other-contacts matches GET to colon-method paths', () => {
     expectPatternExists('google-people-read-other-contacts');
     expect(
-      builtinPatterns['google-people-read-other-contacts']!.match(
-        makeRequest({ method: 'GET', path: '/v1/otherContacts:search' })
-      )
+      builtinRegistry
+        .get('google-people-read-other-contacts')!
+        .match(makeRequest({ method: 'GET', path: '/v1/otherContacts:search' }))
     ).toBe(true);
   });
 });
@@ -943,6 +943,39 @@ describe('builtin patterns: notion', () => {
     ).toBe(false);
   });
 
+  it('notion-write-databases matches create and update but not query', () => {
+    expectPatternExists('notion-write-databases');
+    expect(
+      builtinRegistry
+        .get('notion-write-databases')!
+        .match(makeRequest({ method: 'POST', path: '/v1/databases' }))
+    ).toBe(true);
+    expect(
+      builtinRegistry
+        .get('notion-write-databases')!
+        .match(makeRequest({ method: 'PATCH', path: '/v1/databases/abc123' }))
+    ).toBe(true);
+    expect(
+      builtinRegistry
+        .get('notion-write-databases')!
+        .match(makeRequest({ method: 'POST', path: '/v1/databases/abc123/query' }))
+    ).toBe(false);
+  });
+
+  it('notion-query-databases matches only the query endpoint', () => {
+    expectPatternExists('notion-query-databases');
+    expect(
+      builtinRegistry
+        .get('notion-query-databases')!
+        .match(makeRequest({ method: 'POST', path: '/v1/databases/abc123/query' }))
+    ).toBe(true);
+    expect(
+      builtinRegistry
+        .get('notion-query-databases')!
+        .match(makeRequest({ method: 'POST', path: '/v1/databases' }))
+    ).toBe(false);
+  });
+
   it('notion-search matches POST to /v1/search', () => {
     expectPatternExists('notion-search');
     expect(
@@ -1012,23 +1045,466 @@ describe('builtin patterns: slack', () => {
     expect(builtinRegistry.get('slack')!.match(request)).toBe(false);
   });
 
-  it('slack-chat matches chat method paths but not conversations', () => {
-    expectPatternExists('slack-chat');
+  it('slack-read-all matches known read methods across all families', () => {
+    expectPatternExists('slack-read-all');
+    const readMethods = [
+      '/api/chat.getPermalink',
+      '/api/chat.scheduledMessages.list',
+      '/api/conversations.history',
+      '/api/conversations.info',
+      '/api/conversations.list',
+      '/api/conversations.members',
+      '/api/conversations.replies',
+      '/api/users.conversations',
+      '/api/users.getPresence',
+      '/api/users.identity',
+      '/api/users.info',
+      '/api/users.list',
+      '/api/users.lookupByEmail',
+      '/api/users.profile.get',
+      '/api/files.info',
+      '/api/files.list',
+      '/api/files.getUploadURLExternal',
+      '/api/files.remote.info',
+      '/api/files.remote.list',
+      '/api/reactions.get',
+      '/api/reactions.list',
+      '/api/search.all',
+      '/api/search.files',
+      '/api/search.messages',
+      '/api/pins.list',
+      '/api/bookmarks.list',
+      '/api/reminders.info',
+      '/api/reminders.list',
+    ];
+    for (const path of readMethods) {
+      expect(
+        builtinRegistry.get('slack-read-all')!.match(makeRequest({ path })),
+        `Expected slack-read-all to match "${path}"`
+      ).toBe(true);
+    }
+  });
+
+  it('slack-read-all rejects known write methods', () => {
+    const writeMethods = [
+      '/api/chat.postMessage',
+      '/api/chat.delete',
+      '/api/conversations.kick',
+      '/api/conversations.archive',
+      '/api/users.setPresence',
+      '/api/files.upload',
+      '/api/files.delete',
+      '/api/reactions.add',
+      '/api/pins.add',
+      '/api/bookmarks.add',
+      '/api/reminders.add',
+    ];
+    for (const path of writeMethods) {
+      expect(
+        builtinRegistry.get('slack-read-all')!.match(makeRequest({ path })),
+        `Expected slack-read-all to reject "${path}"`
+      ).toBe(false);
+    }
+  });
+
+  it('slack-write-all matches known write methods across all families', () => {
+    expectPatternExists('slack-write-all');
+    const writeMethods = [
+      '/api/chat.delete',
+      '/api/chat.deleteScheduledMessage',
+      '/api/chat.meMessage',
+      '/api/chat.postEphemeral',
+      '/api/chat.postMessage',
+      '/api/chat.scheduleMessage',
+      '/api/chat.unfurl',
+      '/api/chat.update',
+      '/api/conversations.archive',
+      '/api/conversations.close',
+      '/api/conversations.create',
+      '/api/conversations.invite',
+      '/api/conversations.join',
+      '/api/conversations.kick',
+      '/api/conversations.leave',
+      '/api/conversations.mark',
+      '/api/conversations.open',
+      '/api/conversations.rename',
+      '/api/conversations.setPurpose',
+      '/api/conversations.setTopic',
+      '/api/conversations.unarchive',
+      '/api/users.deletePhoto',
+      '/api/users.setActive',
+      '/api/users.setPhoto',
+      '/api/users.setPresence',
+      '/api/users.profile.set',
+      '/api/files.comments.delete',
+      '/api/files.completeUploadExternal',
+      '/api/files.delete',
+      '/api/files.remote.add',
+      '/api/files.remote.remove',
+      '/api/files.remote.share',
+      '/api/files.remote.update',
+      '/api/files.revokePublicURL',
+      '/api/files.sharedPublicURL',
+      '/api/files.upload',
+      '/api/reactions.add',
+      '/api/reactions.remove',
+      '/api/pins.add',
+      '/api/pins.remove',
+      '/api/bookmarks.add',
+      '/api/bookmarks.edit',
+      '/api/bookmarks.remove',
+      '/api/reminders.add',
+      '/api/reminders.complete',
+      '/api/reminders.delete',
+    ];
+    for (const path of writeMethods) {
+      expect(
+        builtinRegistry.get('slack-write-all')!.match(makeRequest({ path })),
+        `Expected slack-write-all to match "${path}"`
+      ).toBe(true);
+    }
+  });
+
+  it('slack-write-all rejects known read methods', () => {
+    const readMethods = [
+      '/api/chat.getPermalink',
+      '/api/conversations.list',
+      '/api/conversations.history',
+      '/api/users.info',
+      '/api/users.list',
+      '/api/files.info',
+      '/api/reactions.list',
+      '/api/search.messages',
+      '/api/pins.list',
+      '/api/bookmarks.list',
+      '/api/reminders.list',
+    ];
+    for (const path of readMethods) {
+      expect(
+        builtinRegistry.get('slack-write-all')!.match(makeRequest({ path })),
+        `Expected slack-write-all to reject "${path}"`
+      ).toBe(false);
+    }
+  });
+
+  it('slack-chat-read matches read chat methods but not write', () => {
+    expectPatternExists('slack-chat-read');
     expect(
-      builtinRegistry.get('slack-chat')!.match(makeRequest({ path: '/api/chat.postMessage' }))
+      builtinRegistry.get('slack-chat-read')!.match(makeRequest({ path: '/api/chat.getPermalink' }))
     ).toBe(true);
     expect(
-      builtinRegistry.get('slack-chat')!.match(makeRequest({ path: '/api/conversations.list' }))
+      builtinRegistry
+        .get('slack-chat-read')!
+        .match(makeRequest({ path: '/api/chat.scheduledMessages.list' }))
+    ).toBe(true);
+    expect(
+      builtinRegistry.get('slack-chat-read')!.match(makeRequest({ path: '/api/chat.postMessage' }))
+    ).toBe(false);
+    expect(
+      builtinRegistry.get('slack-chat-read')!.match(makeRequest({ path: '/api/chat.delete' }))
     ).toBe(false);
   });
 
-  it('slack-users matches users method paths but not chat', () => {
-    expectPatternExists('slack-users');
+  it('slack-chat-write matches write chat methods but not read', () => {
+    expectPatternExists('slack-chat-write');
     expect(
-      builtinRegistry.get('slack-users')!.match(makeRequest({ path: '/api/users.list' }))
+      builtinRegistry.get('slack-chat-write')!.match(makeRequest({ path: '/api/chat.postMessage' }))
     ).toBe(true);
     expect(
-      builtinRegistry.get('slack-users')!.match(makeRequest({ path: '/api/chat.postMessage' }))
+      builtinRegistry.get('slack-chat-write')!.match(makeRequest({ path: '/api/chat.delete' }))
+    ).toBe(true);
+    expect(
+      builtinRegistry.get('slack-chat-write')!.match(makeRequest({ path: '/api/chat.update' }))
+    ).toBe(true);
+    expect(
+      builtinRegistry
+        .get('slack-chat-write')!
+        .match(makeRequest({ path: '/api/chat.getPermalink' }))
+    ).toBe(false);
+  });
+
+  it('slack-conversations-read matches read conversation methods but not write', () => {
+    expectPatternExists('slack-conversations-read');
+    expect(
+      builtinRegistry
+        .get('slack-conversations-read')!
+        .match(makeRequest({ path: '/api/conversations.list' }))
+    ).toBe(true);
+    expect(
+      builtinRegistry
+        .get('slack-conversations-read')!
+        .match(makeRequest({ path: '/api/conversations.history' }))
+    ).toBe(true);
+    expect(
+      builtinRegistry
+        .get('slack-conversations-read')!
+        .match(makeRequest({ path: '/api/conversations.kick' }))
+    ).toBe(false);
+    expect(
+      builtinRegistry
+        .get('slack-conversations-read')!
+        .match(makeRequest({ path: '/api/conversations.archive' }))
+    ).toBe(false);
+  });
+
+  it('slack-conversations-write matches write conversation methods but not read', () => {
+    expectPatternExists('slack-conversations-write');
+    expect(
+      builtinRegistry
+        .get('slack-conversations-write')!
+        .match(makeRequest({ path: '/api/conversations.kick' }))
+    ).toBe(true);
+    expect(
+      builtinRegistry
+        .get('slack-conversations-write')!
+        .match(makeRequest({ path: '/api/conversations.archive' }))
+    ).toBe(true);
+    expect(
+      builtinRegistry
+        .get('slack-conversations-write')!
+        .match(makeRequest({ path: '/api/conversations.create' }))
+    ).toBe(true);
+    expect(
+      builtinRegistry
+        .get('slack-conversations-write')!
+        .match(makeRequest({ path: '/api/conversations.list' }))
+    ).toBe(false);
+    expect(
+      builtinRegistry
+        .get('slack-conversations-write')!
+        .match(makeRequest({ path: '/api/conversations.history' }))
+    ).toBe(false);
+  });
+
+  it('slack-users-read matches read user methods but not write', () => {
+    expectPatternExists('slack-users-read');
+    expect(
+      builtinRegistry.get('slack-users-read')!.match(makeRequest({ path: '/api/users.list' }))
+    ).toBe(true);
+    expect(
+      builtinRegistry.get('slack-users-read')!.match(makeRequest({ path: '/api/users.info' }))
+    ).toBe(true);
+    expect(
+      builtinRegistry
+        .get('slack-users-read')!
+        .match(makeRequest({ path: '/api/users.profile.get' }))
+    ).toBe(true);
+    expect(
+      builtinRegistry
+        .get('slack-users-read')!
+        .match(makeRequest({ path: '/api/users.setPresence' }))
+    ).toBe(false);
+    expect(
+      builtinRegistry
+        .get('slack-users-read')!
+        .match(makeRequest({ path: '/api/users.profile.set' }))
+    ).toBe(false);
+  });
+
+  it('slack-users-write matches write user methods but not read', () => {
+    expectPatternExists('slack-users-write');
+    expect(
+      builtinRegistry
+        .get('slack-users-write')!
+        .match(makeRequest({ path: '/api/users.setPresence' }))
+    ).toBe(true);
+    expect(
+      builtinRegistry
+        .get('slack-users-write')!
+        .match(makeRequest({ path: '/api/users.profile.set' }))
+    ).toBe(true);
+    expect(
+      builtinRegistry.get('slack-users-write')!.match(makeRequest({ path: '/api/users.list' }))
+    ).toBe(false);
+  });
+
+  it('slack-files-read matches read file methods but not write', () => {
+    expectPatternExists('slack-files-read');
+    expect(
+      builtinRegistry.get('slack-files-read')!.match(makeRequest({ path: '/api/files.info' }))
+    ).toBe(true);
+    expect(
+      builtinRegistry.get('slack-files-read')!.match(makeRequest({ path: '/api/files.list' }))
+    ).toBe(true);
+    expect(
+      builtinRegistry
+        .get('slack-files-read')!
+        .match(makeRequest({ path: '/api/files.remote.info' }))
+    ).toBe(true);
+    expect(
+      builtinRegistry.get('slack-files-read')!.match(makeRequest({ path: '/api/files.upload' }))
+    ).toBe(false);
+    expect(
+      builtinRegistry.get('slack-files-read')!.match(makeRequest({ path: '/api/files.delete' }))
+    ).toBe(false);
+  });
+
+  it('slack-files-write matches write file methods but not read', () => {
+    expectPatternExists('slack-files-write');
+    expect(
+      builtinRegistry.get('slack-files-write')!.match(makeRequest({ path: '/api/files.upload' }))
+    ).toBe(true);
+    expect(
+      builtinRegistry.get('slack-files-write')!.match(makeRequest({ path: '/api/files.delete' }))
+    ).toBe(true);
+    expect(
+      builtinRegistry
+        .get('slack-files-write')!
+        .match(makeRequest({ path: '/api/files.remote.remove' }))
+    ).toBe(true);
+    expect(
+      builtinRegistry.get('slack-files-write')!.match(makeRequest({ path: '/api/files.info' }))
+    ).toBe(false);
+    expect(
+      builtinRegistry.get('slack-files-write')!.match(makeRequest({ path: '/api/files.list' }))
+    ).toBe(false);
+  });
+
+  it('slack-reactions-read matches read reaction methods but not write', () => {
+    expectPatternExists('slack-reactions-read');
+    expect(
+      builtinRegistry
+        .get('slack-reactions-read')!
+        .match(makeRequest({ path: '/api/reactions.get' }))
+    ).toBe(true);
+    expect(
+      builtinRegistry
+        .get('slack-reactions-read')!
+        .match(makeRequest({ path: '/api/reactions.list' }))
+    ).toBe(true);
+    expect(
+      builtinRegistry
+        .get('slack-reactions-read')!
+        .match(makeRequest({ path: '/api/reactions.add' }))
+    ).toBe(false);
+  });
+
+  it('slack-reactions-write matches write reaction methods but not read', () => {
+    expectPatternExists('slack-reactions-write');
+    expect(
+      builtinRegistry
+        .get('slack-reactions-write')!
+        .match(makeRequest({ path: '/api/reactions.add' }))
+    ).toBe(true);
+    expect(
+      builtinRegistry
+        .get('slack-reactions-write')!
+        .match(makeRequest({ path: '/api/reactions.remove' }))
+    ).toBe(true);
+    expect(
+      builtinRegistry
+        .get('slack-reactions-write')!
+        .match(makeRequest({ path: '/api/reactions.get' }))
+    ).toBe(false);
+  });
+
+  it('slack-search matches search methods', () => {
+    expectPatternExists('slack-search');
+    expect(
+      builtinRegistry.get('slack-search')!.match(makeRequest({ path: '/api/search.messages' }))
+    ).toBe(true);
+    expect(
+      builtinRegistry.get('slack-search')!.match(makeRequest({ path: '/api/search.files' }))
+    ).toBe(true);
+    expect(
+      builtinRegistry.get('slack-search')!.match(makeRequest({ path: '/api/search.all' }))
+    ).toBe(true);
+    expect(
+      builtinRegistry.get('slack-search')!.match(makeRequest({ path: '/api/chat.postMessage' }))
+    ).toBe(false);
+  });
+
+  it('slack-pins-read matches pins.list but not pins.add', () => {
+    expectPatternExists('slack-pins-read');
+    expect(
+      builtinRegistry.get('slack-pins-read')!.match(makeRequest({ path: '/api/pins.list' }))
+    ).toBe(true);
+    expect(
+      builtinRegistry.get('slack-pins-read')!.match(makeRequest({ path: '/api/pins.add' }))
+    ).toBe(false);
+  });
+
+  it('slack-pins-write matches pins.add and pins.remove but not pins.list', () => {
+    expectPatternExists('slack-pins-write');
+    expect(
+      builtinRegistry.get('slack-pins-write')!.match(makeRequest({ path: '/api/pins.add' }))
+    ).toBe(true);
+    expect(
+      builtinRegistry.get('slack-pins-write')!.match(makeRequest({ path: '/api/pins.remove' }))
+    ).toBe(true);
+    expect(
+      builtinRegistry.get('slack-pins-write')!.match(makeRequest({ path: '/api/pins.list' }))
+    ).toBe(false);
+  });
+
+  it('slack-bookmarks-read matches bookmarks.list but not bookmarks.add', () => {
+    expectPatternExists('slack-bookmarks-read');
+    expect(
+      builtinRegistry
+        .get('slack-bookmarks-read')!
+        .match(makeRequest({ path: '/api/bookmarks.list' }))
+    ).toBe(true);
+    expect(
+      builtinRegistry
+        .get('slack-bookmarks-read')!
+        .match(makeRequest({ path: '/api/bookmarks.add' }))
+    ).toBe(false);
+  });
+
+  it('slack-bookmarks-write matches bookmarks.add and bookmarks.edit but not bookmarks.list', () => {
+    expectPatternExists('slack-bookmarks-write');
+    expect(
+      builtinRegistry
+        .get('slack-bookmarks-write')!
+        .match(makeRequest({ path: '/api/bookmarks.add' }))
+    ).toBe(true);
+    expect(
+      builtinRegistry
+        .get('slack-bookmarks-write')!
+        .match(makeRequest({ path: '/api/bookmarks.edit' }))
+    ).toBe(true);
+    expect(
+      builtinRegistry
+        .get('slack-bookmarks-write')!
+        .match(makeRequest({ path: '/api/bookmarks.list' }))
+    ).toBe(false);
+  });
+
+  it('slack-reminders-read matches reminders.info and reminders.list but not reminders.add', () => {
+    expectPatternExists('slack-reminders-read');
+    expect(
+      builtinRegistry
+        .get('slack-reminders-read')!
+        .match(makeRequest({ path: '/api/reminders.info' }))
+    ).toBe(true);
+    expect(
+      builtinRegistry
+        .get('slack-reminders-read')!
+        .match(makeRequest({ path: '/api/reminders.list' }))
+    ).toBe(true);
+    expect(
+      builtinRegistry
+        .get('slack-reminders-read')!
+        .match(makeRequest({ path: '/api/reminders.add' }))
+    ).toBe(false);
+  });
+
+  it('slack-reminders-write matches reminders.add and reminders.delete but not reminders.list', () => {
+    expectPatternExists('slack-reminders-write');
+    expect(
+      builtinRegistry
+        .get('slack-reminders-write')!
+        .match(makeRequest({ path: '/api/reminders.add' }))
+    ).toBe(true);
+    expect(
+      builtinRegistry
+        .get('slack-reminders-write')!
+        .match(makeRequest({ path: '/api/reminders.delete' }))
+    ).toBe(true);
+    expect(
+      builtinRegistry
+        .get('slack-reminders-write')!
+        .match(makeRequest({ path: '/api/reminders.list' }))
     ).toBe(false);
   });
 });
