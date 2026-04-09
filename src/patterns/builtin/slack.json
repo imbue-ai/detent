@@ -1,121 +1,221 @@
 {
   "slack-api": {
-    "domain": {
-      "const": "slack.com"
-    }
+    "properties": {
+      "domain": {
+        "const": "slack.com"
+      }
+    },
+    "required": [
+      "domain"
+    ]
   },
   "slack-read-all": {
-    "path": {
-      "type": "string",
-      "pattern": "^/api/(chat\\.(getPermalink|scheduledMessages\\.list)|conversations\\.(history|info|list|listConnectInvites|members|replies|requestSharedInvite\\.list)|users\\.(conversations|getPresence|identity|info|list|lookupByEmail|profile\\.get)|files\\.(info|list|remote\\.(info|list))|reactions\\.(get|list)|search\\.(all|files|messages)|pins\\.list|bookmarks\\.list|reminders\\.(info|list))$"
-    }
+    "properties": {
+      "path": {
+        "type": "string",
+        "pattern": "^/api/(chat\\.(getPermalink|scheduledMessages\\.list)|conversations\\.(history|info|list|listConnectInvites|members|replies|requestSharedInvite\\.list)|users\\.(conversations|getPresence|identity|info|list|lookupByEmail|profile\\.get)|files\\.(info|list|remote\\.(info|list))|reactions\\.(get|list)|search\\.(all|files|messages)|pins\\.list|bookmarks\\.list|reminders\\.(info|list))$"
+      }
+    },
+    "required": [
+      "path"
+    ]
   },
   "slack-write-all": {
-    "path": {
-      "type": "string",
-      "pattern": "^/api/(chat\\.(appendStream|delete|deleteScheduledMessage|meMessage|postEphemeral|postMessage|scheduleMessage|startStream|stopStream|unfurl|update)|conversations\\.(acceptSharedInvite|approveSharedInvite|archive|canvasCreate|close|create|declineSharedInvite|externalInvitePermissions\\.set|invite|inviteShared|join|kick|leave|mark|open|rename|requestSharedInvite\\.(approve|deny)|setPurpose|setTopic|unarchive)|users\\.(setPresence|profile\\.set)|files\\.(completeUploadExternal|delete|getUploadURLExternal|remote\\.(add|remove|share|update)|revokePublicURL|sharedPublicURL)|reactions\\.(add|remove)|pins\\.(add|remove)|bookmarks\\.(add|edit|remove)|reminders\\.(add|complete|delete))$"
-    }
+    "properties": {
+      "path": {
+        "type": "string",
+        "pattern": "^/api/(chat\\.(appendStream|delete|deleteScheduledMessage|meMessage|postEphemeral|postMessage|scheduleMessage|startStream|stopStream|unfurl|update)|conversations\\.(acceptSharedInvite|approveSharedInvite|archive|canvasCreate|close|create|declineSharedInvite|externalInvitePermissions\\.set|invite|inviteShared|join|kick|leave|mark|open|rename|requestSharedInvite\\.(approve|deny)|setPurpose|setTopic|unarchive)|users\\.(setPresence|profile\\.set)|files\\.(completeUploadExternal|delete|getUploadURLExternal|remote\\.(add|remove|share|update)|revokePublicURL|sharedPublicURL)|reactions\\.(add|remove)|pins\\.(add|remove)|bookmarks\\.(add|edit|remove)|reminders\\.(add|complete|delete))$"
+      }
+    },
+    "required": [
+      "path"
+    ]
   },
   "slack-chat-read": {
-    "path": {
-      "type": "string",
-      "pattern": "^/api/chat\\.(getPermalink|scheduledMessages\\.list)$"
-    }
+    "properties": {
+      "path": {
+        "type": "string",
+        "pattern": "^/api/chat\\.(getPermalink|scheduledMessages\\.list)$"
+      }
+    },
+    "required": [
+      "path"
+    ]
   },
   "slack-chat-write": {
-    "path": {
-      "type": "string",
-      "pattern": "^/api/chat\\.(appendStream|delete|deleteScheduledMessage|meMessage|postEphemeral|postMessage|scheduleMessage|startStream|stopStream|unfurl|update)$"
-    }
+    "properties": {
+      "path": {
+        "type": "string",
+        "pattern": "^/api/chat\\.(appendStream|delete|deleteScheduledMessage|meMessage|postEphemeral|postMessage|scheduleMessage|startStream|stopStream|unfurl|update)$"
+      }
+    },
+    "required": [
+      "path"
+    ]
   },
   "slack-conversations-read": {
-    "path": {
-      "type": "string",
-      "pattern": "^/api/conversations\\.(history|info|list|listConnectInvites|members|replies|requestSharedInvite\\.list)$"
-    }
+    "properties": {
+      "path": {
+        "type": "string",
+        "pattern": "^/api/conversations\\.(history|info|list|listConnectInvites|members|replies|requestSharedInvite\\.list)$"
+      }
+    },
+    "required": [
+      "path"
+    ]
   },
   "slack-conversations-write": {
-    "path": {
-      "type": "string",
-      "pattern": "^/api/conversations\\.(acceptSharedInvite|approveSharedInvite|archive|canvasCreate|close|create|declineSharedInvite|externalInvitePermissions\\.set|invite|inviteShared|join|kick|leave|mark|open|rename|requestSharedInvite\\.(approve|deny)|setPurpose|setTopic|unarchive)$"
-    }
+    "properties": {
+      "path": {
+        "type": "string",
+        "pattern": "^/api/conversations\\.(acceptSharedInvite|approveSharedInvite|archive|canvasCreate|close|create|declineSharedInvite|externalInvitePermissions\\.set|invite|inviteShared|join|kick|leave|mark|open|rename|requestSharedInvite\\.(approve|deny)|setPurpose|setTopic|unarchive)$"
+      }
+    },
+    "required": [
+      "path"
+    ]
   },
   "slack-users-read": {
-    "path": {
-      "type": "string",
-      "pattern": "^/api/users\\.(conversations|getPresence|identity|info|list|lookupByEmail|profile\\.get)$"
-    }
+    "properties": {
+      "path": {
+        "type": "string",
+        "pattern": "^/api/users\\.(conversations|getPresence|identity|info|list|lookupByEmail|profile\\.get)$"
+      }
+    },
+    "required": [
+      "path"
+    ]
   },
   "slack-users-write": {
-    "path": {
-      "type": "string",
-      "pattern": "^/api/users\\.(setPresence|profile\\.set)$"
-    }
+    "properties": {
+      "path": {
+        "type": "string",
+        "pattern": "^/api/users\\.(setPresence|profile\\.set)$"
+      }
+    },
+    "required": [
+      "path"
+    ]
   },
   "slack-files-read": {
-    "path": {
-      "type": "string",
-      "pattern": "^/api/files\\.(info|list|remote\\.(info|list))$"
-    }
+    "properties": {
+      "path": {
+        "type": "string",
+        "pattern": "^/api/files\\.(info|list|remote\\.(info|list))$"
+      }
+    },
+    "required": [
+      "path"
+    ]
   },
   "slack-files-write": {
-    "path": {
-      "type": "string",
-      "pattern": "^/api/files\\.(completeUploadExternal|delete|getUploadURLExternal|remote\\.(add|remove|share|update)|revokePublicURL|sharedPublicURL)$"
-    }
+    "properties": {
+      "path": {
+        "type": "string",
+        "pattern": "^/api/files\\.(completeUploadExternal|delete|getUploadURLExternal|remote\\.(add|remove|share|update)|revokePublicURL|sharedPublicURL)$"
+      }
+    },
+    "required": [
+      "path"
+    ]
   },
   "slack-reactions-read": {
-    "path": {
-      "type": "string",
-      "pattern": "^/api/reactions\\.(get|list)$"
-    }
+    "properties": {
+      "path": {
+        "type": "string",
+        "pattern": "^/api/reactions\\.(get|list)$"
+      }
+    },
+    "required": [
+      "path"
+    ]
   },
   "slack-reactions-write": {
-    "path": {
-      "type": "string",
-      "pattern": "^/api/reactions\\.(add|remove)$"
-    }
+    "properties": {
+      "path": {
+        "type": "string",
+        "pattern": "^/api/reactions\\.(add|remove)$"
+      }
+    },
+    "required": [
+      "path"
+    ]
   },
   "slack-search": {
-    "path": {
-      "type": "string",
-      "pattern": "^/api/search\\.(all|files|messages)$"
-    }
+    "properties": {
+      "path": {
+        "type": "string",
+        "pattern": "^/api/search\\.(all|files|messages)$"
+      }
+    },
+    "required": [
+      "path"
+    ]
   },
   "slack-pins-read": {
-    "path": {
-      "type": "string",
-      "pattern": "^/api/pins\\.list$"
-    }
+    "properties": {
+      "path": {
+        "type": "string",
+        "pattern": "^/api/pins\\.list$"
+      }
+    },
+    "required": [
+      "path"
+    ]
   },
   "slack-pins-write": {
-    "path": {
-      "type": "string",
-      "pattern": "^/api/pins\\.(add|remove)$"
-    }
+    "properties": {
+      "path": {
+        "type": "string",
+        "pattern": "^/api/pins\\.(add|remove)$"
+      }
+    },
+    "required": [
+      "path"
+    ]
   },
   "slack-bookmarks-read": {
-    "path": {
-      "type": "string",
-      "pattern": "^/api/bookmarks\\.list$"
-    }
+    "properties": {
+      "path": {
+        "type": "string",
+        "pattern": "^/api/bookmarks\\.list$"
+      }
+    },
+    "required": [
+      "path"
+    ]
   },
   "slack-bookmarks-write": {
-    "path": {
-      "type": "string",
-      "pattern": "^/api/bookmarks\\.(add|edit|remove)$"
-    }
+    "properties": {
+      "path": {
+        "type": "string",
+        "pattern": "^/api/bookmarks\\.(add|edit|remove)$"
+      }
+    },
+    "required": [
+      "path"
+    ]
   },
   "slack-reminders-read": {
-    "path": {
-      "type": "string",
-      "pattern": "^/api/reminders\\.(info|list)$"
-    }
+    "properties": {
+      "path": {
+        "type": "string",
+        "pattern": "^/api/reminders\\.(info|list)$"
+      }
+    },
+    "required": [
+      "path"
+    ]
   },
   "slack-reminders-write": {
-    "path": {
-      "type": "string",
-      "pattern": "^/api/reminders\\.(add|complete|delete)$"
-    }
+    "properties": {
+      "path": {
+        "type": "string",
+        "pattern": "^/api/reminders\\.(add|complete|delete)$"
+      }
+    },
+    "required": [
+      "path"
+    ]
   }
 }

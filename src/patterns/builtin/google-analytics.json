@@ -1,80 +1,155 @@
 {
   "google-analytics-api": {
-    "domain": {
-      "enum": ["analyticsdata.googleapis.com", "analyticsadmin.googleapis.com"]
-    }
+    "properties": {
+      "domain": {
+        "enum": [
+          "analyticsdata.googleapis.com",
+          "analyticsadmin.googleapis.com"
+        ]
+      }
+    },
+    "required": [
+      "domain"
+    ]
   },
   "google-analytics-read-all": {
-    "method": {
-      "const": "GET"
-    }
+    "properties": {
+      "method": {
+        "const": "GET"
+      }
+    },
+    "required": [
+      "method"
+    ]
   },
   "google-analytics-write-all": {
-    "method": {
-      "enum": ["POST", "PUT", "PATCH", "DELETE"]
-    }
+    "properties": {
+      "method": {
+        "enum": [
+          "POST",
+          "PUT",
+          "PATCH",
+          "DELETE"
+        ]
+      }
+    },
+    "required": [
+      "method"
+    ]
   },
   "google-analytics-run-reports": {
-    "method": {
-      "const": "POST"
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/v[0-9]+[a-z]*/(properties|accounts)/[^/]+:(runReport|batchRunReports|runPivotReport|batchRunPivotReports|runRealtimeReport|checkCompatibility|runAccessReport)$"
+      }
     },
-    "path": {
-      "type": "string",
-      "pattern": "^/v[0-9]+[a-z]*/(properties|accounts)/[^/]+:(runReport|batchRunReports|runPivotReport|batchRunPivotReports|runRealtimeReport|checkCompatibility|runAccessReport)$"
-    }
+    "required": [
+      "method",
+      "path"
+    ]
   },
   "google-analytics-read-metadata": {
-    "method": {
-      "const": "GET"
+    "properties": {
+      "method": {
+        "const": "GET"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/v[0-9]+[a-z]*/properties/[^/]+/metadata$"
+      }
     },
-    "path": {
-      "type": "string",
-      "pattern": "^/v[0-9]+[a-z]*/properties/[^/]+/metadata$"
-    }
+    "required": [
+      "method",
+      "path"
+    ]
   },
   "google-analytics-read-accounts": {
-    "method": {
-      "const": "GET"
+    "properties": {
+      "method": {
+        "const": "GET"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/v[0-9]+[a-z]*/(accounts|accountSummaries)(/.*)?$"
+      }
     },
-    "path": {
-      "type": "string",
-      "pattern": "^/v[0-9]+[a-z]*/(accounts|accountSummaries)(/.*)?$"
-    }
+    "required": [
+      "method",
+      "path"
+    ]
   },
   "google-analytics-read-properties": {
-    "method": {
-      "const": "GET"
+    "properties": {
+      "method": {
+        "const": "GET"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/v[0-9]+[a-z]*/properties(/[^/]+)?$"
+      }
     },
-    "path": {
-      "type": "string",
-      "pattern": "^/v[0-9]+[a-z]*/properties(/[^/]+)?$"
-    }
+    "required": [
+      "method",
+      "path"
+    ]
   },
   "google-analytics-write-properties": {
-    "method": {
-      "enum": ["POST", "PUT", "PATCH", "DELETE"]
+    "properties": {
+      "method": {
+        "enum": [
+          "POST",
+          "PUT",
+          "PATCH",
+          "DELETE"
+        ]
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/v[0-9]+[a-z]*/properties(/[^/]+)?$"
+      }
     },
-    "path": {
-      "type": "string",
-      "pattern": "^/v[0-9]+[a-z]*/properties(/[^/]+)?$"
-    }
+    "required": [
+      "method",
+      "path"
+    ]
   },
   "google-analytics-read-data-streams": {
-    "method": {
-      "const": "GET"
+    "properties": {
+      "method": {
+        "const": "GET"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/v[0-9]+[a-z]*/properties/[^/]+/dataStreams(/.*)?$"
+      }
     },
-    "path": {
-      "type": "string",
-      "pattern": "^/v[0-9]+[a-z]*/properties/[^/]+/dataStreams(/.*)?$"
-    }
+    "required": [
+      "method",
+      "path"
+    ]
   },
   "google-analytics-write-data-streams": {
-    "method": {
-      "enum": ["POST", "PUT", "PATCH", "DELETE"]
+    "properties": {
+      "method": {
+        "enum": [
+          "POST",
+          "PUT",
+          "PATCH",
+          "DELETE"
+        ]
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/v[0-9]+[a-z]*/properties/[^/]+/dataStreams(/.*)?$"
+      }
     },
-    "path": {
-      "type": "string",
-      "pattern": "^/v[0-9]+[a-z]*/properties/[^/]+/dataStreams(/.*)?$"
-    }
+    "required": [
+      "method",
+      "path"
+    ]
   }
 }

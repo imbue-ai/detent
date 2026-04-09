@@ -402,14 +402,24 @@ describe('builtin patterns: figma', () => {
 
 describe('builtin patterns: github', () => {
   it('github scope matches api.github.com', () => {
-    expectPatternExists('github-api');
+    expectPatternExists('github-rest-api');
     const request = makeRequest({ domain: 'api.github.com', path: '/repos/octocat/hello' });
-    expect(builtinRegistry.get('github-api')!.match(request)).toBe(true);
+    expect(builtinRegistry.get('github-rest-api')!.match(request)).toBe(true);
   });
 
   it('github scope rejects unrelated domains', () => {
     const request = makeRequest({ domain: 'github.example.com' });
-    expect(builtinRegistry.get('github-api')!.match(request)).toBe(false);
+    expect(builtinRegistry.get('github-rest-api')!.match(request)).toBe(false);
+  });
+
+  it('github scope rejects graphql endpoint', () => {
+    const request = makeRequest({ domain: 'api.github.com', path: '/graphql' });
+    expect(builtinRegistry.get('github-rest-api')!.match(request)).toBe(false);
+  });
+
+  it('github scope allows paths that contain graphql as a substring', () => {
+    const request = makeRequest({ domain: 'api.github.com', path: '/repos/owner/graphql-tools' });
+    expect(builtinRegistry.get('github-rest-api')!.match(request)).toBe(true);
   });
 
   it('github-read-issues matches issues path but not pulls', () => {
@@ -957,6 +967,31 @@ describe('builtin patterns: notion', () => {
       builtinRegistry
         .get('notion-query-databases')!
         .match(makeRequest({ method: 'POST', path: '/v1/databases' }))
+    ).toBe(false);
+  });
+
+  it('notion-read-all matches GET requests', () => {
+    expectPatternExists('notion-read-all');
+    expect(
+      builtinRegistry
+        .get('notion-read-all')!
+        .match(makeRequest({ method: 'GET', path: '/v1/pages/abc123' }))
+    ).toBe(true);
+  });
+
+  it('notion-read-all matches POST to /v1/search', () => {
+    expect(
+      builtinRegistry
+        .get('notion-read-all')!
+        .match(makeRequest({ method: 'POST', path: '/v1/search' }))
+    ).toBe(true);
+  });
+
+  it('notion-read-all rejects POST to other paths', () => {
+    expect(
+      builtinRegistry
+        .get('notion-read-all')!
+        .match(makeRequest({ method: 'POST', path: '/v1/pages' }))
     ).toBe(false);
   });
 

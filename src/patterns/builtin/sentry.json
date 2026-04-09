@@ -1,89 +1,172 @@
 {
   "sentry-api": {
-    "domain": {
-      "const": "sentry.io"
-    }
+    "properties": {
+      "domain": {
+        "const": "sentry.io"
+      }
+    },
+    "required": [
+      "domain"
+    ]
   },
   "sentry-read-all": {
-    "method": {
-      "const": "GET"
-    }
+    "properties": {
+      "method": {
+        "const": "GET"
+      }
+    },
+    "required": [
+      "method"
+    ]
   },
   "sentry-write-all": {
-    "method": {
-      "enum": ["POST", "PUT", "PATCH", "DELETE"]
-    }
+    "properties": {
+      "method": {
+        "enum": [
+          "POST",
+          "PUT",
+          "PATCH",
+          "DELETE"
+        ]
+      }
+    },
+    "required": [
+      "method"
+    ]
   },
   "sentry-read-issues": {
-    "method": {
-      "const": "GET"
+    "properties": {
+      "method": {
+        "const": "GET"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/api/0/(issues|organizations/[^/]+/issues|projects/[^/]+/[^/]+/(issues|events))(/.*)?$"
+      }
     },
-    "path": {
-      "type": "string",
-      "pattern": "^/api/0/(issues|organizations/[^/]+/issues|projects/[^/]+/[^/]+/(issues|events))(/.*)?$"
-    }
+    "required": [
+      "method",
+      "path"
+    ]
   },
   "sentry-write-issues": {
-    "method": {
-      "enum": ["POST", "PUT", "PATCH", "DELETE"]
+    "properties": {
+      "method": {
+        "enum": [
+          "POST",
+          "PUT",
+          "PATCH",
+          "DELETE"
+        ]
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/api/0/(issues|organizations/[^/]+/issues|projects/[^/]+/[^/]+/issues)(/.*)?$"
+      }
     },
-    "path": {
-      "type": "string",
-      "pattern": "^/api/0/(issues|organizations/[^/]+/issues|projects/[^/]+/[^/]+/issues)(/.*)?$"
-    }
+    "required": [
+      "method",
+      "path"
+    ]
   },
   "sentry-read-projects": {
-    "method": {
-      "const": "GET"
+    "properties": {
+      "method": {
+        "const": "GET"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/api/0/projects(/.*)?$"
+      }
     },
-    "path": {
-      "type": "string",
-      "pattern": "^/api/0/projects(/.*)?$"
-    }
+    "required": [
+      "method",
+      "path"
+    ]
   },
   "sentry-write-projects": {
-    "method": {
-      "enum": ["POST", "PUT", "PATCH", "DELETE"]
+    "properties": {
+      "method": {
+        "enum": [
+          "POST",
+          "PUT",
+          "PATCH",
+          "DELETE"
+        ]
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/api/0/(projects|teams/[^/]+/[^/]+/projects)(/.*)?$"
+      }
     },
-    "path": {
-      "type": "string",
-      "pattern": "^/api/0/(projects|teams/[^/]+/[^/]+/projects)(/.*)?$"
-    }
+    "required": [
+      "method",
+      "path"
+    ]
   },
   "sentry-read-organizations": {
-    "method": {
-      "const": "GET"
+    "properties": {
+      "method": {
+        "const": "GET"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/api/0/organizations(/[^/]+)?/?$"
+      }
     },
-    "path": {
-      "type": "string",
-      "pattern": "^/api/0/organizations(/[^/]+)?/?$"
-    }
+    "required": [
+      "method",
+      "path"
+    ]
   },
   "sentry-read-teams": {
-    "method": {
-      "const": "GET"
+    "properties": {
+      "method": {
+        "const": "GET"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/api/0/(teams|organizations/[^/]+/teams)(/.*)?$"
+      }
     },
-    "path": {
-      "type": "string",
-      "pattern": "^/api/0/(teams|organizations/[^/]+/teams)(/.*)?$"
-    }
+    "required": [
+      "method",
+      "path"
+    ]
   },
   "sentry-read-releases": {
-    "method": {
-      "const": "GET"
+    "properties": {
+      "method": {
+        "const": "GET"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/api/0/(organizations/[^/]+/releases|projects/[^/]+/[^/]+/releases)(/.*)?$"
+      }
     },
-    "path": {
-      "type": "string",
-      "pattern": "^/api/0/(organizations/[^/]+/releases|projects/[^/]+/[^/]+/releases)(/.*)?$"
-    }
+    "required": [
+      "method",
+      "path"
+    ]
   },
   "sentry-write-releases": {
-    "method": {
-      "enum": ["POST", "PUT", "PATCH", "DELETE"]
+    "properties": {
+      "method": {
+        "enum": [
+          "POST",
+          "PUT",
+          "PATCH",
+          "DELETE"
+        ]
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/api/0/(organizations/[^/]+/releases|projects/[^/]+/[^/]+/releases)(/.*)?$"
+      }
     },
-    "path": {
-      "type": "string",
-      "pattern": "^/api/0/(organizations/[^/]+/releases|projects/[^/]+/[^/]+/releases)(/.*)?$"
-    }
+    "required": [
+      "method",
+      "path"
+    ]
   }
 }

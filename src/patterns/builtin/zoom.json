@@ -1,98 +1,192 @@
 {
   "zoom-api": {
-    "domain": {
-      "const": "api.zoom.us"
-    }
+    "properties": {
+      "domain": {
+        "const": "api.zoom.us"
+      }
+    },
+    "required": [
+      "domain"
+    ]
   },
   "zoom-read-all": {
-    "method": {
-      "const": "GET"
-    }
+    "properties": {
+      "method": {
+        "const": "GET"
+      }
+    },
+    "required": [
+      "method"
+    ]
   },
   "zoom-write-all": {
-    "method": {
-      "enum": ["POST", "PUT", "PATCH", "DELETE"]
-    }
+    "properties": {
+      "method": {
+        "enum": [
+          "POST",
+          "PUT",
+          "PATCH",
+          "DELETE"
+        ]
+      }
+    },
+    "required": [
+      "method"
+    ]
   },
   "zoom-read-meetings": {
-    "method": {
-      "const": "GET"
+    "properties": {
+      "method": {
+        "const": "GET"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/v[0-9]+/(meetings|past_meetings|live_meetings|users/[^/]+/meetings|users/[^/]+/upcoming_meetings)(/.*)?$"
+      }
     },
-    "path": {
-      "type": "string",
-      "pattern": "^/v[0-9]+/(meetings|past_meetings|live_meetings|users/[^/]+/meetings|users/[^/]+/upcoming_meetings)(/.*)?$"
-    }
+    "required": [
+      "method",
+      "path"
+    ]
   },
   "zoom-write-meetings": {
-    "method": {
-      "enum": ["POST", "PUT", "PATCH", "DELETE"]
+    "properties": {
+      "method": {
+        "enum": [
+          "POST",
+          "PUT",
+          "PATCH",
+          "DELETE"
+        ]
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/v[0-9]+/(meetings|past_meetings|live_meetings|users/[^/]+/meetings|users/[^/]+/upcoming_meetings)(/.*)?$"
+      }
     },
-    "path": {
-      "type": "string",
-      "pattern": "^/v[0-9]+/(meetings|past_meetings|live_meetings|users/[^/]+/meetings|users/[^/]+/upcoming_meetings)(/.*)?$"
-    }
+    "required": [
+      "method",
+      "path"
+    ]
   },
   "zoom-read-webinars": {
-    "method": {
-      "const": "GET"
+    "properties": {
+      "method": {
+        "const": "GET"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/v[0-9]+/(webinars|past_webinars|live_webinars|users/[^/]+/webinars)(/.*)?$"
+      }
     },
-    "path": {
-      "type": "string",
-      "pattern": "^/v[0-9]+/(webinars|past_webinars|live_webinars|users/[^/]+/webinars)(/.*)?$"
-    }
+    "required": [
+      "method",
+      "path"
+    ]
   },
   "zoom-write-webinars": {
-    "method": {
-      "enum": ["POST", "PUT", "PATCH", "DELETE"]
+    "properties": {
+      "method": {
+        "enum": [
+          "POST",
+          "PUT",
+          "PATCH",
+          "DELETE"
+        ]
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/v[0-9]+/(webinars|past_webinars|live_webinars|users/[^/]+/webinars)(/.*)?$"
+      }
     },
-    "path": {
-      "type": "string",
-      "pattern": "^/v[0-9]+/(webinars|past_webinars|live_webinars|users/[^/]+/webinars)(/.*)?$"
-    }
+    "required": [
+      "method",
+      "path"
+    ]
   },
   "zoom-read-recordings": {
-    "method": {
-      "const": "GET"
+    "properties": {
+      "method": {
+        "const": "GET"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/v[0-9]+/(meetings/[^/]+/recordings|users/[^/]+/recordings)(/.*)?$"
+      }
     },
-    "path": {
-      "type": "string",
-      "pattern": "^/v[0-9]+/(meetings/[^/]+/recordings|users/[^/]+/recordings)(/.*)?$"
-    }
+    "required": [
+      "method",
+      "path"
+    ]
   },
   "zoom-write-recordings": {
-    "method": {
-      "enum": ["POST", "PUT", "PATCH", "DELETE"]
+    "properties": {
+      "method": {
+        "enum": [
+          "POST",
+          "PUT",
+          "PATCH",
+          "DELETE"
+        ]
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/v[0-9]+/(meetings/[^/]+/recordings|users/[^/]+/recordings)(/.*)?$"
+      }
     },
-    "path": {
-      "type": "string",
-      "pattern": "^/v[0-9]+/(meetings/[^/]+/recordings|users/[^/]+/recordings)(/.*)?$"
-    }
+    "required": [
+      "method",
+      "path"
+    ]
   },
   "zoom-read-reports": {
-    "method": {
-      "const": "GET"
+    "properties": {
+      "method": {
+        "const": "GET"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/v[0-9]+/report(/.*)?$"
+      }
     },
-    "path": {
-      "type": "string",
-      "pattern": "^/v[0-9]+/report(/.*)?$"
-    }
+    "required": [
+      "method",
+      "path"
+    ]
   },
   "zoom-read-users": {
-    "method": {
-      "const": "GET"
+    "properties": {
+      "method": {
+        "const": "GET"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/v[0-9]+/users(/.*)?$"
+      }
     },
-    "path": {
-      "type": "string",
-      "pattern": "^/v[0-9]+/users(/.*)?$"
-    }
+    "required": [
+      "method",
+      "path"
+    ]
   },
   "zoom-write-users": {
-    "method": {
-      "enum": ["POST", "PUT", "PATCH", "DELETE"]
+    "properties": {
+      "method": {
+        "enum": [
+          "POST",
+          "PUT",
+          "PATCH",
+          "DELETE"
+        ]
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/v[0-9]+/users(/.*)?$"
+      }
     },
-    "path": {
-      "type": "string",
-      "pattern": "^/v[0-9]+/users(/.*)?$"
-    }
+    "required": [
+      "method",
+      "path"
+    ]
   }
 }

@@ -1,53 +1,102 @@
 {
   "google-docs-api": {
-    "domain": {
-      "const": "docs.googleapis.com"
-    }
+    "properties": {
+      "domain": {
+        "const": "docs.googleapis.com"
+      }
+    },
+    "required": [
+      "domain"
+    ]
   },
   "google-docs-read-all": {
-    "method": {
-      "const": "GET"
-    }
+    "properties": {
+      "method": {
+        "const": "GET"
+      }
+    },
+    "required": [
+      "method"
+    ]
   },
   "google-docs-write-all": {
-    "method": {
-      "enum": ["POST", "PUT", "PATCH", "DELETE"]
-    }
+    "properties": {
+      "method": {
+        "enum": [
+          "POST",
+          "PUT",
+          "PATCH",
+          "DELETE"
+        ]
+      }
+    },
+    "required": [
+      "method"
+    ]
   },
   "google-docs-read-documents": {
-    "method": {
-      "const": "GET"
+    "properties": {
+      "method": {
+        "const": "GET"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/v[0-9]+/documents/[^/]+$"
+      }
     },
-    "path": {
-      "type": "string",
-      "pattern": "^/v[0-9]+/documents/[^/]+$"
-    }
+    "required": [
+      "method",
+      "path"
+    ]
   },
   "google-docs-write-documents": {
-    "method": {
-      "enum": ["POST", "PUT", "PATCH", "DELETE"]
+    "properties": {
+      "method": {
+        "enum": [
+          "POST",
+          "PUT",
+          "PATCH",
+          "DELETE"
+        ]
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/v[0-9]+/documents(/.*)?$"
+      }
     },
-    "path": {
-      "type": "string",
-      "pattern": "^/v[0-9]+/documents(/.*)?$"
-    }
+    "required": [
+      "method",
+      "path"
+    ]
   },
   "google-docs-create-documents": {
-    "method": {
-      "const": "POST"
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/v[0-9]+/documents$"
+      }
     },
-    "path": {
-      "type": "string",
-      "pattern": "^/v[0-9]+/documents$"
-    }
+    "required": [
+      "method",
+      "path"
+    ]
   },
   "google-docs-update-documents": {
-    "method": {
-      "const": "POST"
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/v[0-9]+/documents/[^/]+:batchUpdate$"
+      }
     },
-    "path": {
-      "type": "string",
-      "pattern": "^/v[0-9]+/documents/[^/]+:batchUpdate$"
-    }
+    "required": [
+      "method",
+      "path"
+    ]
   }
 }

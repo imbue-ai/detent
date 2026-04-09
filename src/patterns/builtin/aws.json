@@ -1,176 +1,326 @@
 {
   "aws": {
-    "domain": {
-      "type": "string",
-      "pattern": "^([a-z0-9.-]+\\.)?amazonaws\\.com$"
-    }
+    "properties": {
+      "domain": {
+        "type": "string",
+        "pattern": "^([a-z0-9.-]+\\.)?amazonaws\\.com$"
+      }
+    },
+    "required": [
+      "domain"
+    ]
   },
   "aws-s3": {
-    "domain": {
-      "type": "string",
-      "pattern": "^(.*\\.)?s3(-[a-z]+)?(\\.[a-z0-9.-]+)?\\.amazonaws\\.com$"
-    }
+    "properties": {
+      "domain": {
+        "type": "string",
+        "pattern": "^(.*\\.)?s3(-[a-z]+)?(\\.[a-z0-9.-]+)?\\.amazonaws\\.com$"
+      }
+    },
+    "required": [
+      "domain"
+    ]
   },
   "aws-s3-read": {
-    "domain": {
-      "type": "string",
-      "pattern": "^(.*\\.)?s3(-[a-z]+)?(\\.[a-z0-9.-]+)?\\.amazonaws\\.com$"
+    "properties": {
+      "domain": {
+        "type": "string",
+        "pattern": "^(.*\\.)?s3(-[a-z]+)?(\\.[a-z0-9.-]+)?\\.amazonaws\\.com$"
+      },
+      "method": {
+        "enum": [
+          "GET",
+          "HEAD"
+        ]
+      }
     },
-    "method": {
-      "enum": ["GET", "HEAD"]
-    }
+    "required": [
+      "domain",
+      "method"
+    ]
   },
   "aws-s3-write": {
-    "domain": {
-      "type": "string",
-      "pattern": "^(.*\\.)?s3(-[a-z]+)?(\\.[a-z0-9.-]+)?\\.amazonaws\\.com$"
+    "properties": {
+      "domain": {
+        "type": "string",
+        "pattern": "^(.*\\.)?s3(-[a-z]+)?(\\.[a-z0-9.-]+)?\\.amazonaws\\.com$"
+      },
+      "method": {
+        "enum": [
+          "POST",
+          "PUT",
+          "PATCH",
+          "DELETE"
+        ]
+      }
     },
-    "method": {
-      "enum": ["POST", "PUT", "PATCH", "DELETE"]
-    }
+    "required": [
+      "domain",
+      "method"
+    ]
   },
   "aws-ec2": {
-    "domain": {
-      "type": "string",
-      "pattern": "^ec2(-[a-z]+)?(\\.[a-z0-9.-]+)?\\.amazonaws\\.com$"
-    }
+    "properties": {
+      "domain": {
+        "type": "string",
+        "pattern": "^ec2(-[a-z]+)?(\\.[a-z0-9.-]+)?\\.amazonaws\\.com$"
+      }
+    },
+    "required": [
+      "domain"
+    ]
   },
   "aws-iam": {
-    "domain": {
-      "type": "string",
-      "pattern": "^iam(-[a-z]+)?(\\.[a-z0-9.-]+)?\\.amazonaws\\.com$"
-    }
+    "properties": {
+      "domain": {
+        "type": "string",
+        "pattern": "^iam(-[a-z]+)?(\\.[a-z0-9.-]+)?\\.amazonaws\\.com$"
+      }
+    },
+    "required": [
+      "domain"
+    ]
   },
   "aws-sts": {
-    "domain": {
-      "type": "string",
-      "pattern": "^sts(-[a-z]+)?(\\.[a-z0-9.-]+)?\\.amazonaws\\.com$"
-    }
+    "properties": {
+      "domain": {
+        "type": "string",
+        "pattern": "^sts(-[a-z]+)?(\\.[a-z0-9.-]+)?\\.amazonaws\\.com$"
+      }
+    },
+    "required": [
+      "domain"
+    ]
   },
   "aws-lambda": {
-    "domain": {
-      "type": "string",
-      "pattern": "^lambda(-[a-z]+)?(\\.[a-z0-9.-]+)?\\.amazonaws\\.com$"
-    }
+    "properties": {
+      "domain": {
+        "type": "string",
+        "pattern": "^lambda(-[a-z]+)?(\\.[a-z0-9.-]+)?\\.amazonaws\\.com$"
+      }
+    },
+    "required": [
+      "domain"
+    ]
   },
   "aws-dynamodb": {
-    "domain": {
-      "type": "string",
-      "pattern": "^dynamodb(-[a-z]+)?(\\.[a-z0-9.-]+)?\\.amazonaws\\.com$"
-    }
+    "properties": {
+      "domain": {
+        "type": "string",
+        "pattern": "^dynamodb(-[a-z]+)?(\\.[a-z0-9.-]+)?\\.amazonaws\\.com$"
+      }
+    },
+    "required": [
+      "domain"
+    ]
   },
   "aws-cloudformation": {
-    "domain": {
-      "type": "string",
-      "pattern": "^cloudformation(-[a-z]+)?(\\.[a-z0-9.-]+)?\\.amazonaws\\.com$"
-    }
+    "properties": {
+      "domain": {
+        "type": "string",
+        "pattern": "^cloudformation(-[a-z]+)?(\\.[a-z0-9.-]+)?\\.amazonaws\\.com$"
+      }
+    },
+    "required": [
+      "domain"
+    ]
   },
   "aws-logs": {
-    "domain": {
-      "type": "string",
-      "pattern": "^logs(-[a-z]+)?(\\.[a-z0-9.-]+)?\\.amazonaws\\.com$"
-    }
+    "properties": {
+      "domain": {
+        "type": "string",
+        "pattern": "^logs(-[a-z]+)?(\\.[a-z0-9.-]+)?\\.amazonaws\\.com$"
+      }
+    },
+    "required": [
+      "domain"
+    ]
   },
   "aws-cloudwatch": {
-    "domain": {
-      "type": "string",
-      "pattern": "^monitoring(-[a-z]+)?(\\.[a-z0-9.-]+)?\\.amazonaws\\.com$"
-    }
+    "properties": {
+      "domain": {
+        "type": "string",
+        "pattern": "^monitoring(-[a-z]+)?(\\.[a-z0-9.-]+)?\\.amazonaws\\.com$"
+      }
+    },
+    "required": [
+      "domain"
+    ]
   },
   "aws-sns": {
-    "domain": {
-      "type": "string",
-      "pattern": "^sns(-[a-z]+)?(\\.[a-z0-9.-]+)?\\.amazonaws\\.com$"
-    }
+    "properties": {
+      "domain": {
+        "type": "string",
+        "pattern": "^sns(-[a-z]+)?(\\.[a-z0-9.-]+)?\\.amazonaws\\.com$"
+      }
+    },
+    "required": [
+      "domain"
+    ]
   },
   "aws-sqs": {
-    "domain": {
-      "type": "string",
-      "pattern": "^sqs(-[a-z]+)?(\\.[a-z0-9.-]+)?\\.amazonaws\\.com$"
-    }
+    "properties": {
+      "domain": {
+        "type": "string",
+        "pattern": "^sqs(-[a-z]+)?(\\.[a-z0-9.-]+)?\\.amazonaws\\.com$"
+      }
+    },
+    "required": [
+      "domain"
+    ]
   },
   "aws-ssm": {
-    "domain": {
-      "type": "string",
-      "pattern": "^ssm(-[a-z]+)?(\\.[a-z0-9.-]+)?\\.amazonaws\\.com$"
-    }
+    "properties": {
+      "domain": {
+        "type": "string",
+        "pattern": "^ssm(-[a-z]+)?(\\.[a-z0-9.-]+)?\\.amazonaws\\.com$"
+      }
+    },
+    "required": [
+      "domain"
+    ]
   },
   "aws-secretsmanager": {
-    "domain": {
-      "type": "string",
-      "pattern": "^secretsmanager(-[a-z]+)?(\\.[a-z0-9.-]+)?\\.amazonaws\\.com$"
-    }
+    "properties": {
+      "domain": {
+        "type": "string",
+        "pattern": "^secretsmanager(-[a-z]+)?(\\.[a-z0-9.-]+)?\\.amazonaws\\.com$"
+      }
+    },
+    "required": [
+      "domain"
+    ]
   },
   "aws-route53": {
-    "domain": {
-      "type": "string",
-      "pattern": "^route53(-[a-z]+)?(\\.[a-z0-9.-]+)?\\.amazonaws\\.com$"
-    }
+    "properties": {
+      "domain": {
+        "type": "string",
+        "pattern": "^route53(-[a-z]+)?(\\.[a-z0-9.-]+)?\\.amazonaws\\.com$"
+      }
+    },
+    "required": [
+      "domain"
+    ]
   },
   "aws-ecs": {
-    "domain": {
-      "type": "string",
-      "pattern": "^ecs(-[a-z]+)?(\\.[a-z0-9.-]+)?\\.amazonaws\\.com$"
-    }
+    "properties": {
+      "domain": {
+        "type": "string",
+        "pattern": "^ecs(-[a-z]+)?(\\.[a-z0-9.-]+)?\\.amazonaws\\.com$"
+      }
+    },
+    "required": [
+      "domain"
+    ]
   },
   "aws-ecr": {
-    "domain": {
-      "type": "string",
-      "pattern": "^((api|dkr)\\.)?ecr(-[a-z]+)?(\\.[a-z0-9.-]+)?\\.amazonaws\\.com$"
-    }
+    "properties": {
+      "domain": {
+        "type": "string",
+        "pattern": "^((api|dkr)\\.)?ecr(-[a-z]+)?(\\.[a-z0-9.-]+)?\\.amazonaws\\.com$"
+      }
+    },
+    "required": [
+      "domain"
+    ]
   },
   "aws-eks": {
-    "domain": {
-      "type": "string",
-      "pattern": "^eks(-[a-z]+)?(\\.[a-z0-9.-]+)?\\.amazonaws\\.com$"
-    }
+    "properties": {
+      "domain": {
+        "type": "string",
+        "pattern": "^eks(-[a-z]+)?(\\.[a-z0-9.-]+)?\\.amazonaws\\.com$"
+      }
+    },
+    "required": [
+      "domain"
+    ]
   },
   "aws-bedrock": {
-    "domain": {
-      "type": "string",
-      "pattern": "^bedrock(-[a-z]+)*(\\.[a-z0-9.-]+)?\\.amazonaws\\.com$"
-    }
+    "properties": {
+      "domain": {
+        "type": "string",
+        "pattern": "^bedrock(-[a-z]+)*(\\.[a-z0-9.-]+)?\\.amazonaws\\.com$"
+      }
+    },
+    "required": [
+      "domain"
+    ]
   },
   "aws-cloudfront": {
-    "domain": {
-      "type": "string",
-      "pattern": "^cloudfront(-[a-z]+)?(\\.[a-z0-9.-]+)?\\.amazonaws\\.com$"
-    }
+    "properties": {
+      "domain": {
+        "type": "string",
+        "pattern": "^cloudfront(-[a-z]+)?(\\.[a-z0-9.-]+)?\\.amazonaws\\.com$"
+      }
+    },
+    "required": [
+      "domain"
+    ]
   },
   "aws-rds": {
-    "domain": {
-      "type": "string",
-      "pattern": "^rds(-[a-z]+)?(\\.[a-z0-9.-]+)?\\.amazonaws\\.com$"
-    }
+    "properties": {
+      "domain": {
+        "type": "string",
+        "pattern": "^rds(-[a-z]+)?(\\.[a-z0-9.-]+)?\\.amazonaws\\.com$"
+      }
+    },
+    "required": [
+      "domain"
+    ]
   },
   "aws-kms": {
-    "domain": {
-      "type": "string",
-      "pattern": "^kms(-[a-z]+)?(\\.[a-z0-9.-]+)?\\.amazonaws\\.com$"
-    }
+    "properties": {
+      "domain": {
+        "type": "string",
+        "pattern": "^kms(-[a-z]+)?(\\.[a-z0-9.-]+)?\\.amazonaws\\.com$"
+      }
+    },
+    "required": [
+      "domain"
+    ]
   },
   "aws-elb": {
-    "domain": {
-      "type": "string",
-      "pattern": "^elasticloadbalancing(-[a-z]+)?(\\.[a-z0-9.-]+)?\\.amazonaws\\.com$"
-    }
+    "properties": {
+      "domain": {
+        "type": "string",
+        "pattern": "^elasticloadbalancing(-[a-z]+)?(\\.[a-z0-9.-]+)?\\.amazonaws\\.com$"
+      }
+    },
+    "required": [
+      "domain"
+    ]
   },
   "aws-cloudtrail": {
-    "domain": {
-      "type": "string",
-      "pattern": "^cloudtrail(-[a-z]+)?(\\.[a-z0-9.-]+)?\\.amazonaws\\.com$"
-    }
+    "properties": {
+      "domain": {
+        "type": "string",
+        "pattern": "^cloudtrail(-[a-z]+)?(\\.[a-z0-9.-]+)?\\.amazonaws\\.com$"
+      }
+    },
+    "required": [
+      "domain"
+    ]
   },
   "aws-eventbridge": {
-    "domain": {
-      "type": "string",
-      "pattern": "^events(-[a-z]+)?(\\.[a-z0-9.-]+)?\\.amazonaws\\.com$"
-    }
+    "properties": {
+      "domain": {
+        "type": "string",
+        "pattern": "^events(-[a-z]+)?(\\.[a-z0-9.-]+)?\\.amazonaws\\.com$"
+      }
+    },
+    "required": [
+      "domain"
+    ]
   },
   "aws-kinesis": {
-    "domain": {
-      "type": "string",
-      "pattern": "^kinesis(-[a-z]+)?(\\.[a-z0-9.-]+)?\\.amazonaws\\.com$"
-    }
+    "properties": {
+      "domain": {
+        "type": "string",
+        "pattern": "^kinesis(-[a-z]+)?(\\.[a-z0-9.-]+)?\\.amazonaws\\.com$"
+      }
+    },
+    "required": [
+      "domain"
+    ]
   }
 }

@@ -1,7 +1,12 @@
 {
   "linear-api": {
-    "domain": {
-      "const": "api.linear.app"
-    }
+    "properties": {
+      "domain": {
+        "const": "api.linear.app"
+      }
+    },
+    "required": [
+      "domain"
+    ]
   }
 }

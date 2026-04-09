@@ -2,6 +2,7 @@ import { readdirSync, readFileSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { Ajv, type ValidateFunction } from 'ajv';
+import { decomposedRequestPropertyNames } from '../decomposedRequest.js';
 import type { DecomposedRequest } from '../decomposedRequest.js';
 
 export class RequestPatternError extends Error {
@@ -18,23 +19,66 @@ export class BuiltinPatternLoadError extends Error {
   }
 }
 
+const validRequestPropertyNames = decomposedRequestPropertyNames;
+
+function findInvalidPropertyName(schema: Record<string, unknown>): string | undefined {
+  const properties = schema.properties;
+  if (typeof properties === 'object' && properties !== null) {
+    for (const key of Object.keys(properties as Record<string, unknown>)) {
+      if (!validRequestPropertyNames.has(key)) {
+        return key;
+      }
+    }
+  }
+
+  for (const keyword of ['anyOf', 'oneOf', 'allOf'] as const) {
+    const value = schema[keyword];
+    if (Array.isArray(value)) {
+      for (const subSchema of value) {
+        if (typeof subSchema === 'object' && subSchema !== null) {
+          const found = findInvalidPropertyName(subSchema as Record<string, unknown>);
+          if (found !== undefined) return found;
+        }
+      }
+    }
+  }
+
+  for (const keyword of ['if', 'then', 'else', 'not'] as const) {
+    const value = schema[keyword];
+    if (typeof value === 'object' && value !== null) {
+      const found = findInvalidPropertyName(value as Record<string, unknown>);
+      if (found !== undefined) return found;
+    }
+  }
+
+  return undefined;
+}
+
 /**
  * A request pattern wraps a JSON schema that can be matched against a DecomposedRequest object.
- * The schema properties correspond to the fields of DecomposedRequest.
+ * The schema is a standard JSON Schema object schema (without the outer `type: "object"`
+ * wrapper, which is added automatically).
  */
 export class RequestPattern {
   readonly name: string;
-  readonly schemaProperties: Readonly<Record<string, unknown>>;
+  readonly schema: Readonly<Record<string, unknown>>;
   private readonly validate: ValidateFunction;
 
-  constructor(name: string, schemaProperties: Record<string, unknown>) {
+  constructor(name: string, schema: Record<string, unknown>) {
     this.name = name;
-    this.schemaProperties = schemaProperties;
+    this.schema = schema;
+
+    const invalidPropertyName = findInvalidPropertyName(schema);
+    if (invalidPropertyName !== undefined) {
+      throw new RequestPatternError(
+        `Pattern "${name}" references unknown request property "${invalidPropertyName}". ` +
+          `Valid properties: ${[...validRequestPropertyNames].join(', ')}`
+      );
+    }
 
     const fullSchema = {
-      type: 'object',
-      properties: schemaProperties,
-      required: Object.keys(schemaProperties),
+      type: 'object' as const,
+      ...schema,
     };
 
     const ajv = new Ajv({ allErrors: true });
@@ -90,7 +134,7 @@ export class PatternRegistry {
     }
   }
 
-  allSchemaProperties(): Readonly<Record<string, Record<string, unknown>>> {
+  allSchemas(): Readonly<Record<string, Record<string, unknown>>> {
     return Object.fromEntries(this.rawSchemas);
   }
 }

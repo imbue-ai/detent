@@ -7,16 +7,23 @@
  *  - method:   UPPERCASE  (e.g. "GET")
  *  - headers:  keys are lowercase (e.g. "content-type")
  */
-export interface DecomposedRequest {
-  readonly protocol: string;
-  readonly domain: string;
-  readonly port: number;
-  readonly path: string;
-  readonly method: string;
-  readonly headers: Readonly<Record<string, string>>;
-  readonly queryParams: Readonly<Record<string, string>>;
-  readonly body: string | undefined;
-}
+
+const decomposedRequestFieldTypes = {
+  protocol: '' as string,
+  domain: '' as string,
+  port: 0 as number,
+  path: '' as string,
+  method: '' as string,
+  headers: {} as Readonly<Record<string, string>>,
+  queryParams: {} as Readonly<Record<string, string>>,
+  body: undefined as string | undefined,
+} as const satisfies Record<string, unknown>;
+
+export type DecomposedRequest = Readonly<typeof decomposedRequestFieldTypes>;
+
+export const decomposedRequestPropertyNames: ReadonlySet<string> = new Set(
+  Object.keys(decomposedRequestFieldTypes)
+);
 
 export async function decomposeRequest(request: Request): Promise<DecomposedRequest> {
   const url = new URL(request.url);

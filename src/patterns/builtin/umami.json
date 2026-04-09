@@ -1,89 +1,172 @@
 {
   "umami-api": {
-    "domain": {
-      "const": "api.umami.is"
-    }
+    "properties": {
+      "domain": {
+        "const": "api.umami.is"
+      }
+    },
+    "required": [
+      "domain"
+    ]
   },
   "umami-read-all": {
-    "method": {
-      "const": "GET"
-    }
+    "properties": {
+      "method": {
+        "const": "GET"
+      }
+    },
+    "required": [
+      "method"
+    ]
   },
   "umami-write-all": {
-    "method": {
-      "enum": ["POST", "PUT", "PATCH", "DELETE"]
-    }
+    "properties": {
+      "method": {
+        "enum": [
+          "POST",
+          "PUT",
+          "PATCH",
+          "DELETE"
+        ]
+      }
+    },
+    "required": [
+      "method"
+    ]
   },
   "umami-read-websites": {
-    "method": {
-      "const": "GET"
+    "properties": {
+      "method": {
+        "const": "GET"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^(/v[0-9]+|/api)/websites(/[^/]+)?$"
+      }
     },
-    "path": {
-      "type": "string",
-      "pattern": "^(/v[0-9]+|/api)/websites(/[^/]+)?$"
-    }
+    "required": [
+      "method",
+      "path"
+    ]
   },
   "umami-write-websites": {
-    "method": {
-      "enum": ["POST", "PUT", "PATCH", "DELETE"]
+    "properties": {
+      "method": {
+        "enum": [
+          "POST",
+          "PUT",
+          "PATCH",
+          "DELETE"
+        ]
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^(/v[0-9]+|/api)/websites(/.*)?$"
+      }
     },
-    "path": {
-      "type": "string",
-      "pattern": "^(/v[0-9]+|/api)/websites(/.*)?$"
-    }
+    "required": [
+      "method",
+      "path"
+    ]
   },
   "umami-read-stats": {
-    "method": {
-      "const": "GET"
+    "properties": {
+      "method": {
+        "const": "GET"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^(/v[0-9]+|/api)/websites/[^/]+/(active|daterange|events|event-data|metrics|pageviews|stats|sessions|session-data)(/.*)?$"
+      }
     },
-    "path": {
-      "type": "string",
-      "pattern": "^(/v[0-9]+|/api)/websites/[^/]+/(active|daterange|events|event-data|metrics|pageviews|stats|sessions|session-data)(/.*)?$"
-    }
+    "required": [
+      "method",
+      "path"
+    ]
   },
   "umami-read-reports": {
-    "method": {
-      "const": "GET"
+    "properties": {
+      "method": {
+        "const": "GET"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^(/v[0-9]+|/api)/reports(/.*)?$"
+      }
     },
-    "path": {
-      "type": "string",
-      "pattern": "^(/v[0-9]+|/api)/reports(/.*)?$"
-    }
+    "required": [
+      "method",
+      "path"
+    ]
   },
   "umami-write-reports": {
-    "method": {
-      "enum": ["POST", "PUT", "PATCH", "DELETE"]
+    "properties": {
+      "method": {
+        "enum": [
+          "POST",
+          "PUT",
+          "PATCH",
+          "DELETE"
+        ]
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^(/v[0-9]+|/api)/reports(/.*)?$"
+      }
     },
-    "path": {
-      "type": "string",
-      "pattern": "^(/v[0-9]+|/api)/reports(/.*)?$"
-    }
+    "required": [
+      "method",
+      "path"
+    ]
   },
   "umami-read-teams": {
-    "method": {
-      "const": "GET"
+    "properties": {
+      "method": {
+        "const": "GET"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^(/v[0-9]+|/api)/teams(/.*)?$"
+      }
     },
-    "path": {
-      "type": "string",
-      "pattern": "^(/v[0-9]+|/api)/teams(/.*)?$"
-    }
+    "required": [
+      "method",
+      "path"
+    ]
   },
   "umami-write-teams": {
-    "method": {
-      "enum": ["POST", "PUT", "PATCH", "DELETE"]
+    "properties": {
+      "method": {
+        "enum": [
+          "POST",
+          "PUT",
+          "PATCH",
+          "DELETE"
+        ]
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^(/v[0-9]+|/api)/teams(/.*)?$"
+      }
     },
-    "path": {
-      "type": "string",
-      "pattern": "^(/v[0-9]+|/api)/teams(/.*)?$"
-    }
+    "required": [
+      "method",
+      "path"
+    ]
   },
   "umami-read-me": {
-    "method": {
-      "const": "GET"
+    "properties": {
+      "method": {
+        "const": "GET"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^(/v[0-9]+|/api)/me(/.*)?$"
+      }
     },
-    "path": {
-      "type": "string",
-      "pattern": "^(/v[0-9]+|/api)/me(/.*)?$"
-    }
+    "required": [
+      "method",
+      "path"
+    ]
   }
 }

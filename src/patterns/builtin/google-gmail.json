@@ -1,134 +1,257 @@
 {
   "google-gmail-api": {
-    "domain": {
-      "const": "gmail.googleapis.com"
-    }
+    "properties": {
+      "domain": {
+        "const": "gmail.googleapis.com"
+      }
+    },
+    "required": [
+      "domain"
+    ]
   },
   "google-gmail-read-all": {
-    "method": {
-      "const": "GET"
-    }
+    "properties": {
+      "method": {
+        "const": "GET"
+      }
+    },
+    "required": [
+      "method"
+    ]
   },
   "google-gmail-write-all": {
-    "method": {
-      "enum": ["POST", "PUT", "PATCH", "DELETE"]
-    }
+    "properties": {
+      "method": {
+        "enum": [
+          "POST",
+          "PUT",
+          "PATCH",
+          "DELETE"
+        ]
+      }
+    },
+    "required": [
+      "method"
+    ]
   },
   "google-gmail-read-messages": {
-    "method": {
-      "const": "GET"
+    "properties": {
+      "method": {
+        "const": "GET"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/gmail/v[0-9]+/users/[^/]+/messages(/.*)?$"
+      }
     },
-    "path": {
-      "type": "string",
-      "pattern": "^/gmail/v[0-9]+/users/[^/]+/messages(/.*)?$"
-    }
+    "required": [
+      "method",
+      "path"
+    ]
   },
   "google-gmail-write-messages": {
-    "method": {
-      "enum": ["POST", "PUT", "PATCH", "DELETE"]
+    "properties": {
+      "method": {
+        "enum": [
+          "POST",
+          "PUT",
+          "PATCH",
+          "DELETE"
+        ]
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/(upload/)?gmail/v[0-9]+/users/[^/]+/messages(/.*)?$"
+      }
     },
-    "path": {
-      "type": "string",
-      "pattern": "^/(upload/)?gmail/v[0-9]+/users/[^/]+/messages(/.*)?$"
-    }
+    "required": [
+      "method",
+      "path"
+    ]
   },
   "google-gmail-send-messages": {
-    "method": {
-      "const": "POST"
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/(upload/)?gmail/v[0-9]+/users/[^/]+/messages/send$"
+      }
     },
-    "path": {
-      "type": "string",
-      "pattern": "^/(upload/)?gmail/v[0-9]+/users/[^/]+/messages/send$"
-    }
+    "required": [
+      "method",
+      "path"
+    ]
   },
   "google-gmail-read-threads": {
-    "method": {
-      "const": "GET"
+    "properties": {
+      "method": {
+        "const": "GET"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/gmail/v[0-9]+/users/[^/]+/threads(/.*)?$"
+      }
     },
-    "path": {
-      "type": "string",
-      "pattern": "^/gmail/v[0-9]+/users/[^/]+/threads(/.*)?$"
-    }
+    "required": [
+      "method",
+      "path"
+    ]
   },
   "google-gmail-write-threads": {
-    "method": {
-      "enum": ["POST", "PUT", "PATCH", "DELETE"]
+    "properties": {
+      "method": {
+        "enum": [
+          "POST",
+          "PUT",
+          "PATCH",
+          "DELETE"
+        ]
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/gmail/v[0-9]+/users/[^/]+/threads(/.*)?$"
+      }
     },
-    "path": {
-      "type": "string",
-      "pattern": "^/gmail/v[0-9]+/users/[^/]+/threads(/.*)?$"
-    }
+    "required": [
+      "method",
+      "path"
+    ]
   },
   "google-gmail-read-labels": {
-    "method": {
-      "const": "GET"
+    "properties": {
+      "method": {
+        "const": "GET"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/gmail/v[0-9]+/users/[^/]+/labels(/.*)?$"
+      }
     },
-    "path": {
-      "type": "string",
-      "pattern": "^/gmail/v[0-9]+/users/[^/]+/labels(/.*)?$"
-    }
+    "required": [
+      "method",
+      "path"
+    ]
   },
   "google-gmail-write-labels": {
-    "method": {
-      "enum": ["POST", "PUT", "PATCH", "DELETE"]
+    "properties": {
+      "method": {
+        "enum": [
+          "POST",
+          "PUT",
+          "PATCH",
+          "DELETE"
+        ]
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/gmail/v[0-9]+/users/[^/]+/labels(/.*)?$"
+      }
     },
-    "path": {
-      "type": "string",
-      "pattern": "^/gmail/v[0-9]+/users/[^/]+/labels(/.*)?$"
-    }
+    "required": [
+      "method",
+      "path"
+    ]
   },
   "google-gmail-read-drafts": {
-    "method": {
-      "const": "GET"
+    "properties": {
+      "method": {
+        "const": "GET"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/gmail/v[0-9]+/users/[^/]+/drafts(/.*)?$"
+      }
     },
-    "path": {
-      "type": "string",
-      "pattern": "^/gmail/v[0-9]+/users/[^/]+/drafts(/.*)?$"
-    }
+    "required": [
+      "method",
+      "path"
+    ]
   },
   "google-gmail-write-drafts": {
-    "method": {
-      "enum": ["POST", "PUT", "PATCH", "DELETE"]
+    "properties": {
+      "method": {
+        "enum": [
+          "POST",
+          "PUT",
+          "PATCH",
+          "DELETE"
+        ]
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/(upload/)?gmail/v[0-9]+/users/[^/]+/drafts(/.*)?$"
+      }
     },
-    "path": {
-      "type": "string",
-      "pattern": "^/(upload/)?gmail/v[0-9]+/users/[^/]+/drafts(/.*)?$"
-    }
+    "required": [
+      "method",
+      "path"
+    ]
   },
   "google-gmail-read-settings": {
-    "method": {
-      "const": "GET"
+    "properties": {
+      "method": {
+        "const": "GET"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/gmail/v[0-9]+/users/[^/]+/settings(/.*)?$"
+      }
     },
-    "path": {
-      "type": "string",
-      "pattern": "^/gmail/v[0-9]+/users/[^/]+/settings(/.*)?$"
-    }
+    "required": [
+      "method",
+      "path"
+    ]
   },
   "google-gmail-write-settings": {
-    "method": {
-      "enum": ["POST", "PUT", "PATCH", "DELETE"]
+    "properties": {
+      "method": {
+        "enum": [
+          "POST",
+          "PUT",
+          "PATCH",
+          "DELETE"
+        ]
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/gmail/v[0-9]+/users/[^/]+/settings(/.*)?$"
+      }
     },
-    "path": {
-      "type": "string",
-      "pattern": "^/gmail/v[0-9]+/users/[^/]+/settings(/.*)?$"
-    }
+    "required": [
+      "method",
+      "path"
+    ]
   },
   "google-gmail-read-history": {
-    "method": {
-      "const": "GET"
+    "properties": {
+      "method": {
+        "const": "GET"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/gmail/v[0-9]+/users/[^/]+/history$"
+      }
     },
-    "path": {
-      "type": "string",
-      "pattern": "^/gmail/v[0-9]+/users/[^/]+/history$"
-    }
+    "required": [
+      "method",
+      "path"
+    ]
   },
   "google-gmail-read-profile": {
-    "method": {
-      "const": "GET"
+    "properties": {
+      "method": {
+        "const": "GET"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/gmail/v[0-9]+/users/[^/]+/profile$"
+      }
     },
-    "path": {
-      "type": "string",
-      "pattern": "^/gmail/v[0-9]+/users/[^/]+/profile$"
-    }
+    "required": [
+      "method",
+      "path"
+    ]
   }
 }

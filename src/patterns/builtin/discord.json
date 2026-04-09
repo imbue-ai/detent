@@ -1,80 +1,157 @@
 {
   "discord-api": {
-    "domain": {
-      "const": "discord.com"
-    }
+    "properties": {
+      "domain": {
+        "const": "discord.com"
+      }
+    },
+    "required": [
+      "domain"
+    ]
   },
   "discord-read-all": {
-    "method": {
-      "const": "GET"
-    }
+    "properties": {
+      "method": {
+        "const": "GET"
+      }
+    },
+    "required": [
+      "method"
+    ]
   },
   "discord-write-all": {
-    "method": {
-      "enum": ["POST", "PUT", "PATCH", "DELETE"]
-    }
+    "properties": {
+      "method": {
+        "enum": [
+          "POST",
+          "PUT",
+          "PATCH",
+          "DELETE"
+        ]
+      }
+    },
+    "required": [
+      "method"
+    ]
   },
   "discord-read-messages": {
-    "method": {
-      "const": "GET"
+    "properties": {
+      "method": {
+        "const": "GET"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/api/v[0-9]+/channels/[^/]+/messages(/.*)?$"
+      }
     },
-    "path": {
-      "type": "string",
-      "pattern": "^/api/v[0-9]+/channels/[^/]+/messages(/.*)?$"
-    }
+    "required": [
+      "method",
+      "path"
+    ]
   },
   "discord-write-messages": {
-    "method": {
-      "enum": ["POST", "PUT", "PATCH", "DELETE"]
+    "properties": {
+      "method": {
+        "enum": [
+          "POST",
+          "PUT",
+          "PATCH",
+          "DELETE"
+        ]
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/api/v[0-9]+/channels/[^/]+/messages(/.*)?$"
+      }
     },
-    "path": {
-      "type": "string",
-      "pattern": "^/api/v[0-9]+/channels/[^/]+/messages(/.*)?$"
-    }
+    "required": [
+      "method",
+      "path"
+    ]
   },
   "discord-read-channels": {
-    "method": {
-      "const": "GET"
+    "properties": {
+      "method": {
+        "const": "GET"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/api/v[0-9]+/channels(/.*)?$"
+      }
     },
-    "path": {
-      "type": "string",
-      "pattern": "^/api/v[0-9]+/channels(/.*)?$"
-    }
+    "required": [
+      "method",
+      "path"
+    ]
   },
   "discord-write-channels": {
-    "method": {
-      "enum": ["POST", "PUT", "PATCH", "DELETE"]
+    "properties": {
+      "method": {
+        "enum": [
+          "POST",
+          "PUT",
+          "PATCH",
+          "DELETE"
+        ]
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/api/v[0-9]+/channels(/.*)?$"
+      }
     },
-    "path": {
-      "type": "string",
-      "pattern": "^/api/v[0-9]+/channels(/.*)?$"
-    }
+    "required": [
+      "method",
+      "path"
+    ]
   },
   "discord-read-guilds": {
-    "method": {
-      "const": "GET"
+    "properties": {
+      "method": {
+        "const": "GET"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/api/v[0-9]+/guilds(/.*)?$"
+      }
     },
-    "path": {
-      "type": "string",
-      "pattern": "^/api/v[0-9]+/guilds(/.*)?$"
-    }
+    "required": [
+      "method",
+      "path"
+    ]
   },
   "discord-write-guilds": {
-    "method": {
-      "enum": ["POST", "PUT", "PATCH", "DELETE"]
+    "properties": {
+      "method": {
+        "enum": [
+          "POST",
+          "PUT",
+          "PATCH",
+          "DELETE"
+        ]
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/api/v[0-9]+/guilds(/.*)?$"
+      }
     },
-    "path": {
-      "type": "string",
-      "pattern": "^/api/v[0-9]+/guilds(/.*)?$"
-    }
+    "required": [
+      "method",
+      "path"
+    ]
   },
   "discord-read-users": {
-    "method": {
-      "const": "GET"
+    "properties": {
+      "method": {
+        "const": "GET"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/api/v[0-9]+/users(/.*)?$"
+      }
     },
-    "path": {
-      "type": "string",
-      "pattern": "^/api/v[0-9]+/users(/.*)?$"
-    }
+    "required": [
+      "method",
+      "path"
+    ]
   }
 }

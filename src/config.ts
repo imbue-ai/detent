@@ -22,23 +22,6 @@ export interface RawConfig {
   readonly rules: readonly Readonly<Record<string, readonly string[]>>[];
 }
 
-const requestPatternPropertySchema = { type: 'object' } as const;
-
-const requestPatternSchema = {
-  type: 'object',
-  properties: {
-    protocol: requestPatternPropertySchema,
-    domain: requestPatternPropertySchema,
-    port: requestPatternPropertySchema,
-    path: requestPatternPropertySchema,
-    method: requestPatternPropertySchema,
-    headers: requestPatternPropertySchema,
-    queryParams: requestPatternPropertySchema,
-    body: requestPatternPropertySchema,
-  },
-  additionalProperties: false,
-} as const;
-
 const rawConfigSchema = {
   type: 'object',
   properties: {
@@ -48,7 +31,7 @@ const rawConfigSchema = {
     },
     patterns: {
       type: 'object',
-      additionalProperties: requestPatternSchema,
+      additionalProperties: { type: 'object' },
     },
     rules: {
       type: 'array',

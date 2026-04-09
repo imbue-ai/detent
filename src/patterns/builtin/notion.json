@@ -1,116 +1,230 @@
 {
   "notion-api": {
-    "domain": {
-      "const": "api.notion.com"
-    }
+    "properties": {
+      "domain": {
+        "const": "api.notion.com"
+      }
+    },
+    "required": [
+      "domain"
+    ]
   },
   "notion-read-all": {
-    "method": {
-      "const": "GET"
-    }
+    "anyOf": [
+      {
+        "properties": {
+          "method": {
+            "const": "GET"
+          }
+        },
+        "required": [
+          "method"
+        ]
+      },
+      {
+        "properties": {
+          "method": {
+            "const": "POST"
+          },
+          "path": {
+            "type": "string",
+            "pattern": "^/v1/search$"
+          }
+        },
+        "required": [
+          "method",
+          "path"
+        ]
+      }
+    ]
   },
   "notion-write-all": {
-    "method": {
-      "enum": ["POST", "PUT", "PATCH", "DELETE"]
-    }
+    "properties": {
+      "method": {
+        "enum": [
+          "POST",
+          "PUT",
+          "PATCH",
+          "DELETE"
+        ]
+      }
+    },
+    "required": [
+      "method"
+    ]
   },
   "notion-read-pages": {
-    "method": {
-      "const": "GET"
+    "properties": {
+      "method": {
+        "const": "GET"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/v1/pages(/.*)?$"
+      }
     },
-    "path": {
-      "type": "string",
-      "pattern": "^/v1/pages(/.*)?$"
-    }
+    "required": [
+      "method",
+      "path"
+    ]
   },
   "notion-write-pages": {
-    "method": {
-      "enum": ["POST", "PATCH"]
+    "properties": {
+      "method": {
+        "enum": [
+          "POST",
+          "PATCH"
+        ]
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/v1/pages(/.*)?$"
+      }
     },
-    "path": {
-      "type": "string",
-      "pattern": "^/v1/pages(/.*)?$"
-    }
+    "required": [
+      "method",
+      "path"
+    ]
   },
   "notion-read-blocks": {
-    "method": {
-      "const": "GET"
+    "properties": {
+      "method": {
+        "const": "GET"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/v1/blocks(/.*)?$"
+      }
     },
-    "path": {
-      "type": "string",
-      "pattern": "^/v1/blocks(/.*)?$"
-    }
+    "required": [
+      "method",
+      "path"
+    ]
   },
   "notion-write-blocks": {
-    "method": {
-      "enum": ["PATCH", "DELETE"]
+    "properties": {
+      "method": {
+        "enum": [
+          "PATCH",
+          "DELETE"
+        ]
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/v1/blocks(/.*)?$"
+      }
     },
-    "path": {
-      "type": "string",
-      "pattern": "^/v1/blocks(/.*)?$"
-    }
+    "required": [
+      "method",
+      "path"
+    ]
   },
   "notion-read-databases": {
-    "method": {
-      "const": "GET"
+    "properties": {
+      "method": {
+        "const": "GET"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/v1/databases(/.*)?$"
+      }
     },
-    "path": {
-      "type": "string",
-      "pattern": "^/v1/databases(/.*)?$"
-    }
+    "required": [
+      "method",
+      "path"
+    ]
   },
   "notion-write-databases": {
-    "method": {
-      "enum": ["POST", "PATCH"]
+    "properties": {
+      "method": {
+        "enum": [
+          "POST",
+          "PATCH"
+        ]
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/v1/databases(/[^/]+)?$"
+      }
     },
-    "path": {
-      "type": "string",
-      "pattern": "^/v1/databases(/[^/]+)?$"
-    }
+    "required": [
+      "method",
+      "path"
+    ]
   },
   "notion-query-databases": {
-    "method": {
-      "const": "POST"
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/v1/databases/[^/]+/query$"
+      }
     },
-    "path": {
-      "type": "string",
-      "pattern": "^/v1/databases/[^/]+/query$"
-    }
+    "required": [
+      "method",
+      "path"
+    ]
   },
   "notion-read-users": {
-    "method": {
-      "const": "GET"
+    "properties": {
+      "method": {
+        "const": "GET"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/v1/users(/.*)?$"
+      }
     },
-    "path": {
-      "type": "string",
-      "pattern": "^/v1/users(/.*)?$"
-    }
+    "required": [
+      "method",
+      "path"
+    ]
   },
   "notion-read-comments": {
-    "method": {
-      "const": "GET"
+    "properties": {
+      "method": {
+        "const": "GET"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/v1/comments(/.*)?$"
+      }
     },
-    "path": {
-      "type": "string",
-      "pattern": "^/v1/comments(/.*)?$"
-    }
+    "required": [
+      "method",
+      "path"
+    ]
   },
   "notion-write-comments": {
-    "method": {
-      "const": "POST"
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/v1/comments$"
+      }
     },
-    "path": {
-      "type": "string",
-      "pattern": "^/v1/comments$"
-    }
+    "required": [
+      "method",
+      "path"
+    ]
   },
   "notion-search": {
-    "method": {
-      "const": "POST"
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/v1/search$"
+      }
     },
-    "path": {
-      "type": "string",
-      "pattern": "^/v1/search$"
-    }
+    "required": [
+      "method",
+      "path"
+    ]
   }
 }

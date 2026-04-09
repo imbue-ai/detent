@@ -8,7 +8,7 @@ Define named permissions for accessing third-party services and check HTTP reque
 # Store rules.
 echo '{
   "rules": [
-    {"github-api": ["github-read-all", "github-write-issues"]},
+    {"github-rest-api": ["github-read-all", "github-write-issues"]},
     {"slack-api": ["slack-read-all"]}
   ]
 }' > ~/.config/detent/config.json
@@ -93,13 +93,17 @@ representation, the `detent` tool uses [JSON schemas] (https://json-schema.org/)
 
 #### Request patterns 
 
-A "request pattern" is defined by a json schema (the part that's applicable for the request object's `properties`). For example:
+A "request pattern" is a JSON Schema for matching against the
+decomposed request object. The outer `type: "object"` is added
+automatically, so you provide the body of the schema directly.
+For example:
 
 ```json
 {
-  "method": {
-    "const": "GET"
-  }
+  "properties": {
+    "method": { "const": "GET" }
+  },
+  "required": ["method"]
 }
 ```
 
@@ -112,7 +116,7 @@ Once defined, request patterns can be combined in a two-level rules hierarchy, l
 ```json
 {
   "rules": [
-    {"github-api": ["github-read-issues-detent", "github-write-comments-detent", ...] },
+    {"github-rest-api": ["github-read-issues-detent", "github-write-comments-detent", ...] },
     {"slack-api": ["slack-read-all"] }
   ],
 }
@@ -128,19 +132,21 @@ For the config to work, you would need to define all the necessary request patte
 ```json
 {
   "patterns": {
-    "github-api": {
-      "domain": {
-        "const": "api.github.com"
-      }
+    "github-rest-api": {
+      "properties": {
+        "domain": { "const": "api.github.com" }
+      },
+      "required": ["domain"]
     },
     "github-read-issues-detent": {
-      "method": {
-        "const": "GET"
+      "properties": {
+        "method": { "const": "GET" },
+        "path": {
+          "type": "string",
+          "pattern": "^/repos/imbue-ai/detent/issues(/[0-9]+)?$"
+        }
       },
-      "path": {
-        "type": "string",
-        "pattern": "^/repos/imbue-ai/detent/issues(/[0-9]+)?$"
-      }
+      "required": ["method", "path"]
     },
     ...
   },
@@ -185,7 +191,7 @@ the config that contains the `include`.
 {
   "include": ["shared/example.json", "shared/another_example.json"],
   "rules": [
-    {"github-api": ["github-read-issues"]}
+    {"github-rest-api": ["github-read-issues"]}
   ]
 }
 ```

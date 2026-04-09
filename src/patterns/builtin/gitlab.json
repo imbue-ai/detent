@@ -1,134 +1,262 @@
 {
   "gitlab-api": {
-    "domain": {
-      "const": "gitlab.com"
-    }
+    "properties": {
+      "domain": {
+        "const": "gitlab.com"
+      }
+    },
+    "required": [
+      "domain"
+    ]
   },
   "gitlab-read-all": {
-    "method": {
-      "const": "GET"
-    }
+    "properties": {
+      "method": {
+        "const": "GET"
+      }
+    },
+    "required": [
+      "method"
+    ]
   },
   "gitlab-write-all": {
-    "method": {
-      "enum": ["POST", "PUT", "PATCH", "DELETE"]
-    }
+    "properties": {
+      "method": {
+        "enum": [
+          "POST",
+          "PUT",
+          "PATCH",
+          "DELETE"
+        ]
+      }
+    },
+    "required": [
+      "method"
+    ]
   },
   "gitlab-read-projects": {
-    "method": {
-      "const": "GET"
+    "properties": {
+      "method": {
+        "const": "GET"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/api/v[0-9]+/projects(/[^/]+)?$"
+      }
     },
-    "path": {
-      "type": "string",
-      "pattern": "^/api/v[0-9]+/projects(/[^/]+)?$"
-    }
+    "required": [
+      "method",
+      "path"
+    ]
   },
   "gitlab-write-projects": {
-    "method": {
-      "enum": ["POST", "PUT", "PATCH", "DELETE"]
+    "properties": {
+      "method": {
+        "enum": [
+          "POST",
+          "PUT",
+          "PATCH",
+          "DELETE"
+        ]
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/api/v[0-9]+/projects(/[^/]+)?$"
+      }
     },
-    "path": {
-      "type": "string",
-      "pattern": "^/api/v[0-9]+/projects(/[^/]+)?$"
-    }
+    "required": [
+      "method",
+      "path"
+    ]
   },
   "gitlab-read-repository": {
-    "method": {
-      "const": "GET"
+    "properties": {
+      "method": {
+        "const": "GET"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/api/v[0-9]+/projects/[^/]+/repository(/.*)?$"
+      }
     },
-    "path": {
-      "type": "string",
-      "pattern": "^/api/v[0-9]+/projects/[^/]+/repository(/.*)?$"
-    }
+    "required": [
+      "method",
+      "path"
+    ]
   },
   "gitlab-write-repository": {
-    "method": {
-      "enum": ["POST", "PUT", "PATCH", "DELETE"]
+    "properties": {
+      "method": {
+        "enum": [
+          "POST",
+          "PUT",
+          "PATCH",
+          "DELETE"
+        ]
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/api/v[0-9]+/projects/[^/]+/repository(/.*)?$"
+      }
     },
-    "path": {
-      "type": "string",
-      "pattern": "^/api/v[0-9]+/projects/[^/]+/repository(/.*)?$"
-    }
+    "required": [
+      "method",
+      "path"
+    ]
   },
   "gitlab-read-merge-requests": {
-    "method": {
-      "const": "GET"
+    "properties": {
+      "method": {
+        "const": "GET"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/api/v[0-9]+/(projects/[^/]+/)?merge_requests(/.*)?$"
+      }
     },
-    "path": {
-      "type": "string",
-      "pattern": "^/api/v[0-9]+/(projects/[^/]+/)?merge_requests(/.*)?$"
-    }
+    "required": [
+      "method",
+      "path"
+    ]
   },
   "gitlab-write-merge-requests": {
-    "method": {
-      "enum": ["POST", "PUT", "PATCH", "DELETE"]
+    "properties": {
+      "method": {
+        "enum": [
+          "POST",
+          "PUT",
+          "PATCH",
+          "DELETE"
+        ]
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/api/v[0-9]+/(projects/[^/]+/)?merge_requests(/.*)?$"
+      }
     },
-    "path": {
-      "type": "string",
-      "pattern": "^/api/v[0-9]+/(projects/[^/]+/)?merge_requests(/.*)?$"
-    }
+    "required": [
+      "method",
+      "path"
+    ]
   },
   "gitlab-read-issues": {
-    "method": {
-      "const": "GET"
+    "properties": {
+      "method": {
+        "const": "GET"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/api/v[0-9]+/((projects|groups)/[^/]+/)?issues(/.*)?$"
+      }
     },
-    "path": {
-      "type": "string",
-      "pattern": "^/api/v[0-9]+/((projects|groups)/[^/]+/)?issues(/.*)?$"
-    }
+    "required": [
+      "method",
+      "path"
+    ]
   },
   "gitlab-write-issues": {
-    "method": {
-      "enum": ["POST", "PUT", "PATCH", "DELETE"]
+    "properties": {
+      "method": {
+        "enum": [
+          "POST",
+          "PUT",
+          "PATCH",
+          "DELETE"
+        ]
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/api/v[0-9]+/((projects|groups)/[^/]+/)?issues(/.*)?$"
+      }
     },
-    "path": {
-      "type": "string",
-      "pattern": "^/api/v[0-9]+/((projects|groups)/[^/]+/)?issues(/.*)?$"
-    }
+    "required": [
+      "method",
+      "path"
+    ]
   },
   "gitlab-read-pipelines": {
-    "method": {
-      "const": "GET"
+    "properties": {
+      "method": {
+        "const": "GET"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/api/v[0-9]+/projects/[^/]+/(pipelines|jobs)(/.*)?$"
+      }
     },
-    "path": {
-      "type": "string",
-      "pattern": "^/api/v[0-9]+/projects/[^/]+/(pipelines|jobs)(/.*)?$"
-    }
+    "required": [
+      "method",
+      "path"
+    ]
   },
   "gitlab-write-pipelines": {
-    "method": {
-      "enum": ["POST", "PUT", "PATCH", "DELETE"]
+    "properties": {
+      "method": {
+        "enum": [
+          "POST",
+          "PUT",
+          "PATCH",
+          "DELETE"
+        ]
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/api/v[0-9]+/projects/[^/]+/(pipelines|jobs)(/.*)?$"
+      }
     },
-    "path": {
-      "type": "string",
-      "pattern": "^/api/v[0-9]+/projects/[^/]+/(pipelines|jobs)(/.*)?$"
-    }
+    "required": [
+      "method",
+      "path"
+    ]
   },
   "gitlab-read-users": {
-    "method": {
-      "const": "GET"
+    "properties": {
+      "method": {
+        "const": "GET"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/api/v[0-9]+/users?(/.*)?$"
+      }
     },
-    "path": {
-      "type": "string",
-      "pattern": "^/api/v[0-9]+/users?(/.*)?$"
-    }
+    "required": [
+      "method",
+      "path"
+    ]
   },
   "gitlab-read-groups": {
-    "method": {
-      "const": "GET"
+    "properties": {
+      "method": {
+        "const": "GET"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/api/v[0-9]+/groups(/.*)?$"
+      }
     },
-    "path": {
-      "type": "string",
-      "pattern": "^/api/v[0-9]+/groups(/.*)?$"
-    }
+    "required": [
+      "method",
+      "path"
+    ]
   },
   "gitlab-write-groups": {
-    "method": {
-      "enum": ["POST", "PUT", "PATCH", "DELETE"]
+    "properties": {
+      "method": {
+        "enum": [
+          "POST",
+          "PUT",
+          "PATCH",
+          "DELETE"
+        ]
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/api/v[0-9]+/groups(/.*)?$"
+      }
     },
-    "path": {
-      "type": "string",
-      "pattern": "^/api/v[0-9]+/groups(/.*)?$"
-    }
+    "required": [
+      "method",
+      "path"
+    ]
   }
 }

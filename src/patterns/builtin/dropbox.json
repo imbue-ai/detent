@@ -1,61 +1,115 @@
 {
   "dropbox-api": {
-    "domain": {
-      "enum": ["api.dropboxapi.com", "content.dropboxapi.com", "notify.dropboxapi.com"]
-    }
+    "properties": {
+      "domain": {
+        "enum": [
+          "api.dropboxapi.com",
+          "content.dropboxapi.com",
+          "notify.dropboxapi.com"
+        ]
+      }
+    },
+    "required": [
+      "domain"
+    ]
   },
   "dropbox-files": {
-    "path": {
-      "type": "string",
-      "pattern": "^/2/files/"
-    }
+    "properties": {
+      "path": {
+        "type": "string",
+        "pattern": "^/2/files/"
+      }
+    },
+    "required": [
+      "path"
+    ]
   },
   "dropbox-files-read": {
-    "path": {
-      "type": "string",
-      "pattern": "^/2/files/(list_|get_|download|export|search|copy_reference/get|tags/get)"
-    }
+    "properties": {
+      "path": {
+        "type": "string",
+        "pattern": "^/2/files/(list_|get_|download|export|search|copy_reference/get|tags/get)"
+      }
+    },
+    "required": [
+      "path"
+    ]
   },
   "dropbox-files-write": {
-    "path": {
-      "type": "string",
-      "pattern": "^/2/files/(copy(?!_reference/get)|create_folder|delete|lock_file|move|paper/|permanently_delete|restore|save_url|tags/(add|remove)|unlock_file|upload)"
-    }
+    "properties": {
+      "path": {
+        "type": "string",
+        "pattern": "^/2/files/(copy(?!_reference/get)|create_folder|delete|lock_file|move|paper/|permanently_delete|restore|save_url|tags/(add|remove)|unlock_file|upload)"
+      }
+    },
+    "required": [
+      "path"
+    ]
   },
   "dropbox-sharing": {
-    "path": {
-      "type": "string",
-      "pattern": "^/2/sharing/"
-    }
+    "properties": {
+      "path": {
+        "type": "string",
+        "pattern": "^/2/sharing/"
+      }
+    },
+    "required": [
+      "path"
+    ]
   },
   "dropbox-sharing-read": {
-    "path": {
-      "type": "string",
-      "pattern": "^/2/sharing/(check_|get_|list_)"
-    }
+    "properties": {
+      "path": {
+        "type": "string",
+        "pattern": "^/2/sharing/(check_|get_|list_)"
+      }
+    },
+    "required": [
+      "path"
+    ]
   },
   "dropbox-sharing-write": {
-    "path": {
-      "type": "string",
-      "pattern": "^/2/sharing/(add_|create_|modify_|mount_|relinquish_|remove_|revoke_|set_|share_|transfer_|unmount_|unshare_|update_)"
-    }
+    "properties": {
+      "path": {
+        "type": "string",
+        "pattern": "^/2/sharing/(add_|create_|modify_|mount_|relinquish_|remove_|revoke_|set_|share_|transfer_|unmount_|unshare_|update_)"
+      }
+    },
+    "required": [
+      "path"
+    ]
   },
   "dropbox-account": {
-    "path": {
-      "type": "string",
-      "pattern": "^/2/users/"
-    }
+    "properties": {
+      "path": {
+        "type": "string",
+        "pattern": "^/2/users/"
+      }
+    },
+    "required": [
+      "path"
+    ]
   },
   "dropbox-file-requests": {
-    "path": {
-      "type": "string",
-      "pattern": "^/2/file_requests/"
-    }
+    "properties": {
+      "path": {
+        "type": "string",
+        "pattern": "^/2/file_requests/"
+      }
+    },
+    "required": [
+      "path"
+    ]
   },
   "dropbox-contacts": {
-    "path": {
-      "type": "string",
-      "pattern": "^/2/contacts/"
-    }
+    "properties": {
+      "path": {
+        "type": "string",
+        "pattern": "^/2/contacts/"
+      }
+    },
+    "required": [
+      "path"
+    ]
   }
 }

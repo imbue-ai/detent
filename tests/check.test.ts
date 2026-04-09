@@ -81,7 +81,8 @@ describe('decomposeRequest', () => {
 describe('RequestPattern', () => {
   it('matches a request with const method', () => {
     const pattern = new RequestPattern('get-only', {
-      method: { const: 'GET' },
+      properties: { method: { const: 'GET' } },
+      required: ['method'],
     });
     const data: DecomposedRequest = {
       protocol: 'https',
@@ -98,7 +99,8 @@ describe('RequestPattern', () => {
 
   it('rejects a request that does not match', () => {
     const pattern = new RequestPattern('get-only', {
-      method: { const: 'GET' },
+      properties: { method: { const: 'GET' } },
+      required: ['method'],
     });
     const data: DecomposedRequest = {
       protocol: 'https',
@@ -115,7 +117,8 @@ describe('RequestPattern', () => {
 
   it('matches with domain pattern', () => {
     const pattern = new RequestPattern('github-api', {
-      domain: { const: 'api.github.com' },
+      properties: { domain: { const: 'api.github.com' } },
+      required: ['domain'],
     });
     const data: DecomposedRequest = {
       protocol: 'https',
@@ -132,7 +135,10 @@ describe('RequestPattern', () => {
 
   it('matches with path regex pattern', () => {
     const pattern = new RequestPattern('issues-path', {
-      path: { type: 'string', pattern: '^/repos/[^/]+/[^/]+/issues(/[0-9]+)?$' },
+      properties: {
+        path: { type: 'string', pattern: '^/repos/[^/]+/[^/]+/issues(/[0-9]+)?$' },
+      },
+      required: ['path'],
     });
     const matching: DecomposedRequest = {
       protocol: 'https',
@@ -168,9 +174,99 @@ describe('RequestPattern', () => {
   });
 
   it('throws RequestPatternError for invalid schema', () => {
-    expect(() => new RequestPattern('bad', { method: { type: 'invalid-type' } })).toThrow(
-      RequestPatternError
-    );
+    expect(
+      () =>
+        new RequestPattern('bad', {
+          properties: { method: { type: 'invalid-type' } },
+          required: ['method'],
+        })
+    ).toThrow(RequestPatternError);
+  });
+
+  it('throws RequestPatternError for unknown request property name', () => {
+    expect(
+      () =>
+        new RequestPattern('bad', {
+          properties: { methd: { const: 'GET' } },
+          required: ['methd'],
+        })
+    ).toThrow(RequestPatternError);
+    expect(
+      () =>
+        new RequestPattern('bad', {
+          properties: { methd: { const: 'GET' } },
+          required: ['methd'],
+        })
+    ).toThrow(/unknown request property "methd"/);
+  });
+
+  it('throws RequestPatternError for unknown property name inside anyOf', () => {
+    expect(
+      () =>
+        new RequestPattern('bad', {
+          anyOf: [
+            { properties: { method: { const: 'GET' } }, required: ['method'] },
+            { properties: { pth: { const: '/foo' } }, required: ['pth'] },
+          ],
+        })
+    ).toThrow(/unknown request property "pth"/);
+  });
+
+  it('accepts all valid DecomposedRequest property names', () => {
+    expect(
+      () =>
+        new RequestPattern('all-fields', {
+          properties: {
+            protocol: { const: 'https' },
+            domain: { const: 'example.com' },
+            port: { const: 443 },
+            path: { const: '/test' },
+            method: { const: 'GET' },
+            headers: { type: 'object' },
+            queryParams: { type: 'object' },
+            body: { type: 'string' },
+          },
+          required: ['protocol', 'domain', 'port', 'path', 'method', 'headers', 'queryParams'],
+        })
+    ).not.toThrow();
+  });
+
+  it('supports anyOf at the schema level', () => {
+    const pattern = new RequestPattern('read-or-search', {
+      anyOf: [
+        { properties: { method: { const: 'GET' } }, required: ['method'] },
+        {
+          properties: {
+            method: { const: 'POST' },
+            path: { type: 'string', pattern: '^/search$' },
+          },
+          required: ['method', 'path'],
+        },
+      ],
+    });
+    const getData: DecomposedRequest = {
+      protocol: 'https',
+      domain: 'example.com',
+      port: 443,
+      path: '/anything',
+      method: 'GET',
+      headers: {},
+      queryParams: {},
+      body: undefined,
+    };
+    const postSearchData: DecomposedRequest = {
+      ...getData,
+      method: 'POST',
+      path: '/search',
+    };
+    const postOtherData: DecomposedRequest = {
+      ...getData,
+      method: 'POST',
+      path: '/pages',
+    };
+    expect(pattern.match(getData)).toBe(true);
+    expect(pattern.match(postSearchData)).toBe(true);
+    expect(pattern.match(postOtherData)).toBe(false);
   });
 });
 
@@ -205,8 +301,11 @@ describe('Config', () => {
   it('allows a request that matches a rule scope and permission', async () => {
     const configPath = writeConfig({
       patterns: {
-        'github-api': { domain: { const: 'api.github.com' } },
-        'get-only': { method: { const: 'GET' } },
+        'github-api': {
+          properties: { domain: { const: 'api.github.com' } },
+          required: ['domain'],
+        },
+        'get-only': { properties: { method: { const: 'GET' } }, required: ['method'] },
       },
       rules: [{ 'github-api': ['get-only'] }],
     });
@@ -218,8 +317,11 @@ describe('Config', () => {
   it('rejects a request that matches scope but not any permission', async () => {
     const configPath = writeConfig({
       patterns: {
-        'github-api': { domain: { const: 'api.github.com' } },
-        'get-only': { method: { const: 'GET' } },
+        'github-api': {
+          properties: { domain: { const: 'api.github.com' } },
+          required: ['domain'],
+        },
+        'get-only': { properties: { method: { const: 'GET' } }, required: ['method'] },
       },
       rules: [{ 'github-api': ['get-only'] }],
     });
@@ -231,8 +333,11 @@ describe('Config', () => {
   it('rejects a request that does not match any rule scope', async () => {
     const configPath = writeConfig({
       patterns: {
-        'github-api': { domain: { const: 'api.github.com' } },
-        'get-only': { method: { const: 'GET' } },
+        'github-api': {
+          properties: { domain: { const: 'api.github.com' } },
+          required: ['domain'],
+        },
+        'get-only': { properties: { method: { const: 'GET' } }, required: ['method'] },
       },
       rules: [{ 'github-api': ['get-only'] }],
     });
@@ -244,8 +349,8 @@ describe('Config', () => {
   it('stops at first matching scope rule', async () => {
     const configPath = writeConfig({
       patterns: {
-        'all-https': { protocol: { const: 'https' } },
-        'get-only': { method: { const: 'GET' } },
+        'all-https': { properties: { protocol: { const: 'https' } }, required: ['protocol'] },
+        'get-only': { properties: { method: { const: 'GET' } }, required: ['method'] },
         'any-method': {},
       },
       rules: [{ 'all-https': ['get-only'] }, { 'all-https': ['any-method'] }],
@@ -259,8 +364,11 @@ describe('Config', () => {
   it('throws ConfigError when permissions value is a string instead of an array', () => {
     const configPath = writeConfig({
       patterns: {
-        'github-api': { domain: { const: 'api.github.com' } },
-        'get-only': { method: { const: 'GET' } },
+        'github-api': {
+          properties: { domain: { const: 'api.github.com' } },
+          required: ['domain'],
+        },
+        'get-only': { properties: { method: { const: 'GET' } }, required: ['method'] },
       },
       rules: [{ 'github-api': 'get-only' }],
     });
@@ -278,7 +386,9 @@ describe('Config', () => {
 
   it('treats missing rules as implicitly empty', async () => {
     const configPath = writeConfig({
-      patterns: { scope: { domain: { const: 'example.com' } } },
+      patterns: {
+        scope: { properties: { domain: { const: 'example.com' } }, required: ['domain'] },
+      },
     });
     const config = new Config(configPath, true);
     const request = new Request('https://example.com');
@@ -338,55 +448,11 @@ describe('Config', () => {
     expect(() => new Config(configPath, true)).toThrow(ConfigError);
   });
 
-  it('throws ConfigError when a pattern contains an unknown property name', () => {
+  it('throws ConfigError when a pattern is not an object', () => {
     const configPath = writeConfig({
       patterns: {
-        'bad-pattern': { methd: { const: 'GET' } },
+        'bad-pattern': 'not-an-object',
       },
-    });
-    expect(() => new Config(configPath, true)).toThrow(ConfigError);
-  });
-
-  it('throws ConfigError when a pattern property value is not an object', () => {
-    const configPath = writeConfig({
-      patterns: {
-        'bad-pattern': { method: 'GET' },
-      },
-    });
-    expect(() => new Config(configPath, true)).toThrow(ConfigError);
-  });
-
-  it('accepts patterns using all valid DecomposedRequest fields', () => {
-    const configPath = writeConfig({
-      patterns: {
-        'all-fields': {
-          protocol: { const: 'https' },
-          domain: { const: 'example.com' },
-          port: { const: 443 },
-          path: { const: '/test' },
-          method: { const: 'GET' },
-          headers: { type: 'object' },
-          queryParams: { type: 'object' },
-          body: { type: 'string' },
-        },
-      },
-    });
-    expect(() => new Config(configPath, true)).not.toThrow();
-  });
-
-  it('validates patterns inside included config files', () => {
-    const includedPath = join(tempDir, 'included.json');
-    writeFileSync(
-      includedPath,
-      JSON.stringify({
-        patterns: {
-          'bad-pattern': { unknownField: { const: 'value' } },
-        },
-      })
-    );
-
-    const configPath = writeConfig({
-      include: ['included.json'],
     });
     expect(() => new Config(configPath, true)).toThrow(ConfigError);
   });
@@ -398,8 +464,8 @@ describe('Config', () => {
     const configPath = writeConfig({
       include: ['included.json'],
       patterns: {
-        scope: { domain: { const: 'example.com' } },
-        permission: { method: { const: 'GET' } },
+        scope: { properties: { domain: { const: 'example.com' } }, required: ['domain'] },
+        permission: { properties: { method: { const: 'GET' } }, required: ['method'] },
       },
       rules: [{ scope: ['permission'] }],
     });
@@ -432,7 +498,10 @@ describe('Config', () => {
   it('throws RequestPatternError for unknown pattern name in permissions', () => {
     const configPath = writeConfig({
       patterns: {
-        'github-api': { domain: { const: 'api.github.com' } },
+        'github-api': {
+          properties: { domain: { const: 'api.github.com' } },
+          required: ['domain'],
+        },
       },
       rules: [{ 'github-api': ['nonexistent-permission'] }],
     });
@@ -442,8 +511,8 @@ describe('Config', () => {
   it('throws ConfigError for rule with multiple keys', () => {
     const configPath = writeConfig({
       patterns: {
-        a: { method: { const: 'GET' } },
-        b: { method: { const: 'POST' } },
+        a: { properties: { method: { const: 'GET' } }, required: ['method'] },
+        b: { properties: { method: { const: 'POST' } }, required: ['method'] },
       },
       rules: [{ a: ['b'], b: ['a'] }],
     });
@@ -453,9 +522,12 @@ describe('Config', () => {
   it('supports multiple permissions in a single rule', async () => {
     const configPath = writeConfig({
       patterns: {
-        'github-api': { domain: { const: 'api.github.com' } },
-        'get-only': { method: { const: 'GET' } },
-        'post-only': { method: { const: 'POST' } },
+        'github-api': {
+          properties: { domain: { const: 'api.github.com' } },
+          required: ['domain'],
+        },
+        'get-only': { properties: { method: { const: 'GET' } }, required: ['method'] },
+        'post-only': { properties: { method: { const: 'POST' } }, required: ['method'] },
       },
       rules: [{ 'github-api': ['get-only', 'post-only'] }],
     });
@@ -477,8 +549,8 @@ describe('Config', () => {
       includedPath,
       JSON.stringify({
         patterns: {
-          'slack-api': { domain: { const: 'slack.com' } },
-          'get-only': { method: { const: 'GET' } },
+          'slack-api': { properties: { domain: { const: 'slack.com' } }, required: ['domain'] },
+          'get-only': { properties: { method: { const: 'GET' } }, required: ['method'] },
         },
         rules: [{ 'slack-api': ['get-only'] }],
       })
@@ -487,7 +559,10 @@ describe('Config', () => {
     const configPath = writeConfig({
       include: ['included.json'],
       patterns: {
-        'github-api': { domain: { const: 'api.github.com' } },
+        'github-api': {
+          properties: { domain: { const: 'api.github.com' } },
+          required: ['domain'],
+        },
       },
       rules: [{ 'github-api': ['get-only'] }],
     });
@@ -513,8 +588,8 @@ describe('Config', () => {
       includedPath,
       JSON.stringify({
         patterns: {
-          scope: { domain: { const: 'included.com' } },
-          permission: { method: { const: 'GET' } },
+          scope: { properties: { domain: { const: 'included.com' } }, required: ['domain'] },
+          permission: { properties: { method: { const: 'GET' } }, required: ['method'] },
         },
       })
     );
@@ -522,7 +597,7 @@ describe('Config', () => {
     const configPath = writeConfig({
       include: ['included.json'],
       patterns: {
-        scope: { domain: { const: 'parent.com' } },
+        scope: { properties: { domain: { const: 'parent.com' } }, required: ['domain'] },
       },
       rules: [{ scope: ['permission'] }],
     });
@@ -544,8 +619,11 @@ describe('Config', () => {
       includedPath,
       JSON.stringify({
         patterns: {
-          'all-https': { protocol: { const: 'https' } },
-          'get-only': { method: { const: 'GET' } },
+          'all-https': {
+            properties: { protocol: { const: 'https' } },
+            required: ['protocol'],
+          },
+          'get-only': { properties: { method: { const: 'GET' } }, required: ['method'] },
         },
         rules: [{ 'all-https': ['get-only'] }],
       })
@@ -573,7 +651,7 @@ describe('Config', () => {
       deepIncludedPath,
       JSON.stringify({
         patterns: {
-          'deep-pattern': { method: { const: 'GET' } },
+          'deep-pattern': { properties: { method: { const: 'GET' } }, required: ['method'] },
         },
       })
     );
@@ -584,7 +662,10 @@ describe('Config', () => {
       JSON.stringify({
         include: ['deep.json'],
         patterns: {
-          'middle-scope': { domain: { const: 'example.com' } },
+          'middle-scope': {
+            properties: { domain: { const: 'example.com' } },
+            required: ['domain'],
+          },
         },
         rules: [{ 'middle-scope': ['deep-pattern'] }],
       })
@@ -627,7 +708,7 @@ describe('Config', () => {
       subIncludedPath,
       JSON.stringify({
         patterns: {
-          'sub-permission': { method: { const: 'GET' } },
+          'sub-permission': { properties: { method: { const: 'GET' } }, required: ['method'] },
         },
       })
     );
@@ -638,7 +719,10 @@ describe('Config', () => {
       JSON.stringify({
         include: ['sub-included.json'],
         patterns: {
-          'sub-scope': { domain: { const: 'example.com' } },
+          'sub-scope': {
+            properties: { domain: { const: 'example.com' } },
+            required: ['domain'],
+          },
         },
         rules: [{ 'sub-scope': ['sub-permission'] }],
       })
@@ -660,8 +744,8 @@ describe('Config', () => {
       firstPath,
       JSON.stringify({
         patterns: {
-          'first-scope': { domain: { const: 'first.com' } },
-          'get-only': { method: { const: 'GET' } },
+          'first-scope': { properties: { domain: { const: 'first.com' } }, required: ['domain'] },
+          'get-only': { properties: { method: { const: 'GET' } }, required: ['method'] },
         },
         rules: [{ 'first-scope': ['get-only'] }],
       })
@@ -672,8 +756,11 @@ describe('Config', () => {
       secondPath,
       JSON.stringify({
         patterns: {
-          'second-scope': { domain: { const: 'second.com' } },
-          'post-only': { method: { const: 'POST' } },
+          'second-scope': {
+            properties: { domain: { const: 'second.com' } },
+            required: ['domain'],
+          },
+          'post-only': { properties: { method: { const: 'POST' } }, required: ['method'] },
         },
         rules: [{ 'second-scope': ['post-only'] }],
       })
@@ -718,7 +805,7 @@ describe('check (top-level function)', () => {
       JSON.stringify({
         patterns: {
           everything: {},
-          'get-only': { method: { const: 'GET' } },
+          'get-only': { properties: { method: { const: 'GET' } }, required: ['method'] },
         },
         rules: [{ everything: ['get-only'] }],
       })

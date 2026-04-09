@@ -15,7 +15,7 @@ export function dump(configPath?: string): DumpedConfig {
   validateRules(rawConfig, registry);
 
   return {
-    patterns: registry.allSchemaProperties(),
+    patterns: registry.allSchemas(),
     rules: rawConfig.rules,
   };
 }

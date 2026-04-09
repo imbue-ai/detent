@@ -1,122 +1,238 @@
 {
   "coolify-api": {
-    "domain": {
-      "const": "app.coolify.io"
-    }
+    "properties": {
+      "domain": {
+        "const": "app.coolify.io"
+      }
+    },
+    "required": [
+      "domain"
+    ]
   },
   "coolify-read-all": {
-    "method": {
-      "const": "GET"
-    }
+    "properties": {
+      "method": {
+        "const": "GET"
+      }
+    },
+    "required": [
+      "method"
+    ]
   },
   "coolify-write-all": {
-    "method": {
-      "enum": ["POST", "PUT", "PATCH", "DELETE"]
-    }
+    "properties": {
+      "method": {
+        "enum": [
+          "POST",
+          "PUT",
+          "PATCH",
+          "DELETE"
+        ]
+      }
+    },
+    "required": [
+      "method"
+    ]
   },
   "coolify-read-applications": {
-    "method": {
-      "const": "GET"
+    "properties": {
+      "method": {
+        "const": "GET"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/api/v[0-9]+/applications(/.*)?$"
+      }
     },
-    "path": {
-      "type": "string",
-      "pattern": "^/api/v[0-9]+/applications(/.*)?$"
-    }
+    "required": [
+      "method",
+      "path"
+    ]
   },
   "coolify-write-applications": {
-    "method": {
-      "enum": ["POST", "PUT", "PATCH", "DELETE"]
+    "properties": {
+      "method": {
+        "enum": [
+          "POST",
+          "PUT",
+          "PATCH",
+          "DELETE"
+        ]
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/api/v[0-9]+/applications(/.*)?$"
+      }
     },
-    "path": {
-      "type": "string",
-      "pattern": "^/api/v[0-9]+/applications(/.*)?$"
-    }
+    "required": [
+      "method",
+      "path"
+    ]
   },
   "coolify-deployments": {
-    "path": {
-      "type": "string",
-      "pattern": "^/api/v[0-9]+/deploy(ments)?(/.*)?$"
-    }
+    "properties": {
+      "path": {
+        "type": "string",
+        "pattern": "^/api/v[0-9]+/deploy(ments)?(/.*)?$"
+      }
+    },
+    "required": [
+      "path"
+    ]
   },
   "coolify-read-databases": {
-    "method": {
-      "const": "GET"
+    "properties": {
+      "method": {
+        "const": "GET"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/api/v[0-9]+/databases(/.*)?$"
+      }
     },
-    "path": {
-      "type": "string",
-      "pattern": "^/api/v[0-9]+/databases(/.*)?$"
-    }
+    "required": [
+      "method",
+      "path"
+    ]
   },
   "coolify-write-databases": {
-    "method": {
-      "enum": ["POST", "PUT", "PATCH", "DELETE"]
+    "properties": {
+      "method": {
+        "enum": [
+          "POST",
+          "PUT",
+          "PATCH",
+          "DELETE"
+        ]
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/api/v[0-9]+/databases(/.*)?$"
+      }
     },
-    "path": {
-      "type": "string",
-      "pattern": "^/api/v[0-9]+/databases(/.*)?$"
-    }
+    "required": [
+      "method",
+      "path"
+    ]
   },
   "coolify-read-servers": {
-    "method": {
-      "const": "GET"
+    "properties": {
+      "method": {
+        "const": "GET"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/api/v[0-9]+/servers(/.*)?$"
+      }
     },
-    "path": {
-      "type": "string",
-      "pattern": "^/api/v[0-9]+/servers(/.*)?$"
-    }
+    "required": [
+      "method",
+      "path"
+    ]
   },
   "coolify-write-servers": {
-    "method": {
-      "enum": ["POST", "PUT", "PATCH", "DELETE"]
+    "properties": {
+      "method": {
+        "enum": [
+          "POST",
+          "PUT",
+          "PATCH",
+          "DELETE"
+        ]
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/api/v[0-9]+/servers(/.*)?$"
+      }
     },
-    "path": {
-      "type": "string",
-      "pattern": "^/api/v[0-9]+/servers(/.*)?$"
-    }
+    "required": [
+      "method",
+      "path"
+    ]
   },
   "coolify-read-services": {
-    "method": {
-      "const": "GET"
+    "properties": {
+      "method": {
+        "const": "GET"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/api/v[0-9]+/services(/.*)?$"
+      }
     },
-    "path": {
-      "type": "string",
-      "pattern": "^/api/v[0-9]+/services(/.*)?$"
-    }
+    "required": [
+      "method",
+      "path"
+    ]
   },
   "coolify-write-services": {
-    "method": {
-      "enum": ["POST", "PUT", "PATCH", "DELETE"]
+    "properties": {
+      "method": {
+        "enum": [
+          "POST",
+          "PUT",
+          "PATCH",
+          "DELETE"
+        ]
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/api/v[0-9]+/services(/.*)?$"
+      }
     },
-    "path": {
-      "type": "string",
-      "pattern": "^/api/v[0-9]+/services(/.*)?$"
-    }
+    "required": [
+      "method",
+      "path"
+    ]
   },
   "coolify-read-projects": {
-    "method": {
-      "const": "GET"
+    "properties": {
+      "method": {
+        "const": "GET"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/api/v[0-9]+/projects(/.*)?$"
+      }
     },
-    "path": {
-      "type": "string",
-      "pattern": "^/api/v[0-9]+/projects(/.*)?$"
-    }
+    "required": [
+      "method",
+      "path"
+    ]
   },
   "coolify-write-projects": {
-    "method": {
-      "enum": ["POST", "PUT", "PATCH", "DELETE"]
+    "properties": {
+      "method": {
+        "enum": [
+          "POST",
+          "PUT",
+          "PATCH",
+          "DELETE"
+        ]
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/api/v[0-9]+/projects(/.*)?$"
+      }
     },
-    "path": {
-      "type": "string",
-      "pattern": "^/api/v[0-9]+/projects(/.*)?$"
-    }
+    "required": [
+      "method",
+      "path"
+    ]
   },
   "coolify-read-teams": {
-    "method": {
-      "const": "GET"
+    "properties": {
+      "method": {
+        "const": "GET"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/api/v[0-9]+/teams(/.*)?$"
+      }
     },
-    "path": {
-      "type": "string",
-      "pattern": "^/api/v[0-9]+/teams(/.*)?$"
-    }
+    "required": [
+      "method",
+      "path"
+    ]
   }
 }

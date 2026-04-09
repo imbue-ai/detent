@@ -1,125 +1,248 @@
 {
-  "github-api": {
-    "domain": {
-      "const": "api.github.com"
-    }
+  "github-rest-api": {
+    "properties": {
+      "domain": {
+        "const": "api.github.com"
+      },
+      "path": {
+        "type": "string",
+        "not": {
+          "pattern": "^/graphql$"
+        }
+      }
+    },
+    "required": [
+      "domain",
+      "path"
+    ]
   },
   "github-read-all": {
-    "method": {
-      "const": "GET"
-    }
+    "properties": {
+      "method": {
+        "const": "GET"
+      }
+    },
+    "required": [
+      "method"
+    ]
   },
   "github-write-all": {
-    "method": {
-      "enum": ["POST", "PUT", "PATCH", "DELETE"]
-    }
+    "properties": {
+      "method": {
+        "enum": [
+          "POST",
+          "PUT",
+          "PATCH",
+          "DELETE"
+        ]
+      }
+    },
+    "required": [
+      "method"
+    ]
   },
   "github-read-repos": {
-    "method": {
-      "const": "GET"
+    "properties": {
+      "method": {
+        "const": "GET"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/repos(/.*)?$"
+      }
     },
-    "path": {
-      "type": "string",
-      "pattern": "^/repos(/.*)?$"
-    }
+    "required": [
+      "method",
+      "path"
+    ]
   },
   "github-write-repos": {
-    "method": {
-      "enum": ["POST", "PUT", "PATCH", "DELETE"]
+    "properties": {
+      "method": {
+        "enum": [
+          "POST",
+          "PUT",
+          "PATCH",
+          "DELETE"
+        ]
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/repos(/.*)?$"
+      }
     },
-    "path": {
-      "type": "string",
-      "pattern": "^/repos(/.*)?$"
-    }
+    "required": [
+      "method",
+      "path"
+    ]
   },
   "github-read-issues": {
-    "method": {
-      "const": "GET"
+    "properties": {
+      "method": {
+        "const": "GET"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/(repos/[^/]+/[^/]+/issues|issues)(/.*)?$"
+      }
     },
-    "path": {
-      "type": "string",
-      "pattern": "^/(repos/[^/]+/[^/]+/issues|issues)(/.*)?$"
-    }
+    "required": [
+      "method",
+      "path"
+    ]
   },
   "github-write-issues": {
-    "method": {
-      "enum": ["POST", "PUT", "PATCH", "DELETE"]
+    "properties": {
+      "method": {
+        "enum": [
+          "POST",
+          "PUT",
+          "PATCH",
+          "DELETE"
+        ]
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/repos/[^/]+/[^/]+/issues(/.*)?$"
+      }
     },
-    "path": {
-      "type": "string",
-      "pattern": "^/repos/[^/]+/[^/]+/issues(/.*)?$"
-    }
+    "required": [
+      "method",
+      "path"
+    ]
   },
   "github-read-pulls": {
-    "method": {
-      "const": "GET"
+    "properties": {
+      "method": {
+        "const": "GET"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/repos/[^/]+/[^/]+/pulls(/.*)?$"
+      }
     },
-    "path": {
-      "type": "string",
-      "pattern": "^/repos/[^/]+/[^/]+/pulls(/.*)?$"
-    }
+    "required": [
+      "method",
+      "path"
+    ]
   },
   "github-write-pulls": {
-    "method": {
-      "enum": ["POST", "PUT", "PATCH", "DELETE"]
+    "properties": {
+      "method": {
+        "enum": [
+          "POST",
+          "PUT",
+          "PATCH",
+          "DELETE"
+        ]
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/repos/[^/]+/[^/]+/pulls(/.*)?$"
+      }
     },
-    "path": {
-      "type": "string",
-      "pattern": "^/repos/[^/]+/[^/]+/pulls(/.*)?$"
-    }
+    "required": [
+      "method",
+      "path"
+    ]
   },
   "github-read-gists": {
-    "method": {
-      "const": "GET"
+    "properties": {
+      "method": {
+        "const": "GET"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/gists(/.*)?$"
+      }
     },
-    "path": {
-      "type": "string",
-      "pattern": "^/gists(/.*)?$"
-    }
+    "required": [
+      "method",
+      "path"
+    ]
   },
   "github-write-gists": {
-    "method": {
-      "enum": ["POST", "PUT", "PATCH", "DELETE"]
+    "properties": {
+      "method": {
+        "enum": [
+          "POST",
+          "PUT",
+          "PATCH",
+          "DELETE"
+        ]
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/gists(/.*)?$"
+      }
     },
-    "path": {
-      "type": "string",
-      "pattern": "^/gists(/.*)?$"
-    }
+    "required": [
+      "method",
+      "path"
+    ]
   },
   "github-read-user": {
-    "method": {
-      "const": "GET"
+    "properties": {
+      "method": {
+        "const": "GET"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/user(/.*)?$"
+      }
     },
-    "path": {
-      "type": "string",
-      "pattern": "^/user(/.*)?$"
-    }
+    "required": [
+      "method",
+      "path"
+    ]
   },
   "github-search": {
-    "method": {
-      "const": "GET"
+    "properties": {
+      "method": {
+        "const": "GET"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/search(/.*)?$"
+      }
     },
-    "path": {
-      "type": "string",
-      "pattern": "^/search(/.*)?$"
-    }
+    "required": [
+      "method",
+      "path"
+    ]
   },
   "github-read-notifications": {
-    "method": {
-      "const": "GET"
+    "properties": {
+      "method": {
+        "const": "GET"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/notifications(/.*)?$"
+      }
     },
-    "path": {
-      "type": "string",
-      "pattern": "^/notifications(/.*)?$"
-    }
+    "required": [
+      "method",
+      "path"
+    ]
   },
   "github-write-notifications": {
-    "method": {
-      "enum": ["PUT", "PATCH", "DELETE"]
+    "properties": {
+      "method": {
+        "enum": [
+          "PUT",
+          "PATCH",
+          "DELETE"
+        ]
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/notifications(/.*)?$"
+      }
     },
-    "path": {
-      "type": "string",
-      "pattern": "^/notifications(/.*)?$"
-    }
+    "required": [
+      "method",
+      "path"
+    ]
   }
 }

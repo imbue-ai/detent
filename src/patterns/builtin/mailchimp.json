@@ -1,135 +1,263 @@
 {
   "mailchimp-api": {
-    "domain": {
-      "type": "string",
-      "pattern": "^([^.]+\\.)?api\\.mailchimp\\.com$"
-    }
+    "properties": {
+      "domain": {
+        "type": "string",
+        "pattern": "^([^.]+\\.)?api\\.mailchimp\\.com$"
+      }
+    },
+    "required": [
+      "domain"
+    ]
   },
   "mailchimp-read-all": {
-    "method": {
-      "const": "GET"
-    }
+    "properties": {
+      "method": {
+        "const": "GET"
+      }
+    },
+    "required": [
+      "method"
+    ]
   },
   "mailchimp-write-all": {
-    "method": {
-      "enum": ["POST", "PUT", "PATCH", "DELETE"]
-    }
+    "properties": {
+      "method": {
+        "enum": [
+          "POST",
+          "PUT",
+          "PATCH",
+          "DELETE"
+        ]
+      }
+    },
+    "required": [
+      "method"
+    ]
   },
   "mailchimp-read-campaigns": {
-    "method": {
-      "const": "GET"
+    "properties": {
+      "method": {
+        "const": "GET"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/[0-9.]+/campaigns(/.*)?$"
+      }
     },
-    "path": {
-      "type": "string",
-      "pattern": "^/[0-9.]+/campaigns(/.*)?$"
-    }
+    "required": [
+      "method",
+      "path"
+    ]
   },
   "mailchimp-write-campaigns": {
-    "method": {
-      "enum": ["POST", "PUT", "PATCH", "DELETE"]
+    "properties": {
+      "method": {
+        "enum": [
+          "POST",
+          "PUT",
+          "PATCH",
+          "DELETE"
+        ]
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/[0-9.]+/campaigns(/.*)?$"
+      }
     },
-    "path": {
-      "type": "string",
-      "pattern": "^/[0-9.]+/campaigns(/.*)?$"
-    }
+    "required": [
+      "method",
+      "path"
+    ]
   },
   "mailchimp-read-lists": {
-    "method": {
-      "const": "GET"
+    "properties": {
+      "method": {
+        "const": "GET"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/[0-9.]+/lists(/.*)?$"
+      }
     },
-    "path": {
-      "type": "string",
-      "pattern": "^/[0-9.]+/lists(/.*)?$"
-    }
+    "required": [
+      "method",
+      "path"
+    ]
   },
   "mailchimp-write-lists": {
-    "method": {
-      "enum": ["POST", "PUT", "PATCH", "DELETE"]
+    "properties": {
+      "method": {
+        "enum": [
+          "POST",
+          "PUT",
+          "PATCH",
+          "DELETE"
+        ]
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/[0-9.]+/lists(/.*)?$"
+      }
     },
-    "path": {
-      "type": "string",
-      "pattern": "^/[0-9.]+/lists(/.*)?$"
-    }
+    "required": [
+      "method",
+      "path"
+    ]
   },
   "mailchimp-read-templates": {
-    "method": {
-      "const": "GET"
+    "properties": {
+      "method": {
+        "const": "GET"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/[0-9.]+/templates(/.*)?$"
+      }
     },
-    "path": {
-      "type": "string",
-      "pattern": "^/[0-9.]+/templates(/.*)?$"
-    }
+    "required": [
+      "method",
+      "path"
+    ]
   },
   "mailchimp-write-templates": {
-    "method": {
-      "enum": ["POST", "PUT", "PATCH", "DELETE"]
+    "properties": {
+      "method": {
+        "enum": [
+          "POST",
+          "PUT",
+          "PATCH",
+          "DELETE"
+        ]
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/[0-9.]+/templates(/.*)?$"
+      }
     },
-    "path": {
-      "type": "string",
-      "pattern": "^/[0-9.]+/templates(/.*)?$"
-    }
+    "required": [
+      "method",
+      "path"
+    ]
   },
   "mailchimp-read-automations": {
-    "method": {
-      "const": "GET"
+    "properties": {
+      "method": {
+        "const": "GET"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/[0-9.]+/automations(/.*)?$"
+      }
     },
-    "path": {
-      "type": "string",
-      "pattern": "^/[0-9.]+/automations(/.*)?$"
-    }
+    "required": [
+      "method",
+      "path"
+    ]
   },
   "mailchimp-write-automations": {
-    "method": {
-      "enum": ["POST", "PUT", "PATCH", "DELETE"]
+    "properties": {
+      "method": {
+        "enum": [
+          "POST",
+          "PUT",
+          "PATCH",
+          "DELETE"
+        ]
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/[0-9.]+/automations(/.*)?$"
+      }
     },
-    "path": {
-      "type": "string",
-      "pattern": "^/[0-9.]+/automations(/.*)?$"
-    }
+    "required": [
+      "method",
+      "path"
+    ]
   },
   "mailchimp-read-reports": {
-    "method": {
-      "const": "GET"
+    "properties": {
+      "method": {
+        "const": "GET"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/[0-9.]+/reports(/.*)?$"
+      }
     },
-    "path": {
-      "type": "string",
-      "pattern": "^/[0-9.]+/reports(/.*)?$"
-    }
+    "required": [
+      "method",
+      "path"
+    ]
   },
   "mailchimp-read-file-manager": {
-    "method": {
-      "const": "GET"
+    "properties": {
+      "method": {
+        "const": "GET"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/[0-9.]+/file-manager(/.*)?$"
+      }
     },
-    "path": {
-      "type": "string",
-      "pattern": "^/[0-9.]+/file-manager(/.*)?$"
-    }
+    "required": [
+      "method",
+      "path"
+    ]
   },
   "mailchimp-write-file-manager": {
-    "method": {
-      "enum": ["POST", "PUT", "PATCH", "DELETE"]
+    "properties": {
+      "method": {
+        "enum": [
+          "POST",
+          "PUT",
+          "PATCH",
+          "DELETE"
+        ]
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/[0-9.]+/file-manager(/.*)?$"
+      }
     },
-    "path": {
-      "type": "string",
-      "pattern": "^/[0-9.]+/file-manager(/.*)?$"
-    }
+    "required": [
+      "method",
+      "path"
+    ]
   },
   "mailchimp-read-ecommerce": {
-    "method": {
-      "const": "GET"
+    "properties": {
+      "method": {
+        "const": "GET"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/[0-9.]+/ecommerce(/.*)?$"
+      }
     },
-    "path": {
-      "type": "string",
-      "pattern": "^/[0-9.]+/ecommerce(/.*)?$"
-    }
+    "required": [
+      "method",
+      "path"
+    ]
   },
   "mailchimp-write-ecommerce": {
-    "method": {
-      "enum": ["POST", "PUT", "PATCH", "DELETE"]
+    "properties": {
+      "method": {
+        "enum": [
+          "POST",
+          "PUT",
+          "PATCH",
+          "DELETE"
+        ]
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/[0-9.]+/ecommerce(/.*)?$"
+      }
     },
-    "path": {
-      "type": "string",
-      "pattern": "^/[0-9.]+/ecommerce(/.*)?$"
-    }
+    "required": [
+      "method",
+      "path"
+    ]
   }
 }

@@ -1,125 +1,228 @@
 {
   "figma-api": {
-    "domain": {
-      "const": "api.figma.com"
-    }
+    "properties": {
+      "domain": {
+        "const": "api.figma.com"
+      }
+    },
+    "required": [
+      "domain"
+    ]
   },
   "figma-read-all": {
-    "method": {
-      "const": "GET"
-    }
+    "properties": {
+      "method": {
+        "const": "GET"
+      }
+    },
+    "required": [
+      "method"
+    ]
   },
   "figma-write-all": {
-    "method": {
-      "enum": ["POST", "PUT", "PATCH", "DELETE"]
-    }
+    "properties": {
+      "method": {
+        "enum": [
+          "POST",
+          "PUT",
+          "PATCH",
+          "DELETE"
+        ]
+      }
+    },
+    "required": [
+      "method"
+    ]
   },
   "figma-read-files": {
-    "method": {
-      "const": "GET"
+    "properties": {
+      "method": {
+        "const": "GET"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/v[0-9]+/(files|images)/[^/]+(/nodes|/images|/meta|/versions)?$"
+      }
     },
-    "path": {
-      "type": "string",
-      "pattern": "^/v[0-9]+/(files|images)/[^/]+(/nodes|/images|/meta|/versions)?$"
-    }
+    "required": [
+      "method",
+      "path"
+    ]
   },
   "figma-read-comments": {
-    "method": {
-      "const": "GET"
+    "properties": {
+      "method": {
+        "const": "GET"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/v[0-9]+/files/[^/]+/comments(/.*)?$"
+      }
     },
-    "path": {
-      "type": "string",
-      "pattern": "^/v[0-9]+/files/[^/]+/comments(/.*)?$"
-    }
+    "required": [
+      "method",
+      "path"
+    ]
   },
   "figma-write-comments": {
-    "method": {
-      "enum": ["POST", "DELETE"]
+    "properties": {
+      "method": {
+        "enum": [
+          "POST",
+          "DELETE"
+        ]
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/v[0-9]+/files/[^/]+/comments(/.*)?$"
+      }
     },
-    "path": {
-      "type": "string",
-      "pattern": "^/v[0-9]+/files/[^/]+/comments(/.*)?$"
-    }
+    "required": [
+      "method",
+      "path"
+    ]
   },
   "figma-read-projects": {
-    "method": {
-      "const": "GET"
+    "properties": {
+      "method": {
+        "const": "GET"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/v[0-9]+/(teams/[^/]+/projects|projects/[^/]+/files)$"
+      }
     },
-    "path": {
-      "type": "string",
-      "pattern": "^/v[0-9]+/(teams/[^/]+/projects|projects/[^/]+/files)$"
-    }
+    "required": [
+      "method",
+      "path"
+    ]
   },
   "figma-read-components": {
-    "method": {
-      "const": "GET"
+    "properties": {
+      "method": {
+        "const": "GET"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/v[0-9]+/(components/[^/]+|component_sets/[^/]+|styles/[^/]+|teams/[^/]+/(components|component_sets|styles)|files/[^/]+/(components|component_sets|styles))$"
+      }
     },
-    "path": {
-      "type": "string",
-      "pattern": "^/v[0-9]+/(components/[^/]+|component_sets/[^/]+|styles/[^/]+|teams/[^/]+/(components|component_sets|styles)|files/[^/]+/(components|component_sets|styles))$"
-    }
+    "required": [
+      "method",
+      "path"
+    ]
   },
   "figma-read-webhooks": {
-    "method": {
-      "const": "GET"
+    "properties": {
+      "method": {
+        "const": "GET"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/v[0-9]+/(webhooks|teams/[^/]+/webhooks)(/.*)?$"
+      }
     },
-    "path": {
-      "type": "string",
-      "pattern": "^/v[0-9]+/(webhooks|teams/[^/]+/webhooks)(/.*)?$"
-    }
+    "required": [
+      "method",
+      "path"
+    ]
   },
   "figma-write-webhooks": {
-    "method": {
-      "enum": ["POST", "PUT", "DELETE"]
+    "properties": {
+      "method": {
+        "enum": [
+          "POST",
+          "PUT",
+          "DELETE"
+        ]
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/v[0-9]+/(webhooks|teams/[^/]+/webhooks)(/.*)?$"
+      }
     },
-    "path": {
-      "type": "string",
-      "pattern": "^/v[0-9]+/(webhooks|teams/[^/]+/webhooks)(/.*)?$"
-    }
+    "required": [
+      "method",
+      "path"
+    ]
   },
   "figma-read-variables": {
-    "method": {
-      "const": "GET"
+    "properties": {
+      "method": {
+        "const": "GET"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/v[0-9]+/files/[^/]+/variables(/.*)?$"
+      }
     },
-    "path": {
-      "type": "string",
-      "pattern": "^/v[0-9]+/files/[^/]+/variables(/.*)?$"
-    }
+    "required": [
+      "method",
+      "path"
+    ]
   },
   "figma-write-variables": {
-    "method": {
-      "const": "POST"
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/v[0-9]+/files/[^/]+/variables$"
+      }
     },
-    "path": {
-      "type": "string",
-      "pattern": "^/v[0-9]+/files/[^/]+/variables$"
-    }
+    "required": [
+      "method",
+      "path"
+    ]
   },
   "figma-read-dev-resources": {
-    "method": {
-      "const": "GET"
+    "properties": {
+      "method": {
+        "const": "GET"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/v[0-9]+/(files/[^/]+/dev_resources|dev_resources)(/.*)?$"
+      }
     },
-    "path": {
-      "type": "string",
-      "pattern": "^/v[0-9]+/(files/[^/]+/dev_resources|dev_resources)(/.*)?$"
-    }
+    "required": [
+      "method",
+      "path"
+    ]
   },
   "figma-write-dev-resources": {
-    "method": {
-      "enum": ["POST", "PUT", "DELETE"]
+    "properties": {
+      "method": {
+        "enum": [
+          "POST",
+          "PUT",
+          "DELETE"
+        ]
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/v[0-9]+/(files/[^/]+/dev_resources|dev_resources)(/.*)?$"
+      }
     },
-    "path": {
-      "type": "string",
-      "pattern": "^/v[0-9]+/(files/[^/]+/dev_resources|dev_resources)(/.*)?$"
-    }
+    "required": [
+      "method",
+      "path"
+    ]
   },
   "figma-read-library-analytics": {
-    "method": {
-      "const": "GET"
+    "properties": {
+      "method": {
+        "const": "GET"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/v[0-9]+/analytics/libraries(/.*)?$"
+      }
     },
-    "path": {
-      "type": "string",
-      "pattern": "^/v[0-9]+/analytics/libraries(/.*)?$"
-    }
+    "required": [
+      "method",
+      "path"
+    ]
   }
 }

@@ -1,84 +1,162 @@
 {
   "google-drive-api": {
-    "domain": {
-      "const": "www.googleapis.com"
+    "properties": {
+      "domain": {
+        "const": "www.googleapis.com"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/(upload/)?drive/"
+      }
     },
-    "path": {
-      "type": "string",
-      "pattern": "^/(upload/)?drive/"
-    }
+    "required": [
+      "domain",
+      "path"
+    ]
   },
   "google-drive-read-all": {
-    "method": {
-      "const": "GET"
-    }
+    "properties": {
+      "method": {
+        "const": "GET"
+      }
+    },
+    "required": [
+      "method"
+    ]
   },
   "google-drive-write-all": {
-    "method": {
-      "enum": ["POST", "PUT", "PATCH", "DELETE"]
-    }
+    "properties": {
+      "method": {
+        "enum": [
+          "POST",
+          "PUT",
+          "PATCH",
+          "DELETE"
+        ]
+      }
+    },
+    "required": [
+      "method"
+    ]
   },
   "google-drive-read-files": {
-    "method": {
-      "const": "GET"
+    "properties": {
+      "method": {
+        "const": "GET"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/drive/v[0-9]+/files(/[^/]+)?$"
+      }
     },
-    "path": {
-      "type": "string",
-      "pattern": "^/drive/v[0-9]+/files(/[^/]+)?$"
-    }
+    "required": [
+      "method",
+      "path"
+    ]
   },
   "google-drive-write-files": {
-    "method": {
-      "enum": ["POST", "PUT", "PATCH", "DELETE"]
+    "properties": {
+      "method": {
+        "enum": [
+          "POST",
+          "PUT",
+          "PATCH",
+          "DELETE"
+        ]
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/(upload/)?drive/v[0-9]+/files(/[^/]+)?$"
+      }
     },
-    "path": {
-      "type": "string",
-      "pattern": "^/(upload/)?drive/v[0-9]+/files(/[^/]+)?$"
-    }
+    "required": [
+      "method",
+      "path"
+    ]
   },
   "google-drive-read-permissions": {
-    "method": {
-      "const": "GET"
+    "properties": {
+      "method": {
+        "const": "GET"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/drive/v[0-9]+/files/[^/]+/permissions(/.*)?$"
+      }
     },
-    "path": {
-      "type": "string",
-      "pattern": "^/drive/v[0-9]+/files/[^/]+/permissions(/.*)?$"
-    }
+    "required": [
+      "method",
+      "path"
+    ]
   },
   "google-drive-write-permissions": {
-    "method": {
-      "enum": ["POST", "PUT", "PATCH", "DELETE"]
+    "properties": {
+      "method": {
+        "enum": [
+          "POST",
+          "PUT",
+          "PATCH",
+          "DELETE"
+        ]
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/drive/v[0-9]+/files/[^/]+/permissions(/.*)?$"
+      }
     },
-    "path": {
-      "type": "string",
-      "pattern": "^/drive/v[0-9]+/files/[^/]+/permissions(/.*)?$"
-    }
+    "required": [
+      "method",
+      "path"
+    ]
   },
   "google-drive-read-comments": {
-    "method": {
-      "const": "GET"
+    "properties": {
+      "method": {
+        "const": "GET"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/drive/v[0-9]+/files/[^/]+/comments(/.*)?$"
+      }
     },
-    "path": {
-      "type": "string",
-      "pattern": "^/drive/v[0-9]+/files/[^/]+/comments(/.*)?$"
-    }
+    "required": [
+      "method",
+      "path"
+    ]
   },
   "google-drive-write-comments": {
-    "method": {
-      "enum": ["POST", "PUT", "PATCH", "DELETE"]
+    "properties": {
+      "method": {
+        "enum": [
+          "POST",
+          "PUT",
+          "PATCH",
+          "DELETE"
+        ]
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/drive/v[0-9]+/files/[^/]+/comments(/.*)?$"
+      }
     },
-    "path": {
-      "type": "string",
-      "pattern": "^/drive/v[0-9]+/files/[^/]+/comments(/.*)?$"
-    }
+    "required": [
+      "method",
+      "path"
+    ]
   },
   "google-drive-read-about": {
-    "method": {
-      "const": "GET"
+    "properties": {
+      "method": {
+        "const": "GET"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/drive/v[0-9]+/about$"
+      }
     },
-    "path": {
-      "type": "string",
-      "pattern": "^/drive/v[0-9]+/about$"
-    }
+    "required": [
+      "method",
+      "path"
+    ]
   }
 }

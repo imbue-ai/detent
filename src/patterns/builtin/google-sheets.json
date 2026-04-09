@@ -1,62 +1,115 @@
 {
   "google-sheets-api": {
-    "domain": {
-      "const": "sheets.googleapis.com"
-    }
+    "properties": {
+      "domain": {
+        "const": "sheets.googleapis.com"
+      }
+    },
+    "required": [
+      "domain"
+    ]
   },
   "google-sheets-read-all": {
-    "method": {
-      "const": "GET"
-    }
+    "properties": {
+      "method": {
+        "const": "GET"
+      }
+    },
+    "required": [
+      "method"
+    ]
   },
   "google-sheets-write-all": {
-    "method": {
-      "enum": ["POST", "PUT", "PATCH", "DELETE"]
-    }
+    "properties": {
+      "method": {
+        "enum": [
+          "POST",
+          "PUT",
+          "PATCH",
+          "DELETE"
+        ]
+      }
+    },
+    "required": [
+      "method"
+    ]
   },
   "google-sheets-read-spreadsheets": {
-    "method": {
-      "const": "GET"
+    "properties": {
+      "method": {
+        "const": "GET"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/v[0-9]+/spreadsheets/[^/]+$"
+      }
     },
-    "path": {
-      "type": "string",
-      "pattern": "^/v[0-9]+/spreadsheets/[^/]+$"
-    }
+    "required": [
+      "method",
+      "path"
+    ]
   },
   "google-sheets-create-spreadsheets": {
-    "method": {
-      "const": "POST"
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/v[0-9]+/spreadsheets$"
+      }
     },
-    "path": {
-      "type": "string",
-      "pattern": "^/v[0-9]+/spreadsheets$"
-    }
+    "required": [
+      "method",
+      "path"
+    ]
   },
   "google-sheets-update-spreadsheets": {
-    "method": {
-      "const": "POST"
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/v[0-9]+/spreadsheets/[^/:]+:batchUpdate$"
+      }
     },
-    "path": {
-      "type": "string",
-      "pattern": "^/v[0-9]+/spreadsheets/[^/:]+:batchUpdate$"
-    }
+    "required": [
+      "method",
+      "path"
+    ]
   },
   "google-sheets-read-values": {
-    "method": {
-      "const": "GET"
+    "properties": {
+      "method": {
+        "const": "GET"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/v[0-9]+/spreadsheets/[^/]+/values(/.+|:.+)$"
+      }
     },
-    "path": {
-      "type": "string",
-      "pattern": "^/v[0-9]+/spreadsheets/[^/]+/values(/.+|:.+)$"
-    }
+    "required": [
+      "method",
+      "path"
+    ]
   },
   "google-sheets-write-values": {
-    "method": {
-      "enum": ["POST", "PUT"]
+    "properties": {
+      "method": {
+        "enum": [
+          "POST",
+          "PUT"
+        ]
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/v[0-9]+/spreadsheets/[^/]+/values(/.+|:.+)$"
+      }
     },
-    "path": {
-      "type": "string",
-      "pattern": "^/v[0-9]+/spreadsheets/[^/]+/values(/.+|:.+)$"
-    }
+    "required": [
+      "method",
+      "path"
+    ]
   }
 }

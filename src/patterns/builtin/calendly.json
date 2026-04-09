@@ -1,152 +1,274 @@
 {
   "calendly-api": {
-    "domain": {
-      "const": "api.calendly.com"
-    }
+    "properties": {
+      "domain": {
+        "const": "api.calendly.com"
+      }
+    },
+    "required": [
+      "domain"
+    ]
   },
   "calendly-read-all": {
-    "method": {
-      "const": "GET"
-    }
+    "properties": {
+      "method": {
+        "const": "GET"
+      }
+    },
+    "required": [
+      "method"
+    ]
   },
   "calendly-write-all": {
-    "method": {
-      "enum": ["POST", "PUT", "PATCH", "DELETE"]
-    }
+    "properties": {
+      "method": {
+        "enum": [
+          "POST",
+          "PUT",
+          "PATCH",
+          "DELETE"
+        ]
+      }
+    },
+    "required": [
+      "method"
+    ]
   },
   "calendly-read-scheduled-events": {
-    "method": {
-      "const": "GET"
+    "properties": {
+      "method": {
+        "const": "GET"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/(scheduled_events|invitee_no_shows)(/.*)?$"
+      }
     },
-    "path": {
-      "type": "string",
-      "pattern": "^/(scheduled_events|invitee_no_shows)(/.*)?$"
-    }
+    "required": [
+      "method",
+      "path"
+    ]
   },
   "calendly-write-scheduled-events": {
-    "method": {
-      "enum": ["POST", "DELETE"]
+    "properties": {
+      "method": {
+        "enum": [
+          "POST",
+          "DELETE"
+        ]
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/(scheduled_events/[^/]+/cancellation|invitees(/[^/]+/no_show)?|invitee_no_shows(/.*)?)$"
+      }
     },
-    "path": {
-      "type": "string",
-      "pattern": "^/(scheduled_events/[^/]+/cancellation|invitees(/[^/]+/no_show)?|invitee_no_shows(/.*)?)$"
-    }
+    "required": [
+      "method",
+      "path"
+    ]
   },
   "calendly-read-event-types": {
-    "method": {
-      "const": "GET"
+    "properties": {
+      "method": {
+        "const": "GET"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/(event_types|event_type_available_times|event_type_memberships)(/.*)?$"
+      }
     },
-    "path": {
-      "type": "string",
-      "pattern": "^/(event_types|event_type_available_times|event_type_memberships)(/.*)?$"
-    }
+    "required": [
+      "method",
+      "path"
+    ]
   },
   "calendly-write-event-types": {
-    "method": {
-      "enum": ["POST", "PATCH"]
+    "properties": {
+      "method": {
+        "enum": [
+          "POST",
+          "PATCH"
+        ]
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/(event_types|one_off_event_types)(/.*)?$"
+      }
     },
-    "path": {
-      "type": "string",
-      "pattern": "^/(event_types|one_off_event_types)(/.*)?$"
-    }
+    "required": [
+      "method",
+      "path"
+    ]
   },
   "calendly-read-availability": {
-    "method": {
-      "const": "GET"
+    "properties": {
+      "method": {
+        "const": "GET"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/(user_busy_times|user_availability_schedules|event_type_availability_schedules)(/.*)?$"
+      }
     },
-    "path": {
-      "type": "string",
-      "pattern": "^/(user_busy_times|user_availability_schedules|event_type_availability_schedules)(/.*)?$"
-    }
+    "required": [
+      "method",
+      "path"
+    ]
   },
   "calendly-write-availability": {
-    "method": {
-      "const": "PATCH"
+    "properties": {
+      "method": {
+        "const": "PATCH"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/event_type_availability_schedules/[^/]+$"
+      }
     },
-    "path": {
-      "type": "string",
-      "pattern": "^/event_type_availability_schedules/[^/]+$"
-    }
+    "required": [
+      "method",
+      "path"
+    ]
   },
   "calendly-read-users": {
-    "method": {
-      "const": "GET"
+    "properties": {
+      "method": {
+        "const": "GET"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/users(/.*)?$"
+      }
     },
-    "path": {
-      "type": "string",
-      "pattern": "^/users(/.*)?$"
-    }
+    "required": [
+      "method",
+      "path"
+    ]
   },
   "calendly-read-organizations": {
-    "method": {
-      "const": "GET"
+    "properties": {
+      "method": {
+        "const": "GET"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/(organizations|organization_memberships|organization_invitations)(/.*)?$"
+      }
     },
-    "path": {
-      "type": "string",
-      "pattern": "^/(organizations|organization_memberships|organization_invitations)(/.*)?$"
-    }
+    "required": [
+      "method",
+      "path"
+    ]
   },
   "calendly-write-organizations": {
-    "method": {
-      "enum": ["POST", "DELETE"]
+    "properties": {
+      "method": {
+        "enum": [
+          "POST",
+          "DELETE"
+        ]
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/(organization_invitations|organization_memberships)(/.*)?$"
+      }
     },
-    "path": {
-      "type": "string",
-      "pattern": "^/(organization_invitations|organization_memberships)(/.*)?$"
-    }
+    "required": [
+      "method",
+      "path"
+    ]
   },
   "calendly-read-webhooks": {
-    "method": {
-      "const": "GET"
+    "properties": {
+      "method": {
+        "const": "GET"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/webhook_subscriptions(/.*)?$"
+      }
     },
-    "path": {
-      "type": "string",
-      "pattern": "^/webhook_subscriptions(/.*)?$"
-    }
+    "required": [
+      "method",
+      "path"
+    ]
   },
   "calendly-write-webhooks": {
-    "method": {
-      "enum": ["POST", "DELETE"]
+    "properties": {
+      "method": {
+        "enum": [
+          "POST",
+          "DELETE"
+        ]
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/webhook_subscriptions(/.*)?$"
+      }
     },
-    "path": {
-      "type": "string",
-      "pattern": "^/webhook_subscriptions(/.*)?$"
-    }
+    "required": [
+      "method",
+      "path"
+    ]
   },
   "calendly-read-routing-forms": {
-    "method": {
-      "const": "GET"
+    "properties": {
+      "method": {
+        "const": "GET"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/(routing_forms|routing_form_submissions)(/.*)?$"
+      }
     },
-    "path": {
-      "type": "string",
-      "pattern": "^/(routing_forms|routing_form_submissions)(/.*)?$"
-    }
+    "required": [
+      "method",
+      "path"
+    ]
   },
   "calendly-write-scheduling-links": {
-    "method": {
-      "const": "POST"
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/scheduling_links$"
+      }
     },
-    "path": {
-      "type": "string",
-      "pattern": "^/scheduling_links$"
-    }
+    "required": [
+      "method",
+      "path"
+    ]
   },
   "calendly-write-shares": {
-    "method": {
-      "const": "POST"
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/shares$"
+      }
     },
-    "path": {
-      "type": "string",
-      "pattern": "^/shares$"
-    }
+    "required": [
+      "method",
+      "path"
+    ]
   },
   "calendly-write-data-compliance": {
-    "method": {
-      "const": "POST"
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/data_compliance/(deletion_event|invitee_deletion)$"
+      }
     },
-    "path": {
-      "type": "string",
-      "pattern": "^/data_compliance/(deletion_event|invitee_deletion)$"
-    }
+    "required": [
+      "method",
+      "path"
+    ]
   }
 }

@@ -29,16 +29,25 @@ describe('dump', () => {
   it('returns user patterns and rules from config', () => {
     const configPath = writeConfig({
       patterns: {
-        'github-api': { domain: { const: 'api.github.com' } },
-        'get-only': { method: { const: 'GET' } },
+        'github-api': {
+          properties: { domain: { const: 'api.github.com' } },
+          required: ['domain'],
+        },
+        'get-only': { properties: { method: { const: 'GET' } }, required: ['method'] },
       },
       rules: [{ 'github-api': ['get-only'] }],
     });
 
     const result = dump(configPath);
 
-    expect(result.patterns).toHaveProperty('github-api', { domain: { const: 'api.github.com' } });
-    expect(result.patterns).toHaveProperty('get-only', { method: { const: 'GET' } });
+    expect(result.patterns).toHaveProperty('github-api', {
+      properties: { domain: { const: 'api.github.com' } },
+      required: ['domain'],
+    });
+    expect(result.patterns).toHaveProperty('get-only', {
+      properties: { method: { const: 'GET' } },
+      required: ['method'],
+    });
     // Builtin patterns are also present
     expect(result.patterns).toHaveProperty('any', {});
     expect(result.rules).toEqual([{ 'github-api': ['get-only'] }]);
@@ -82,21 +91,10 @@ describe('dump', () => {
     expect(() => dump(configPath)).toThrow(/unknown property "rulez"/);
   });
 
-  it('names unknown nested properties in error message', () => {
-    const configPath = writeConfig({
-      patterns: {
-        'my-pattern': { methud: { const: 'GET' } },
-      },
-      rules: [],
-    });
-
-    expect(() => dump(configPath)).toThrow(/unknown property "methud"/);
-  });
-
   it('excludes builtin patterns when DETENT_DO_NOT_USE_BUILTIN_PATTERNS is set', () => {
     const configPath = writeConfig({
       patterns: {
-        'my-pattern': { method: { const: 'GET' } },
+        'my-pattern': { properties: { method: { const: 'GET' } }, required: ['method'] },
       },
       rules: [],
     });
@@ -118,10 +116,10 @@ describe('dump', () => {
   it('preserves rules as-is from the config', () => {
     const configPath = writeConfig({
       patterns: {
-        scope1: { domain: { const: 'a.com' } },
-        scope2: { domain: { const: 'b.com' } },
-        perm1: { method: { const: 'GET' } },
-        perm2: { method: { const: 'POST' } },
+        scope1: { properties: { domain: { const: 'a.com' } }, required: ['domain'] },
+        scope2: { properties: { domain: { const: 'b.com' } }, required: ['domain'] },
+        perm1: { properties: { method: { const: 'GET' } }, required: ['method'] },
+        perm2: { properties: { method: { const: 'POST' } }, required: ['method'] },
       },
       rules: [{ scope1: ['perm1'] }, { scope2: ['perm1', 'perm2'] }],
     });
@@ -137,8 +135,14 @@ describe('dump', () => {
       includedPath,
       JSON.stringify({
         patterns: {
-          'included-scope': { domain: { const: 'included.com' } },
-          'included-perm': { method: { const: 'GET' } },
+          'included-scope': {
+            properties: { domain: { const: 'included.com' } },
+            required: ['domain'],
+          },
+          'included-perm': {
+            properties: { method: { const: 'GET' } },
+            required: ['method'],
+          },
         },
         rules: [{ 'included-scope': ['included-perm'] }],
       })
@@ -147,7 +151,7 @@ describe('dump', () => {
     const configPath = writeConfig({
       include: ['included.json'],
       patterns: {
-        'own-scope': { domain: { const: 'own.com' } },
+        'own-scope': { properties: { domain: { const: 'own.com' } }, required: ['domain'] },
       },
       rules: [{ 'own-scope': ['included-perm'] }],
     });
