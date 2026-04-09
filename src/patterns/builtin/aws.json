@@ -5,16 +5,6 @@
       "pattern": "^([a-z0-9.-]+\\.)?amazonaws\\.com$"
     }
   },
-  "aws-read-all": {
-    "method": {
-      "enum": ["GET", "HEAD"]
-    }
-  },
-  "aws-write-all": {
-    "method": {
-      "enum": ["POST", "PUT", "PATCH", "DELETE"]
-    }
-  },
   "aws-s3": {
     "domain": {
       "type": "string",

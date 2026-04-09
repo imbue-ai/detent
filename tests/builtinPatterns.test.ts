@@ -48,22 +48,6 @@ describe('builtin patterns: aws', () => {
     ).toBe(false);
   });
 
-  it('aws-read-all matches GET and HEAD but not POST', () => {
-    expectPatternExists('aws-read-all');
-    expect(builtinRegistry.get('aws-read-all')!.match(makeRequest({ method: 'GET' }))).toBe(true);
-    expect(builtinRegistry.get('aws-read-all')!.match(makeRequest({ method: 'HEAD' }))).toBe(true);
-    expect(builtinRegistry.get('aws-read-all')!.match(makeRequest({ method: 'POST' }))).toBe(false);
-  });
-
-  it('aws-write-all matches POST, PUT, PATCH, DELETE but not GET', () => {
-    expectPatternExists('aws-write-all');
-    expect(builtinRegistry.get('aws-write-all')!.match(makeRequest({ method: 'POST' }))).toBe(true);
-    expect(builtinRegistry.get('aws-write-all')!.match(makeRequest({ method: 'DELETE' }))).toBe(
-      true
-    );
-    expect(builtinRegistry.get('aws-write-all')!.match(makeRequest({ method: 'GET' }))).toBe(false);
-  });
-
   it('service-specific patterns match regional endpoints', () => {
     const regionalEndpoints: Record<string, string> = {
       'aws-ec2': 'ec2.us-east-1.amazonaws.com',
