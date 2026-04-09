@@ -8,8 +8,8 @@ Define named permissions for accessing third-party services and check HTTP reque
 # Store rules.
 echo '{
   "rules": [
-    {"github-api": ["github-read-issues", "github-write-comments"]},
-    {"slack-api": ["get-method-only"]}
+    {"github-api": ["github-read-all", "github-write-issues"]},
+    {"slack-api": ["slack-read-all"]}
   ]
 }' > ~/.config/detent/config.json
 
@@ -113,7 +113,7 @@ Once defined, request patterns can be combined in a two-level rules hierarchy, l
 {
   "rules": [
     {"github-api": ["github-read-issues-detent", "github-write-comments-detent", ...] },
-    {"slack-api": ["get-method-only"] }
+    {"slack-api": ["slack-read-all"] }
   ],
 }
 ```
