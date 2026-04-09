@@ -29,7 +29,7 @@
     },
     "path": {
       "type": "string",
-      "pattern": "^/gmail/v[0-9]+/users/[^/]+/messages(/.*)?$"
+      "pattern": "^/(upload/)?gmail/v[0-9]+/users/[^/]+/messages(/.*)?$"
     }
   },
   "google-gmail-send-messages": {
@@ -38,7 +38,7 @@
     },
     "path": {
       "type": "string",
-      "pattern": "^/gmail/v[0-9]+/users/[^/]+/messages/send$"
+      "pattern": "^/(upload/)?gmail/v[0-9]+/users/[^/]+/messages/send$"
     }
   },
   "google-gmail-read-threads": {
@@ -92,7 +92,7 @@
     },
     "path": {
       "type": "string",
-      "pattern": "^/gmail/v[0-9]+/users/[^/]+/drafts(/.*)?$"
+      "pattern": "^/(upload/)?gmail/v[0-9]+/users/[^/]+/drafts(/.*)?$"
     }
   },
   "google-gmail-read-settings": {

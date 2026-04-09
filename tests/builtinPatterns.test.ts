@@ -699,6 +699,37 @@ describe('builtin patterns: google-gmail', () => {
       )
     ).toBe(true);
   });
+
+  it('google-gmail-send-messages matches upload variant', () => {
+    expect(
+      builtinPatterns['google-gmail-send-messages']!.match(
+        makeRequest({ method: 'POST', path: '/upload/gmail/v1/users/me/messages/send' })
+      )
+    ).toBe(true);
+  });
+
+  it('google-gmail-write-messages matches upload variant', () => {
+    expectPatternExists('google-gmail-write-messages');
+    expect(
+      builtinPatterns['google-gmail-write-messages']!.match(
+        makeRequest({ method: 'POST', path: '/upload/gmail/v1/users/me/messages' })
+      )
+    ).toBe(true);
+  });
+
+  it('google-gmail-write-drafts matches upload variant', () => {
+    expectPatternExists('google-gmail-write-drafts');
+    expect(
+      builtinPatterns['google-gmail-write-drafts']!.match(
+        makeRequest({ method: 'POST', path: '/upload/gmail/v1/users/me/drafts' })
+      )
+    ).toBe(true);
+    expect(
+      builtinPatterns['google-gmail-write-drafts']!.match(
+        makeRequest({ method: 'PUT', path: '/upload/gmail/v1/users/me/drafts/abc123' })
+      )
+    ).toBe(true);
+  });
 });
 
 describe('builtin patterns: google-people', () => {
@@ -728,6 +759,51 @@ describe('builtin patterns: google-people', () => {
         makeRequest({ method: 'GET', path: '/v1/contactGroups' })
       )
     ).toBe(false);
+  });
+
+  it('google-people-read-contacts matches GET to colon-method paths', () => {
+    expect(
+      builtinPatterns['google-people-read-contacts']!.match(
+        makeRequest({ method: 'GET', path: '/v1/people:batchGet' })
+      )
+    ).toBe(true);
+    expect(
+      builtinPatterns['google-people-read-contacts']!.match(
+        makeRequest({ method: 'GET', path: '/v1/people:searchContacts' })
+      )
+    ).toBe(true);
+  });
+
+  it('google-people-write-contacts matches POST to colon-method paths', () => {
+    expectPatternExists('google-people-write-contacts');
+    expect(
+      builtinPatterns['google-people-write-contacts']!.match(
+        makeRequest({ method: 'POST', path: '/v1/people:createContact' })
+      )
+    ).toBe(true);
+    expect(
+      builtinPatterns['google-people-write-contacts']!.match(
+        makeRequest({ method: 'POST', path: '/v1/people:batchDeleteContacts' })
+      )
+    ).toBe(true);
+  });
+
+  it('google-people-read-contact-groups matches GET to colon-method paths', () => {
+    expectPatternExists('google-people-read-contact-groups');
+    expect(
+      builtinPatterns['google-people-read-contact-groups']!.match(
+        makeRequest({ method: 'GET', path: '/v1/contactGroups:batchGet' })
+      )
+    ).toBe(true);
+  });
+
+  it('google-people-read-other-contacts matches GET to colon-method paths', () => {
+    expectPatternExists('google-people-read-other-contacts');
+    expect(
+      builtinPatterns['google-people-read-other-contacts']!.match(
+        makeRequest({ method: 'GET', path: '/v1/otherContacts:search' })
+      )
+    ).toBe(true);
   });
 });
 

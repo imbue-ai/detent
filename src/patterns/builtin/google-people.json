@@ -20,7 +20,7 @@
     },
     "path": {
       "type": "string",
-      "pattern": "^/v[0-9]+/people(/.*)?$"
+      "pattern": "^/v[0-9]+/people((/|:).*)?$"
     }
   },
   "google-people-write-contacts": {
@@ -29,7 +29,7 @@
     },
     "path": {
       "type": "string",
-      "pattern": "^/v[0-9]+/people(/.*)?$"
+      "pattern": "^/v[0-9]+/people((/|:).*)?$"
     }
   },
   "google-people-read-contact-groups": {
@@ -38,7 +38,7 @@
     },
     "path": {
       "type": "string",
-      "pattern": "^/v[0-9]+/contactGroups(/.*)?$"
+      "pattern": "^/v[0-9]+/contactGroups((/|:).*)?$"
     }
   },
   "google-people-write-contact-groups": {
@@ -47,7 +47,7 @@
     },
     "path": {
       "type": "string",
-      "pattern": "^/v[0-9]+/contactGroups(/.*)?$"
+      "pattern": "^/v[0-9]+/contactGroups((/|:).*)?$"
     }
   },
   "google-people-read-other-contacts": {
@@ -56,7 +56,7 @@
     },
     "path": {
       "type": "string",
-      "pattern": "^/v[0-9]+/otherContacts(/.*)?$"
+      "pattern": "^/v[0-9]+/otherContacts((/|:).*)?$"
     }
   },
   "google-people-write-other-contacts": {
@@ -65,7 +65,7 @@
     },
     "path": {
       "type": "string",
-      "pattern": "^/v[0-9]+/otherContacts(/.*)?$"
+      "pattern": "^/v[0-9]+/otherContacts((/|:).*)?$"
     }
   }
 }
