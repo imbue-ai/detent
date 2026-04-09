@@ -51,7 +51,51 @@ export class RequestPattern {
   }
 }
 
-function loadBuiltinPatterns(): Readonly<Record<string, RequestPattern>> {
+/**
+ * Holds raw schemas and compiles them into RequestPattern instances on demand.
+ */
+export class PatternRegistry {
+  private readonly rawSchemas: ReadonlyMap<string, Record<string, unknown>>;
+  private readonly compiledPatterns = new Map<string, RequestPattern>();
+
+  constructor(rawSchemas: Readonly<Record<string, Record<string, unknown>>>) {
+    this.rawSchemas = new Map(Object.entries(rawSchemas));
+  }
+
+  get(name: string): RequestPattern | undefined {
+    const cached = this.compiledPatterns.get(name);
+    if (cached !== undefined) {
+      return cached;
+    }
+
+    const schema = this.rawSchemas.get(name);
+    if (schema === undefined) {
+      return undefined;
+    }
+
+    const pattern = new RequestPattern(name, schema);
+    this.compiledPatterns.set(name, pattern);
+    return pattern;
+  }
+
+  has(name: string): boolean {
+    return this.rawSchemas.has(name);
+  }
+
+  compileAll(): void {
+    for (const name of this.rawSchemas.keys()) {
+      if (!this.compiledPatterns.has(name)) {
+        this.get(name);
+      }
+    }
+  }
+
+  allSchemaProperties(): Readonly<Record<string, Record<string, unknown>>> {
+    return Object.fromEntries(this.rawSchemas);
+  }
+}
+
+function readBuiltinSchemas(): Readonly<Record<string, Record<string, unknown>>> {
   const currentDirectory = dirname(fileURLToPath(import.meta.url));
   const builtinDirectory = join(currentDirectory, 'builtin');
 
@@ -63,8 +107,7 @@ function loadBuiltinPatterns(): Readonly<Record<string, RequestPattern>> {
   }
 
   const jsonFiles = entries.filter((entry) => entry.endsWith('.json'));
-
-  const merged: Record<string, RequestPattern> = {};
+  const schemas: Record<string, Record<string, unknown>> = {};
 
   for (const jsonFile of jsonFiles) {
     const filePath = join(builtinDirectory, jsonFile);
@@ -91,13 +134,17 @@ function loadBuiltinPatterns(): Readonly<Record<string, RequestPattern>> {
     }
 
     const patternsObject = parsed as Record<string, Record<string, unknown>>;
-
     for (const [name, schema] of Object.entries(patternsObject)) {
-      merged[name] = new RequestPattern(name, schema);
+      schemas[name] = schema;
     }
   }
 
-  return merged;
+  return schemas;
 }
 
-export const builtinPatterns: Readonly<Record<string, RequestPattern>> = loadBuiltinPatterns();
+let cachedBuiltinSchemas: Readonly<Record<string, Record<string, unknown>>> | undefined;
+
+export function getAllBuiltinSchemas(): Readonly<Record<string, Record<string, unknown>>> {
+  cachedBuiltinSchemas ??= readBuiltinSchemas();
+  return cachedBuiltinSchemas;
+}
