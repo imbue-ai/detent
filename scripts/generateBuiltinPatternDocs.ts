@@ -24,6 +24,19 @@ function isScopePattern(schema: PatternSchema): boolean {
   return required.includes('domain') && !('method' in properties);
 }
 
+// AWS service-specific patterns (aws-s3, aws-ec2, …) only match on domain,
+// so they look like scopes structurally, but they double as permissions
+// inside an "aws" scope rule (e.g. {"aws": ["aws-s3"]}).  Only the
+// top-level "aws" pattern is unambiguously a scope.
+const awsScopePatterns: ReadonlySet<string> = new Set(['aws']);
+
+function shouldMarkAsScope(patternName: string, schema: PatternSchema, fileName: string): boolean {
+  if (fileName === 'aws.json') {
+    return awsScopePatterns.has(patternName);
+  }
+  return isScopePattern(schema);
+}
+
 function generateMarkdown(): string {
   const files = readdirSync(builtinDirectory)
     .filter((file) => file.endsWith('.json'))
@@ -43,7 +56,7 @@ function generateMarkdown(): string {
 
     for (const patternName of Object.keys(patterns)) {
       const schema = patterns[patternName]!;
-      const suffix = isScopePattern(schema) ? ' *(scope)*' : '';
+      const suffix = shouldMarkAsScope(patternName, schema, file) ? ' *(scope)*' : '';
       lines.push(`- \`${patternName}\`${suffix}`);
     }
 
@@ -57,6 +70,12 @@ function generateMarkdown(): string {
     'Patterns marked *(scope)* identify requests to a particular',
     'service and are meant to be used as rule keys. The remaining',
     'patterns define permissions and are meant to be used as rule values.',
+    '',
+    'The AWS patterns are a special case: the service-specific',
+    'patterns like `aws-s3` or `aws-ec2` only match on domain, so',
+    'they can serve as scopes (e.g. `{"aws-s3": ["aws-s3-read"]}`)',
+    'or as permissions inside a broader `aws` scope',
+    '(e.g. `{"aws": ["aws-s3"]}` to allow all S3 access).',
     '',
     'See the main [README](../README.md) for how patterns and rules work together.',
     '',

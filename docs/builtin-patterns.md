@@ -5,6 +5,12 @@ Patterns marked *(scope)* identify requests to a particular
 service and are meant to be used as rule keys. The remaining
 patterns define permissions and are meant to be used as rule values.
 
+The AWS patterns are a special case: the service-specific
+patterns like `aws-s3` or `aws-ec2` only match on domain, so
+they can serve as scopes (e.g. `{"aws-s3": ["aws-s3-read"]}`)
+or as permissions inside a broader `aws` scope
+(e.g. `{"aws": ["aws-s3"]}` to allow all S3 access).
+
 See the main [README](../README.md) for how patterns and rules work together.
 ### any
 
@@ -13,33 +19,33 @@ See the main [README](../README.md) for how patterns and rules work together.
 ### aws
 
 - `aws` *(scope)*
-- `aws-s3` *(scope)*
+- `aws-s3`
 - `aws-s3-read`
 - `aws-s3-write`
-- `aws-ec2` *(scope)*
-- `aws-iam` *(scope)*
-- `aws-sts` *(scope)*
-- `aws-lambda` *(scope)*
-- `aws-dynamodb` *(scope)*
-- `aws-cloudformation` *(scope)*
-- `aws-logs` *(scope)*
-- `aws-cloudwatch` *(scope)*
-- `aws-sns` *(scope)*
-- `aws-sqs` *(scope)*
-- `aws-ssm` *(scope)*
-- `aws-secretsmanager` *(scope)*
-- `aws-route53` *(scope)*
-- `aws-ecs` *(scope)*
-- `aws-ecr` *(scope)*
-- `aws-eks` *(scope)*
-- `aws-bedrock` *(scope)*
-- `aws-cloudfront` *(scope)*
-- `aws-rds` *(scope)*
-- `aws-kms` *(scope)*
-- `aws-elb` *(scope)*
-- `aws-cloudtrail` *(scope)*
-- `aws-eventbridge` *(scope)*
-- `aws-kinesis` *(scope)*
+- `aws-ec2`
+- `aws-iam`
+- `aws-sts`
+- `aws-lambda`
+- `aws-dynamodb`
+- `aws-cloudformation`
+- `aws-logs`
+- `aws-cloudwatch`
+- `aws-sns`
+- `aws-sqs`
+- `aws-ssm`
+- `aws-secretsmanager`
+- `aws-route53`
+- `aws-ecs`
+- `aws-ecr`
+- `aws-eks`
+- `aws-bedrock`
+- `aws-cloudfront`
+- `aws-rds`
+- `aws-kms`
+- `aws-elb`
+- `aws-cloudtrail`
+- `aws-eventbridge`
+- `aws-kinesis`
 
 ### calendly
 
