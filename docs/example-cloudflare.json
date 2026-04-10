@@ -1,0 +1,93 @@
+{
+  "patterns": {
+    "cloudflare-api": {
+      "properties": {
+        "domain": { "const": "api.cloudflare.com" },
+        "path": {
+          "type": "string",
+          "pattern": "^/client/v4/"
+        }
+      },
+      "required": ["domain", "path"]
+    },
+    "cloudflare-read-zones": {
+      "properties": {
+        "method": { "const": "GET" },
+        "path": {
+          "type": "string",
+          "pattern": "^/client/v4/zones(/[0-9a-f]{32})?$"
+        }
+      },
+      "required": ["method", "path"]
+    },
+    "cloudflare-read-dns": {
+      "properties": {
+        "method": { "const": "GET" },
+        "path": {
+          "type": "string",
+          "pattern": "^/client/v4/zones/[0-9a-f]{32}/dns_records(/[0-9a-f]{32})?$"
+        }
+      },
+      "required": ["method", "path"],
+      "if": {
+        "properties": {
+          "path": {
+            "type": "string",
+            "pattern": "/dns_records$"
+          }
+        },
+        "required": ["path"]
+      },
+      "then": {
+        "properties": {
+          "queryParams": {
+            "type": "object",
+            "propertyNames": {
+              "enum": ["type", "name", "content", "page", "per_page", "order", "direction", "match"]
+            }
+          }
+        }
+      }
+    },
+    "cloudflare-write-dns": {
+      "properties": {
+        "method": { "enum": ["POST", "PUT", "PATCH", "DELETE"] },
+        "path": {
+          "type": "string",
+          "pattern": "^/client/v4/zones/[0-9a-f]{32}/dns_records(/[0-9a-f]{32})?$"
+        }
+      },
+      "required": ["method", "path"],
+      "not": {
+        "properties": {
+          "path": {
+            "type": "string",
+            "pattern": "/dns_records$"
+          },
+          "method": { "const": "DELETE" }
+        },
+        "required": ["path", "method"]
+      }
+    },
+    "cloudflare-purge-cache": {
+      "properties": {
+        "method": { "const": "POST" },
+        "path": {
+          "type": "string",
+          "pattern": "^/client/v4/zones/[0-9a-f]{32}/purge_cache$"
+        }
+      },
+      "required": ["method", "path"]
+    }
+  },
+  "rules": [
+    {
+      "cloudflare-api": [
+        "cloudflare-read-zones",
+        "cloudflare-read-dns",
+        "cloudflare-write-dns",
+        "cloudflare-purge-cache"
+      ]
+    }
+  ]
+}

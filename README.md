@@ -1,5 +1,10 @@
 # Detent
 
+[![npm](https://img.shields.io/npm/v/@imbue-ai/detent?style=flat-square)](https://npmjs.com/package/@imbue-ai/detent)
+[![CI](https://img.shields.io/github/actions/workflow/status/imbue-ai/detent/ci.yml?style=flat-square)](https://github.com/imbue-ai/detent/actions)
+[![license](https://img.shields.io/npm/l/@imbue-ai/detent?style=flat-square)](LICENSE)
+[![downloads](https://img.shields.io/npm/dm/@imbue-ai/detent?style=flat-square)](https://npmjs.com/package/@imbue-ai/detent)
+
 Fine-grained HTTP permissions for AI agents.
 
 ## Quick example
@@ -49,9 +54,8 @@ whatever tool the agent uses to access third-party services.
 ### Latchkey
 
 [Latchkey](https://github.com/imbue-ai/latchkey) lets users
-point to Detent configs in order to keep control over what
-agents can and can't access. (This is currently a work in
-progress.)
+point to a Detent config in order to control what agents can and
+can't access.
 
 ## Details and architecture
 
@@ -94,7 +98,7 @@ environment variable to specify a different path.
 An HTTP(s) request can be represented as an object that has
 several well-defined properties: `protocol`, `domain`, `port`,
 `path`, `method`, `headers`, `queryParams` and `body`. Using this
-representation, the `detent` tool uses [JSON schemas](https://json-schema.org/) to:
+representation, the `detent` tool uses [JSON schema](https://json-schema.org/) to:
 
 1. Match requests to permission checks.
 2. Define the "acceptable" shape of a request that is subject to a permission check. 
@@ -147,6 +151,8 @@ like this:
 }
 ```
 
+For a complete example config that defines custom patterns, see
+[docs/example-cloudflare.json](docs/example-cloudflare.json).
 
 ### Permission rules
 
@@ -193,10 +199,10 @@ are automatically available and recognized in rule bodies:
 - `aws-s3-read` (to allow read operations on AWS S3)
 - `stripe-read-all` (to allow all read operations in Stripe API)
 - `google-drive-write-comments` (to allow adding comments to Google Drive items)
-- (... and many others)
+- ... and many others, see [docs/builtin-patterns.md](docs/builtin-patterns.md) for the full list
 
 Run `detent dump` to see your current config together with all the
-existing built-in patterns. If you only want to list the pattern
+available built-in patterns. If you only want to list the pattern
 names, run `detent dump | jq '.patterns | keys'`.
 
 If you don't want to use the built-in patterns, set the
