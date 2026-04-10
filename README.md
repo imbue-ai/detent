@@ -49,9 +49,8 @@ whatever tool the agent uses to access third-party services.
 ### Latchkey
 
 [Latchkey](https://github.com/imbue-ai/latchkey) lets users
-point to Detent configs in order to keep control over what
-agents can and can't access. (This is currently a work in
-progress.)
+point to a Detent config in order to control what agents can and
+can't access.
 
 ## Details and architecture
 
