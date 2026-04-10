@@ -11,27 +11,69 @@
   },
   "coolify-read-all": {
     "properties": {
-      "method": {
-        "const": "GET"
-      }
+      "method": { "const": "GET" }
     },
-    "required": [
-      "method"
+    "required": ["method"],
+    "allOf": [
+      {
+        "not": {
+          "properties": {
+            "path": {
+              "type": "string",
+              "pattern": "^/api/v[0-9]+/.+/(start|stop|restart|cancel|validate)$"
+            }
+          },
+          "required": ["path"]
+        }
+      },
+      {
+        "not": {
+          "properties": {
+            "path": {
+              "type": "string",
+              "pattern": "^/api/v[0-9]+/(deploy|enable|disable)(/.*)?$"
+            }
+          },
+          "required": ["path"]
+        }
+      }
     ]
   },
   "coolify-write-all": {
-    "properties": {
-      "method": {
-        "enum": [
-          "POST",
-          "PUT",
-          "PATCH",
-          "DELETE"
+    "anyOf": [
+      {
+        "properties": {
+          "method": {
+            "enum": ["POST", "PUT", "PATCH", "DELETE"]
+          }
+        },
+        "required": ["method"]
+      },
+      {
+        "properties": {
+          "method": { "const": "GET" },
+          "path": {
+            "type": "string"
+          }
+        },
+        "required": ["method", "path"],
+        "anyOf": [
+          {
+            "properties": {
+              "path": {
+                "pattern": "^/api/v[0-9]+/.+/(start|stop|restart|cancel|validate)$"
+              }
+            }
+          },
+          {
+            "properties": {
+              "path": {
+                "pattern": "^/api/v[0-9]+/(deploy|enable|disable)(/.*)?$"
+              }
+            }
+          }
         ]
       }
-    },
-    "required": [
-      "method"
     ]
   },
   "coolify-read-applications": {
