@@ -21,7 +21,7 @@ detent curl -s https://api.github.com/repos/octocat/Hello-World/issues/1
 ## Installation
 
 ```bash
-npm install -g detent
+npm install -g @imbue-ai/detent
 ```
 
 (This is not needed if you only intend to use Detent as a JavaScript library.)
