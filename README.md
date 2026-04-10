@@ -192,10 +192,10 @@ are automatically available and recognized in rule bodies:
 - `aws-s3-read` (to allow read operations on AWS S3)
 - `stripe-read-all` (to allow all read operations in Stripe API)
 - `google-drive-write-comments` (to allow adding comments to Google Drive items)
-- (... and many others)
+- ... and many others, see [docs/builtin-patterns.md](docs/builtin-patterns.md) for the full list
 
 Run `detent dump` to see your current config together with all the
-existing built-in patterns. If you only want to list the pattern
+available built-in patterns. If you only want to list the pattern
 names, run `detent dump | jq '.patterns | keys'`.
 
 If you don't want to use the built-in patterns, set the
