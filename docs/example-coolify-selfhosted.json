@@ -1,0 +1,65 @@
+{
+  "patterns": {
+    "my-coolify": {
+      "properties": {
+        "domain": {
+          "type": "string",
+          "pattern": "^coolify\\.internal\\.example\\.com$"
+        }
+      },
+      "required": ["domain"]
+    },
+    "my-coolify-read-safe": {
+      "properties": {
+        "method": { "const": "GET" },
+        "path": {
+          "type": "string",
+          "pattern": "^/api/v[0-9]+/(applications|services)(/[a-z0-9-]+)?$"
+        }
+      },
+      "required": ["method", "path"],
+      "not": {
+        "properties": {
+          "path": {
+            "type": "string",
+            "pattern": "/secrets"
+          }
+        },
+        "required": ["path"]
+      }
+    },
+    "my-coolify-deployments": {
+      "properties": {
+        "method": { "enum": ["GET", "POST"] },
+        "path": {
+          "type": "string",
+          "pattern": "^/api/v[0-9]+/deploy(ments)?(/[a-z0-9-]+)?$"
+        }
+      },
+      "required": ["method", "path"],
+      "if": {
+        "properties": {
+          "method": { "const": "POST" }
+        },
+        "required": ["method"]
+      },
+      "then": {
+        "properties": {
+          "path": {
+            "type": "string",
+            "pattern": "^/api/v[0-9]+/deploy$"
+          }
+        },
+        "required": ["path"]
+      }
+    }
+  },
+  "rules": [
+    {
+      "my-coolify": [
+        "my-coolify-read-safe",
+        "my-coolify-deployments"
+      ]
+    }
+  ]
+}

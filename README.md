@@ -146,6 +146,8 @@ like this:
 }
 ```
 
+For a complete example config that defines custom patterns, see
+[docs/example-coolify-selfhosted.json](docs/example-coolify-selfhosted.json).
 
 ### Permission rules
 
