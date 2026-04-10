@@ -34,14 +34,30 @@ describe('CLI', () => {
         rules: [{ everything: ['allow-all'] }],
       })
     );
-    const { stdout: _stdout } = await execFileAsync(
-      'node',
-      [cliPath, 'curl', 'https://example.com'],
-      {
-        env: { ...process.env, DETENT_CONFIG: configPath },
-      }
+    const { stdout } = await execFileAsync('node', [cliPath, 'curl', 'https://example.com'], {
+      env: { ...process.env, DETENT_CONFIG: configPath },
+    });
+    expect(stdout.trim()).toBe('approved');
+  });
+
+  it('exits 1 and prints rejected for a denied curl request', async () => {
+    writeFileSync(
+      configPath,
+      JSON.stringify({
+        patterns: {},
+        rules: [],
+      })
     );
-    // exit code 0 means allowed (no throw)
+    try {
+      await execFileAsync('node', [cliPath, 'curl', 'https://example.com'], {
+        env: { ...process.env, DETENT_CONFIG: configPath },
+      });
+      expect.fail('Should have exited with non-zero');
+    } catch (error: unknown) {
+      const execError = error as { code: number; stdout: string };
+      expect(execError.code).toBe(1);
+      expect(execError.stdout.trim()).toBe('rejected');
+    }
   });
 
   it('exits 0 and outputs JSON for dump subcommand', async () => {

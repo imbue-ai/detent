@@ -47,6 +47,7 @@ program
       const curlArgs = command.args as readonly string[];
       const request = parseCurlArgs(curlArgs);
       const allowed = await check(request, configPathOverride);
+      console.log(allowed ? 'approved' : 'rejected');
       process.exitCode = allowed ? EXIT_CODE_ALLOWED : EXIT_CODE_DENIED;
     } catch (error: unknown) {
       if (error instanceof Error) {
