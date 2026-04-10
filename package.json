@@ -1,7 +1,7 @@
 {
   "name": "detent",
   "version": "1.0.0",
-  "description": "A CLI tool to validate HTTP requests against a set of permission rules.",
+  "description": "Fine-grained HTTP permissions for AI agents.",
   "author": "Imbue <hynek@imbue.com>",
   "repository": {
     "type": "git",
