@@ -1,5 +1,10 @@
 # Detent
 
+[![npm](https://img.shields.io/npm/v/@imbue-ai/detent?style=flat-square)](https://npmjs.com/package/@imbue-ai/detent)
+[![CI](https://img.shields.io/github/actions/workflow/status/imbue-ai/detent/ci.yml?style=flat-square)](https://github.com/imbue-ai/detent/actions)
+[![license](https://img.shields.io/npm/l/@imbue-ai/detent?style=flat-square)](LICENSE)
+[![downloads](https://img.shields.io/npm/dm/@imbue-ai/detent?style=flat-square)](https://npmjs.com/package/@imbue-ai/detent)
+
 Fine-grained HTTP permissions for AI agents.
 
 ## Quick example
