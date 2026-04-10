@@ -13,8 +13,8 @@ echo '{
   ]
 }' > ~/.config/detent/config.json
 
-# Check requests.
-# (Exit codes: 0 = approved, 1 = rejected.)
+# Check a request before sending.
+# (Exit code: 0 = approved, 1 = rejected.)
 detent curl -s https://api.github.com/repos/octocat/Hello-World/issues/1
 ```
 
