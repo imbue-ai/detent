@@ -98,7 +98,7 @@ environment variable to specify a different path.
 An HTTP(s) request can be represented as an object that has
 several well-defined properties: `protocol`, `domain`, `port`,
 `path`, `method`, `headers`, `queryParams` and `body`. Using this
-representation, the `detent` tool uses [JSON schemas](https://json-schema.org/) to:
+representation, the `detent` tool uses [JSON schema](https://json-schema.org/) to:
 
 1. Match requests to permission checks.
 2. Define the "acceptable" shape of a request that is subject to a permission check. 
