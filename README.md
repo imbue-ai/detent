@@ -43,14 +43,14 @@ more specific ones ("only read access to GitHub issues for this one repository")
 ## Integrations
 
 Checking permissions is only useful if the results are
-respected. To be effective, Detent needs to be integrated in
+respected. To be effective, Detent needs to be integrated into
 whatever tool the agent uses to access third-party services.
 
 ### Latchkey
 
 [Latchkey](https://github.com/imbue-ai/latchkey) lets users
 point to Detent configs in order to keep control over what
-agents can and can't access. (This is currently work in
+agents can and can't access. (This is currently a work in
 progress.)
 
 ## Details and architecture
@@ -64,10 +64,10 @@ Detent is a command line tool and a Typescript library. It allows users and deve
 
 Store your permission setup in a config file as documented
 below. Then assemble a `curl` invocation for an HTTP request and
-prepend it with the `detent` command  (`detent curl ...`) to
-check whether it's allowed.  Detent returns 0 if the request is
+prepend it with the `detent` command (`detent curl ...`) to
+check whether it's allowed. Detent returns 0 if the request is
 allowed based on the config, 1 if it's not allowed and 2 or
-higher in case of errors.  No requests are actually sent.
+higher in case of errors. No requests are actually sent.
 
 Alternatively, use `detent` as a library:
 
@@ -91,18 +91,18 @@ environment variable to specify a different path.
 ### Matching requests
 
 An HTTP(s) request can be represented as an object that has
-several well defined properties: `protocol`, `domain`, `port`,
+several well-defined properties: `protocol`, `domain`, `port`,
 `path`, `method`, `headers`, `queryParams` and `body`. Using this
-representation, the `detent` tool uses [JSON schemas] (https://json-schema.org/) to:
+representation, the `detent` tool uses [JSON schemas](https://json-schema.org/) to:
 
 1. Match requests to permission checks.
 2. Define the "acceptable" shape of a request that is subject to a permission check. 
 
 Some of the fields are normalized to canonical form before matching:
-`method` is always uppercase (e.g.  `"GET"`), `protocol`,
+`method` is always uppercase (e.g. `"GET"`), `protocol`,
 `domain` and `headers` keys are always lowercase (e.g. `"content-type"`).
 
-#### Request patterns 
+#### Request patterns
 
 A "request pattern" is a JSON Schema for matching and validating request objects. For example:
 
@@ -116,7 +116,7 @@ A "request pattern" is a JSON Schema for matching and validating request objects
 ```
 
 This would match all GET requests, regardless of the domain,
-path, or anything else. Patterns must use normalized fields
+path, or anything else. Patterns must use normalized field
 values (uppercase for methods etc.).
 
 In the Detent config, patterns are actually specified with names,
@@ -157,7 +157,7 @@ Once defined, request patterns can be combined in a two-level rules hierarchy, l
   "rules": [
     {"github-api": ["github-read-issues-detent", "github-write-comments-detent", ...] },
     {"slack-api": ["slack-read-all"] }
-  ],
+  ]
 }
 ```
 
@@ -226,20 +226,20 @@ included patterns, and its rules are evaluated after included
 rules. Circular includes are detected and rejected.
 
 
-## Contribution
+## Contributing
 
 Contributions of all kinds are welcome!
 
 ## Disclaimer
 
 We're providing the preconfigured pattern definitions for
-convenience but it's likely that some of them may not work
+convenience, but it's likely that some of them may not work
 entirely as intended. We hope that the community will help us refine the
 built-in permission definitions over time. In the meantime,
-preferably double-check builtin definitions before using them
+preferably double-check built-in definitions before using them,
 and when possible, use API tokens with reduced permission
 scopes.
 
-We still think the tool is useful as it is as a protection
+We still think the tool is useful in its current form as a protection
 against accidental agent actions and the first line of defense
 against malicious or compromised agents.
