@@ -85,7 +85,8 @@ const result = await check(request);
 
 ### Configuration
 
-All the configuration goes to `~/.config/detent/config.json`. Use the `DETENT_CONFIG`
+All the configuration goes to `~/.config/detent/config.json` (or
+`$XDG_CONFIG_HOME/detent/config.json` if `XDG_CONFIG_HOME` is set). Use the `DETENT_CONFIG`
 environment variable to specify a different path.
 
 ### Matching requests
