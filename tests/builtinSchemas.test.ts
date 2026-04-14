@@ -48,7 +48,7 @@ describe('builtin schemas: aws', () => {
     ).toBe(false);
   });
 
-  it('service-specific patterns match regional endpoints', () => {
+  it('service-specific schemas match regional endpoints', () => {
     const regionalEndpoints: Record<string, string> = {
       'aws-ec2': 'ec2.us-east-1.amazonaws.com',
       'aws-lambda': 'lambda.us-west-2.amazonaws.com',
@@ -77,16 +77,16 @@ describe('builtin schemas: aws', () => {
       'aws-cloudfront': 'cloudfront.us-east-1.amazonaws.com',
     };
 
-    for (const [pattern, domain] of Object.entries(regionalEndpoints)) {
-      expectSchemaExists(pattern);
+    for (const [schema, domain] of Object.entries(regionalEndpoints)) {
+      expectSchemaExists(schema);
       expect(
-        builtinRegistry.get(pattern)!.match(makeRequest({ domain })),
-        `Expected "${pattern}" to match regional domain "${domain}"`
+        builtinRegistry.get(schema)!.match(makeRequest({ domain })),
+        `Expected "${schema}" to match regional domain "${domain}"`
       ).toBe(true);
     }
   });
 
-  it('service-specific patterns match global endpoints without region', () => {
+  it('service-specific schemas match global endpoints without region', () => {
     const globalEndpoints: Record<string, string> = {
       'aws-ec2': 'ec2.amazonaws.com',
       'aws-lambda': 'lambda.amazonaws.com',
@@ -115,16 +115,16 @@ describe('builtin schemas: aws', () => {
       'aws-cloudfront': 'cloudfront.amazonaws.com',
     };
 
-    for (const [pattern, domain] of Object.entries(globalEndpoints)) {
-      expectSchemaExists(pattern);
+    for (const [schema, domain] of Object.entries(globalEndpoints)) {
+      expectSchemaExists(schema);
       expect(
-        builtinRegistry.get(pattern)!.match(makeRequest({ domain })),
-        `Expected "${pattern}" to match global domain "${domain}"`
+        builtinRegistry.get(schema)!.match(makeRequest({ domain })),
+        `Expected "${schema}" to match global domain "${domain}"`
       ).toBe(true);
     }
   });
 
-  it('service-specific patterns match FIPS endpoints', () => {
+  it('service-specific schemas match FIPS endpoints', () => {
     expectSchemaExists('aws-ec2');
     expect(
       builtinRegistry
@@ -140,7 +140,7 @@ describe('builtin schemas: aws', () => {
     ).toBe(true);
   });
 
-  it('service-specific patterns reject unrelated services', () => {
+  it('service-specific schemas reject unrelated services', () => {
     expect(
       builtinRegistry
         .get('aws-ec2')!

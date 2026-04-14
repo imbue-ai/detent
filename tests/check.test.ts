@@ -83,7 +83,7 @@ describe('decomposeRequest', () => {
 
 describe('RequestSchema', () => {
   it('matches a request with const method', () => {
-    const pattern = new RequestSchema('get-only', {
+    const schema = new RequestSchema('get-only', {
       properties: { method: { const: 'GET' } },
       required: ['method'],
     });
@@ -97,11 +97,11 @@ describe('RequestSchema', () => {
       queryParams: {},
       body: undefined,
     };
-    expect(pattern.match(data)).toBe(true);
+    expect(schema.match(data)).toBe(true);
   });
 
   it('rejects a request that does not match', () => {
-    const pattern = new RequestSchema('get-only', {
+    const schema = new RequestSchema('get-only', {
       properties: { method: { const: 'GET' } },
       required: ['method'],
     });
@@ -115,11 +115,11 @@ describe('RequestSchema', () => {
       queryParams: {},
       body: undefined,
     };
-    expect(pattern.match(data)).toBe(false);
+    expect(schema.match(data)).toBe(false);
   });
 
   it('matches with domain pattern', () => {
-    const pattern = new RequestSchema('github-api', {
+    const schema = new RequestSchema('github-api', {
       properties: { domain: { const: 'api.github.com' } },
       required: ['domain'],
     });
@@ -133,11 +133,11 @@ describe('RequestSchema', () => {
       queryParams: {},
       body: undefined,
     };
-    expect(pattern.match(data)).toBe(true);
+    expect(schema.match(data)).toBe(true);
   });
 
   it('matches with path regex pattern', () => {
-    const pattern = new RequestSchema('issues-path', {
+    const schema = new RequestSchema('issues-path', {
       properties: {
         path: { type: 'string', pattern: '^/repos/[^/]+/[^/]+/issues(/[0-9]+)?$' },
       },
@@ -157,12 +157,12 @@ describe('RequestSchema', () => {
       ...matching,
       path: '/repos/octocat/Hello-World/pulls',
     };
-    expect(pattern.match(matching)).toBe(true);
-    expect(pattern.match(nonMatching)).toBe(false);
+    expect(schema.match(matching)).toBe(true);
+    expect(schema.match(nonMatching)).toBe(false);
   });
 
   it('empty schema matches everything', () => {
-    const pattern = new RequestSchema('any', {});
+    const schema = new RequestSchema('any', {});
     const data: DecomposedRequest = {
       protocol: 'https',
       domain: 'anything.com',
@@ -173,7 +173,7 @@ describe('RequestSchema', () => {
       queryParams: {},
       body: undefined,
     };
-    expect(pattern.match(data)).toBe(true);
+    expect(schema.match(data)).toBe(true);
   });
 
   it('throws RequestSchemaError for unknown request property name', () => {
@@ -225,7 +225,7 @@ describe('RequestSchema', () => {
   });
 
   it('supports anyOf at the schema level', () => {
-    const pattern = new RequestSchema('read-or-search', {
+    const schema = new RequestSchema('read-or-search', {
       anyOf: [
         { properties: { method: { const: 'GET' } }, required: ['method'] },
         {
@@ -257,9 +257,9 @@ describe('RequestSchema', () => {
       method: 'POST',
       path: '/pages',
     };
-    expect(pattern.match(getData)).toBe(true);
-    expect(pattern.match(postSearchData)).toBe(true);
-    expect(pattern.match(postOtherData)).toBe(false);
+    expect(schema.match(getData)).toBe(true);
+    expect(schema.match(postSearchData)).toBe(true);
+    expect(schema.match(postOtherData)).toBe(false);
   });
 });
 
@@ -575,7 +575,7 @@ describe('Config', () => {
     expect(await config.check(slackPost)).toBe(false);
   });
 
-  it('parent patterns override included patterns with the same name', async () => {
+  it('parent schemas override included schemas with the same name', async () => {
     const includedPath = join(tempDir, 'included.json');
     writeFileSync(
       includedPath,
@@ -644,7 +644,7 @@ describe('Config', () => {
       deepIncludedPath,
       JSON.stringify({
         schemas: {
-          'deep-pattern': { properties: { method: { const: 'GET' } }, required: ['method'] },
+          'deep-schema': { properties: { method: { const: 'GET' } }, required: ['method'] },
         },
       })
     );
@@ -660,7 +660,7 @@ describe('Config', () => {
             required: ['domain'],
           },
         },
-        rules: [{ 'middle-scope': ['deep-pattern'] }],
+        rules: [{ 'middle-scope': ['deep-schema'] }],
       })
     );
 

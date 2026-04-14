@@ -121,7 +121,7 @@ We use JSON schema for matching and validating request objects. For example:
 ```
 
 This would match all GET requests, regardless of the domain,
-path, or anything else. Patterns must use normalized field
+path, or anything else. Schemas must use normalized field
 values (uppercase for methods etc.).
 
 In the Detent config, schemas are identified by names, like this:
