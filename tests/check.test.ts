@@ -4,7 +4,7 @@ import { join } from 'node:path';
 import { tmpdir } from 'node:os';
 import { check } from '../src/check.js';
 import { Config, ConfigError } from '../src/config.js';
-import { RequestPattern, RequestPatternError } from '../src/patterns/requestPattern.js';
+import { RequestSchema, RequestSchemaError } from '../src/schemas/requestSchema.js';
 import { decomposeRequest } from '../src/decomposedRequest.js';
 import type { DecomposedRequest } from '../src/decomposedRequest.js';
 
@@ -81,9 +81,9 @@ describe('decomposeRequest', () => {
   });
 });
 
-describe('RequestPattern', () => {
+describe('RequestSchema', () => {
   it('matches a request with const method', () => {
-    const pattern = new RequestPattern('get-only', {
+    const pattern = new RequestSchema('get-only', {
       properties: { method: { const: 'GET' } },
       required: ['method'],
     });
@@ -101,7 +101,7 @@ describe('RequestPattern', () => {
   });
 
   it('rejects a request that does not match', () => {
-    const pattern = new RequestPattern('get-only', {
+    const pattern = new RequestSchema('get-only', {
       properties: { method: { const: 'GET' } },
       required: ['method'],
     });
@@ -119,7 +119,7 @@ describe('RequestPattern', () => {
   });
 
   it('matches with domain pattern', () => {
-    const pattern = new RequestPattern('github-api', {
+    const pattern = new RequestSchema('github-api', {
       properties: { domain: { const: 'api.github.com' } },
       required: ['domain'],
     });
@@ -137,7 +137,7 @@ describe('RequestPattern', () => {
   });
 
   it('matches with path regex pattern', () => {
-    const pattern = new RequestPattern('issues-path', {
+    const pattern = new RequestSchema('issues-path', {
       properties: {
         path: { type: 'string', pattern: '^/repos/[^/]+/[^/]+/issues(/[0-9]+)?$' },
       },
@@ -162,7 +162,7 @@ describe('RequestPattern', () => {
   });
 
   it('empty schema matches everything', () => {
-    const pattern = new RequestPattern('any', {});
+    const pattern = new RequestSchema('any', {});
     const data: DecomposedRequest = {
       protocol: 'https',
       domain: 'anything.com',
@@ -176,27 +176,27 @@ describe('RequestPattern', () => {
     expect(pattern.match(data)).toBe(true);
   });
 
-  it('throws RequestPatternError for unknown request property name', () => {
+  it('throws RequestSchemaError for unknown request property name', () => {
     expect(
       () =>
-        new RequestPattern('bad', {
+        new RequestSchema('bad', {
           properties: { methd: { const: 'GET' } },
           required: ['methd'],
         })
-    ).toThrow(RequestPatternError);
+    ).toThrow(RequestSchemaError);
     expect(
       () =>
-        new RequestPattern('bad', {
+        new RequestSchema('bad', {
           properties: { methd: { const: 'GET' } },
           required: ['methd'],
         })
     ).toThrow(/unknown request property "methd"/);
   });
 
-  it('throws RequestPatternError for unknown property name inside anyOf', () => {
+  it('throws RequestSchemaError for unknown property name inside anyOf', () => {
     expect(
       () =>
-        new RequestPattern('bad', {
+        new RequestSchema('bad', {
           anyOf: [
             { properties: { method: { const: 'GET' } }, required: ['method'] },
             { properties: { pth: { const: '/foo' } }, required: ['pth'] },
@@ -208,7 +208,7 @@ describe('RequestPattern', () => {
   it('accepts all valid DecomposedRequest property names', () => {
     expect(
       () =>
-        new RequestPattern('all-fields', {
+        new RequestSchema('all-fields', {
           properties: {
             protocol: { const: 'https' },
             domain: { const: 'example.com' },
@@ -225,7 +225,7 @@ describe('RequestPattern', () => {
   });
 
   it('supports anyOf at the schema level', () => {
-    const pattern = new RequestPattern('read-or-search', {
+    const pattern = new RequestSchema('read-or-search', {
       anyOf: [
         { properties: { method: { const: 'GET' } }, required: ['method'] },
         {
@@ -285,7 +285,7 @@ describe('Config', () => {
   }
 
   it('rejects all requests when no rules are defined', async () => {
-    const configPath = writeConfig({ patterns: {}, rules: [] });
+    const configPath = writeConfig({ schemas: {}, rules: [] });
     const config = new Config(configPath, true);
     const request = new Request('https://example.com');
     expect(await config.check(request)).toBe(false);
@@ -293,7 +293,7 @@ describe('Config', () => {
 
   it('allows a request that matches a rule scope and permission', async () => {
     const configPath = writeConfig({
-      patterns: {
+      schemas: {
         'github-api': {
           properties: { domain: { const: 'api.github.com' } },
           required: ['domain'],
@@ -309,7 +309,7 @@ describe('Config', () => {
 
   it('rejects a request that matches scope but not any permission', async () => {
     const configPath = writeConfig({
-      patterns: {
+      schemas: {
         'github-api': {
           properties: { domain: { const: 'api.github.com' } },
           required: ['domain'],
@@ -325,7 +325,7 @@ describe('Config', () => {
 
   it('rejects a request that does not match any rule scope', async () => {
     const configPath = writeConfig({
-      patterns: {
+      schemas: {
         'github-api': {
           properties: { domain: { const: 'api.github.com' } },
           required: ['domain'],
@@ -341,7 +341,7 @@ describe('Config', () => {
 
   it('stops at first matching scope rule', async () => {
     const configPath = writeConfig({
-      patterns: {
+      schemas: {
         'all-https': { properties: { protocol: { const: 'https' } }, required: ['protocol'] },
         'get-only': { properties: { method: { const: 'GET' } }, required: ['method'] },
         'any-method': {},
@@ -356,7 +356,7 @@ describe('Config', () => {
 
   it('throws ConfigError when permissions value is a string instead of an array', () => {
     const configPath = writeConfig({
-      patterns: {
+      schemas: {
         'github-api': {
           properties: { domain: { const: 'api.github.com' } },
           required: ['domain'],
@@ -368,7 +368,7 @@ describe('Config', () => {
     expect(() => new Config(configPath, true)).toThrow(ConfigError);
   });
 
-  it('treats missing patterns as implicitly empty', async () => {
+  it('treats missing schemas as implicitly empty', async () => {
     const configPath = writeConfig({
       rules: [],
     });
@@ -379,7 +379,7 @@ describe('Config', () => {
 
   it('treats missing rules as implicitly empty', async () => {
     const configPath = writeConfig({
-      patterns: {
+      schemas: {
         scope: { properties: { domain: { const: 'example.com' } }, required: ['domain'] },
       },
     });
@@ -397,7 +397,7 @@ describe('Config', () => {
 
   it('throws ConfigError for unknown top-level keys', () => {
     const configPath = writeConfig({
-      patterns: {},
+      schemas: {},
       rules: [],
       unknown: 'value',
     });
@@ -411,9 +411,9 @@ describe('Config', () => {
     expect(() => new Config(configPath, true)).toThrow(ConfigError);
   });
 
-  it('throws ConfigError when patterns is not an object', () => {
+  it('throws ConfigError when schemas is not an object', () => {
     const configPath = writeConfig({
-      patterns: 'not-an-object',
+      schemas: 'not-an-object',
     });
     expect(() => new Config(configPath, true)).toThrow(ConfigError);
   });
@@ -441,22 +441,22 @@ describe('Config', () => {
     expect(() => new Config(configPath, true)).toThrow(ConfigError);
   });
 
-  it('throws ConfigError when a pattern is not an object', () => {
+  it('throws ConfigError when a schema is not an object', () => {
     const configPath = writeConfig({
-      patterns: {
-        'bad-pattern': 'not-an-object',
+      schemas: {
+        'bad-schema': 'not-an-object',
       },
     });
     expect(() => new Config(configPath, true)).toThrow(ConfigError);
   });
 
-  it('treats missing patterns and rules in included files as implicitly empty', async () => {
+  it('treats missing schemas and rules in included files as implicitly empty', async () => {
     const includedPath = join(tempDir, 'included.json');
     writeFileSync(includedPath, JSON.stringify({}));
 
     const configPath = writeConfig({
       include: ['included.json'],
-      patterns: {
+      schemas: {
         scope: { properties: { domain: { const: 'example.com' } }, required: ['domain'] },
         permission: { properties: { method: { const: 'GET' } }, required: ['method'] },
       },
@@ -480,17 +480,17 @@ describe('Config', () => {
     expect(() => new Config(configPath, true)).toThrow(ConfigError);
   });
 
-  it('throws RequestPatternError for unknown pattern name in rule scope', () => {
+  it('throws RequestSchemaError for unknown schema name in rule scope', () => {
     const configPath = writeConfig({
-      patterns: {},
+      schemas: {},
       rules: [{ 'unknown-scope': ['also-unknown'] }],
     });
-    expect(() => new Config(configPath, true)).toThrow(RequestPatternError);
+    expect(() => new Config(configPath, true)).toThrow(RequestSchemaError);
   });
 
-  it('throws RequestPatternError for unknown pattern name in permissions', () => {
+  it('throws RequestSchemaError for unknown schema name in permissions', () => {
     const configPath = writeConfig({
-      patterns: {
+      schemas: {
         'github-api': {
           properties: { domain: { const: 'api.github.com' } },
           required: ['domain'],
@@ -498,12 +498,12 @@ describe('Config', () => {
       },
       rules: [{ 'github-api': ['nonexistent-permission'] }],
     });
-    expect(() => new Config(configPath, true)).toThrow(RequestPatternError);
+    expect(() => new Config(configPath, true)).toThrow(RequestSchemaError);
   });
 
   it('throws ConfigError for rule with multiple keys', () => {
     const configPath = writeConfig({
-      patterns: {
+      schemas: {
         a: { properties: { method: { const: 'GET' } }, required: ['method'] },
         b: { properties: { method: { const: 'POST' } }, required: ['method'] },
       },
@@ -514,7 +514,7 @@ describe('Config', () => {
 
   it('supports multiple permissions in a single rule', async () => {
     const configPath = writeConfig({
-      patterns: {
+      schemas: {
         'github-api': {
           properties: { domain: { const: 'api.github.com' } },
           required: ['domain'],
@@ -536,12 +536,12 @@ describe('Config', () => {
     expect(await config.check(deleteRequest)).toBe(false);
   });
 
-  it('merges patterns and rules from included config files', async () => {
+  it('merges schemas and rules from included config files', async () => {
     const includedPath = join(tempDir, 'included.json');
     writeFileSync(
       includedPath,
       JSON.stringify({
-        patterns: {
+        schemas: {
           'slack-api': { properties: { domain: { const: 'slack.com' } }, required: ['domain'] },
           'get-only': { properties: { method: { const: 'GET' } }, required: ['method'] },
         },
@@ -551,7 +551,7 @@ describe('Config', () => {
 
     const configPath = writeConfig({
       include: ['included.json'],
-      patterns: {
+      schemas: {
         'github-api': {
           properties: { domain: { const: 'api.github.com' } },
           required: ['domain'],
@@ -566,7 +566,7 @@ describe('Config', () => {
     const slackGet = new Request('https://slack.com/api/conversations.list');
     expect(await config.check(slackGet)).toBe(true);
 
-    // Parent rule allows GET to github using pattern from included config
+    // Parent rule allows GET to github using schema from included config
     const githubGet = new Request('https://api.github.com/repos');
     expect(await config.check(githubGet)).toBe(true);
 
@@ -580,7 +580,7 @@ describe('Config', () => {
     writeFileSync(
       includedPath,
       JSON.stringify({
-        patterns: {
+        schemas: {
           scope: { properties: { domain: { const: 'included.com' } }, required: ['domain'] },
           permission: { properties: { method: { const: 'GET' } }, required: ['method'] },
         },
@@ -589,7 +589,7 @@ describe('Config', () => {
 
     const configPath = writeConfig({
       include: ['included.json'],
-      patterns: {
+      schemas: {
         scope: { properties: { domain: { const: 'parent.com' } }, required: ['domain'] },
       },
       rules: [{ scope: ['permission'] }],
@@ -597,7 +597,7 @@ describe('Config', () => {
 
     const config = new Config(configPath, true);
 
-    // Parent overrides the scope pattern, so parent.com matches
+    // Parent overrides the scope schema, so parent.com matches
     const parentRequest = new Request('https://parent.com/test');
     expect(await config.check(parentRequest)).toBe(true);
 
@@ -611,7 +611,7 @@ describe('Config', () => {
     writeFileSync(
       includedPath,
       JSON.stringify({
-        patterns: {
+        schemas: {
           'all-https': {
             properties: { protocol: { const: 'https' } },
             required: ['protocol'],
@@ -624,7 +624,7 @@ describe('Config', () => {
 
     const configPath = writeConfig({
       include: ['included.json'],
-      patterns: {
+      schemas: {
         'any-method': {},
       },
       // This rule would allow everything, but it's appended after included rules
@@ -643,7 +643,7 @@ describe('Config', () => {
     writeFileSync(
       deepIncludedPath,
       JSON.stringify({
-        patterns: {
+        schemas: {
           'deep-pattern': { properties: { method: { const: 'GET' } }, required: ['method'] },
         },
       })
@@ -654,7 +654,7 @@ describe('Config', () => {
       middlePath,
       JSON.stringify({
         include: ['deep.json'],
-        patterns: {
+        schemas: {
           'middle-scope': {
             properties: { domain: { const: 'example.com' } },
             required: ['domain'],
@@ -700,7 +700,7 @@ describe('Config', () => {
     writeFileSync(
       subIncludedPath,
       JSON.stringify({
-        patterns: {
+        schemas: {
           'sub-permission': { properties: { method: { const: 'GET' } }, required: ['method'] },
         },
       })
@@ -711,7 +711,7 @@ describe('Config', () => {
       middlePath,
       JSON.stringify({
         include: ['sub-included.json'],
-        patterns: {
+        schemas: {
           'sub-scope': {
             properties: { domain: { const: 'example.com' } },
             required: ['domain'],
@@ -731,12 +731,12 @@ describe('Config', () => {
     expect(await config.check(getRequest)).toBe(true);
   });
 
-  it('merges patterns and rules from multiple includes in order', async () => {
+  it('merges schemas and rules from multiple includes in order', async () => {
     const firstPath = join(tempDir, 'first.json');
     writeFileSync(
       firstPath,
       JSON.stringify({
-        patterns: {
+        schemas: {
           'first-scope': { properties: { domain: { const: 'first.com' } }, required: ['domain'] },
           'get-only': { properties: { method: { const: 'GET' } }, required: ['method'] },
         },
@@ -748,7 +748,7 @@ describe('Config', () => {
     writeFileSync(
       secondPath,
       JSON.stringify({
-        patterns: {
+        schemas: {
           'second-scope': {
             properties: { domain: { const: 'second.com' } },
             required: ['domain'],
@@ -774,6 +774,47 @@ describe('Config', () => {
     const firstPost = new Request('https://first.com/test', { method: 'POST' });
     expect(await config.check(firstPost)).toBe(false);
   });
+
+  it('accepts legacy "patterns" key as backwards-compatible alias for "schemas"', async () => {
+    const configPath = writeConfig({
+      patterns: {
+        'github-api': {
+          properties: { domain: { const: 'api.github.com' } },
+          required: ['domain'],
+        },
+        'get-only': { properties: { method: { const: 'GET' } }, required: ['method'] },
+      },
+      rules: [{ 'github-api': ['get-only'] }],
+    });
+    const config = new Config(configPath, true);
+    const request = new Request('https://api.github.com/repos');
+    expect(await config.check(request)).toBe(true);
+  });
+
+  it('merges legacy "patterns" and "schemas" keys, with "schemas" taking precedence', async () => {
+    const configPath = writeConfig({
+      patterns: {
+        scope: { properties: { domain: { const: 'old.com' } }, required: ['domain'] },
+        permission: { properties: { method: { const: 'GET' } }, required: ['method'] },
+      },
+      schemas: {
+        scope: { properties: { domain: { const: 'new.com' } }, required: ['domain'] },
+      },
+      rules: [{ scope: ['permission'] }],
+    });
+    const config = new Config(configPath, true);
+
+    // "schemas" overrides "patterns" for "scope"
+    const newRequest = new Request('https://new.com/test');
+    expect(await config.check(newRequest)).toBe(true);
+
+    const oldRequest = new Request('https://old.com/test');
+    expect(await config.check(oldRequest)).toBe(false);
+
+    // "permission" came from "patterns" and still works
+    const postRequest = new Request('https://new.com/test', { method: 'POST' });
+    expect(await config.check(postRequest)).toBe(false);
+  });
 });
 
 describe('check (top-level function)', () => {
@@ -796,7 +837,7 @@ describe('check (top-level function)', () => {
     writeFileSync(
       configPath,
       JSON.stringify({
-        patterns: {
+        schemas: {
           everything: {},
           'get-only': { properties: { method: { const: 'GET' } }, required: ['method'] },
         },

@@ -1,8 +1,8 @@
 import { describe, it, expect } from 'vitest';
-import { PatternRegistry, getAllBuiltinSchemas } from '../src/patterns/requestPattern.js';
+import { SchemaRegistry, getAllBuiltinSchemas } from '../src/schemas/requestSchema.js';
 import type { DecomposedRequest } from '../src/decomposedRequest.js';
 
-const builtinRegistry = new PatternRegistry(getAllBuiltinSchemas());
+const builtinRegistry = new SchemaRegistry(getAllBuiltinSchemas());
 
 function makeRequest(overrides: Partial<DecomposedRequest> = {}): DecomposedRequest {
   return {
@@ -18,13 +18,13 @@ function makeRequest(overrides: Partial<DecomposedRequest> = {}): DecomposedRequ
   };
 }
 
-function expectPatternExists(name: string) {
-  expect(builtinRegistry.get(name), `Expected builtin pattern "${name}" to exist`).toBeDefined();
+function expectSchemaExists(name: string) {
+  expect(builtinRegistry.get(name), `Expected builtin schema "${name}" to exist`).toBeDefined();
 }
 
-describe('builtin patterns: aws', () => {
+describe('builtin schemas: aws', () => {
   it('aws scope matches regional endpoints', () => {
-    expectPatternExists('aws');
+    expectSchemaExists('aws');
     expect(
       builtinRegistry.get('aws')!.match(makeRequest({ domain: 'ec2.us-east-1.amazonaws.com' }))
     ).toBe(true);
@@ -78,7 +78,7 @@ describe('builtin patterns: aws', () => {
     };
 
     for (const [pattern, domain] of Object.entries(regionalEndpoints)) {
-      expectPatternExists(pattern);
+      expectSchemaExists(pattern);
       expect(
         builtinRegistry.get(pattern)!.match(makeRequest({ domain })),
         `Expected "${pattern}" to match regional domain "${domain}"`
@@ -116,7 +116,7 @@ describe('builtin patterns: aws', () => {
     };
 
     for (const [pattern, domain] of Object.entries(globalEndpoints)) {
-      expectPatternExists(pattern);
+      expectSchemaExists(pattern);
       expect(
         builtinRegistry.get(pattern)!.match(makeRequest({ domain })),
         `Expected "${pattern}" to match global domain "${domain}"`
@@ -125,14 +125,14 @@ describe('builtin patterns: aws', () => {
   });
 
   it('service-specific patterns match FIPS endpoints', () => {
-    expectPatternExists('aws-ec2');
+    expectSchemaExists('aws-ec2');
     expect(
       builtinRegistry
         .get('aws-ec2')!
         .match(makeRequest({ domain: 'ec2-fips.us-east-1.amazonaws.com' }))
     ).toBe(true);
 
-    expectPatternExists('aws-s3');
+    expectSchemaExists('aws-s3');
     expect(
       builtinRegistry
         .get('aws-s3')!
@@ -154,7 +154,7 @@ describe('builtin patterns: aws', () => {
   });
 
   it('aws-s3 matches bucket-style domains', () => {
-    expectPatternExists('aws-s3');
+    expectSchemaExists('aws-s3');
     expect(
       builtinRegistry
         .get('aws-s3')!
@@ -166,7 +166,7 @@ describe('builtin patterns: aws', () => {
   });
 
   it('aws-s3-read matches GET to S3 and rejects POST', () => {
-    expectPatternExists('aws-s3-read');
+    expectSchemaExists('aws-s3-read');
     expect(
       builtinRegistry
         .get('aws-s3-read')!
@@ -180,7 +180,7 @@ describe('builtin patterns: aws', () => {
   });
 
   it('aws-s3-write matches POST to S3 and rejects GET', () => {
-    expectPatternExists('aws-s3-write');
+    expectSchemaExists('aws-s3-write');
     expect(
       builtinRegistry
         .get('aws-s3-write')!
@@ -194,7 +194,7 @@ describe('builtin patterns: aws', () => {
   });
 
   it('aws-ecr matches prefixed domains', () => {
-    expectPatternExists('aws-ecr');
+    expectSchemaExists('aws-ecr');
     expect(
       builtinRegistry
         .get('aws-ecr')!
@@ -208,7 +208,7 @@ describe('builtin patterns: aws', () => {
   });
 
   it('aws-bedrock matches runtime subdomain', () => {
-    expectPatternExists('aws-bedrock');
+    expectSchemaExists('aws-bedrock');
     expect(
       builtinRegistry
         .get('aws-bedrock')!
@@ -217,9 +217,9 @@ describe('builtin patterns: aws', () => {
   });
 });
 
-describe('builtin patterns: calendly', () => {
+describe('builtin schemas: calendly', () => {
   it('calendly scope matches api.calendly.com', () => {
-    expectPatternExists('calendly-api');
+    expectSchemaExists('calendly-api');
     const request = makeRequest({ domain: 'api.calendly.com', path: '/users/me' });
     expect(builtinRegistry.get('calendly-api')!.match(request)).toBe(true);
   });
@@ -230,7 +230,7 @@ describe('builtin patterns: calendly', () => {
   });
 
   it('calendly-read-event-types matches GET to /event_types path', () => {
-    expectPatternExists('calendly-read-event-types');
+    expectSchemaExists('calendly-read-event-types');
     expect(
       builtinRegistry
         .get('calendly-read-event-types')!
@@ -244,7 +244,7 @@ describe('builtin patterns: calendly', () => {
   });
 
   it('calendly-write-webhooks matches POST to /webhook_subscriptions path', () => {
-    expectPatternExists('calendly-write-webhooks');
+    expectSchemaExists('calendly-write-webhooks');
     expect(
       builtinRegistry
         .get('calendly-write-webhooks')!
@@ -258,35 +258,35 @@ describe('builtin patterns: calendly', () => {
   });
 });
 
-describe('builtin patterns: coolify', () => {
+describe('builtin schemas: coolify', () => {
   it('coolify scope matches the coolify API domain', () => {
-    expectPatternExists('coolify-api');
+    expectSchemaExists('coolify-api');
     const request = makeRequest({ domain: 'app.coolify.io', path: '/api/v1/servers' });
     expect(builtinRegistry.get('coolify-api')!.match(request)).toBe(true);
   });
 
   it('coolify-read-all matches GET requests', () => {
-    expectPatternExists('coolify-read-all');
+    expectSchemaExists('coolify-read-all');
     const get = makeRequest({ method: 'GET' });
     expect(builtinRegistry.get('coolify-read-all')!.match(get)).toBe(true);
   });
 
   it('coolify-write-all rejects GET requests', () => {
-    expectPatternExists('coolify-write-all');
+    expectSchemaExists('coolify-write-all');
     const get = makeRequest({ method: 'GET' });
     expect(builtinRegistry.get('coolify-write-all')!.match(get)).toBe(false);
   });
 
   it('coolify-deployments matches deployment-related paths', () => {
-    expectPatternExists('coolify-deployments');
+    expectSchemaExists('coolify-deployments');
     const request = makeRequest({ path: '/api/v1/deployments' });
     expect(builtinRegistry.get('coolify-deployments')!.match(request)).toBe(true);
   });
 });
 
-describe('builtin patterns: discord', () => {
+describe('builtin schemas: discord', () => {
   it('discord scope matches discord.com', () => {
-    expectPatternExists('discord-api');
+    expectSchemaExists('discord-api');
     const request = makeRequest({ domain: 'discord.com', path: '/api/v10/channels/123' });
     expect(builtinRegistry.get('discord-api')!.match(request)).toBe(true);
   });
@@ -297,7 +297,7 @@ describe('builtin patterns: discord', () => {
   });
 
   it('discord-read-guilds matches GET to guilds path', () => {
-    expectPatternExists('discord-read-guilds');
+    expectSchemaExists('discord-read-guilds');
     expect(
       builtinRegistry
         .get('discord-read-guilds')!
@@ -311,7 +311,7 @@ describe('builtin patterns: discord', () => {
   });
 
   it('discord-write-messages matches POST to channel messages path', () => {
-    expectPatternExists('discord-write-messages');
+    expectSchemaExists('discord-write-messages');
     expect(
       builtinRegistry
         .get('discord-write-messages')!
@@ -325,9 +325,9 @@ describe('builtin patterns: discord', () => {
   });
 });
 
-describe('builtin patterns: dropbox', () => {
+describe('builtin schemas: dropbox', () => {
   it('dropbox scope matches api.dropboxapi.com', () => {
-    expectPatternExists('dropbox-api');
+    expectSchemaExists('dropbox-api');
     const request = makeRequest({ domain: 'api.dropboxapi.com', path: '/2/files/list_folder' });
     expect(builtinRegistry.get('dropbox-api')!.match(request)).toBe(true);
   });
@@ -338,7 +338,7 @@ describe('builtin patterns: dropbox', () => {
   });
 
   it('dropbox-files-read matches read paths like list_folder', () => {
-    expectPatternExists('dropbox-files-read');
+    expectSchemaExists('dropbox-files-read');
     expect(
       builtinRegistry
         .get('dropbox-files-read')!
@@ -350,7 +350,7 @@ describe('builtin patterns: dropbox', () => {
   });
 
   it('dropbox-sharing-read matches sharing read paths', () => {
-    expectPatternExists('dropbox-sharing-read');
+    expectSchemaExists('dropbox-sharing-read');
     expect(
       builtinRegistry
         .get('dropbox-sharing-read')!
@@ -364,9 +364,9 @@ describe('builtin patterns: dropbox', () => {
   });
 });
 
-describe('builtin patterns: figma', () => {
+describe('builtin schemas: figma', () => {
   it('figma scope matches api.figma.com', () => {
-    expectPatternExists('figma-api');
+    expectSchemaExists('figma-api');
     const request = makeRequest({ domain: 'api.figma.com', path: '/v1/files/abc123' });
     expect(builtinRegistry.get('figma-api')!.match(request)).toBe(true);
   });
@@ -377,7 +377,7 @@ describe('builtin patterns: figma', () => {
   });
 
   it('figma-read-files matches GET to /v1/files path', () => {
-    expectPatternExists('figma-read-files');
+    expectSchemaExists('figma-read-files');
     expect(
       builtinRegistry
         .get('figma-read-files')!
@@ -391,7 +391,7 @@ describe('builtin patterns: figma', () => {
   });
 
   it('figma-write-comments matches POST to comments path', () => {
-    expectPatternExists('figma-write-comments');
+    expectSchemaExists('figma-write-comments');
     expect(
       builtinRegistry
         .get('figma-write-comments')!
@@ -400,9 +400,9 @@ describe('builtin patterns: figma', () => {
   });
 });
 
-describe('builtin patterns: github', () => {
+describe('builtin schemas: github', () => {
   it('github scope matches api.github.com', () => {
-    expectPatternExists('github-rest-api');
+    expectSchemaExists('github-rest-api');
     const request = makeRequest({ domain: 'api.github.com', path: '/repos/octocat/hello' });
     expect(builtinRegistry.get('github-rest-api')!.match(request)).toBe(true);
   });
@@ -423,7 +423,7 @@ describe('builtin patterns: github', () => {
   });
 
   it('github-read-issues matches issues path but not pulls', () => {
-    expectPatternExists('github-read-issues');
+    expectSchemaExists('github-read-issues');
     expect(
       builtinRegistry
         .get('github-read-issues')!
@@ -437,7 +437,7 @@ describe('builtin patterns: github', () => {
   });
 
   it('github-search matches /search paths', () => {
-    expectPatternExists('github-search');
+    expectSchemaExists('github-search');
     expect(
       builtinRegistry
         .get('github-search')!
@@ -451,9 +451,9 @@ describe('builtin patterns: github', () => {
   });
 });
 
-describe('builtin patterns: gitlab', () => {
+describe('builtin schemas: gitlab', () => {
   it('gitlab scope matches gitlab.com', () => {
-    expectPatternExists('gitlab-api');
+    expectSchemaExists('gitlab-api');
     const request = makeRequest({ domain: 'gitlab.com', path: '/api/v4/projects' });
     expect(builtinRegistry.get('gitlab-api')!.match(request)).toBe(true);
   });
@@ -464,7 +464,7 @@ describe('builtin patterns: gitlab', () => {
   });
 
   it('gitlab-read-merge-requests matches merge_requests path', () => {
-    expectPatternExists('gitlab-read-merge-requests');
+    expectSchemaExists('gitlab-read-merge-requests');
     expect(
       builtinRegistry
         .get('gitlab-read-merge-requests')!
@@ -478,7 +478,7 @@ describe('builtin patterns: gitlab', () => {
   });
 
   it('gitlab-write-issues matches POST to issues path', () => {
-    expectPatternExists('gitlab-write-issues');
+    expectSchemaExists('gitlab-write-issues');
     expect(
       builtinRegistry
         .get('gitlab-write-issues')!
@@ -492,9 +492,9 @@ describe('builtin patterns: gitlab', () => {
   });
 });
 
-describe('builtin patterns: google-analytics', () => {
+describe('builtin schemas: google-analytics', () => {
   it('google-analytics scope matches analyticsadmin.googleapis.com', () => {
-    expectPatternExists('google-analytics-api');
+    expectSchemaExists('google-analytics-api');
     const request = makeRequest({
       domain: 'analyticsadmin.googleapis.com',
       path: '/v1beta/accounts',
@@ -503,7 +503,7 @@ describe('builtin patterns: google-analytics', () => {
   });
 
   it('google-analytics-run-reports matches POST to runReport path', () => {
-    expectPatternExists('google-analytics-run-reports');
+    expectSchemaExists('google-analytics-run-reports');
     expect(
       builtinRegistry
         .get('google-analytics-run-reports')!
@@ -512,7 +512,7 @@ describe('builtin patterns: google-analytics', () => {
   });
 
   it('google-analytics-read-properties matches GET to properties path', () => {
-    expectPatternExists('google-analytics-read-properties');
+    expectSchemaExists('google-analytics-read-properties');
     expect(
       builtinRegistry
         .get('google-analytics-read-properties')!
@@ -526,9 +526,9 @@ describe('builtin patterns: google-analytics', () => {
   });
 });
 
-describe('builtin patterns: google-calendar', () => {
+describe('builtin schemas: google-calendar', () => {
   it('google-calendar scope matches www.googleapis.com with calendar path', () => {
-    expectPatternExists('google-calendar-api');
+    expectSchemaExists('google-calendar-api');
     const request = makeRequest({
       domain: 'www.googleapis.com',
       path: '/calendar/v3/calendars/primary/events',
@@ -545,7 +545,7 @@ describe('builtin patterns: google-calendar', () => {
   });
 
   it('google-calendar-read-events matches GET with events path', () => {
-    expectPatternExists('google-calendar-read-events');
+    expectSchemaExists('google-calendar-read-events');
     expect(
       builtinRegistry
         .get('google-calendar-read-events')!
@@ -559,7 +559,7 @@ describe('builtin patterns: google-calendar', () => {
   });
 
   it('google-calendar-query-freebusy matches POST to freeBusy endpoint', () => {
-    expectPatternExists('google-calendar-query-freebusy');
+    expectSchemaExists('google-calendar-query-freebusy');
     expect(
       builtinRegistry
         .get('google-calendar-query-freebusy')!
@@ -568,9 +568,9 @@ describe('builtin patterns: google-calendar', () => {
   });
 });
 
-describe('builtin patterns: google-directions', () => {
+describe('builtin schemas: google-directions', () => {
   it('google-directions scope matches routes.googleapis.com', () => {
-    expectPatternExists('google-directions-api');
+    expectSchemaExists('google-directions-api');
     const request = makeRequest({
       domain: 'routes.googleapis.com',
       path: '/directions/v2:computeRoutes',
@@ -584,7 +584,7 @@ describe('builtin patterns: google-directions', () => {
   });
 
   it('google-directions-compute-routes matches POST to the correct path', () => {
-    expectPatternExists('google-directions-compute-routes');
+    expectSchemaExists('google-directions-compute-routes');
     const request = makeRequest({
       method: 'POST',
       path: '/directions/v2:computeRoutes',
@@ -593,7 +593,7 @@ describe('builtin patterns: google-directions', () => {
   });
 
   it('google-directions-compute-route-matrix rejects GET', () => {
-    expectPatternExists('google-directions-compute-route-matrix');
+    expectSchemaExists('google-directions-compute-route-matrix');
     const request = makeRequest({
       method: 'GET',
       path: '/distanceMatrix/v2:computeRouteMatrix',
@@ -604,9 +604,9 @@ describe('builtin patterns: google-directions', () => {
   });
 });
 
-describe('builtin patterns: google-docs', () => {
+describe('builtin schemas: google-docs', () => {
   it('google-docs scope matches docs.googleapis.com', () => {
-    expectPatternExists('google-docs-api');
+    expectSchemaExists('google-docs-api');
     const request = makeRequest({
       domain: 'docs.googleapis.com',
       path: '/v1/documents/abc123',
@@ -620,7 +620,7 @@ describe('builtin patterns: google-docs', () => {
   });
 
   it('google-docs-read-documents matches GET to /v1/documents path', () => {
-    expectPatternExists('google-docs-read-documents');
+    expectSchemaExists('google-docs-read-documents');
     expect(
       builtinRegistry
         .get('google-docs-read-documents')!
@@ -629,7 +629,7 @@ describe('builtin patterns: google-docs', () => {
   });
 
   it('google-docs-create-documents matches POST to /v1/documents', () => {
-    expectPatternExists('google-docs-create-documents');
+    expectSchemaExists('google-docs-create-documents');
     expect(
       builtinRegistry
         .get('google-docs-create-documents')!
@@ -638,9 +638,9 @@ describe('builtin patterns: google-docs', () => {
   });
 });
 
-describe('builtin patterns: google-drive', () => {
+describe('builtin schemas: google-drive', () => {
   it('google-drive scope matches www.googleapis.com with drive path', () => {
-    expectPatternExists('google-drive-api');
+    expectSchemaExists('google-drive-api');
     const request = makeRequest({
       domain: 'www.googleapis.com',
       path: '/drive/v3/files',
@@ -657,7 +657,7 @@ describe('builtin patterns: google-drive', () => {
   });
 
   it('google-drive-read-files matches GET to files path', () => {
-    expectPatternExists('google-drive-read-files');
+    expectSchemaExists('google-drive-read-files');
     expect(
       builtinRegistry
         .get('google-drive-read-files')!
@@ -671,7 +671,7 @@ describe('builtin patterns: google-drive', () => {
   });
 
   it('google-drive-write-comments matches POST to comments path', () => {
-    expectPatternExists('google-drive-write-comments');
+    expectSchemaExists('google-drive-write-comments');
     expect(
       builtinRegistry
         .get('google-drive-write-comments')!
@@ -680,9 +680,9 @@ describe('builtin patterns: google-drive', () => {
   });
 });
 
-describe('builtin patterns: google-gmail', () => {
+describe('builtin schemas: google-gmail', () => {
   it('google-gmail scope matches gmail.googleapis.com', () => {
-    expectPatternExists('google-gmail-api');
+    expectSchemaExists('google-gmail-api');
     const request = makeRequest({
       domain: 'gmail.googleapis.com',
       path: '/gmail/v1/users/me/messages',
@@ -696,7 +696,7 @@ describe('builtin patterns: google-gmail', () => {
   });
 
   it('google-gmail-read-messages matches GET with messages path', () => {
-    expectPatternExists('google-gmail-read-messages');
+    expectSchemaExists('google-gmail-read-messages');
     expect(
       builtinRegistry
         .get('google-gmail-read-messages')!
@@ -710,7 +710,7 @@ describe('builtin patterns: google-gmail', () => {
   });
 
   it('google-gmail-send-messages matches POST to messages/send path', () => {
-    expectPatternExists('google-gmail-send-messages');
+    expectSchemaExists('google-gmail-send-messages');
     expect(
       builtinRegistry
         .get('google-gmail-send-messages')!
@@ -727,7 +727,7 @@ describe('builtin patterns: google-gmail', () => {
   });
 
   it('google-gmail-write-messages matches upload variant', () => {
-    expectPatternExists('google-gmail-write-messages');
+    expectSchemaExists('google-gmail-write-messages');
     expect(
       builtinRegistry
         .get('google-gmail-write-messages')!
@@ -736,7 +736,7 @@ describe('builtin patterns: google-gmail', () => {
   });
 
   it('google-gmail-write-drafts matches upload variant', () => {
-    expectPatternExists('google-gmail-write-drafts');
+    expectSchemaExists('google-gmail-write-drafts');
     expect(
       builtinRegistry
         .get('google-gmail-write-drafts')!
@@ -750,9 +750,9 @@ describe('builtin patterns: google-gmail', () => {
   });
 });
 
-describe('builtin patterns: google-people', () => {
+describe('builtin schemas: google-people', () => {
   it('google-people scope matches people.googleapis.com', () => {
-    expectPatternExists('google-people-api');
+    expectSchemaExists('google-people-api');
     const request = makeRequest({
       domain: 'people.googleapis.com',
       path: '/v1/people/me',
@@ -766,7 +766,7 @@ describe('builtin patterns: google-people', () => {
   });
 
   it('google-people-read-contacts matches GET to people path', () => {
-    expectPatternExists('google-people-read-contacts');
+    expectSchemaExists('google-people-read-contacts');
     expect(
       builtinRegistry
         .get('google-people-read-contacts')!
@@ -793,7 +793,7 @@ describe('builtin patterns: google-people', () => {
   });
 
   it('google-people-write-contacts matches POST to colon-method paths', () => {
-    expectPatternExists('google-people-write-contacts');
+    expectSchemaExists('google-people-write-contacts');
     expect(
       builtinRegistry
         .get('google-people-write-contacts')!
@@ -807,7 +807,7 @@ describe('builtin patterns: google-people', () => {
   });
 
   it('google-people-read-contact-groups matches GET to colon-method paths', () => {
-    expectPatternExists('google-people-read-contact-groups');
+    expectSchemaExists('google-people-read-contact-groups');
     expect(
       builtinRegistry
         .get('google-people-read-contact-groups')!
@@ -816,7 +816,7 @@ describe('builtin patterns: google-people', () => {
   });
 
   it('google-people-read-other-contacts matches GET to colon-method paths', () => {
-    expectPatternExists('google-people-read-other-contacts');
+    expectSchemaExists('google-people-read-other-contacts');
     expect(
       builtinRegistry
         .get('google-people-read-other-contacts')!
@@ -825,9 +825,9 @@ describe('builtin patterns: google-people', () => {
   });
 });
 
-describe('builtin patterns: google-sheets', () => {
+describe('builtin schemas: google-sheets', () => {
   it('google-sheets scope matches sheets.googleapis.com', () => {
-    expectPatternExists('google-sheets-api');
+    expectSchemaExists('google-sheets-api');
     const request = makeRequest({
       domain: 'sheets.googleapis.com',
       path: '/v4/spreadsheets/abc123',
@@ -841,7 +841,7 @@ describe('builtin patterns: google-sheets', () => {
   });
 
   it('google-sheets-read-values matches GET with values path', () => {
-    expectPatternExists('google-sheets-read-values');
+    expectSchemaExists('google-sheets-read-values');
     expect(
       builtinRegistry
         .get('google-sheets-read-values')!
@@ -850,7 +850,7 @@ describe('builtin patterns: google-sheets', () => {
   });
 
   it('google-sheets-create-spreadsheets matches POST to spreadsheets', () => {
-    expectPatternExists('google-sheets-create-spreadsheets');
+    expectSchemaExists('google-sheets-create-spreadsheets');
     expect(
       builtinRegistry
         .get('google-sheets-create-spreadsheets')!
@@ -859,9 +859,9 @@ describe('builtin patterns: google-sheets', () => {
   });
 });
 
-describe('builtin patterns: linear', () => {
+describe('builtin schemas: linear', () => {
   it('linear scope matches api.linear.app', () => {
-    expectPatternExists('linear-api');
+    expectSchemaExists('linear-api');
     const request = makeRequest({ domain: 'api.linear.app', path: '/graphql' });
     expect(builtinRegistry.get('linear-api')!.match(request)).toBe(true);
   });
@@ -872,9 +872,9 @@ describe('builtin patterns: linear', () => {
   });
 });
 
-describe('builtin patterns: mailchimp', () => {
+describe('builtin schemas: mailchimp', () => {
   it('mailchimp scope matches the mailchimp API domain', () => {
-    expectPatternExists('mailchimp-api');
+    expectSchemaExists('mailchimp-api');
     const request = makeRequest({
       domain: 'server.api.mailchimp.com',
       path: '/3.0/campaigns',
@@ -883,7 +883,7 @@ describe('builtin patterns: mailchimp', () => {
   });
 
   it('mailchimp-read-campaigns matches GET to campaigns path', () => {
-    expectPatternExists('mailchimp-read-campaigns');
+    expectSchemaExists('mailchimp-read-campaigns');
     expect(
       builtinRegistry
         .get('mailchimp-read-campaigns')!
@@ -897,7 +897,7 @@ describe('builtin patterns: mailchimp', () => {
   });
 
   it('mailchimp-write-lists matches POST to lists path', () => {
-    expectPatternExists('mailchimp-write-lists');
+    expectSchemaExists('mailchimp-write-lists');
     expect(
       builtinRegistry
         .get('mailchimp-write-lists')!
@@ -911,9 +911,9 @@ describe('builtin patterns: mailchimp', () => {
   });
 });
 
-describe('builtin patterns: notion', () => {
+describe('builtin schemas: notion', () => {
   it('notion scope matches api.notion.com', () => {
-    expectPatternExists('notion-api');
+    expectSchemaExists('notion-api');
     const request = makeRequest({ domain: 'api.notion.com', path: '/v1/pages' });
     expect(builtinRegistry.get('notion-api')!.match(request)).toBe(true);
   });
@@ -924,7 +924,7 @@ describe('builtin patterns: notion', () => {
   });
 
   it('notion-read-pages matches GET to /v1/pages path', () => {
-    expectPatternExists('notion-read-pages');
+    expectSchemaExists('notion-read-pages');
     expect(
       builtinRegistry
         .get('notion-read-pages')!
@@ -938,7 +938,7 @@ describe('builtin patterns: notion', () => {
   });
 
   it('notion-write-databases matches create and update but not query', () => {
-    expectPatternExists('notion-write-databases');
+    expectSchemaExists('notion-write-databases');
     expect(
       builtinRegistry
         .get('notion-write-databases')!
@@ -957,7 +957,7 @@ describe('builtin patterns: notion', () => {
   });
 
   it('notion-query-databases matches only the query endpoint', () => {
-    expectPatternExists('notion-query-databases');
+    expectSchemaExists('notion-query-databases');
     expect(
       builtinRegistry
         .get('notion-query-databases')!
@@ -971,7 +971,7 @@ describe('builtin patterns: notion', () => {
   });
 
   it('notion-read-all matches GET requests', () => {
-    expectPatternExists('notion-read-all');
+    expectSchemaExists('notion-read-all');
     expect(
       builtinRegistry
         .get('notion-read-all')!
@@ -996,7 +996,7 @@ describe('builtin patterns: notion', () => {
   });
 
   it('notion-search matches POST to /v1/search', () => {
-    expectPatternExists('notion-search');
+    expectSchemaExists('notion-search');
     expect(
       builtinRegistry
         .get('notion-search')!
@@ -1010,9 +1010,9 @@ describe('builtin patterns: notion', () => {
   });
 });
 
-describe('builtin patterns: sentry', () => {
+describe('builtin schemas: sentry', () => {
   it('sentry scope matches sentry.io', () => {
-    expectPatternExists('sentry-api');
+    expectSchemaExists('sentry-api');
     const request = makeRequest({
       domain: 'sentry.io',
       path: '/api/0/organizations/my-org/issues/',
@@ -1026,7 +1026,7 @@ describe('builtin patterns: sentry', () => {
   });
 
   it('sentry-read-issues matches GET with issues path', () => {
-    expectPatternExists('sentry-read-issues');
+    expectSchemaExists('sentry-read-issues');
     expect(
       builtinRegistry
         .get('sentry-read-issues')!
@@ -1040,7 +1040,7 @@ describe('builtin patterns: sentry', () => {
   });
 
   it('sentry-write-projects matches POST to projects path', () => {
-    expectPatternExists('sentry-write-projects');
+    expectSchemaExists('sentry-write-projects');
     expect(
       builtinRegistry
         .get('sentry-write-projects')!
@@ -1049,9 +1049,9 @@ describe('builtin patterns: sentry', () => {
   });
 });
 
-describe('builtin patterns: slack', () => {
+describe('builtin schemas: slack', () => {
   it('slack scope matches slack.com', () => {
-    expectPatternExists('slack-api');
+    expectSchemaExists('slack-api');
     const request = makeRequest({
       domain: 'slack.com',
       path: '/api/chat.postMessage',
@@ -1065,7 +1065,7 @@ describe('builtin patterns: slack', () => {
   });
 
   it('slack-read-all matches known read methods across all families', () => {
-    expectPatternExists('slack-read-all');
+    expectSchemaExists('slack-read-all');
     const readMethods = [
       '/api/chat.getPermalink',
       '/api/chat.scheduledMessages.list',
@@ -1128,7 +1128,7 @@ describe('builtin patterns: slack', () => {
   });
 
   it('slack-write-all matches known write methods across all families', () => {
-    expectPatternExists('slack-write-all');
+    expectSchemaExists('slack-write-all');
     const writeMethods = [
       '/api/chat.appendStream',
       '/api/chat.delete',
@@ -1215,7 +1215,7 @@ describe('builtin patterns: slack', () => {
   });
 
   it('slack-chat-read matches read chat methods but not write', () => {
-    expectPatternExists('slack-chat-read');
+    expectSchemaExists('slack-chat-read');
     expect(
       builtinRegistry.get('slack-chat-read')!.match(makeRequest({ path: '/api/chat.getPermalink' }))
     ).toBe(true);
@@ -1233,7 +1233,7 @@ describe('builtin patterns: slack', () => {
   });
 
   it('slack-chat-write matches write chat methods but not read', () => {
-    expectPatternExists('slack-chat-write');
+    expectSchemaExists('slack-chat-write');
     expect(
       builtinRegistry.get('slack-chat-write')!.match(makeRequest({ path: '/api/chat.postMessage' }))
     ).toBe(true);
@@ -1262,7 +1262,7 @@ describe('builtin patterns: slack', () => {
   });
 
   it('slack-conversations-read matches read conversation methods but not write', () => {
-    expectPatternExists('slack-conversations-read');
+    expectSchemaExists('slack-conversations-read');
     expect(
       builtinRegistry
         .get('slack-conversations-read')!
@@ -1296,7 +1296,7 @@ describe('builtin patterns: slack', () => {
   });
 
   it('slack-conversations-write matches write conversation methods but not read', () => {
-    expectPatternExists('slack-conversations-write');
+    expectSchemaExists('slack-conversations-write');
     expect(
       builtinRegistry
         .get('slack-conversations-write')!
@@ -1355,7 +1355,7 @@ describe('builtin patterns: slack', () => {
   });
 
   it('slack-users-read matches read user methods but not write', () => {
-    expectPatternExists('slack-users-read');
+    expectSchemaExists('slack-users-read');
     expect(
       builtinRegistry.get('slack-users-read')!.match(makeRequest({ path: '/api/users.list' }))
     ).toBe(true);
@@ -1380,7 +1380,7 @@ describe('builtin patterns: slack', () => {
   });
 
   it('slack-users-write matches write user methods but not read', () => {
-    expectPatternExists('slack-users-write');
+    expectSchemaExists('slack-users-write');
     expect(
       builtinRegistry
         .get('slack-users-write')!
@@ -1397,7 +1397,7 @@ describe('builtin patterns: slack', () => {
   });
 
   it('slack-files-read matches read file methods but not write', () => {
-    expectPatternExists('slack-files-read');
+    expectSchemaExists('slack-files-read');
     expect(
       builtinRegistry.get('slack-files-read')!.match(makeRequest({ path: '/api/files.info' }))
     ).toBe(true);
@@ -1420,7 +1420,7 @@ describe('builtin patterns: slack', () => {
   });
 
   it('slack-files-write matches write file methods but not read', () => {
-    expectPatternExists('slack-files-write');
+    expectSchemaExists('slack-files-write');
     expect(
       builtinRegistry
         .get('slack-files-write')!
@@ -1448,7 +1448,7 @@ describe('builtin patterns: slack', () => {
   });
 
   it('slack-reactions-read matches read reaction methods but not write', () => {
-    expectPatternExists('slack-reactions-read');
+    expectSchemaExists('slack-reactions-read');
     expect(
       builtinRegistry
         .get('slack-reactions-read')!
@@ -1467,7 +1467,7 @@ describe('builtin patterns: slack', () => {
   });
 
   it('slack-reactions-write matches write reaction methods but not read', () => {
-    expectPatternExists('slack-reactions-write');
+    expectSchemaExists('slack-reactions-write');
     expect(
       builtinRegistry
         .get('slack-reactions-write')!
@@ -1486,7 +1486,7 @@ describe('builtin patterns: slack', () => {
   });
 
   it('slack-search matches search methods', () => {
-    expectPatternExists('slack-search');
+    expectSchemaExists('slack-search');
     expect(
       builtinRegistry.get('slack-search')!.match(makeRequest({ path: '/api/search.messages' }))
     ).toBe(true);
@@ -1502,7 +1502,7 @@ describe('builtin patterns: slack', () => {
   });
 
   it('slack-pins-read matches pins.list but not pins.add', () => {
-    expectPatternExists('slack-pins-read');
+    expectSchemaExists('slack-pins-read');
     expect(
       builtinRegistry.get('slack-pins-read')!.match(makeRequest({ path: '/api/pins.list' }))
     ).toBe(true);
@@ -1512,7 +1512,7 @@ describe('builtin patterns: slack', () => {
   });
 
   it('slack-pins-write matches pins.add and pins.remove but not pins.list', () => {
-    expectPatternExists('slack-pins-write');
+    expectSchemaExists('slack-pins-write');
     expect(
       builtinRegistry.get('slack-pins-write')!.match(makeRequest({ path: '/api/pins.add' }))
     ).toBe(true);
@@ -1525,7 +1525,7 @@ describe('builtin patterns: slack', () => {
   });
 
   it('slack-bookmarks-read matches bookmarks.list but not bookmarks.add', () => {
-    expectPatternExists('slack-bookmarks-read');
+    expectSchemaExists('slack-bookmarks-read');
     expect(
       builtinRegistry
         .get('slack-bookmarks-read')!
@@ -1539,7 +1539,7 @@ describe('builtin patterns: slack', () => {
   });
 
   it('slack-bookmarks-write matches bookmarks.add and bookmarks.edit but not bookmarks.list', () => {
-    expectPatternExists('slack-bookmarks-write');
+    expectSchemaExists('slack-bookmarks-write');
     expect(
       builtinRegistry
         .get('slack-bookmarks-write')!
@@ -1558,7 +1558,7 @@ describe('builtin patterns: slack', () => {
   });
 
   it('slack-reminders-read matches reminders.info and reminders.list but not reminders.add', () => {
-    expectPatternExists('slack-reminders-read');
+    expectSchemaExists('slack-reminders-read');
     expect(
       builtinRegistry
         .get('slack-reminders-read')!
@@ -1577,7 +1577,7 @@ describe('builtin patterns: slack', () => {
   });
 
   it('slack-reminders-write matches reminders.add and reminders.delete but not reminders.list', () => {
-    expectPatternExists('slack-reminders-write');
+    expectSchemaExists('slack-reminders-write');
     expect(
       builtinRegistry
         .get('slack-reminders-write')!
@@ -1596,9 +1596,9 @@ describe('builtin patterns: slack', () => {
   });
 });
 
-describe('builtin patterns: stripe', () => {
+describe('builtin schemas: stripe', () => {
   it('stripe scope matches api.stripe.com', () => {
-    expectPatternExists('stripe-api');
+    expectSchemaExists('stripe-api');
     const request = makeRequest({
       domain: 'api.stripe.com',
       path: '/v1/charges',
@@ -1612,7 +1612,7 @@ describe('builtin patterns: stripe', () => {
   });
 
   it('stripe-read-customers matches GET to /v1/customers path', () => {
-    expectPatternExists('stripe-read-customers');
+    expectSchemaExists('stripe-read-customers');
     expect(
       builtinRegistry
         .get('stripe-read-customers')!
@@ -1626,7 +1626,7 @@ describe('builtin patterns: stripe', () => {
   });
 
   it('stripe-write-payments matches POST to payment_intents path', () => {
-    expectPatternExists('stripe-write-payments');
+    expectSchemaExists('stripe-write-payments');
     expect(
       builtinRegistry
         .get('stripe-write-payments')!
@@ -1640,9 +1640,9 @@ describe('builtin patterns: stripe', () => {
   });
 });
 
-describe('builtin patterns: telegram', () => {
+describe('builtin schemas: telegram', () => {
   it('telegram scope matches api.telegram.org', () => {
-    expectPatternExists('telegram-api');
+    expectSchemaExists('telegram-api');
     const request = makeRequest({
       domain: 'api.telegram.org',
       path: '/bot123456:ABC-DEF/sendMessage',
@@ -1656,13 +1656,13 @@ describe('builtin patterns: telegram', () => {
   });
 
   it('telegram-send-messages matches sendMessage paths', () => {
-    expectPatternExists('telegram-send-messages');
+    expectSchemaExists('telegram-send-messages');
     const request = makeRequest({ path: '/bot123456:ABC-DEF/sendMessage' });
     expect(builtinRegistry.get('telegram-send-messages')!.match(request)).toBe(true);
   });
 
   it('telegram-updates matches getUpdates path', () => {
-    expectPatternExists('telegram-updates');
+    expectSchemaExists('telegram-updates');
     expect(
       builtinRegistry
         .get('telegram-updates')!
@@ -1676,9 +1676,9 @@ describe('builtin patterns: telegram', () => {
   });
 });
 
-describe('builtin patterns: umami', () => {
+describe('builtin schemas: umami', () => {
   it('umami scope matches the umami API domain', () => {
-    expectPatternExists('umami-api');
+    expectSchemaExists('umami-api');
     const request = makeRequest({
       domain: 'api.umami.is',
       path: '/api/websites',
@@ -1687,7 +1687,7 @@ describe('builtin patterns: umami', () => {
   });
 
   it('umami-read-websites matches cloud /v1/websites path', () => {
-    expectPatternExists('umami-read-websites');
+    expectSchemaExists('umami-read-websites');
     expect(
       builtinRegistry
         .get('umami-read-websites')!
@@ -1701,7 +1701,7 @@ describe('builtin patterns: umami', () => {
   });
 
   it('umami-read-websites matches self-hosted /api/websites path', () => {
-    expectPatternExists('umami-read-websites');
+    expectSchemaExists('umami-read-websites');
     expect(
       builtinRegistry
         .get('umami-read-websites')!
@@ -1715,7 +1715,7 @@ describe('builtin patterns: umami', () => {
   });
 
   it('umami-write-teams matches both cloud and self-hosted paths', () => {
-    expectPatternExists('umami-write-teams');
+    expectSchemaExists('umami-write-teams');
     expect(
       builtinRegistry
         .get('umami-write-teams')!
@@ -1734,9 +1734,9 @@ describe('builtin patterns: umami', () => {
   });
 });
 
-describe('builtin patterns: yelp', () => {
+describe('builtin schemas: yelp', () => {
   it('yelp scope matches api.yelp.com', () => {
-    expectPatternExists('yelp-api');
+    expectSchemaExists('yelp-api');
     const request = makeRequest({
       domain: 'api.yelp.com',
       path: '/v3/businesses/search',
@@ -1750,7 +1750,7 @@ describe('builtin patterns: yelp', () => {
   });
 
   it('yelp-read-businesses matches GET to /v3/businesses path', () => {
-    expectPatternExists('yelp-read-businesses');
+    expectSchemaExists('yelp-read-businesses');
     expect(
       builtinRegistry
         .get('yelp-read-businesses')!
@@ -1764,7 +1764,7 @@ describe('builtin patterns: yelp', () => {
   });
 
   it('yelp-autocomplete matches /v3/autocomplete path', () => {
-    expectPatternExists('yelp-autocomplete');
+    expectSchemaExists('yelp-autocomplete');
     expect(
       builtinRegistry
         .get('yelp-autocomplete')!
@@ -1778,9 +1778,9 @@ describe('builtin patterns: yelp', () => {
   });
 });
 
-describe('builtin patterns: zoom', () => {
+describe('builtin schemas: zoom', () => {
   it('zoom scope matches api.zoom.us', () => {
-    expectPatternExists('zoom-api');
+    expectSchemaExists('zoom-api');
     const request = makeRequest({
       domain: 'api.zoom.us',
       path: '/v2/users/me/meetings',
@@ -1794,7 +1794,7 @@ describe('builtin patterns: zoom', () => {
   });
 
   it('zoom-read-meetings matches GET to meetings path', () => {
-    expectPatternExists('zoom-read-meetings');
+    expectSchemaExists('zoom-read-meetings');
     expect(
       builtinRegistry
         .get('zoom-read-meetings')!
@@ -1808,7 +1808,7 @@ describe('builtin patterns: zoom', () => {
   });
 
   it('zoom-write-recordings matches DELETE to recordings path', () => {
-    expectPatternExists('zoom-write-recordings');
+    expectSchemaExists('zoom-write-recordings');
     expect(
       builtinRegistry
         .get('zoom-write-recordings')!

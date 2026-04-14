@@ -2,12 +2,13 @@ export { check } from './check.js';
 export { dump } from './dump.js';
 export type { DumpedConfig } from './dump.js';
 export { parseCurlArgs, CurlParseError } from './curl.js';
-export { Config, ConfigError, createPatternRegistry, validateRules } from './config.js';
+export { Config, ConfigError, createSchemaRegistry, validateRules } from './config.js';
+export type { RawConfig } from './config.js';
 export {
-  RequestPattern,
-  RequestPatternError,
-  PatternRegistry,
+  RequestSchema,
+  RequestSchemaError,
+  SchemaRegistry,
   getAllBuiltinSchemas,
-} from './patterns/requestPattern.js';
+} from './schemas/requestSchema.js';
 export { decomposeRequest } from './decomposedRequest.js';
 export type { DecomposedRequest } from './decomposedRequest.js';

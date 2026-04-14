@@ -27,9 +27,9 @@
   ],
   "scripts": {
     "prepublishOnly": "npm run build",
-    "build": "tsc && cp -r src/patterns/builtin dist/src/patterns/builtin && chmod +x dist/src/cli.js",
+    "build": "tsc && cp -r src/schemas/builtin dist/src/schemas/builtin && chmod +x dist/src/cli.js",
     "dev": "tsc --watch",
-    "docs": "tsx scripts/generateBuiltinPatternDocs.ts",
+    "docs": "tsx scripts/generateBuiltinSchemaDocs.ts",
     "lint": "eslint src tests",
     "lint:fix": "eslint src tests --fix",
     "format": "prettier --write \"src/**/*.ts\" \"tests/**/*.ts\"",

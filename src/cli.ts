@@ -34,7 +34,7 @@ program
     `
 Environment variables:
   DETENT_CONFIG                        Path to config file (default: ${defaultConfigPath})
-  DETENT_DO_NOT_USE_BUILTIN_PATTERNS   When set to any non-empty value, disables built-in patterns`
+  DETENT_DO_NOT_USE_BUILTIN_SCHEMAS    When set to any non-empty value, disables built-in schemas`
   );
 
 program
@@ -59,7 +59,7 @@ program
 
 program
   .command('dump')
-  .description('Print the effective config with all patterns (including built-in) as JSON')
+  .description('Print the effective config with all schemas (including built-in) as JSON')
   .action(() => {
     try {
       const effectiveConfig = dump(configPathOverride);

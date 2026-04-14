@@ -5,17 +5,17 @@ import { Validator } from '@cfworker/json-schema';
 import { decomposedRequestPropertyNames } from '../decomposedRequest.js';
 import type { DecomposedRequest } from '../decomposedRequest.js';
 
-export class RequestPatternError extends Error {
+export class RequestSchemaError extends Error {
   constructor(message: string) {
     super(message);
-    this.name = 'RequestPatternError';
+    this.name = 'RequestSchemaError';
   }
 }
 
-export class BuiltinPatternLoadError extends Error {
+export class BuiltinSchemaLoadError extends Error {
   constructor(message: string) {
     super(message);
-    this.name = 'BuiltinPatternLoadError';
+    this.name = 'BuiltinSchemaLoadError';
   }
 }
 
@@ -55,11 +55,11 @@ function findInvalidPropertyName(schema: Record<string, unknown>): string | unde
 }
 
 /**
- * A request pattern wraps a JSON schema that can be matched against a DecomposedRequest object.
+ * A request schema wraps a JSON schema that can be matched against a DecomposedRequest object.
  * The schema is a standard JSON Schema object schema (without the outer `type: "object"`
  * wrapper, which is added automatically).
  */
-export class RequestPattern {
+export class RequestSchema {
   readonly name: string;
   readonly schema: Readonly<Record<string, unknown>>;
   private readonly validator: Validator;
@@ -70,8 +70,8 @@ export class RequestPattern {
 
     const invalidPropertyName = findInvalidPropertyName(schema);
     if (invalidPropertyName !== undefined) {
-      throw new RequestPatternError(
-        `Pattern "${name}" references unknown request property "${invalidPropertyName}". ` +
+      throw new RequestSchemaError(
+        `Schema "${name}" references unknown request property "${invalidPropertyName}". ` +
           `Valid properties: ${[...validRequestPropertyNames].join(', ')}`
       );
     }
@@ -90,18 +90,18 @@ export class RequestPattern {
 }
 
 /**
- * Holds raw schemas and compiles them into RequestPattern instances on demand.
+ * Holds raw schemas and compiles them into RequestSchema instances on demand.
  */
-export class PatternRegistry {
+export class SchemaRegistry {
   private readonly rawSchemas: ReadonlyMap<string, Record<string, unknown>>;
-  private readonly compiledPatterns = new Map<string, RequestPattern>();
+  private readonly compiledSchemas = new Map<string, RequestSchema>();
 
   constructor(rawSchemas: Readonly<Record<string, Record<string, unknown>>>) {
     this.rawSchemas = new Map(Object.entries(rawSchemas));
   }
 
-  get(name: string): RequestPattern | undefined {
-    const cached = this.compiledPatterns.get(name);
+  get(name: string): RequestSchema | undefined {
+    const cached = this.compiledSchemas.get(name);
     if (cached !== undefined) {
       return cached;
     }
@@ -111,9 +111,9 @@ export class PatternRegistry {
       return undefined;
     }
 
-    const pattern = new RequestPattern(name, schema);
-    this.compiledPatterns.set(name, pattern);
-    return pattern;
+    const requestSchema = new RequestSchema(name, schema);
+    this.compiledSchemas.set(name, requestSchema);
+    return requestSchema;
   }
 
   has(name: string): boolean {
@@ -122,7 +122,7 @@ export class PatternRegistry {
 
   compileAll(): void {
     for (const name of this.rawSchemas.keys()) {
-      if (!this.compiledPatterns.has(name)) {
+      if (!this.compiledSchemas.has(name)) {
         this.get(name);
       }
     }
@@ -154,8 +154,8 @@ function readBuiltinSchemas(): Readonly<Record<string, Record<string, unknown>>>
       content = readFileSync(filePath, 'utf-8');
     } catch (error: unknown) {
       const message = error instanceof Error ? error.message : String(error);
-      throw new BuiltinPatternLoadError(
-        `Failed to read builtin pattern file "${filePath}": ${message}`
+      throw new BuiltinSchemaLoadError(
+        `Failed to read builtin schema file "${filePath}": ${message}`
       );
     }
 
@@ -164,15 +164,15 @@ function readBuiltinSchemas(): Readonly<Record<string, Record<string, unknown>>>
       parsed = JSON.parse(content);
     } catch (error) {
       if (error instanceof SyntaxError) {
-        throw new BuiltinPatternLoadError(
-          `Failed to parse builtin pattern file "${filePath}": ${error.message}`
+        throw new BuiltinSchemaLoadError(
+          `Failed to parse builtin schema file "${filePath}": ${error.message}`
         );
       }
       throw error;
     }
 
-    const patternsObject = parsed as Record<string, Record<string, unknown>>;
-    for (const [name, schema] of Object.entries(patternsObject)) {
+    const schemasObject = parsed as Record<string, Record<string, unknown>>;
+    for (const [name, schema] of Object.entries(schemasObject)) {
       schemas[name] = schema;
     }
   }
