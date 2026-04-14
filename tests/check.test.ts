@@ -850,4 +850,42 @@ describe('check (top-level function)', () => {
     const postRequest = new Request('https://example.com', { method: 'POST' });
     expect(await check(postRequest, configPath)).toBe(false);
   });
+
+  it('uses builtin schemas by default', async () => {
+    const configPath = join(tempDir, 'config.json');
+    // Use a builtin schema name in a rule; it should resolve when useBuiltinSchemas is true (default).
+    writeFileSync(
+      configPath,
+      JSON.stringify({
+        schemas: {
+          'github-rest-api': {
+            properties: { domain: { const: 'api.github.com' } },
+            required: ['domain'],
+          },
+        },
+        rules: [{ 'github-rest-api': ['any'] }],
+      })
+    );
+    const request = new Request('https://api.github.com/repos');
+    // "any" is a builtin schema; it resolves because useBuiltinSchemas defaults to true.
+    expect(await check(request, configPath)).toBe(true);
+  });
+
+  it('excludes builtin schemas when useBuiltinSchemas is false', async () => {
+    const configPath = join(tempDir, 'config.json');
+    // Reference the builtin "any" schema; it should not resolve when useBuiltinSchemas is false.
+    writeFileSync(
+      configPath,
+      JSON.stringify({
+        schemas: {
+          scope: {
+            properties: { domain: { const: 'example.com' } },
+            required: ['domain'],
+          },
+        },
+        rules: [{ scope: ['any'] }],
+      })
+    );
+    await expect(check(new Request('https://example.com'), configPath, false)).rejects.toThrow();
+  });
 });

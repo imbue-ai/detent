@@ -16,9 +16,6 @@ const EXIT_CODE_ALLOWED = 0;
 const EXIT_CODE_DENIED = 1;
 const EXIT_CODE_ERROR = 2;
 
-// eslint-disable-next-line @typescript-eslint/dot-notation
-const configPathOverride = process.env['DETENT_CONFIG'];
-
 const program = new Command();
 
 const defaultConfigPath = resolveConfigPath();
@@ -46,7 +43,7 @@ program
     try {
       const curlArgs = command.args as readonly string[];
       const request = parseCurlArgs(curlArgs);
-      const allowed = await check(request, configPathOverride);
+      const allowed = await check(request);
       console.log(allowed ? 'approved' : 'rejected');
       process.exitCode = allowed ? EXIT_CODE_ALLOWED : EXIT_CODE_DENIED;
     } catch (error: unknown) {
@@ -62,7 +59,7 @@ program
   .description('Print the effective config with all schemas (including built-in) as JSON')
   .action(() => {
     try {
-      const effectiveConfig = dump(configPathOverride);
+      const effectiveConfig = dump();
       console.log(JSON.stringify(effectiveConfig, null, 2));
       process.exitCode = EXIT_CODE_ALLOWED;
     } catch (error: unknown) {

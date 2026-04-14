@@ -8,7 +8,8 @@ function defaultConfigPath(): string {
 }
 
 export function resolveConfigPath(overridePath?: string): string {
-  return overridePath ?? defaultConfigPath();
+  // eslint-disable-next-line @typescript-eslint/dot-notation
+  return overridePath ?? process.env['DETENT_CONFIG'] ?? defaultConfigPath();
 }
 
 export function useBuiltinSchemas(): boolean {
