@@ -1,17 +1,17 @@
-# Built-in patterns
+# Built-in schemas
 
-Detent ships with the following built-in request patterns.
-Patterns marked *(scope)* identify requests to a particular
+Detent ships with the following preconfigured request schemas.
+Schemas marked *(scope)* identify requests to a particular
 service and are meant to be used as rule keys. The remaining
-patterns define permissions and are meant to be used as rule values.
+schemas define permissions and are meant to be used as rule values.
 
-The AWS patterns are a special case: the service-specific
-patterns like `aws-s3` or `aws-ec2` only match on domain, so
+The AWS schemas are a special case: the service-specific
+ones like `aws-s3` or `aws-ec2` only match on domain, so
 they can serve as scopes (e.g. `{"aws-s3": ["aws-s3-read"]}`)
 or as permissions inside a broader `aws` scope
 (e.g. `{"aws": ["aws-s3"]}` to allow all S3 access).
 
-See the main [README](../README.md) for how patterns and rules work together.
+See the main [README](../README.md) for how schemas and rules work together.
 ### any
 
 - `any`

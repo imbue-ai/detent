@@ -1,5 +1,5 @@
 {
-  "patterns": {
+  "schemas": {
     "cloudflare-api": {
       "properties": {
         "domain": { "const": "api.cloudflare.com" },
