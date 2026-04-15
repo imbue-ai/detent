@@ -2,11 +2,11 @@ import { existsSync, readFileSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 import { Validator } from '@cfworker/json-schema';
 import {
-  RequestPattern,
-  RequestPatternError,
-  PatternRegistry,
+  RequestSchema,
+  RequestSchemaError,
+  SchemaRegistry,
   getAllBuiltinSchemas,
-} from './patterns/requestPattern.js';
+} from './schemas/requestSchema.js';
 import { decomposeRequest } from './decomposedRequest.js';
 
 export class ConfigError extends Error {
@@ -18,7 +18,7 @@ export class ConfigError extends Error {
 
 export interface RawConfig {
   readonly include?: readonly string[];
-  readonly patterns: Readonly<Record<string, Record<string, unknown>>>;
+  readonly schemas: Readonly<Record<string, Record<string, unknown>>>;
   readonly rules: readonly Readonly<Record<string, readonly string[]>>[];
 }
 
@@ -29,6 +29,11 @@ const rawConfigSchema = {
       type: 'array',
       items: { type: 'string' },
     },
+    schemas: {
+      type: 'object',
+      additionalProperties: { type: 'object' },
+    },
+    // Backwards compatibility: "patterns" is accepted as an alias for "schemas".
     patterns: {
       type: 'object',
       additionalProperties: { type: 'object' },
@@ -50,32 +55,32 @@ const rawConfigSchema = {
 const rawConfigValidator = new Validator(rawConfigSchema, '2020-12', false);
 
 interface ResolvedRule {
-  readonly scope: RequestPattern;
-  readonly permissions: readonly RequestPattern[];
+  readonly scope: RequestSchema;
+  readonly permissions: readonly RequestSchema[];
 }
 
-export function createPatternRegistry(
+export function createSchemaRegistry(
   rawConfig: RawConfig,
-  doNotUseBuiltinPatterns: boolean
-): PatternRegistry {
+  doNotUseBuiltinSchemas: boolean
+): SchemaRegistry {
   const schemas: Record<string, Record<string, unknown>> = {};
 
-  if (!doNotUseBuiltinPatterns) {
+  if (!doNotUseBuiltinSchemas) {
     Object.assign(schemas, getAllBuiltinSchemas());
   }
 
-  // User patterns override builtins with the same name.
-  Object.assign(schemas, rawConfig.patterns);
+  // User schemas override builtins with the same name.
+  Object.assign(schemas, rawConfig.schemas);
 
-  return new PatternRegistry(schemas);
+  return new SchemaRegistry(schemas);
 }
 
 export class Config {
   private readonly rules: readonly ResolvedRule[];
 
-  constructor(configPath: string, doNotUseBuiltinPatterns: boolean) {
+  constructor(configPath: string, doNotUseBuiltinSchemas: boolean) {
     const rawConfig = readRawConfig(configPath);
-    const registry = createPatternRegistry(rawConfig, doNotUseBuiltinPatterns);
+    const registry = createSchemaRegistry(rawConfig, doNotUseBuiltinSchemas);
     this.rules = resolveRules(rawConfig, registry);
   }
 
@@ -104,7 +109,7 @@ export function readRawConfig(configPath: string): RawConfig {
 
 function readSingleRawConfig(configPath: string): RawConfig {
   if (!existsSync(configPath)) {
-    return { patterns: {}, rules: [] };
+    return { schemas: {}, rules: [] };
   }
 
   let content: string;
@@ -136,13 +141,20 @@ function readSingleRawConfig(configPath: string): RawConfig {
 
   const validated = parsed as {
     include?: readonly string[];
+    schemas?: Readonly<Record<string, Record<string, unknown>>>;
     patterns?: Readonly<Record<string, Record<string, unknown>>>;
     rules?: readonly Readonly<Record<string, readonly string[]>>[];
   };
 
+  // Merge "patterns" (deprecated) and "schemas"; "schemas" takes precedence.
+  const mergedSchemas: Record<string, Record<string, unknown>> = {
+    ...(validated.patterns ?? {}),
+    ...(validated.schemas ?? {}),
+  };
+
   return {
     include: validated.include,
-    patterns: validated.patterns ?? {},
+    schemas: mergedSchemas,
     rules: validated.rules ?? [],
   };
 }
@@ -164,30 +176,30 @@ function readRawConfigRecursive(configPath: string, visitedPaths: readonly strin
   const configDirectory = dirname(absolutePath);
   const newVisitedPaths = [...visitedPaths, absolutePath];
 
-  let mergedPatterns: Record<string, Record<string, unknown>> = {};
+  let mergedSchemas: Record<string, Record<string, unknown>> = {};
   let mergedRules: Readonly<Record<string, readonly string[]>>[] = [];
 
   for (const includePath of currentConfig.include) {
     const resolvedIncludePath = resolve(configDirectory, includePath);
     const includedConfig = readRawConfigRecursive(resolvedIncludePath, newVisitedPaths);
 
-    mergedPatterns = { ...mergedPatterns, ...includedConfig.patterns };
+    mergedSchemas = { ...mergedSchemas, ...includedConfig.schemas };
     mergedRules = [...mergedRules, ...includedConfig.rules];
   }
 
-  // The current config's own patterns override included ones;
+  // The current config's own schemas override included ones;
   // the current config's own rules are appended after included rules.
-  mergedPatterns = { ...mergedPatterns, ...currentConfig.patterns };
+  mergedSchemas = { ...mergedSchemas, ...currentConfig.schemas };
   mergedRules = [...mergedRules, ...currentConfig.rules];
 
-  return { patterns: mergedPatterns, rules: mergedRules };
+  return { schemas: mergedSchemas, rules: mergedRules };
 }
 
-export function validateRules(rawConfig: RawConfig, registry: PatternRegistry): void {
+export function validateRules(rawConfig: RawConfig, registry: SchemaRegistry): void {
   resolveRules(rawConfig, registry);
 }
 
-function resolveRules(rawConfig: RawConfig, registry: PatternRegistry): readonly ResolvedRule[] {
+function resolveRules(rawConfig: RawConfig, registry: SchemaRegistry): readonly ResolvedRule[] {
   return rawConfig.rules.map((ruleObject, index) => {
     const entries = Object.entries(ruleObject);
     if (entries.length !== 1) {
@@ -197,10 +209,10 @@ function resolveRules(rawConfig: RawConfig, registry: PatternRegistry): readonly
     }
 
     const [scopeName, permissionNames] = entries[0]!;
-    const scope = resolvePattern(scopeName, registry, `scope of rule at index ${String(index)}`);
+    const scope = resolveSchema(scopeName, registry, `scope of rule at index ${String(index)}`);
 
     const permissions = permissionNames.map((permissionName) =>
-      resolvePattern(
+      resolveSchema(
         permissionName,
         registry,
         `permission "${permissionName}" in rule at index ${String(index)}`
@@ -211,10 +223,10 @@ function resolveRules(rawConfig: RawConfig, registry: PatternRegistry): readonly
   });
 }
 
-function resolvePattern(name: string, registry: PatternRegistry, context: string): RequestPattern {
-  const pattern = registry.get(name);
-  if (pattern === undefined) {
-    throw new RequestPatternError(`Unknown pattern "${name}" used in ${context}`);
+function resolveSchema(name: string, registry: SchemaRegistry, context: string): RequestSchema {
+  const schema = registry.get(name);
+  if (schema === undefined) {
+    throw new RequestSchemaError(`Unknown schema "${name}" used in ${context}`);
   }
-  return pattern;
+  return schema;
 }

@@ -107,9 +107,9 @@ Some of the fields are normalized to canonical form before matching:
 `method` is always uppercase (e.g. `"GET"`), `protocol`,
 `domain` and `headers` keys are always lowercase (e.g. `"content-type"`).
 
-#### Request patterns
+#### Request schemas
 
-A "request pattern" is a JSON Schema for matching and validating request objects. For example:
+We use JSON schema for matching and validating request objects. For example:
 
 ```json
 {
@@ -121,15 +121,14 @@ A "request pattern" is a JSON Schema for matching and validating request objects
 ```
 
 This would match all GET requests, regardless of the domain,
-path, or anything else. Patterns must use normalized field
+path, or anything else. Schemas must use normalized field
 values (uppercase for methods etc.).
 
-In the Detent config, patterns are actually specified with names,
-like this:
+In the Detent config, schemas are identified by names, like this:
 
 ```json
 {
-  "patterns": {
+  "schemas": {
     "github-api": {
       "properties": {
         "domain": { "const": "api.github.com" }
@@ -151,16 +150,16 @@ like this:
 }
 ```
 
-For a complete example config that defines custom patterns, see
+For a complete example config that defines custom schemas, see
 [docs/example-cloudflare.json](docs/example-cloudflare.json).
 
 ### Permission rules
 
-Once defined, request patterns can be combined in a two-level rules hierarchy, like this:
+Once defined, request schemas can be combined in a two-level rules hierarchy, like this:
 
 ```json
 {
-  "patterns": {...},
+  "schemas": {...},
   "rules": [
     {"github-api": ["github-read-issues-detent", "github-write-comments-detent", ...] },
     {"slack-api": ["slack-read-all"] }
@@ -189,9 +188,9 @@ requests by default, append the `{"any": ["any"]}` rule to the
 end of your rule list.
 
 
-### Built-in permissions
+### Built-in schemas
 
-Detent comes with a number of pattern definitions out of the box that
+Detent comes with a number of preconfigured schemas out of the box that
 are automatically available and recognized in rule bodies:
 
 - `any` (to match and allow any and all requests)
@@ -199,14 +198,14 @@ are automatically available and recognized in rule bodies:
 - `aws-s3-read` (to allow read operations on AWS S3)
 - `stripe-read-all` (to allow all read operations in Stripe API)
 - `google-drive-write-comments` (to allow adding comments to Google Drive items)
-- ... and many others, see [docs/builtin-patterns.md](docs/builtin-patterns.md) for the full list
+- ... and many others, see [docs/builtin-schemas.md](docs/builtin-schemas.md) for the full list
 
 Run `detent dump` to see your current config together with all the
-available built-in patterns. If you only want to list the pattern
-names, run `detent dump | jq '.patterns | keys'`.
+available built-in schemas. If you only want to list the schema
+names, run `detent dump | jq '.schemas | keys'`.
 
-If you don't want to use the built-in patterns, set the
-`DETENT_DO_NOT_USE_BUILTIN_PATTERNS` environment variable to
+If you don't want to use the built-in schemas, set the
+`DETENT_DO_NOT_USE_BUILTIN_SCHEMAS` environment variable to
 a non-empty value.
 
 
@@ -225,11 +224,11 @@ the config that contains the `include`.
 }
 ```
 
-Included configs are merged recursively: patterns and rules from
+Included configs are merged recursively: schemas and rules from
 all included files are collected first (in list order), then the
-including config's own patterns and rules are applied on top.
-This means the parent config's patterns override equally-named
-included patterns, and its rules are evaluated after included
+including config's own schemas and rules are applied on top.
+This means the parent config's schemas override equally-named
+included schemas, and its rules are evaluated after included
 rules. Circular includes are detected and rejected.
 
 
@@ -239,13 +238,12 @@ Contributions of all kinds are welcome!
 
 ## Disclaimer
 
-We're providing the preconfigured pattern definitions for
-convenience, but it's likely that some of them may not work
-entirely as intended. We hope that the community will help us refine the
-built-in permission definitions over time. In the meantime,
-preferably double-check built-in definitions before using them,
-and when possible, use API tokens with reduced permission
-scopes.
+We're providing the preconfigured schemas for convenience, but
+it's likely that some of them may not work entirely as intended.
+We hope that the community will help us refine the built-in
+permission definitions over time. In the meantime, preferably
+double-check built-in definitions before using them, and when
+possible, use API tokens with reduced permission scopes.
 
 We still think the tool is useful in its current form as a protection
 against accidental agent actions and the first line of defense

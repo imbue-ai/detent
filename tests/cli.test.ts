@@ -30,7 +30,7 @@ describe('CLI', () => {
     writeFileSync(
       configPath,
       JSON.stringify({
-        patterns: { everything: {}, 'allow-all': {} },
+        schemas: { everything: {}, 'allow-all': {} },
         rules: [{ everything: ['allow-all'] }],
       })
     );
@@ -44,7 +44,7 @@ describe('CLI', () => {
     writeFileSync(
       configPath,
       JSON.stringify({
-        patterns: {},
+        schemas: {},
         rules: [],
       })
     );
@@ -64,16 +64,16 @@ describe('CLI', () => {
     writeFileSync(
       configPath,
       JSON.stringify({
-        patterns: { everything: {}, 'allow-all': {} },
+        schemas: { everything: {}, 'allow-all': {} },
         rules: [{ everything: ['allow-all'] }],
       })
     );
     const { stdout } = await execFileAsync('node', [cliPath, 'dump'], {
       env: { ...process.env, DETENT_CONFIG: configPath },
     });
-    const parsed = JSON.parse(stdout) as { patterns: object; rules: object[] };
-    expect(parsed.patterns).toHaveProperty('everything');
-    expect(parsed.patterns).toHaveProperty('allow-all');
+    const parsed = JSON.parse(stdout) as { schemas: object; rules: object[] };
+    expect(parsed.schemas).toHaveProperty('everything');
+    expect(parsed.schemas).toHaveProperty('allow-all');
     expect(parsed.rules).toEqual([{ everything: ['allow-all'] }]);
   });
 
@@ -81,7 +81,7 @@ describe('CLI', () => {
     writeFileSync(
       configPath,
       JSON.stringify({
-        patterns: { everything: {}, 'allow-all': {} },
+        schemas: { everything: {}, 'allow-all': {} },
         rules: [{ everything: ['allow-all'] }],
       })
     );

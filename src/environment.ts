@@ -8,10 +8,14 @@ function defaultConfigPath(): string {
 }
 
 export function resolveConfigPath(overridePath?: string): string {
-  return overridePath ?? defaultConfigPath();
+  // eslint-disable-next-line @typescript-eslint/dot-notation
+  return overridePath ?? process.env['DETENT_CONFIG'] ?? defaultConfigPath();
 }
 
-export function useBuiltinPatterns(): boolean {
+export function useBuiltinSchemas(): boolean {
   // eslint-disable-next-line @typescript-eslint/dot-notation
-  return (process.env['DETENT_DO_NOT_USE_BUILTIN_PATTERNS'] ?? '') === '';
+  const newVar = process.env['DETENT_DO_NOT_USE_BUILTIN_SCHEMAS'] ?? '';
+  // eslint-disable-next-line @typescript-eslint/dot-notation
+  const legacyVar = process.env['DETENT_DO_NOT_USE_BUILTIN_PATTERNS'] ?? '';
+  return newVar === '' && legacyVar === '';
 }

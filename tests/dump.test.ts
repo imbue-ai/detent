@@ -26,9 +26,9 @@ describe('dump', () => {
     return configPath;
   }
 
-  it('returns user patterns and rules from config', () => {
+  it('returns user schemas and rules from config', () => {
     const configPath = writeConfig({
-      patterns: {
+      schemas: {
         'github-api': {
           properties: { domain: { const: 'api.github.com' } },
           required: ['domain'],
@@ -40,40 +40,40 @@ describe('dump', () => {
 
     const result = dump(configPath);
 
-    expect(result.patterns).toHaveProperty('github-api', {
+    expect(result.schemas).toHaveProperty('github-api', {
       properties: { domain: { const: 'api.github.com' } },
       required: ['domain'],
     });
-    expect(result.patterns).toHaveProperty('get-only', {
+    expect(result.schemas).toHaveProperty('get-only', {
       properties: { method: { const: 'GET' } },
       required: ['method'],
     });
-    // Builtin patterns are also present
-    expect(result.patterns).toHaveProperty('any', {});
+    // Builtin schemas are also present
+    expect(result.schemas).toHaveProperty('any', {});
     expect(result.rules).toEqual([{ 'github-api': ['get-only'] }]);
   });
 
-  it('returns builtin patterns and empty rules for minimal config', () => {
+  it('returns builtin schemas and empty rules for minimal config', () => {
     const configPath = writeConfig({});
 
     const result = dump(configPath);
 
-    expect(result.patterns).toHaveProperty('any', {});
+    expect(result.schemas).toHaveProperty('any', {});
     expect(result.rules).toEqual([]);
   });
 
-  it('returns empty patterns and rules for missing config file', () => {
+  it('returns empty schemas and rules for missing config file', () => {
     // eslint-disable-next-line @typescript-eslint/dot-notation
-    const previous = process.env['DETENT_DO_NOT_USE_BUILTIN_PATTERNS'];
+    const previous = process.env['DETENT_DO_NOT_USE_BUILTIN_SCHEMAS'];
     try {
       // eslint-disable-next-line @typescript-eslint/dot-notation
-      process.env['DETENT_DO_NOT_USE_BUILTIN_PATTERNS'] = '1';
+      process.env['DETENT_DO_NOT_USE_BUILTIN_SCHEMAS'] = '1';
       const result = dump('/nonexistent/path.json');
-      expect(result.patterns).toEqual({});
+      expect(result.schemas).toEqual({});
       expect(result.rules).toEqual([]);
     } finally {
       // eslint-disable-next-line @typescript-eslint/dot-notation
-      process.env['DETENT_DO_NOT_USE_BUILTIN_PATTERNS'] = previous;
+      process.env['DETENT_DO_NOT_USE_BUILTIN_SCHEMAS'] = previous;
     }
   });
 
@@ -91,31 +91,31 @@ describe('dump', () => {
     expect(() => dump(configPath)).toThrow(/rulez/);
   });
 
-  it('excludes builtin patterns when DETENT_DO_NOT_USE_BUILTIN_PATTERNS is set', () => {
+  it('excludes builtin schemas when DETENT_DO_NOT_USE_BUILTIN_SCHEMAS is set', () => {
     const configPath = writeConfig({
-      patterns: {
-        'my-pattern': { properties: { method: { const: 'GET' } }, required: ['method'] },
+      schemas: {
+        'my-schema': { properties: { method: { const: 'GET' } }, required: ['method'] },
       },
       rules: [],
     });
 
     // eslint-disable-next-line @typescript-eslint/dot-notation
-    const previous = process.env['DETENT_DO_NOT_USE_BUILTIN_PATTERNS'];
+    const previous = process.env['DETENT_DO_NOT_USE_BUILTIN_SCHEMAS'];
     try {
       // eslint-disable-next-line @typescript-eslint/dot-notation
-      process.env['DETENT_DO_NOT_USE_BUILTIN_PATTERNS'] = '1';
+      process.env['DETENT_DO_NOT_USE_BUILTIN_SCHEMAS'] = '1';
       const result = dump(configPath);
-      // Only user-defined patterns should be present, no builtins
-      expect(Object.keys(result.patterns)).toEqual(['my-pattern']);
+      // Only user-defined schemas should be present, no builtins
+      expect(Object.keys(result.schemas)).toEqual(['my-schema']);
     } finally {
       // eslint-disable-next-line @typescript-eslint/dot-notation
-      process.env['DETENT_DO_NOT_USE_BUILTIN_PATTERNS'] = previous;
+      process.env['DETENT_DO_NOT_USE_BUILTIN_SCHEMAS'] = previous;
     }
   });
 
   it('preserves rules as-is from the config', () => {
     const configPath = writeConfig({
-      patterns: {
+      schemas: {
         scope1: { properties: { domain: { const: 'a.com' } }, required: ['domain'] },
         scope2: { properties: { domain: { const: 'b.com' } }, required: ['domain'] },
         perm1: { properties: { method: { const: 'GET' } }, required: ['method'] },
@@ -129,12 +129,12 @@ describe('dump', () => {
     expect(result.rules).toEqual([{ scope1: ['perm1'] }, { scope2: ['perm1', 'perm2'] }]);
   });
 
-  it('includes patterns and rules from included config files', () => {
+  it('includes schemas and rules from included config files', () => {
     const includedPath = join(tempDir, 'included.json');
     writeFileSync(
       includedPath,
       JSON.stringify({
-        patterns: {
+        schemas: {
           'included-scope': {
             properties: { domain: { const: 'included.com' } },
             required: ['domain'],
@@ -150,22 +150,22 @@ describe('dump', () => {
 
     const configPath = writeConfig({
       include: ['included.json'],
-      patterns: {
+      schemas: {
         'own-scope': { properties: { domain: { const: 'own.com' } }, required: ['domain'] },
       },
       rules: [{ 'own-scope': ['included-perm'] }],
     });
 
     // eslint-disable-next-line @typescript-eslint/dot-notation
-    const previous = process.env['DETENT_DO_NOT_USE_BUILTIN_PATTERNS'];
+    const previous = process.env['DETENT_DO_NOT_USE_BUILTIN_SCHEMAS'];
     try {
       // eslint-disable-next-line @typescript-eslint/dot-notation
-      process.env['DETENT_DO_NOT_USE_BUILTIN_PATTERNS'] = '1';
+      process.env['DETENT_DO_NOT_USE_BUILTIN_SCHEMAS'] = '1';
       const result = dump(configPath);
 
-      expect(result.patterns).toHaveProperty('included-scope');
-      expect(result.patterns).toHaveProperty('included-perm');
-      expect(result.patterns).toHaveProperty('own-scope');
+      expect(result.schemas).toHaveProperty('included-scope');
+      expect(result.schemas).toHaveProperty('included-perm');
+      expect(result.schemas).toHaveProperty('own-scope');
       // Included rules come first, then own rules
       expect(result.rules).toEqual([
         { 'included-scope': ['included-perm'] },
@@ -173,7 +173,7 @@ describe('dump', () => {
       ]);
     } finally {
       // eslint-disable-next-line @typescript-eslint/dot-notation
-      process.env['DETENT_DO_NOT_USE_BUILTIN_PATTERNS'] = previous;
+      process.env['DETENT_DO_NOT_USE_BUILTIN_SCHEMAS'] = previous;
     }
   });
 });
