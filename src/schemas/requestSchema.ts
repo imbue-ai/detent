@@ -1,21 +1,12 @@
-import { readdirSync, readFileSync } from 'node:fs';
-import { join, dirname } from 'node:path';
-import { fileURLToPath } from 'node:url';
 import { Validator } from '@cfworker/json-schema';
 import { decomposedRequestPropertyNames } from '../decomposedRequest.js';
 import type { DecomposedRequest } from '../decomposedRequest.js';
+import { generatedBuiltinSchemas } from './generatedBuiltinSchemas.js';
 
 export class RequestSchemaError extends Error {
   constructor(message: string) {
     super(message);
     this.name = 'RequestSchemaError';
-  }
-}
-
-export class BuiltinSchemaLoadError extends Error {
-  constructor(message: string) {
-    super(message);
-    this.name = 'BuiltinSchemaLoadError';
   }
 }
 
@@ -133,56 +124,6 @@ export class SchemaRegistry {
   }
 }
 
-function readBuiltinSchemas(): Readonly<Record<string, Record<string, unknown>>> {
-  const currentDirectory = dirname(fileURLToPath(import.meta.url));
-  const builtinDirectory = join(currentDirectory, 'builtin');
-
-  let entries: string[];
-  try {
-    entries = readdirSync(builtinDirectory, { recursive: true, encoding: 'utf-8' });
-  } catch {
-    return {};
-  }
-
-  const jsonFiles = entries.filter((entry) => entry.endsWith('.json'));
-  const schemas: Record<string, Record<string, unknown>> = {};
-
-  for (const jsonFile of jsonFiles) {
-    const filePath = join(builtinDirectory, jsonFile);
-    let content: string;
-    try {
-      content = readFileSync(filePath, 'utf-8');
-    } catch (error: unknown) {
-      const message = error instanceof Error ? error.message : String(error);
-      throw new BuiltinSchemaLoadError(
-        `Failed to read builtin schema file "${filePath}": ${message}`
-      );
-    }
-
-    let parsed: unknown;
-    try {
-      parsed = JSON.parse(content);
-    } catch (error) {
-      if (error instanceof SyntaxError) {
-        throw new BuiltinSchemaLoadError(
-          `Failed to parse builtin schema file "${filePath}": ${error.message}`
-        );
-      }
-      throw error;
-    }
-
-    const schemasObject = parsed as Record<string, Record<string, unknown>>;
-    for (const [name, schema] of Object.entries(schemasObject)) {
-      schemas[name] = schema;
-    }
-  }
-
-  return schemas;
-}
-
-let cachedBuiltinSchemas: Readonly<Record<string, Record<string, unknown>>> | undefined;
-
 export function getAllBuiltinSchemas(): Readonly<Record<string, Record<string, unknown>>> {
-  cachedBuiltinSchemas ??= readBuiltinSchemas();
-  return cachedBuiltinSchemas;
+  return generatedBuiltinSchemas;
 }
