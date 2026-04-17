@@ -27,7 +27,9 @@
   ],
   "scripts": {
     "prepublishOnly": "npm run build",
-    "build": "tsc && cp -r src/schemas/builtin dist/src/schemas/builtin && chmod +x dist/src/cli.js",
+    "generate:builtin-schemas": "tsx scripts/generateBuiltinSchemasModule.ts",
+    "prebuild": "npm run generate:builtin-schemas",
+    "build": "tsc && chmod +x dist/src/cli.js",
     "dev": "tsc --watch",
     "docs": "tsx scripts/generateBuiltinSchemaDocs.ts",
     "lint": "eslint src tests",
