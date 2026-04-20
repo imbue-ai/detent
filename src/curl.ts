@@ -1,10 +1,11 @@
-// Deep imports (rather than the `curlconverter` barrel) to avoid eagerly
-// loading ~50 unrelated code generators (Python, Go, Rust, ...) at startup.
-// This shaves ~25ms off CLI cold start. curlconverter's package.json has no
-// `exports` map, so these internal paths are reachable; they're stable across
-// the 4.x line but worth revisiting on any major bump.
-import { toHarString } from 'curlconverter/dist/src/generators/har.js';
-import { CCError } from 'curlconverter/dist/src/utils.js';
+// We vendor a minimal subset of curlconverter under `vendor/curlconverter/`
+// (see that directory's README for rationale). Upstream eagerly imports a
+// Bash tokenizer backed by tree-sitter native modules, which breaks
+// `bun build --compile` and bloats install size. detent only ever feeds the
+// parser an already-tokenized argv array, so we ship the flag-parsing
+// subset and stub out the tokenizer.
+import { toHarString } from './vendor/curlconverter/generators/har.js';
+import { CCError } from './vendor/curlconverter/utils.js';
 
 export class CurlParseError extends Error {
   constructor(message: string) {
