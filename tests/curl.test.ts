@@ -14,6 +14,22 @@ describe('parseCurlArgs', () => {
       expect(request.url).toBe('https://example.com/path');
     });
 
+    it('defaults to http:// when no scheme is provided', () => {
+      const request = parseCurlArgs(['www.seznam.cz']);
+      expect(request.url).toBe('http://www.seznam.cz/');
+      expect(request.method).toBe('GET');
+    });
+
+    it('defaults to http:// for schemeless URL via --url', () => {
+      const request = parseCurlArgs(['--url', 'example.com/path']);
+      expect(request.url).toBe('http://example.com/path');
+    });
+
+    it('defaults to http:// for schemeless URL with host:port', () => {
+      const request = parseCurlArgs(['example.com:8080/foo']);
+      expect(request.url).toBe('http://example.com:8080/foo');
+    });
+
     it('throws CurlParseError when no URL is provided', () => {
       expect(() => parseCurlArgs([])).toThrow(CurlParseError);
       expect(() => parseCurlArgs(['-X', 'GET'])).toThrow(CurlParseError);
