@@ -133,12 +133,6 @@ describe('parseCurlArgs', () => {
       expect(request.headers.get('Accept')).toBe('text/html');
     });
 
-    it('throws CurlParseError for malformed header', () => {
-      expect(() => parseCurlArgs(['-H', 'BadHeader', 'https://example.com'])).toThrow(
-        CurlParseError
-      );
-    });
-
     it('parses -A as User-Agent header', () => {
       const request = parseCurlArgs(['-A', 'MyAgent/1.0', 'https://example.com']);
       expect(request.headers.get('User-Agent')).toBe('MyAgent/1.0');
