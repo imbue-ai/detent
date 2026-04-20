@@ -208,6 +208,19 @@ function extractInlineShortFlagValue(
   return undefined;
 }
 
+/**
+ * Curl defaults to `http://` when the URL has no scheme, so we do the same
+ * to produce a URL that the WHATWG `URL` parser can handle. Curl actually
+ * guesses the scheme from the hostname prefix (e.g. `ftp.` => FTP), but
+ * Detent only cares about HTTP(S) requests, so defaulting to `http` is fine.
+ */
+function addDefaultScheme(url: string): string {
+  if (/^[a-zA-Z][a-zA-Z0-9+.-]*:\/\//.test(url)) {
+    return url;
+  }
+  return `http://${url}`;
+}
+
 export function parseCurlArgs(args: readonly string[]): Request {
   let method: string | undefined;
   let url: string | undefined;
@@ -337,6 +350,7 @@ export function parseCurlArgs(args: readonly string[]): Request {
   if (url === undefined) {
     throw new CurlParseError('No URL provided in curl arguments');
   }
+  url = addDefaultScheme(url);
 
   // Determine the effective method
   const hasBody = bodyParts.length > 0 || hasFormData;
