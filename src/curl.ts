@@ -1,4 +1,10 @@
-import { toHarString, CCError } from 'curlconverter';
+// Deep imports (rather than the `curlconverter` barrel) to avoid eagerly
+// loading ~50 unrelated code generators (Python, Go, Rust, ...) at startup.
+// This shaves ~25ms off CLI cold start. curlconverter's package.json has no
+// `exports` map, so these internal paths are reachable; they're stable across
+// the 4.x line but worth revisiting on any major bump.
+import { toHarString } from 'curlconverter/dist/src/generators/har.js';
+import { CCError } from 'curlconverter/dist/src/utils.js';
 
 export class CurlParseError extends Error {
   constructor(message: string) {
