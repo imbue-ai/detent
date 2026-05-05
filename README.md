@@ -211,13 +211,13 @@ Semantics:
   request is approved (by this gate) if any listed schema
   matches the decomposed request.
 - `hooks` is a list of executables; the request is approved
-  (by this gate) only if **all** of them exit `0`.
-- When both fields are present, **both** must succeed (AND),
-  and **hooks run before schemas**.
+  (by this gate) only if all of them exit `0`.
+- When both fields are present, both must succeed (AND).
+- Hooks run before schemas.
 
 Each hook is invoked with a single argument: the path to a
 temporary JSON file containing the decomposed request (the same
-shape used by schema validators — see the request schema fields
+shape used by schema validators - see the request schema fields
 listed above). Hooks must follow detent's exit-code convention:
 
 - `0`: allowed by this hook
@@ -232,7 +232,7 @@ Hook paths are resolved at execution time, in this order:
    directory of the config file that defined the rule.
 3. Bare name: looked up via `$PATH`.
 
-Within a single rule, hooks run **sequentially in array order**.
+Within a single rule, hooks run sequentially in array order.
 Evaluation short-circuits on the first non-zero exit: a `1`
 rejects the rule (no further hooks are run) and a `2+` aborts
 the whole `detent` invocation with that exit code. When the
