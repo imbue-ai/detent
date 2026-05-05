@@ -142,15 +142,16 @@ export class Config {
         return false;
       }
 
-      // Object form: schemas AND hooks (each vacuously true if empty/absent).
-      if (rule.body.schemaAny.length > 0) {
-        const anyMatch = rule.body.schemaAny.some((schema) => schema.match(decomposedRequest));
-        if (!anyMatch) return false;
-      }
-
+      // Object form: hooks AND schemas (each vacuously true if empty/absent).
+      // Hooks run first so that hooks like "audit-log" happen even if the schemas don't match.
       if (rule.body.hooks.length > 0) {
         const outcome = await runHooksAll(rule.body.hooks, decomposedRequest, index);
         if (outcome.kind === 'rejected') return false;
+      }
+
+      if (rule.body.schemaAny.length > 0) {
+        const anyMatch = rule.body.schemaAny.some((schema) => schema.match(decomposedRequest));
+        if (!anyMatch) return false;
       }
 
       return true;

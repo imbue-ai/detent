@@ -212,7 +212,8 @@ Semantics:
   matches the decomposed request.
 - `hooks` is a list of executables; the request is approved
   (by this gate) only if **all** of them exit `0`.
-- When both fields are present, **both** must succeed (AND).
+- When both fields are present, **both** must succeed (AND),
+  and **hooks run before schemas**.
 
 Each hook is invoked with a single argument: the path to a
 temporary JSON file containing the decomposed request (the same

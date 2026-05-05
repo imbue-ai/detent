@@ -383,10 +383,25 @@ describe('rule object form: hooks input contract', () => {
 });
 
 describe('rule object form: schemas + hooks (AND)', () => {
-  it('rejects when schemas fails (and does not run hooks)', async () => {
-    // The hook would have exited non-zero anyway, but more importantly we
-    // assert that schema mismatch causes rejection without triggering a
-    // hook-error.
+  it('rejects via hook before evaluating schemas', async () => {
+    // Hooks run before schema checks. The schema would have rejected POST
+    // anyway, but we assert the hook's rejection (exit 1) is what stops
+    // evaluation — and that the schema check is therefore skipped.
+    const denyHook = writeHookScript('deny.sh', 'exit 1');
+    const configPath = writeConfig({
+      schemas: {
+        scope: { properties: { domain: { const: 'example.com' } }, required: ['domain'] },
+        'get-only': { properties: { method: { const: 'GET' } }, required: ['method'] },
+      },
+      rules: [{ scope: { schemas: ['get-only'], hooks: [denyHook] } }],
+    });
+    const config = new Config(configPath, true);
+    expect(await config.check(new Request('https://example.com', { method: 'POST' }))).toBe(false);
+  });
+
+  it('throws when a hook errors, even if schemas would have rejected', async () => {
+    // Hooks run first, so a hook error surfaces even when the schema check
+    // would have rejected the request.
     const errorHook = writeHookScript('err.sh', 'exit 9');
     const configPath = writeConfig({
       schemas: {
@@ -396,8 +411,9 @@ describe('rule object form: schemas + hooks (AND)', () => {
       rules: [{ scope: { schemas: ['get-only'], hooks: [errorHook] } }],
     });
     const config = new Config(configPath, true);
-    // POST does not match schemas → rule rejects, hook is skipped, no throw.
-    expect(await config.check(new Request('https://example.com', { method: 'POST' }))).toBe(false);
+    await expect(
+      config.check(new Request('https://example.com', { method: 'POST' }))
+    ).rejects.toBeInstanceOf(HookExecutionError);
   });
 
   it('rejects when schemas matches but a hook returns 1', async () => {
