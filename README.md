@@ -187,6 +187,58 @@ that don't match any rule get rejected. If you want to allow
 requests by default, append the `{"any": ["any"]}` rule to the
 end of your rule list.
 
+### Hooks (custom executable checks)
+
+In addition to the plain list of schemas shown above, a rule's
+value can be an object with `schema_any` and/or `hooks_all`:
+
+```json
+{
+  "rules": [
+    {
+      "github-rest-api": {
+        "schema_any": ["github-read-issues-detent"],
+        "hooks_all": ["./check-actor.sh", "audit-log"]
+      }
+    }
+  ]
+}
+```
+
+Semantics:
+
+- `schema_any` works exactly like the plain list form: the
+  request is approved (by this gate) if any listed schema
+  matches the decomposed request.
+- `hooks_all` is a list of executables; the request is approved
+  (by this gate) only if **all** of them exit `0`.
+- When both fields are present, **both** must succeed (AND).
+
+Each hook is invoked with a single argument: the path to a
+temporary JSON file containing the decomposed request (the same
+shape used by schema validators — see the request schema fields
+listed above). Hooks must follow detent's exit-code convention:
+
+- `0`: allowed by this hook
+- `1`: rejected by this hook
+- `2` or higher: error; the whole `detent` invocation
+  aborts with that exit code (no further rules are evaluated)
+
+Hook paths are resolved at execution time, in this order:
+
+1. Absolute path: used as-is.
+2. Path containing a separator: resolved relative to the
+   directory of the config file that defined the rule.
+3. Bare name: looked up via `$PATH`.
+
+Within a single rule, hooks run **sequentially in array order**.
+Evaluation short-circuits on the first non-zero exit: a `1`
+rejects the rule (no further hooks are run) and a `2+` aborts
+the whole `detent` invocation with that exit code. When the
+library API (`check`) hits a hook with exit code 2+, it throws a
+`HookExecutionError` carrying the offending hook spec and exit
+code; the CLI re-uses that exit code.
+
 
 ### Built-in schemas
 

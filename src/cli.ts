@@ -6,6 +6,7 @@ import { parseCurlArgs } from './curl.js';
 import { check } from './check.js';
 import { dump } from './dump.js';
 import { resolveConfigPath } from './environment.js';
+import { HookExecutionError } from './hooks.js';
 
 // Use createRequire instead of JSON import to avoid experimental warnings in some Node versions.
 // The path is ../../ because this runs from dist/src/cli.js after compilation.
@@ -50,7 +51,11 @@ program
       if (error instanceof Error) {
         console.error(`Error: ${error.message}`);
       }
-      process.exitCode = EXIT_CODE_ERROR;
+      if (error instanceof HookExecutionError) {
+        process.exitCode = Math.max(error.exitCode, EXIT_CODE_ERROR);
+      } else {
+        process.exitCode = EXIT_CODE_ERROR;
+      }
     }
   });
 
