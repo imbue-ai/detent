@@ -1096,6 +1096,8 @@ describe('builtin schemas: slack', () => {
       '/api/bookmarks.list',
       '/api/reminders.info',
       '/api/reminders.list',
+      '/api/auth.test',
+      '/api/auth.teams.list',
     ];
     for (const path of readMethods) {
       expect(
@@ -1103,6 +1105,38 @@ describe('builtin schemas: slack', () => {
         `Expected slack-read-all to match "${path}"`
       ).toBe(true);
     }
+  });
+
+  it('slack-auth-read matches read auth methods but not write', () => {
+    expectSchemaExists('slack-auth-read');
+    expect(
+      builtinRegistry.get('slack-auth-read')!.match(makeRequest({ path: '/api/auth.test' }))
+    ).toBe(true);
+    expect(
+      builtinRegistry.get('slack-auth-read')!.match(makeRequest({ path: '/api/auth.teams.list' }))
+    ).toBe(true);
+    expect(
+      builtinRegistry.get('slack-auth-read')!.match(makeRequest({ path: '/api/auth.revoke' }))
+    ).toBe(false);
+    expect(
+      builtinRegistry.get('slack-auth-read')!.match(makeRequest({ path: '/api/auth.testfoo' }))
+    ).toBe(false);
+    expect(
+      builtinRegistry.get('slack-auth-read')!.match(makeRequest({ path: '/api/chat.postMessage' }))
+    ).toBe(false);
+  });
+
+  it('slack-auth-write matches write auth methods but not read', () => {
+    expectSchemaExists('slack-auth-write');
+    expect(
+      builtinRegistry.get('slack-auth-write')!.match(makeRequest({ path: '/api/auth.revoke' }))
+    ).toBe(true);
+    expect(
+      builtinRegistry.get('slack-auth-write')!.match(makeRequest({ path: '/api/auth.test' }))
+    ).toBe(false);
+    expect(
+      builtinRegistry.get('slack-auth-write')!.match(makeRequest({ path: '/api/auth.teams.list' }))
+    ).toBe(false);
   });
 
   it('slack-read-all rejects known write methods', () => {
@@ -1118,6 +1152,7 @@ describe('builtin schemas: slack', () => {
       '/api/pins.add',
       '/api/bookmarks.add',
       '/api/reminders.add',
+      '/api/auth.revoke',
     ];
     for (const path of writeMethods) {
       expect(
@@ -1183,6 +1218,7 @@ describe('builtin schemas: slack', () => {
       '/api/reminders.add',
       '/api/reminders.complete',
       '/api/reminders.delete',
+      '/api/auth.revoke',
     ];
     for (const path of writeMethods) {
       expect(
