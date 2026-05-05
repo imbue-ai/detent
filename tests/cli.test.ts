@@ -87,7 +87,7 @@ describe('CLI', () => {
         schemas: {
           scope: { properties: { domain: { const: 'example.com' } }, required: ['domain'] },
         },
-        rules: [{ scope: { hooks_all: [denyHook] } }],
+        rules: [{ scope: { hooks: [denyHook] } }],
       })
     );
     try {
@@ -112,7 +112,7 @@ describe('CLI', () => {
         schemas: {
           scope: { properties: { domain: { const: 'example.com' } }, required: ['domain'] },
         },
-        rules: [{ scope: { hooks_all: [errorHook] } }],
+        rules: [{ scope: { hooks: [errorHook] } }],
       })
     );
     try {

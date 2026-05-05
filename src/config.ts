@@ -18,8 +18,8 @@ export class ConfigError extends Error {
 }
 
 export interface RawRuleObjectBody {
-  readonly schema_any?: readonly string[];
-  readonly hooks_all?: readonly string[];
+  readonly schemas?: readonly string[];
+  readonly hooks?: readonly string[];
 }
 
 export type RawRuleBody = readonly string[] | RawRuleObjectBody;
@@ -63,12 +63,12 @@ const rawConfigSchema = {
           oneOf: [
             // Legacy plain list of schema names.
             { type: 'array', items: { type: 'string' } },
-            // Object form with schema_any and/or hooks_all.
+            // Object form with schemas and/or hooks.
             {
               type: 'object',
               properties: {
-                schema_any: { type: 'array', items: { type: 'string' } },
-                hooks_all: { type: 'array', items: { type: 'string' } },
+                schemas: { type: 'array', items: { type: 'string' } },
+                hooks: { type: 'array', items: { type: 'string' } },
               },
               additionalProperties: false,
               minProperties: 1,
@@ -142,7 +142,7 @@ export class Config {
         return false;
       }
 
-      // Object form: schema_any AND hooks_all (each vacuously true if empty/absent).
+      // Object form: schemas AND hooks (each vacuously true if empty/absent).
       if (rule.body.schemaAny.length > 0) {
         const anyMatch = rule.body.schemaAny.some((schema) => schema.match(decomposedRequest));
         if (!anyMatch) return false;
@@ -305,14 +305,14 @@ function resolveRules(
     }
 
     const objectBody = body;
-    const schemaAnyNames = objectBody.schema_any ?? [];
-    const hookStrings = objectBody.hooks_all ?? [];
+    const schemaAnyNames = objectBody.schemas ?? [];
+    const hookStrings = objectBody.hooks ?? [];
 
     const schemaAny = schemaAnyNames.map((schemaName) =>
       resolveSchema(
         schemaName,
         registry,
-        `schema_any entry "${schemaName}" in rule at index ${String(index)}`
+        `schemas entry "${schemaName}" in rule at index ${String(index)}`
       )
     );
     const hooks: readonly HookSpec[] = hookStrings.map((hookString) => ({

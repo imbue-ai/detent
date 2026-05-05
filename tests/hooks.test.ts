@@ -35,62 +35,62 @@ function writeHookScript(name: string, body: string): string {
 }
 
 describe('rule object form: config validation', () => {
-  it('accepts the object form with schema_any only', () => {
+  it('accepts the object form with schemas only', () => {
     const configPath = writeConfig({
       schemas: {
         scope: { properties: { domain: { const: 'example.com' } }, required: ['domain'] },
         permission: { properties: { method: { const: 'GET' } }, required: ['method'] },
       },
-      rules: [{ scope: { schema_any: ['permission'] } }],
+      rules: [{ scope: { schemas: ['permission'] } }],
     });
     expect(() => new Config(configPath, true)).not.toThrow();
   });
 
-  it('accepts the object form with hooks_all only', () => {
+  it('accepts the object form with hooks only', () => {
     const configPath = writeConfig({
       schemas: {
         scope: { properties: { domain: { const: 'example.com' } }, required: ['domain'] },
       },
-      rules: [{ scope: { hooks_all: ['/usr/bin/true'] } }],
+      rules: [{ scope: { hooks: ['/usr/bin/true'] } }],
     });
     expect(() => new Config(configPath, true)).not.toThrow();
   });
 
-  it('accepts the object form with both schema_any and hooks_all', () => {
-    const configPath = writeConfig({
-      schemas: {
-        scope: { properties: { domain: { const: 'example.com' } }, required: ['domain'] },
-        permission: { properties: { method: { const: 'GET' } }, required: ['method'] },
-      },
-      rules: [{ scope: { schema_any: ['permission'], hooks_all: ['/usr/bin/true'] } }],
-    });
-    expect(() => new Config(configPath, true)).not.toThrow();
-  });
-
-  it('accepts an explicit empty hooks_all as no constraint', async () => {
+  it('accepts the object form with both schemas and hooks', () => {
     const configPath = writeConfig({
       schemas: {
         scope: { properties: { domain: { const: 'example.com' } }, required: ['domain'] },
         permission: { properties: { method: { const: 'GET' } }, required: ['method'] },
       },
-      rules: [{ scope: { schema_any: ['permission'], hooks_all: [] } }],
+      rules: [{ scope: { schemas: ['permission'], hooks: ['/usr/bin/true'] } }],
+    });
+    expect(() => new Config(configPath, true)).not.toThrow();
+  });
+
+  it('accepts an explicit empty hooks as no constraint', async () => {
+    const configPath = writeConfig({
+      schemas: {
+        scope: { properties: { domain: { const: 'example.com' } }, required: ['domain'] },
+        permission: { properties: { method: { const: 'GET' } }, required: ['method'] },
+      },
+      rules: [{ scope: { schemas: ['permission'], hooks: [] } }],
     });
     const config = new Config(configPath, true);
     expect(await config.check(new Request('https://example.com'))).toBe(true);
   });
 
-  it('accepts an explicit empty schema_any as no constraint', async () => {
+  it('accepts an explicit empty schemas as no constraint', async () => {
     const configPath = writeConfig({
       schemas: {
         scope: { properties: { domain: { const: 'example.com' } }, required: ['domain'] },
       },
-      rules: [{ scope: { schema_any: [], hooks_all: ['/usr/bin/true'] } }],
+      rules: [{ scope: { schemas: [], hooks: ['/usr/bin/true'] } }],
     });
     const config = new Config(configPath, true);
     expect(await config.check(new Request('https://example.com'))).toBe(true);
   });
 
-  it('rejects an empty object body (neither schema_any nor hooks_all present)', () => {
+  it('rejects an empty object body (neither schemas nor hooks present)', () => {
     const configPath = writeConfig({
       schemas: {
         scope: { properties: { domain: { const: 'example.com' } }, required: ['domain'] },
@@ -106,17 +106,17 @@ describe('rule object form: config validation', () => {
         scope: { properties: { domain: { const: 'example.com' } }, required: ['domain'] },
         permission: { properties: { method: { const: 'GET' } }, required: ['method'] },
       },
-      rules: [{ scope: { schema_any: ['permission'], unexpected: ['x'] } }],
+      rules: [{ scope: { schemas: ['permission'], unexpected: ['x'] } }],
     });
     expect(() => new Config(configPath, true)).toThrow(ConfigError);
   });
 
-  it('rejects unknown schema names in schema_any', () => {
+  it('rejects unknown schema names in schemas', () => {
     const configPath = writeConfig({
       schemas: {
         scope: { properties: { domain: { const: 'example.com' } }, required: ['domain'] },
       },
-      rules: [{ scope: { schema_any: ['nonexistent'] } }],
+      rules: [{ scope: { schemas: ['nonexistent'] } }],
     });
     expect(() => new Config(configPath, true)).toThrow(/Unknown schema/);
   });
@@ -126,32 +126,32 @@ describe('rule object form: config validation', () => {
       schemas: {
         scope: { properties: { domain: { const: 'example.com' } }, required: ['domain'] },
       },
-      rules: [{ scope: { hooks_all: ['/no/such/hook'] } }],
+      rules: [{ scope: { hooks: ['/no/such/hook'] } }],
     });
     expect(() => new Config(configPath, true)).not.toThrow();
   });
 });
 
-describe('rule object form: schema_any semantics', () => {
-  it('approves when schema_any matches', async () => {
+describe('rule object form: schemas semantics', () => {
+  it('approves when schemas matches', async () => {
     const configPath = writeConfig({
       schemas: {
         'github-api': { properties: { domain: { const: 'api.github.com' } }, required: ['domain'] },
         'get-only': { properties: { method: { const: 'GET' } }, required: ['method'] },
       },
-      rules: [{ 'github-api': { schema_any: ['get-only'] } }],
+      rules: [{ 'github-api': { schemas: ['get-only'] } }],
     });
     const config = new Config(configPath, true);
     expect(await config.check(new Request('https://api.github.com/repos'))).toBe(true);
   });
 
-  it('rejects when schema_any does not match', async () => {
+  it('rejects when schemas does not match', async () => {
     const configPath = writeConfig({
       schemas: {
         'github-api': { properties: { domain: { const: 'api.github.com' } }, required: ['domain'] },
         'get-only': { properties: { method: { const: 'GET' } }, required: ['method'] },
       },
-      rules: [{ 'github-api': { schema_any: ['get-only'] } }],
+      rules: [{ 'github-api': { schemas: ['get-only'] } }],
     });
     const config = new Config(configPath, true);
     expect(
@@ -160,14 +160,14 @@ describe('rule object form: schema_any semantics', () => {
   });
 });
 
-describe('rule object form: hooks_all semantics', () => {
+describe('rule object form: hooks semantics', () => {
   it('approves when a single hook exits 0', async () => {
     const okHook = writeHookScript('ok.sh', 'exit 0');
     const configPath = writeConfig({
       schemas: {
         scope: { properties: { domain: { const: 'example.com' } }, required: ['domain'] },
       },
-      rules: [{ scope: { hooks_all: [okHook] } }],
+      rules: [{ scope: { hooks: [okHook] } }],
     });
     const config = new Config(configPath, true);
     expect(await config.check(new Request('https://example.com'))).toBe(true);
@@ -179,7 +179,7 @@ describe('rule object form: hooks_all semantics', () => {
       schemas: {
         scope: { properties: { domain: { const: 'example.com' } }, required: ['domain'] },
       },
-      rules: [{ scope: { hooks_all: [denyHook] } }],
+      rules: [{ scope: { hooks: [denyHook] } }],
     });
     const config = new Config(configPath, true);
     expect(await config.check(new Request('https://example.com'))).toBe(false);
@@ -191,7 +191,7 @@ describe('rule object form: hooks_all semantics', () => {
       schemas: {
         scope: { properties: { domain: { const: 'example.com' } }, required: ['domain'] },
       },
-      rules: [{ scope: { hooks_all: [errorHook] } }],
+      rules: [{ scope: { hooks: [errorHook] } }],
     });
     const config = new Config(configPath, true);
     await expect(config.check(new Request('https://example.com'))).rejects.toThrow(
@@ -205,7 +205,7 @@ describe('rule object form: hooks_all semantics', () => {
       schemas: {
         scope: { properties: { domain: { const: 'example.com' } }, required: ['domain'] },
       },
-      rules: [{ scope: { hooks_all: [errorHook] } }],
+      rules: [{ scope: { hooks: [errorHook] } }],
     });
     const config = new Config(configPath, true);
     try {
@@ -225,7 +225,7 @@ describe('rule object form: hooks_all semantics', () => {
       schemas: {
         scope: { properties: { domain: { const: 'example.com' } }, required: ['domain'] },
       },
-      rules: [{ scope: { hooks_all: ['/no/such/hook-executable'] } }],
+      rules: [{ scope: { hooks: ['/no/such/hook-executable'] } }],
     });
     const config = new Config(configPath, true);
     await expect(config.check(new Request('https://example.com'))).rejects.toThrow(
@@ -241,7 +241,7 @@ describe('rule object form: hooks_all semantics', () => {
       schemas: {
         scope: { properties: { domain: { const: 'example.com' } }, required: ['domain'] },
       },
-      rules: [{ scope: { hooks_all: [a, b, c] } }],
+      rules: [{ scope: { hooks: [a, b, c] } }],
     });
     const config = new Config(configPath, true);
     expect(await config.check(new Request('https://example.com'))).toBe(true);
@@ -255,7 +255,7 @@ describe('rule object form: hooks_all semantics', () => {
       schemas: {
         scope: { properties: { domain: { const: 'example.com' } }, required: ['domain'] },
       },
-      rules: [{ scope: { hooks_all: [a, b, c] } }],
+      rules: [{ scope: { hooks: [a, b, c] } }],
     });
     const config = new Config(configPath, true);
     expect(await config.check(new Request('https://example.com'))).toBe(false);
@@ -271,7 +271,7 @@ describe('rule object form: hooks_all semantics', () => {
       schemas: {
         scope: { properties: { domain: { const: 'example.com' } }, required: ['domain'] },
       },
-      rules: [{ scope: { hooks_all: [ok, reject, wouldError] } }],
+      rules: [{ scope: { hooks: [ok, reject, wouldError] } }],
     });
     const config = new Config(configPath, true);
     expect(await config.check(new Request('https://example.com'))).toBe(false);
@@ -285,7 +285,7 @@ describe('rule object form: hooks_all semantics', () => {
       schemas: {
         scope: { properties: { domain: { const: 'example.com' } }, required: ['domain'] },
       },
-      rules: [{ scope: { hooks_all: [ok, errorer, wouldReject] } }],
+      rules: [{ scope: { hooks: [ok, errorer, wouldReject] } }],
     });
     const config = new Config(configPath, true);
     try {
@@ -307,7 +307,7 @@ describe('rule object form: hooks_all semantics', () => {
       schemas: {
         scope: { properties: { domain: { const: 'example.com' } }, required: ['domain'] },
       },
-      rules: [{ scope: { hooks_all: [reject, errorer] } }],
+      rules: [{ scope: { hooks: [reject, errorer] } }],
     });
     const config = new Config(configPath, true);
     expect(await config.check(new Request('https://example.com'))).toBe(false);
@@ -324,7 +324,7 @@ describe('rule object form: hooks_all semantics', () => {
       schemas: {
         scope: { properties: { domain: { const: 'example.com' } }, required: ['domain'] },
       },
-      rules: [{ scope: { hooks_all: [reject, second] } }],
+      rules: [{ scope: { hooks: [reject, second] } }],
     });
     const config = new Config(configPath, true);
     expect(await config.check(new Request('https://example.com'))).toBe(false);
@@ -332,7 +332,7 @@ describe('rule object form: hooks_all semantics', () => {
   });
 });
 
-describe('rule object form: hooks_all input contract', () => {
+describe('rule object form: hooks input contract', () => {
   it('passes the decomposed request as JSON via the temp-file argument', async () => {
     // The hook writes its argument's contents next to itself for inspection.
     const captureFile = join(tempDir, 'captured.json');
@@ -341,7 +341,7 @@ describe('rule object form: hooks_all input contract', () => {
       schemas: {
         scope: { properties: { domain: { const: 'example.com' } }, required: ['domain'] },
       },
-      rules: [{ scope: { hooks_all: [captureHook] } }],
+      rules: [{ scope: { hooks: [captureHook] } }],
     });
     const config = new Config(configPath, true);
     const request = new Request('https://example.com:8443/path?x=1', {
@@ -370,7 +370,7 @@ describe('rule object form: hooks_all input contract', () => {
       schemas: {
         scope: { properties: { domain: { const: 'example.com' } }, required: ['domain'] },
       },
-      rules: [{ scope: { hooks_all: [okHook] } }],
+      rules: [{ scope: { hooks: [okHook] } }],
     });
     const config = new Config(configPath, true);
 
@@ -382,8 +382,8 @@ describe('rule object form: hooks_all input contract', () => {
   });
 });
 
-describe('rule object form: schema_any + hooks_all (AND)', () => {
-  it('rejects when schema_any fails (and does not run hooks)', async () => {
+describe('rule object form: schemas + hooks (AND)', () => {
+  it('rejects when schemas fails (and does not run hooks)', async () => {
     // The hook would have exited non-zero anyway, but more importantly we
     // assert that schema mismatch causes rejection without triggering a
     // hook-error.
@@ -393,34 +393,34 @@ describe('rule object form: schema_any + hooks_all (AND)', () => {
         scope: { properties: { domain: { const: 'example.com' } }, required: ['domain'] },
         'get-only': { properties: { method: { const: 'GET' } }, required: ['method'] },
       },
-      rules: [{ scope: { schema_any: ['get-only'], hooks_all: [errorHook] } }],
+      rules: [{ scope: { schemas: ['get-only'], hooks: [errorHook] } }],
     });
     const config = new Config(configPath, true);
-    // POST does not match schema_any → rule rejects, hook is skipped, no throw.
+    // POST does not match schemas → rule rejects, hook is skipped, no throw.
     expect(await config.check(new Request('https://example.com', { method: 'POST' }))).toBe(false);
   });
 
-  it('rejects when schema_any matches but a hook returns 1', async () => {
+  it('rejects when schemas matches but a hook returns 1', async () => {
     const denyHook = writeHookScript('deny.sh', 'exit 1');
     const configPath = writeConfig({
       schemas: {
         scope: { properties: { domain: { const: 'example.com' } }, required: ['domain'] },
         'get-only': { properties: { method: { const: 'GET' } }, required: ['method'] },
       },
-      rules: [{ scope: { schema_any: ['get-only'], hooks_all: [denyHook] } }],
+      rules: [{ scope: { schemas: ['get-only'], hooks: [denyHook] } }],
     });
     const config = new Config(configPath, true);
     expect(await config.check(new Request('https://example.com'))).toBe(false);
   });
 
-  it('approves when schema_any matches and all hooks return 0', async () => {
+  it('approves when schemas matches and all hooks return 0', async () => {
     const okHook = writeHookScript('ok.sh', 'exit 0');
     const configPath = writeConfig({
       schemas: {
         scope: { properties: { domain: { const: 'example.com' } }, required: ['domain'] },
         'get-only': { properties: { method: { const: 'GET' } }, required: ['method'] },
       },
-      rules: [{ scope: { schema_any: ['get-only'], hooks_all: [okHook] } }],
+      rules: [{ scope: { schemas: ['get-only'], hooks: [okHook] } }],
     });
     const config = new Config(configPath, true);
     expect(await config.check(new Request('https://example.com'))).toBe(true);
@@ -436,7 +436,7 @@ describe('rule object form: first-match-wins still applies', () => {
         'allow-all': {},
       },
       rules: [
-        { scope: { hooks_all: [denyHook] } },
+        { scope: { hooks: [denyHook] } },
         // This second rule would allow the request, but it should not be reached.
         { scope: ['allow-all'] },
       ],
@@ -464,7 +464,7 @@ describe('rule object form: hook path resolution', () => {
           scope: { properties: { domain: { const: 'example.com' } }, required: ['domain'] },
         },
         // Relative path: must resolve from subDirectory, not the parent config.
-        rules: [{ scope: { hooks_all: ['./ok.sh'] } }],
+        rules: [{ scope: { hooks: ['./ok.sh'] } }],
       })
     );
 
@@ -482,7 +482,7 @@ describe('rule object form: hook path resolution', () => {
       schemas: {
         scope: { properties: { domain: { const: 'example.com' } }, required: ['domain'] },
       },
-      rules: [{ scope: { hooks_all: ['true'] } }],
+      rules: [{ scope: { hooks: ['true'] } }],
     });
     const config = new Config(configPath, true);
     expect(await config.check(new Request('https://example.com'))).toBe(true);
@@ -498,13 +498,13 @@ describe('rule object form: dump round-trips verbatim', () => {
       },
       rules: [
         { scope: ['permission'] },
-        { scope: { schema_any: ['permission'], hooks_all: ['/path/to/hook'] } },
+        { scope: { schemas: ['permission'], hooks: ['/path/to/hook'] } },
       ],
     });
     const result = dump(configPath);
     expect(result.rules).toEqual([
       { scope: ['permission'] },
-      { scope: { schema_any: ['permission'], hooks_all: ['/path/to/hook'] } },
+      { scope: { schemas: ['permission'], hooks: ['/path/to/hook'] } },
     ]);
   });
 });

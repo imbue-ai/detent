@@ -190,15 +190,15 @@ end of your rule list.
 ### Hooks (custom executable checks)
 
 In addition to the plain list of schemas shown above, a rule's
-value can be an object with `schema_any` and/or `hooks_all`:
+value can be an object with `schemas` and/or `hooks`:
 
 ```json
 {
   "rules": [
     {
       "github-rest-api": {
-        "schema_any": ["github-read-issues-detent"],
-        "hooks_all": ["./check-actor.sh", "audit-log"]
+        "schemas": ["github-read-issues-detent"],
+        "hooks": ["./check-actor.sh", "audit-log"]
       }
     }
   ]
@@ -207,10 +207,10 @@ value can be an object with `schema_any` and/or `hooks_all`:
 
 Semantics:
 
-- `schema_any` works exactly like the plain list form: the
+- `schemas` works exactly like the plain list form: the
   request is approved (by this gate) if any listed schema
   matches the decomposed request.
-- `hooks_all` is a list of executables; the request is approved
+- `hooks` is a list of executables; the request is approved
   (by this gate) only if **all** of them exit `0`.
 - When both fields are present, **both** must succeed (AND).
 
