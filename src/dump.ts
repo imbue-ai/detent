@@ -1,9 +1,10 @@
 import { readRawConfig, createSchemaRegistry, validateRules } from './config.js';
+import type { RawRule } from './config.js';
 import { resolveConfigPath, useBuiltinSchemas } from './environment.js';
 
 export interface DumpedConfig {
   readonly schemas: Readonly<Record<string, Record<string, unknown>>>;
-  readonly rules: readonly Readonly<Record<string, readonly string[]>>[];
+  readonly rules: readonly RawRule[];
 }
 
 export function dump(configPath?: string): DumpedConfig {

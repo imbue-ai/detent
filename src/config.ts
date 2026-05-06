@@ -8,6 +8,7 @@ import {
   getAllBuiltinSchemas,
 } from './schemas/requestSchema.js';
 import { decomposeRequest } from './decomposedRequest.js';
+import { runHooksAll, type HookSpec } from './hooks.js';
 
 export class ConfigError extends Error {
   constructor(message: string) {
@@ -16,10 +17,26 @@ export class ConfigError extends Error {
   }
 }
 
+export interface RawRuleObjectBody {
+  readonly schemas?: readonly string[];
+  readonly hooks?: readonly string[];
+}
+
+export type RawRuleBody = readonly string[] | RawRuleObjectBody;
+
+export type RawRule = Readonly<Record<string, RawRuleBody>>;
+
 export interface RawConfig {
   readonly include?: readonly string[];
   readonly schemas: Readonly<Record<string, Record<string, unknown>>>;
-  readonly rules: readonly Readonly<Record<string, readonly string[]>>[];
+  readonly rules: readonly RawRule[];
+}
+
+interface RawConfigWithOrigins {
+  readonly rawConfig: RawConfig;
+  // Parallel array to rawConfig.rules: the directory of the config file that
+  // contributed each rule. Used to resolve relative hook paths.
+  readonly ruleOriginDirectories: readonly string[];
 }
 
 const rawConfigSchema = {
@@ -43,8 +60,20 @@ const rawConfigSchema = {
       items: {
         type: 'object',
         additionalProperties: {
-          type: 'array',
-          items: { type: 'string' },
+          oneOf: [
+            // Legacy plain list of schema names.
+            { type: 'array', items: { type: 'string' } },
+            // Object form with schemas and/or hooks.
+            {
+              type: 'object',
+              properties: {
+                schemas: { type: 'array', items: { type: 'string' } },
+                hooks: { type: 'array', items: { type: 'string' } },
+              },
+              additionalProperties: false,
+              minProperties: 1,
+            },
+          ],
         },
       },
     },
@@ -52,12 +81,25 @@ const rawConfigSchema = {
   additionalProperties: false,
 } as const;
 
-const rawConfigValidator = new Validator(rawConfigSchema, '2020-12', false);
+// Cast to bypass strictness around readonly tuples introduced by `oneOf`.
+const rawConfigValidator = new Validator(
+  rawConfigSchema as unknown as Record<string, unknown>,
+  '2020-12',
+  false
+);
 
 interface ResolvedRule {
   readonly scope: RequestSchema;
-  readonly permissions: readonly RequestSchema[];
+  readonly body: ResolvedRuleBody;
 }
+
+type ResolvedRuleBody =
+  | { readonly kind: 'list'; readonly schemas: readonly RequestSchema[] }
+  | {
+      readonly kind: 'object';
+      readonly schemaAny: readonly RequestSchema[];
+      readonly hooks: readonly HookSpec[];
+    };
 
 export function createSchemaRegistry(
   rawConfig: RawConfig,
@@ -79,23 +121,40 @@ export class Config {
   private readonly rules: readonly ResolvedRule[];
 
   constructor(configPath: string, doNotUseBuiltinSchemas: boolean) {
-    const rawConfig = readRawConfig(configPath);
+    const { rawConfig, ruleOriginDirectories } = readRawConfigWithOrigins(configPath);
     const registry = createSchemaRegistry(rawConfig, doNotUseBuiltinSchemas);
-    this.rules = resolveRules(rawConfig, registry);
+    this.rules = resolveRules(rawConfig, ruleOriginDirectories, registry);
   }
 
   async check(request: Request): Promise<boolean> {
     const decomposedRequest = await decomposeRequest(request);
 
-    for (const rule of this.rules) {
-      if (rule.scope.match(decomposedRequest)) {
-        for (const permission of rule.permissions) {
-          if (permission.match(decomposedRequest)) {
+    for (let index = 0; index < this.rules.length; index++) {
+      const rule = this.rules[index]!;
+      if (!rule.scope.match(decomposedRequest)) continue;
+
+      if (rule.body.kind === 'list') {
+        for (const schema of rule.body.schemas) {
+          if (schema.match(decomposedRequest)) {
             return true;
           }
         }
         return false;
       }
+
+      // Object form: hooks AND schemas (each vacuously true if empty/absent).
+      // Hooks run first so that hooks like "audit-log" happen even if the schemas don't match.
+      if (rule.body.hooks.length > 0) {
+        const outcome = await runHooksAll(rule.body.hooks, decomposedRequest, index);
+        if (outcome.kind === 'rejected') return false;
+      }
+
+      if (rule.body.schemaAny.length > 0) {
+        const anyMatch = rule.body.schemaAny.some((schema) => schema.match(decomposedRequest));
+        if (!anyMatch) return false;
+      }
+
+      return true;
     }
 
     // No rule matched — reject by default
@@ -104,6 +163,10 @@ export class Config {
 }
 
 export function readRawConfig(configPath: string): RawConfig {
+  return readRawConfigWithOrigins(configPath).rawConfig;
+}
+
+function readRawConfigWithOrigins(configPath: string): RawConfigWithOrigins {
   return readRawConfigRecursive(configPath, []);
 }
 
@@ -143,7 +206,7 @@ function readSingleRawConfig(configPath: string): RawConfig {
     include?: readonly string[];
     schemas?: Readonly<Record<string, Record<string, unknown>>>;
     patterns?: Readonly<Record<string, Record<string, unknown>>>;
-    rules?: readonly Readonly<Record<string, readonly string[]>>[];
+    rules?: readonly RawRule[];
   };
 
   // Merge "patterns" (deprecated) and "schemas"; "schemas" takes precedence.
@@ -159,7 +222,10 @@ function readSingleRawConfig(configPath: string): RawConfig {
   };
 }
 
-function readRawConfigRecursive(configPath: string, visitedPaths: readonly string[]): RawConfig {
+function readRawConfigRecursive(
+  configPath: string,
+  visitedPaths: readonly string[]
+): RawConfigWithOrigins {
   const absolutePath = resolve(configPath);
 
   if (visitedPaths.includes(absolutePath)) {
@@ -168,38 +234,54 @@ function readRawConfigRecursive(configPath: string, visitedPaths: readonly strin
   }
 
   const currentConfig = readSingleRawConfig(absolutePath);
-
-  if (currentConfig.include === undefined || currentConfig.include.length === 0) {
-    return currentConfig;
-  }
-
-  const configDirectory = dirname(absolutePath);
-  const newVisitedPaths = [...visitedPaths, absolutePath];
+  const currentDirectory = dirname(absolutePath);
 
   let mergedSchemas: Record<string, Record<string, unknown>> = {};
-  let mergedRules: Readonly<Record<string, readonly string[]>>[] = [];
+  let mergedRules: RawRule[] = [];
+  let mergedRuleOriginDirectories: string[] = [];
 
-  for (const includePath of currentConfig.include) {
-    const resolvedIncludePath = resolve(configDirectory, includePath);
-    const includedConfig = readRawConfigRecursive(resolvedIncludePath, newVisitedPaths);
+  if (currentConfig.include !== undefined && currentConfig.include.length > 0) {
+    const newVisitedPaths = [...visitedPaths, absolutePath];
 
-    mergedSchemas = { ...mergedSchemas, ...includedConfig.schemas };
-    mergedRules = [...mergedRules, ...includedConfig.rules];
+    for (const includePath of currentConfig.include) {
+      const resolvedIncludePath = resolve(currentDirectory, includePath);
+      const included = readRawConfigRecursive(resolvedIncludePath, newVisitedPaths);
+      mergedSchemas = { ...mergedSchemas, ...included.rawConfig.schemas };
+      mergedRules = [...mergedRules, ...included.rawConfig.rules];
+      mergedRuleOriginDirectories = [
+        ...mergedRuleOriginDirectories,
+        ...included.ruleOriginDirectories,
+      ];
+    }
   }
 
-  // The current config's own schemas override included ones;
-  // the current config's own rules are appended after included rules.
+  // The current config's own schemas override included ones; the current
+  // config's own rules are appended after included rules.
   mergedSchemas = { ...mergedSchemas, ...currentConfig.schemas };
   mergedRules = [...mergedRules, ...currentConfig.rules];
+  mergedRuleOriginDirectories = [
+    ...mergedRuleOriginDirectories,
+    ...new Array<string>(currentConfig.rules.length).fill(currentDirectory),
+  ];
 
-  return { schemas: mergedSchemas, rules: mergedRules };
+  return {
+    rawConfig: { schemas: mergedSchemas, rules: mergedRules },
+    ruleOriginDirectories: mergedRuleOriginDirectories,
+  };
 }
 
 export function validateRules(rawConfig: RawConfig, registry: SchemaRegistry): void {
-  resolveRules(rawConfig, registry);
+  // Origin directories are not relevant for validation (they only affect
+  // hook-path resolution at exec time). Pass empty placeholders.
+  const placeholders = rawConfig.rules.map(() => '');
+  resolveRules(rawConfig, placeholders, registry);
 }
 
-function resolveRules(rawConfig: RawConfig, registry: SchemaRegistry): readonly ResolvedRule[] {
+function resolveRules(
+  rawConfig: RawConfig,
+  ruleOriginDirectories: readonly string[],
+  registry: SchemaRegistry
+): readonly ResolvedRule[] {
   return rawConfig.rules.map((ruleObject, index) => {
     const entries = Object.entries(ruleObject);
     if (entries.length !== 1) {
@@ -208,19 +290,43 @@ function resolveRules(rawConfig: RawConfig, registry: SchemaRegistry): readonly 
       );
     }
 
-    const [scopeName, permissionNames] = entries[0]!;
+    const [scopeName, body] = entries[0]!;
     const scope = resolveSchema(scopeName, registry, `scope of rule at index ${String(index)}`);
+    const originDirectory = ruleOriginDirectories[index] ?? '';
 
-    const permissions = permissionNames.map((permissionName) =>
+    if (isListRuleBody(body)) {
+      const schemas = body.map((schemaName) =>
+        resolveSchema(
+          schemaName,
+          registry,
+          `permission "${schemaName}" in rule at index ${String(index)}`
+        )
+      );
+      return { scope, body: { kind: 'list', schemas } };
+    }
+
+    const objectBody = body;
+    const schemaAnyNames = objectBody.schemas ?? [];
+    const hookStrings = objectBody.hooks ?? [];
+
+    const schemaAny = schemaAnyNames.map((schemaName) =>
       resolveSchema(
-        permissionName,
+        schemaName,
         registry,
-        `permission "${permissionName}" in rule at index ${String(index)}`
+        `schemas entry "${schemaName}" in rule at index ${String(index)}`
       )
     );
+    const hooks: readonly HookSpec[] = hookStrings.map((hookString) => ({
+      hookString,
+      configDirectory: originDirectory,
+    }));
 
-    return { scope, permissions };
+    return { scope, body: { kind: 'object', schemaAny, hooks } };
   });
+}
+
+function isListRuleBody(body: RawRuleBody): body is readonly string[] {
+  return Array.isArray(body);
 }
 
 function resolveSchema(name: string, registry: SchemaRegistry, context: string): RequestSchema {

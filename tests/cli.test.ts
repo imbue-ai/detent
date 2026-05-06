@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { execFile } from 'node:child_process';
 import { promisify } from 'node:util';
-import { writeFileSync, mkdirSync, rmSync } from 'node:fs';
+import { writeFileSync, mkdirSync, rmSync, chmodSync } from 'node:fs';
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';
 
@@ -75,6 +75,56 @@ describe('CLI', () => {
     expect(parsed.schemas).toHaveProperty('everything');
     expect(parsed.schemas).toHaveProperty('allow-all');
     expect(parsed.rules).toEqual([{ everything: ['allow-all'] }]);
+  });
+
+  it('exits 1 when a hook returns 1 (rejection)', async () => {
+    const denyHook = join(tempDir, 'deny.sh');
+    writeFileSync(denyHook, '#!/bin/sh\nexit 1\n');
+    chmodSync(denyHook, 0o755);
+    writeFileSync(
+      configPath,
+      JSON.stringify({
+        schemas: {
+          scope: { properties: { domain: { const: 'example.com' } }, required: ['domain'] },
+        },
+        rules: [{ scope: { hooks: [denyHook] } }],
+      })
+    );
+    try {
+      await execFileAsync('node', [cliPath, 'curl', 'https://example.com'], {
+        env: { ...process.env, DETENT_CONFIG: configPath },
+      });
+      expect.fail('Should have exited with non-zero');
+    } catch (error: unknown) {
+      const execError = error as { code: number; stdout: string };
+      expect(execError.code).toBe(1);
+      expect(execError.stdout.trim()).toBe('rejected');
+    }
+  });
+
+  it('exits with the hook error code when a hook returns 2+', async () => {
+    const errorHook = join(tempDir, 'err.sh');
+    writeFileSync(errorHook, '#!/bin/sh\nexit 7\n');
+    chmodSync(errorHook, 0o755);
+    writeFileSync(
+      configPath,
+      JSON.stringify({
+        schemas: {
+          scope: { properties: { domain: { const: 'example.com' } }, required: ['domain'] },
+        },
+        rules: [{ scope: { hooks: [errorHook] } }],
+      })
+    );
+    try {
+      await execFileAsync('node', [cliPath, 'curl', 'https://example.com'], {
+        env: { ...process.env, DETENT_CONFIG: configPath },
+      });
+      expect.fail('Should have exited with non-zero');
+    } catch (error: unknown) {
+      const execError = error as { code: number; stderr: string };
+      expect(execError.code).toBe(7);
+      expect(execError.stderr).toContain('exited with code 7');
+    }
   });
 
   it('exits 2 for curl with no URL', async () => {
