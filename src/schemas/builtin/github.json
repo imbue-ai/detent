@@ -16,6 +16,111 @@
       "path"
     ]
   },
+  "github-git": {
+    "properties": {
+      "domain": {
+        "const": "github.com"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/[^/]+/[^/]+/(info/refs|git-upload-pack|git-receive-pack)$"
+      }
+    },
+    "required": [
+      "domain",
+      "path"
+    ]
+  },
+  "github-git-read": {
+    "anyOf": [
+      {
+        "properties": {
+          "method": {
+            "const": "GET"
+          },
+          "path": {
+            "type": "string",
+            "pattern": "^/[^/]+/[^/]+/info/refs$"
+          },
+          "queryParams": {
+            "properties": {
+              "service": {
+                "const": "git-upload-pack"
+              }
+            },
+            "required": [
+              "service"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "path",
+          "queryParams"
+        ]
+      },
+      {
+        "properties": {
+          "method": {
+            "const": "POST"
+          },
+          "path": {
+            "type": "string",
+            "pattern": "^/[^/]+/[^/]+/git-upload-pack$"
+          }
+        },
+        "required": [
+          "method",
+          "path"
+        ]
+      }
+    ]
+  },
+  "github-git-write": {
+    "anyOf": [
+      {
+        "properties": {
+          "method": {
+            "const": "GET"
+          },
+          "path": {
+            "type": "string",
+            "pattern": "^/[^/]+/[^/]+/info/refs$"
+          },
+          "queryParams": {
+            "properties": {
+              "service": {
+                "const": "git-receive-pack"
+              }
+            },
+            "required": [
+              "service"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "path",
+          "queryParams"
+        ]
+      },
+      {
+        "properties": {
+          "method": {
+            "const": "POST"
+          },
+          "path": {
+            "type": "string",
+            "pattern": "^/[^/]+/[^/]+/git-receive-pack$"
+          }
+        },
+        "required": [
+          "method",
+          "path"
+        ]
+      }
+    ]
+  },
   "github-read-all": {
     "properties": {
       "method": {

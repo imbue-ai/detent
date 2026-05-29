@@ -5,7 +5,7 @@ Schemas marked *(scope)* identify requests to a particular
 service and are meant to be used as rule keys. The remaining
 schemas define permissions and are meant to be used as rule values.
 
-The AWS schemas are a special case: the service-specific
+The AWS ones are a special case: the service-specific
 ones like `aws-s3` or `aws-ec2` only match on domain, so
 they can serve as scopes (e.g. `{"aws-s3": ["aws-s3-read"]}`)
 or as permissions inside a broader `aws` scope
@@ -133,6 +133,9 @@ See the main [README](../README.md) for how schemas and rules work together.
 ### github
 
 - `github-rest-api` *(scope)*
+- `github-git` *(scope)*
+- `github-git-read`
+- `github-git-write`
 - `github-read-all`
 - `github-write-all`
 - `github-read-repos`
@@ -329,6 +332,8 @@ See the main [README](../README.md) for how schemas and rules work together.
 - `slack-api` *(scope)*
 - `slack-read-all`
 - `slack-write-all`
+- `slack-auth-read`
+- `slack-auth-write`
 - `slack-chat-read`
 - `slack-chat-write`
 - `slack-conversations-read`

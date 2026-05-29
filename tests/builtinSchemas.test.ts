@@ -449,6 +449,123 @@ describe('builtin schemas: github', () => {
         .match(makeRequest({ method: 'GET', path: '/repos/octocat/Hello-World' }))
     ).toBe(false);
   });
+
+  it('github-git scope matches git smart-HTTP endpoints on github.com', () => {
+    expectSchemaExists('github-git');
+    const gitSchema = builtinRegistry.get('github-git')!;
+    expect(
+      gitSchema.match(makeRequest({ domain: 'github.com', path: '/octocat/Hello-World/info/refs' }))
+    ).toBe(true);
+    expect(
+      gitSchema.match(
+        makeRequest({ domain: 'github.com', path: '/octocat/Hello-World/git-upload-pack' })
+      )
+    ).toBe(true);
+    expect(
+      gitSchema.match(
+        makeRequest({ domain: 'github.com', path: '/octocat/Hello-World/git-receive-pack' })
+      )
+    ).toBe(true);
+  });
+
+  it('github-git scope rejects api domain and ordinary repo pages', () => {
+    const gitSchema = builtinRegistry.get('github-git')!;
+    expect(
+      gitSchema.match(
+        makeRequest({ domain: 'api.github.com', path: '/octocat/Hello-World/info/refs' })
+      )
+    ).toBe(false);
+    expect(
+      gitSchema.match(makeRequest({ domain: 'github.com', path: '/octocat/Hello-World' }))
+    ).toBe(false);
+  });
+
+  it('github-git-read matches fetch operations but not push operations', () => {
+    expectSchemaExists('github-git-read');
+    const readSchema = builtinRegistry.get('github-git-read')!;
+    expect(
+      readSchema.match(
+        makeRequest({
+          domain: 'github.com',
+          method: 'GET',
+          path: '/octocat/Hello-World/info/refs',
+          queryParams: { service: 'git-upload-pack' },
+        })
+      )
+    ).toBe(true);
+    expect(
+      readSchema.match(
+        makeRequest({
+          domain: 'github.com',
+          method: 'POST',
+          path: '/octocat/Hello-World/git-upload-pack',
+        })
+      )
+    ).toBe(true);
+    // info/refs advertising the receive-pack (push) service is not a read.
+    expect(
+      readSchema.match(
+        makeRequest({
+          domain: 'github.com',
+          method: 'GET',
+          path: '/octocat/Hello-World/info/refs',
+          queryParams: { service: 'git-receive-pack' },
+        })
+      )
+    ).toBe(false);
+    expect(
+      readSchema.match(
+        makeRequest({
+          domain: 'github.com',
+          method: 'POST',
+          path: '/octocat/Hello-World/git-receive-pack',
+        })
+      )
+    ).toBe(false);
+  });
+
+  it('github-git-write matches push operations but not fetch operations', () => {
+    expectSchemaExists('github-git-write');
+    const writeSchema = builtinRegistry.get('github-git-write')!;
+    expect(
+      writeSchema.match(
+        makeRequest({
+          domain: 'github.com',
+          method: 'GET',
+          path: '/octocat/Hello-World/info/refs',
+          queryParams: { service: 'git-receive-pack' },
+        })
+      )
+    ).toBe(true);
+    expect(
+      writeSchema.match(
+        makeRequest({
+          domain: 'github.com',
+          method: 'POST',
+          path: '/octocat/Hello-World/git-receive-pack',
+        })
+      )
+    ).toBe(true);
+    expect(
+      writeSchema.match(
+        makeRequest({
+          domain: 'github.com',
+          method: 'GET',
+          path: '/octocat/Hello-World/info/refs',
+          queryParams: { service: 'git-upload-pack' },
+        })
+      )
+    ).toBe(false);
+    expect(
+      writeSchema.match(
+        makeRequest({
+          domain: 'github.com',
+          method: 'POST',
+          path: '/octocat/Hello-World/git-upload-pack',
+        })
+      )
+    ).toBe(false);
+  });
 });
 
 describe('builtin schemas: gitlab', () => {
