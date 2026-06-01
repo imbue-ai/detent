@@ -49,7 +49,9 @@ describe('dump', () => {
       required: ['method'],
     });
     // Builtin schemas are also present
-    expect(result.schemas).toHaveProperty('any', {});
+    expect(result.schemas).toHaveProperty('any', {
+      $comment: 'Match any request, regardless of service, method, or destination.',
+    });
     expect(result.rules).toEqual([{ 'github-api': ['get-only'] }]);
   });
 
@@ -58,7 +60,9 @@ describe('dump', () => {
 
     const result = dump(configPath);
 
-    expect(result.schemas).toHaveProperty('any', {});
+    expect(result.schemas).toHaveProperty('any', {
+      $comment: 'Match any request, regardless of service, method, or destination.',
+    });
     expect(result.rules).toEqual([]);
   });
 
