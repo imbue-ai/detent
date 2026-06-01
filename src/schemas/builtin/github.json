@@ -1,5 +1,6 @@
 {
   "github-rest-api": {
+    "$comment": "Any interaction with the GitHub REST API, excluding GraphQL.",
     "properties": {
       "domain": {
         "const": "api.github.com"
@@ -17,6 +18,7 @@
     ]
   },
   "github-git": {
+    "$comment": "Any Git protocol operation (clone, fetch, push) on GitHub.",
     "properties": {
       "domain": {
         "const": "github.com"
@@ -32,6 +34,7 @@
     ]
   },
   "github-git-read": {
+    "$comment": "Read-only Git operations on GitHub: clone and fetch.",
     "anyOf": [
       {
         "properties": {
@@ -77,6 +80,7 @@
     ]
   },
   "github-git-write": {
+    "$comment": "Git push operations on GitHub.",
     "anyOf": [
       {
         "properties": {
@@ -122,6 +126,7 @@
     ]
   },
   "github-read-all": {
+    "$comment": "Read any GitHub resource.",
     "properties": {
       "method": {
         "const": "GET"
@@ -132,6 +137,7 @@
     ]
   },
   "github-write-all": {
+    "$comment": "Create, update, or delete any GitHub resource.",
     "properties": {
       "method": {
         "enum": [
@@ -147,6 +153,7 @@
     ]
   },
   "github-read-repos": {
+    "$comment": "Read repository information and contents.",
     "properties": {
       "method": {
         "const": "GET"
@@ -162,6 +169,7 @@
     ]
   },
   "github-write-repos": {
+    "$comment": "Create, update, or delete repository resources.",
     "properties": {
       "method": {
         "enum": [
@@ -182,6 +190,7 @@
     ]
   },
   "github-read-issues": {
+    "$comment": "Read issues and issue details.",
     "properties": {
       "method": {
         "const": "GET"
@@ -197,6 +206,7 @@
     ]
   },
   "github-write-issues": {
+    "$comment": "Create, edit, or close issues.",
     "properties": {
       "method": {
         "enum": [
@@ -217,6 +227,7 @@
     ]
   },
   "github-read-pulls": {
+    "$comment": "Read pull requests and their details.",
     "properties": {
       "method": {
         "const": "GET"
@@ -232,6 +243,7 @@
     ]
   },
   "github-write-pulls": {
+    "$comment": "Create, edit, or merge pull requests.",
     "properties": {
       "method": {
         "enum": [
@@ -252,6 +264,7 @@
     ]
   },
   "github-read-gists": {
+    "$comment": "Read gists.",
     "properties": {
       "method": {
         "const": "GET"
@@ -267,6 +280,7 @@
     ]
   },
   "github-write-gists": {
+    "$comment": "Create, edit, or delete gists.",
     "properties": {
       "method": {
         "enum": [
@@ -287,6 +301,7 @@
     ]
   },
   "github-read-user": {
+    "$comment": "Read the authenticated user's profile and related information.",
     "properties": {
       "method": {
         "const": "GET"
@@ -302,6 +317,7 @@
     ]
   },
   "github-search": {
+    "$comment": "Search across GitHub repositories, code, issues, and users.",
     "properties": {
       "method": {
         "const": "GET"
@@ -317,6 +333,7 @@
     ]
   },
   "github-read-notifications": {
+    "$comment": "Read notifications.",
     "properties": {
       "method": {
         "const": "GET"
@@ -332,6 +349,7 @@
     ]
   },
   "github-write-notifications": {
+    "$comment": "Mark notifications as read or manage notification subscriptions.",
     "properties": {
       "method": {
         "enum": [

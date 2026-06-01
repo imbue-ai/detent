@@ -1,5 +1,6 @@
 {
   "google-calendar-api": {
+    "$comment": "Identify requests to the Google Calendar API.",
     "properties": {
       "domain": {
         "const": "www.googleapis.com"
@@ -15,6 +16,7 @@
     ]
   },
   "google-calendar-read-all": {
+    "$comment": "Read any Google Calendar resource.",
     "properties": {
       "method": {
         "const": "GET"
@@ -25,6 +27,7 @@
     ]
   },
   "google-calendar-write-all": {
+    "$comment": "Create, update, or delete any Google Calendar resource.",
     "properties": {
       "method": {
         "enum": [
@@ -40,6 +43,7 @@
     ]
   },
   "google-calendar-read-events": {
+    "$comment": "Read events from calendars.",
     "properties": {
       "method": {
         "const": "GET"
@@ -55,6 +59,7 @@
     ]
   },
   "google-calendar-write-events": {
+    "$comment": "Create, update, or delete events on calendars.",
     "properties": {
       "method": {
         "enum": [
@@ -75,6 +80,7 @@
     ]
   },
   "google-calendar-read-calendars": {
+    "$comment": "Read calendar details.",
     "properties": {
       "method": {
         "const": "GET"
@@ -90,6 +96,7 @@
     ]
   },
   "google-calendar-write-calendars": {
+    "$comment": "Create, update, delete, or clear calendars.",
     "properties": {
       "method": {
         "enum": [
@@ -110,6 +117,7 @@
     ]
   },
   "google-calendar-read-calendar-list": {
+    "$comment": "Read the user's list of calendars.",
     "properties": {
       "method": {
         "const": "GET"
@@ -125,6 +133,7 @@
     ]
   },
   "google-calendar-write-calendar-list": {
+    "$comment": "Add, update, or remove calendars from the user's calendar list.",
     "properties": {
       "method": {
         "enum": [
@@ -145,6 +154,7 @@
     ]
   },
   "google-calendar-read-settings": {
+    "$comment": "Read the user's calendar settings.",
     "properties": {
       "method": {
         "const": "GET"
@@ -160,6 +170,7 @@
     ]
   },
   "google-calendar-read-acl": {
+    "$comment": "Read access control rules on calendars.",
     "properties": {
       "method": {
         "const": "GET"
@@ -175,6 +186,7 @@
     ]
   },
   "google-calendar-write-acl": {
+    "$comment": "Create, update, or delete access control rules on calendars.",
     "properties": {
       "method": {
         "enum": [
@@ -195,6 +207,7 @@
     ]
   },
   "google-calendar-query-freebusy": {
+    "$comment": "Query free/busy information for calendars.",
     "properties": {
       "method": {
         "const": "POST"
@@ -210,6 +223,7 @@
     ]
   },
   "google-calendar-read-colors": {
+    "$comment": "Read available calendar and event colors.",
     "properties": {
       "method": {
         "const": "GET"

@@ -1,5 +1,6 @@
 {
   "google-drive-api": {
+    "$comment": "Any request to the Google Drive API.",
     "properties": {
       "domain": {
         "const": "www.googleapis.com"
@@ -15,6 +16,7 @@
     ]
   },
   "google-drive-read-all": {
+    "$comment": "Read anything from Google Drive.",
     "properties": {
       "method": {
         "const": "GET"
@@ -25,6 +27,7 @@
     ]
   },
   "google-drive-write-all": {
+    "$comment": "Create, update, or delete anything in Google Drive.",
     "properties": {
       "method": {
         "enum": [
@@ -40,6 +43,7 @@
     ]
   },
   "google-drive-read-files": {
+    "$comment": "List files or retrieve file metadata.",
     "properties": {
       "method": {
         "const": "GET"
@@ -55,6 +59,7 @@
     ]
   },
   "google-drive-write-files": {
+    "$comment": "Create, upload, update, or delete files.",
     "properties": {
       "method": {
         "enum": [
@@ -75,6 +80,7 @@
     ]
   },
   "google-drive-read-permissions": {
+    "$comment": "View sharing permissions on files.",
     "properties": {
       "method": {
         "const": "GET"
@@ -90,6 +96,7 @@
     ]
   },
   "google-drive-write-permissions": {
+    "$comment": "Share, modify, or revoke sharing permissions on files.",
     "properties": {
       "method": {
         "enum": [
@@ -110,6 +117,7 @@
     ]
   },
   "google-drive-read-comments": {
+    "$comment": "View comments and replies on files.",
     "properties": {
       "method": {
         "const": "GET"
@@ -125,6 +133,7 @@
     ]
   },
   "google-drive-write-comments": {
+    "$comment": "Add, edit, or delete comments and replies on files.",
     "properties": {
       "method": {
         "enum": [
@@ -145,6 +154,7 @@
     ]
   },
   "google-drive-read-about": {
+    "$comment": "Retrieve information about the user's Drive account and settings.",
     "properties": {
       "method": {
         "const": "GET"

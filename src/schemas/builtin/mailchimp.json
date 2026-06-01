@@ -1,5 +1,6 @@
 {
   "mailchimp-api": {
+    "$comment": "Any request to the Mailchimp API.",
     "properties": {
       "domain": {
         "type": "string",
@@ -11,6 +12,7 @@
     ]
   },
   "mailchimp-read-all": {
+    "$comment": "Read any Mailchimp resource.",
     "properties": {
       "method": {
         "const": "GET"
@@ -21,6 +23,7 @@
     ]
   },
   "mailchimp-write-all": {
+    "$comment": "Create, update, or delete any Mailchimp resource.",
     "properties": {
       "method": {
         "enum": [
@@ -36,6 +39,7 @@
     ]
   },
   "mailchimp-read-campaigns": {
+    "$comment": "Read Mailchimp campaigns.",
     "properties": {
       "method": {
         "const": "GET"
@@ -51,6 +55,7 @@
     ]
   },
   "mailchimp-write-campaigns": {
+    "$comment": "Create, update, or delete Mailchimp campaigns.",
     "properties": {
       "method": {
         "enum": [
@@ -71,6 +76,7 @@
     ]
   },
   "mailchimp-read-lists": {
+    "$comment": "Read Mailchimp lists (audiences).",
     "properties": {
       "method": {
         "const": "GET"
@@ -86,6 +92,7 @@
     ]
   },
   "mailchimp-write-lists": {
+    "$comment": "Create, update, or delete Mailchimp lists (audiences).",
     "properties": {
       "method": {
         "enum": [
@@ -106,6 +113,7 @@
     ]
   },
   "mailchimp-read-templates": {
+    "$comment": "Read Mailchimp email templates.",
     "properties": {
       "method": {
         "const": "GET"
@@ -121,6 +129,7 @@
     ]
   },
   "mailchimp-write-templates": {
+    "$comment": "Create, update, or delete Mailchimp email templates.",
     "properties": {
       "method": {
         "enum": [
@@ -141,6 +150,7 @@
     ]
   },
   "mailchimp-read-automations": {
+    "$comment": "Read Mailchimp automations.",
     "properties": {
       "method": {
         "const": "GET"
@@ -156,6 +166,7 @@
     ]
   },
   "mailchimp-write-automations": {
+    "$comment": "Create, update, or delete Mailchimp automations.",
     "properties": {
       "method": {
         "enum": [
@@ -176,6 +187,7 @@
     ]
   },
   "mailchimp-read-reports": {
+    "$comment": "Read Mailchimp campaign reports and analytics.",
     "properties": {
       "method": {
         "const": "GET"
@@ -191,6 +203,7 @@
     ]
   },
   "mailchimp-read-file-manager": {
+    "$comment": "Read files and folders in the Mailchimp file manager.",
     "properties": {
       "method": {
         "const": "GET"
@@ -206,6 +219,7 @@
     ]
   },
   "mailchimp-write-file-manager": {
+    "$comment": "Upload, update, or delete files and folders in the Mailchimp file manager.",
     "properties": {
       "method": {
         "enum": [
@@ -226,6 +240,7 @@
     ]
   },
   "mailchimp-read-ecommerce": {
+    "$comment": "Read Mailchimp e-commerce data (stores, products, orders).",
     "properties": {
       "method": {
         "const": "GET"
@@ -241,6 +256,7 @@
     ]
   },
   "mailchimp-write-ecommerce": {
+    "$comment": "Create, update, or delete Mailchimp e-commerce data (stores, products, orders).",
     "properties": {
       "method": {
         "enum": [

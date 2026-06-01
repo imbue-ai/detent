@@ -1,5 +1,6 @@
 {
   "linear-api": {
+    "$comment": "All requests to the Linear API.",
     "properties": {
       "domain": {
         "const": "api.linear.app"

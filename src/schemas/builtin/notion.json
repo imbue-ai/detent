@@ -1,5 +1,6 @@
 {
   "notion-api": {
+    "$comment": "Any request to the Notion API.",
     "properties": {
       "domain": {
         "const": "api.notion.com"
@@ -10,6 +11,7 @@
     ]
   },
   "notion-read-all": {
+    "$comment": "Read any Notion content, including searching across all resources.",
     "anyOf": [
       {
         "properties": {
@@ -39,6 +41,7 @@
     ]
   },
   "notion-write-all": {
+    "$comment": "Create, update, or delete any Notion content.",
     "properties": {
       "method": {
         "enum": [
@@ -54,6 +57,7 @@
     ]
   },
   "notion-read-pages": {
+    "$comment": "Read Notion pages and their properties.",
     "properties": {
       "method": {
         "const": "GET"
@@ -69,6 +73,7 @@
     ]
   },
   "notion-write-pages": {
+    "$comment": "Create or update Notion pages.",
     "properties": {
       "method": {
         "enum": [
@@ -87,6 +92,7 @@
     ]
   },
   "notion-read-blocks": {
+    "$comment": "Read Notion blocks (the content elements within pages).",
     "properties": {
       "method": {
         "const": "GET"
@@ -102,6 +108,7 @@
     ]
   },
   "notion-write-blocks": {
+    "$comment": "Update or delete Notion blocks.",
     "properties": {
       "method": {
         "enum": [
@@ -120,6 +127,7 @@
     ]
   },
   "notion-read-databases": {
+    "$comment": "Read Notion databases and their schemas.",
     "properties": {
       "method": {
         "const": "GET"
@@ -135,6 +143,7 @@
     ]
   },
   "notion-write-databases": {
+    "$comment": "Create or update Notion databases.",
     "properties": {
       "method": {
         "enum": [
@@ -153,6 +162,7 @@
     ]
   },
   "notion-query-databases": {
+    "$comment": "Query a Notion database to retrieve filtered and sorted entries.",
     "properties": {
       "method": {
         "const": "POST"
@@ -168,6 +178,7 @@
     ]
   },
   "notion-read-users": {
+    "$comment": "List or retrieve Notion workspace users.",
     "properties": {
       "method": {
         "const": "GET"
@@ -183,6 +194,7 @@
     ]
   },
   "notion-read-comments": {
+    "$comment": "Read comments on Notion pages or blocks.",
     "properties": {
       "method": {
         "const": "GET"
@@ -198,6 +210,7 @@
     ]
   },
   "notion-write-comments": {
+    "$comment": "Add comments to Notion pages or blocks.",
     "properties": {
       "method": {
         "const": "POST"
@@ -213,6 +226,7 @@
     ]
   },
   "notion-search": {
+    "$comment": "Search across all Notion pages and databases.",
     "properties": {
       "method": {
         "const": "POST"

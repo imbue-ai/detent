@@ -1,3 +1,5 @@
 {
-  "any": {}
+  "any": {
+    "$comment": "Match any request, regardless of service, method, or destination."
+  }
 }

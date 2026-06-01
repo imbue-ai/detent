@@ -1,5 +1,6 @@
 {
   "stripe-api": {
+    "$comment": "Any interaction with the Stripe API.",
     "properties": {
       "domain": {
         "const": "api.stripe.com"
@@ -10,6 +11,7 @@
     ]
   },
   "stripe-read-all": {
+    "$comment": "Read any Stripe resource.",
     "properties": {
       "method": {
         "const": "GET"
@@ -20,6 +22,7 @@
     ]
   },
   "stripe-write-all": {
+    "$comment": "Create, update, or delete any Stripe resource.",
     "properties": {
       "method": {
         "enum": [
@@ -35,6 +38,7 @@
     ]
   },
   "stripe-read-customers": {
+    "$comment": "View customers.",
     "properties": {
       "method": {
         "const": "GET"
@@ -50,6 +54,7 @@
     ]
   },
   "stripe-write-customers": {
+    "$comment": "Create, update, or delete customers.",
     "properties": {
       "method": {
         "enum": [
@@ -70,6 +75,7 @@
     ]
   },
   "stripe-read-payments": {
+    "$comment": "View charges, payment intents, setup intents, and setup attempts.",
     "properties": {
       "method": {
         "const": "GET"
@@ -85,6 +91,7 @@
     ]
   },
   "stripe-write-payments": {
+    "$comment": "Create, update, or delete charges, payment intents, and setup intents.",
     "properties": {
       "method": {
         "enum": [
@@ -105,6 +112,7 @@
     ]
   },
   "stripe-read-subscriptions": {
+    "$comment": "View subscriptions, subscription items, and subscription schedules.",
     "properties": {
       "method": {
         "const": "GET"
@@ -120,6 +128,7 @@
     ]
   },
   "stripe-write-subscriptions": {
+    "$comment": "Create, update, or delete subscriptions, subscription items, and subscription schedules.",
     "properties": {
       "method": {
         "enum": [
@@ -140,6 +149,7 @@
     ]
   },
   "stripe-read-invoices": {
+    "$comment": "View invoices and invoice items.",
     "properties": {
       "method": {
         "const": "GET"
@@ -155,6 +165,7 @@
     ]
   },
   "stripe-write-invoices": {
+    "$comment": "Create, update, or delete invoices and invoice items.",
     "properties": {
       "method": {
         "enum": [
@@ -175,6 +186,7 @@
     ]
   },
   "stripe-read-products": {
+    "$comment": "View products and prices.",
     "properties": {
       "method": {
         "const": "GET"
@@ -190,6 +202,7 @@
     ]
   },
   "stripe-write-products": {
+    "$comment": "Create, update, or delete products and prices.",
     "properties": {
       "method": {
         "enum": [
@@ -210,6 +223,7 @@
     ]
   },
   "stripe-read-balance": {
+    "$comment": "View balance and balance transactions.",
     "properties": {
       "method": {
         "const": "GET"
@@ -225,6 +239,7 @@
     ]
   },
   "stripe-read-refunds": {
+    "$comment": "View refunds.",
     "properties": {
       "method": {
         "const": "GET"
@@ -240,6 +255,7 @@
     ]
   },
   "stripe-write-refunds": {
+    "$comment": "Create, update, or delete refunds.",
     "properties": {
       "method": {
         "enum": [
@@ -260,6 +276,7 @@
     ]
   },
   "stripe-read-disputes": {
+    "$comment": "View disputes.",
     "properties": {
       "method": {
         "const": "GET"
@@ -275,6 +292,7 @@
     ]
   },
   "stripe-write-disputes": {
+    "$comment": "Create, update, or delete disputes.",
     "properties": {
       "method": {
         "enum": [
@@ -295,6 +313,7 @@
     ]
   },
   "stripe-read-payouts": {
+    "$comment": "View payouts.",
     "properties": {
       "method": {
         "const": "GET"
@@ -310,6 +329,7 @@
     ]
   },
   "stripe-write-payouts": {
+    "$comment": "Create, update, or cancel payouts.",
     "properties": {
       "method": {
         "enum": [
@@ -330,6 +350,7 @@
     ]
   },
   "stripe-read-events": {
+    "$comment": "View events.",
     "properties": {
       "method": {
         "const": "GET"

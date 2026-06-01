@@ -1,5 +1,6 @@
 {
   "aws": {
+    "$comment": "Any access to AWS services.",
     "properties": {
       "domain": {
         "type": "string",
@@ -11,6 +12,7 @@
     ]
   },
   "aws-s3": {
+    "$comment": "Any access to AWS S3 object storage.",
     "properties": {
       "domain": {
         "type": "string",
@@ -22,6 +24,7 @@
     ]
   },
   "aws-s3-read": {
+    "$comment": "Read objects and metadata from AWS S3.",
     "properties": {
       "domain": {
         "type": "string",
@@ -40,6 +43,7 @@
     ]
   },
   "aws-s3-write": {
+    "$comment": "Create, update, and delete objects in AWS S3.",
     "properties": {
       "domain": {
         "type": "string",
@@ -60,6 +64,7 @@
     ]
   },
   "aws-ec2": {
+    "$comment": "Any access to AWS EC2 virtual machines.",
     "properties": {
       "domain": {
         "type": "string",
@@ -71,6 +76,7 @@
     ]
   },
   "aws-iam": {
+    "$comment": "Any access to AWS IAM identity and access management.",
     "properties": {
       "domain": {
         "type": "string",
@@ -82,6 +88,7 @@
     ]
   },
   "aws-sts": {
+    "$comment": "Any access to AWS STS for temporary security credentials.",
     "properties": {
       "domain": {
         "type": "string",
@@ -93,6 +100,7 @@
     ]
   },
   "aws-lambda": {
+    "$comment": "Any access to AWS Lambda serverless functions.",
     "properties": {
       "domain": {
         "type": "string",
@@ -104,6 +112,7 @@
     ]
   },
   "aws-dynamodb": {
+    "$comment": "Any access to AWS DynamoDB NoSQL database.",
     "properties": {
       "domain": {
         "type": "string",
@@ -115,6 +124,7 @@
     ]
   },
   "aws-cloudformation": {
+    "$comment": "Any access to AWS CloudFormation infrastructure-as-code.",
     "properties": {
       "domain": {
         "type": "string",
@@ -126,6 +136,7 @@
     ]
   },
   "aws-logs": {
+    "$comment": "Any access to AWS CloudWatch Logs.",
     "properties": {
       "domain": {
         "type": "string",
@@ -137,6 +148,7 @@
     ]
   },
   "aws-cloudwatch": {
+    "$comment": "Any access to AWS CloudWatch monitoring and metrics.",
     "properties": {
       "domain": {
         "type": "string",
@@ -148,6 +160,7 @@
     ]
   },
   "aws-sns": {
+    "$comment": "Any access to AWS SNS push notifications.",
     "properties": {
       "domain": {
         "type": "string",
@@ -159,6 +172,7 @@
     ]
   },
   "aws-sqs": {
+    "$comment": "Any access to AWS SQS message queues.",
     "properties": {
       "domain": {
         "type": "string",
@@ -170,6 +184,7 @@
     ]
   },
   "aws-ssm": {
+    "$comment": "Any access to AWS Systems Manager.",
     "properties": {
       "domain": {
         "type": "string",
@@ -181,6 +196,7 @@
     ]
   },
   "aws-secretsmanager": {
+    "$comment": "Any access to AWS Secrets Manager.",
     "properties": {
       "domain": {
         "type": "string",
@@ -192,6 +208,7 @@
     ]
   },
   "aws-route53": {
+    "$comment": "Any access to AWS Route 53 DNS management.",
     "properties": {
       "domain": {
         "type": "string",
@@ -203,6 +220,7 @@
     ]
   },
   "aws-ecs": {
+    "$comment": "Any access to AWS ECS container orchestration.",
     "properties": {
       "domain": {
         "type": "string",
@@ -214,6 +232,7 @@
     ]
   },
   "aws-ecr": {
+    "$comment": "Any access to AWS ECR container image registry.",
     "properties": {
       "domain": {
         "type": "string",
@@ -225,6 +244,7 @@
     ]
   },
   "aws-eks": {
+    "$comment": "Any access to AWS EKS managed Kubernetes.",
     "properties": {
       "domain": {
         "type": "string",
@@ -236,6 +256,7 @@
     ]
   },
   "aws-bedrock": {
+    "$comment": "Any access to AWS Bedrock foundation models.",
     "properties": {
       "domain": {
         "type": "string",
@@ -247,6 +268,7 @@
     ]
   },
   "aws-cloudfront": {
+    "$comment": "Any access to AWS CloudFront content delivery.",
     "properties": {
       "domain": {
         "type": "string",
@@ -258,6 +280,7 @@
     ]
   },
   "aws-rds": {
+    "$comment": "Any access to AWS RDS managed relational databases.",
     "properties": {
       "domain": {
         "type": "string",
@@ -269,6 +292,7 @@
     ]
   },
   "aws-kms": {
+    "$comment": "Any access to AWS KMS encryption key management.",
     "properties": {
       "domain": {
         "type": "string",
@@ -280,6 +304,7 @@
     ]
   },
   "aws-elb": {
+    "$comment": "Any access to AWS Elastic Load Balancing.",
     "properties": {
       "domain": {
         "type": "string",
@@ -291,6 +316,7 @@
     ]
   },
   "aws-cloudtrail": {
+    "$comment": "Any access to AWS CloudTrail audit logging.",
     "properties": {
       "domain": {
         "type": "string",
@@ -302,6 +328,7 @@
     ]
   },
   "aws-eventbridge": {
+    "$comment": "Any access to AWS EventBridge event routing.",
     "properties": {
       "domain": {
         "type": "string",
@@ -313,6 +340,7 @@
     ]
   },
   "aws-kinesis": {
+    "$comment": "Any access to AWS Kinesis data streaming.",
     "properties": {
       "domain": {
         "type": "string",

@@ -1,5 +1,6 @@
 {
   "umami-api": {
+    "$comment": "Identifies requests to the Umami Cloud API.",
     "properties": {
       "domain": {
         "const": "api.umami.is"
@@ -10,6 +11,7 @@
     ]
   },
   "umami-read-all": {
+    "$comment": "Read any Umami resource.",
     "properties": {
       "method": {
         "const": "GET"
@@ -20,6 +22,7 @@
     ]
   },
   "umami-write-all": {
+    "$comment": "Create, update, or delete any Umami resource.",
     "properties": {
       "method": {
         "enum": [
@@ -35,6 +38,7 @@
     ]
   },
   "umami-read-websites": {
+    "$comment": "List websites or view a single website's details.",
     "properties": {
       "method": {
         "const": "GET"
@@ -50,6 +54,7 @@
     ]
   },
   "umami-write-websites": {
+    "$comment": "Create, update, or delete websites.",
     "properties": {
       "method": {
         "enum": [
@@ -70,6 +75,7 @@
     ]
   },
   "umami-read-stats": {
+    "$comment": "View analytics data for a website, including pageviews, sessions, events, and metrics.",
     "properties": {
       "method": {
         "const": "GET"
@@ -85,6 +91,7 @@
     ]
   },
   "umami-read-reports": {
+    "$comment": "List or view reports.",
     "properties": {
       "method": {
         "const": "GET"
@@ -100,6 +107,7 @@
     ]
   },
   "umami-write-reports": {
+    "$comment": "Create, update, or delete reports.",
     "properties": {
       "method": {
         "enum": [
@@ -120,6 +128,7 @@
     ]
   },
   "umami-read-teams": {
+    "$comment": "List or view teams and their details.",
     "properties": {
       "method": {
         "const": "GET"
@@ -135,6 +144,7 @@
     ]
   },
   "umami-write-teams": {
+    "$comment": "Create, update, or delete teams.",
     "properties": {
       "method": {
         "enum": [
@@ -155,6 +165,7 @@
     ]
   },
   "umami-read-me": {
+    "$comment": "View the current user's profile information.",
     "properties": {
       "method": {
         "const": "GET"

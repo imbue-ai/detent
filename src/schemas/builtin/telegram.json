@@ -1,5 +1,6 @@
 {
   "telegram-api": {
+    "$comment": "Matches any request to the Telegram Bot API.",
     "properties": {
       "domain": {
         "const": "api.telegram.org"
@@ -10,6 +11,7 @@
     ]
   },
   "telegram-send-messages": {
+    "$comment": "Send messages, media, locations, polls, and other content, or forward and copy messages.",
     "properties": {
       "path": {
         "type": "string",
@@ -21,6 +23,7 @@
     ]
   },
   "telegram-manage-messages": {
+    "$comment": "Edit, delete, or react to existing messages and stop active polls.",
     "properties": {
       "path": {
         "type": "string",
@@ -32,6 +35,7 @@
     ]
   },
   "telegram-updates": {
+    "$comment": "Receive updates and manage webhook configuration.",
     "properties": {
       "path": {
         "type": "string",
@@ -43,6 +47,7 @@
     ]
   },
   "telegram-manage-chats": {
+    "$comment": "Manage chat members, permissions, invite links, forum topics, and chat settings.",
     "properties": {
       "path": {
         "type": "string",
@@ -54,6 +59,7 @@
     ]
   },
   "telegram-bot-info": {
+    "$comment": "Read and update the bot's profile, commands, description, and default settings.",
     "properties": {
       "path": {
         "type": "string",
@@ -65,6 +71,7 @@
     ]
   },
   "telegram-stickers": {
+    "$comment": "Send stickers and manage sticker sets, including creating, editing, and deleting them.",
     "properties": {
       "path": {
         "type": "string",
@@ -76,6 +83,7 @@
     ]
   },
   "telegram-payments": {
+    "$comment": "Send invoices, handle shipping and checkout queries, and manage Telegram Star payments and subscriptions.",
     "properties": {
       "path": {
         "type": "string",
