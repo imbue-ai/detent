@@ -9,6 +9,111 @@
       "domain"
     ]
   },
+  "gitlab-git": {
+    "properties": {
+      "domain": {
+        "const": "gitlab.com"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/[^/]+(/[^/]+)+/(info/refs|git-upload-pack|git-receive-pack)$"
+      }
+    },
+    "required": [
+      "domain",
+      "path"
+    ]
+  },
+  "gitlab-git-read": {
+    "anyOf": [
+      {
+        "properties": {
+          "method": {
+            "const": "GET"
+          },
+          "path": {
+            "type": "string",
+            "pattern": "^/[^/]+(/[^/]+)+/info/refs$"
+          },
+          "queryParams": {
+            "properties": {
+              "service": {
+                "const": "git-upload-pack"
+              }
+            },
+            "required": [
+              "service"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "path",
+          "queryParams"
+        ]
+      },
+      {
+        "properties": {
+          "method": {
+            "const": "POST"
+          },
+          "path": {
+            "type": "string",
+            "pattern": "^/[^/]+(/[^/]+)+/git-upload-pack$"
+          }
+        },
+        "required": [
+          "method",
+          "path"
+        ]
+      }
+    ]
+  },
+  "gitlab-git-write": {
+    "anyOf": [
+      {
+        "properties": {
+          "method": {
+            "const": "GET"
+          },
+          "path": {
+            "type": "string",
+            "pattern": "^/[^/]+(/[^/]+)+/info/refs$"
+          },
+          "queryParams": {
+            "properties": {
+              "service": {
+                "const": "git-receive-pack"
+              }
+            },
+            "required": [
+              "service"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "path",
+          "queryParams"
+        ]
+      },
+      {
+        "properties": {
+          "method": {
+            "const": "POST"
+          },
+          "path": {
+            "type": "string",
+            "pattern": "^/[^/]+(/[^/]+)+/git-receive-pack$"
+          }
+        },
+        "required": [
+          "method",
+          "path"
+        ]
+      }
+    ]
+  },
   "gitlab-read-all": {
     "properties": {
       "method": {

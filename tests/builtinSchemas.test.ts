@@ -607,6 +607,129 @@ describe('builtin schemas: gitlab', () => {
         .match(makeRequest({ method: 'POST', path: '/api/v4/projects/42/merge_requests' }))
     ).toBe(false);
   });
+
+  it('gitlab-git scope matches git smart-HTTP endpoints on gitlab.com', () => {
+    expectSchemaExists('gitlab-git');
+    const gitSchema = builtinRegistry.get('gitlab-git')!;
+    expect(
+      gitSchema.match(makeRequest({ domain: 'gitlab.com', path: '/group/project.git/info/refs' }))
+    ).toBe(true);
+    expect(
+      gitSchema.match(
+        makeRequest({ domain: 'gitlab.com', path: '/group/project.git/git-upload-pack' })
+      )
+    ).toBe(true);
+    expect(
+      gitSchema.match(
+        makeRequest({ domain: 'gitlab.com', path: '/group/project.git/git-receive-pack' })
+      )
+    ).toBe(true);
+    // Nested groups/subgroups are supported by GitLab.
+    expect(
+      gitSchema.match(
+        makeRequest({ domain: 'gitlab.com', path: '/group/subgroup/project.git/info/refs' })
+      )
+    ).toBe(true);
+  });
+
+  it('gitlab-git scope rejects unrelated domains and ordinary project pages', () => {
+    const gitSchema = builtinRegistry.get('gitlab-git')!;
+    expect(
+      gitSchema.match(
+        makeRequest({ domain: 'gitlab.example.com', path: '/group/project.git/info/refs' })
+      )
+    ).toBe(false);
+    expect(gitSchema.match(makeRequest({ domain: 'gitlab.com', path: '/group/project' }))).toBe(
+      false
+    );
+  });
+
+  it('gitlab-git-read matches fetch operations but not push operations', () => {
+    expectSchemaExists('gitlab-git-read');
+    const readSchema = builtinRegistry.get('gitlab-git-read')!;
+    expect(
+      readSchema.match(
+        makeRequest({
+          domain: 'gitlab.com',
+          method: 'GET',
+          path: '/group/project.git/info/refs',
+          queryParams: { service: 'git-upload-pack' },
+        })
+      )
+    ).toBe(true);
+    expect(
+      readSchema.match(
+        makeRequest({
+          domain: 'gitlab.com',
+          method: 'POST',
+          path: '/group/project.git/git-upload-pack',
+        })
+      )
+    ).toBe(true);
+    // info/refs advertising the receive-pack (push) service is not a read.
+    expect(
+      readSchema.match(
+        makeRequest({
+          domain: 'gitlab.com',
+          method: 'GET',
+          path: '/group/project.git/info/refs',
+          queryParams: { service: 'git-receive-pack' },
+        })
+      )
+    ).toBe(false);
+    expect(
+      readSchema.match(
+        makeRequest({
+          domain: 'gitlab.com',
+          method: 'POST',
+          path: '/group/project.git/git-receive-pack',
+        })
+      )
+    ).toBe(false);
+  });
+
+  it('gitlab-git-write matches push operations but not fetch operations', () => {
+    expectSchemaExists('gitlab-git-write');
+    const writeSchema = builtinRegistry.get('gitlab-git-write')!;
+    expect(
+      writeSchema.match(
+        makeRequest({
+          domain: 'gitlab.com',
+          method: 'GET',
+          path: '/group/project.git/info/refs',
+          queryParams: { service: 'git-receive-pack' },
+        })
+      )
+    ).toBe(true);
+    expect(
+      writeSchema.match(
+        makeRequest({
+          domain: 'gitlab.com',
+          method: 'POST',
+          path: '/group/project.git/git-receive-pack',
+        })
+      )
+    ).toBe(true);
+    expect(
+      writeSchema.match(
+        makeRequest({
+          domain: 'gitlab.com',
+          method: 'GET',
+          path: '/group/project.git/info/refs',
+          queryParams: { service: 'git-upload-pack' },
+        })
+      )
+    ).toBe(false);
+    expect(
+      writeSchema.match(
+        makeRequest({
+          domain: 'gitlab.com',
+          method: 'POST',
+          path: '/group/project.git/git-upload-pack',
+        })
+      )
+    ).toBe(false);
+  });
 });
 
 describe('builtin schemas: google-analytics', () => {
