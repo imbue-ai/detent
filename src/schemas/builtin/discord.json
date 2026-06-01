@@ -1,5 +1,6 @@
 {
   "discord-api": {
+    "$comment": "Any request to the Discord API.",
     "properties": {
       "domain": {
         "const": "discord.com"
@@ -10,6 +11,7 @@
     ]
   },
   "discord-read-all": {
+    "$comment": "Read any Discord resource.",
     "properties": {
       "method": {
         "const": "GET"
@@ -20,6 +22,7 @@
     ]
   },
   "discord-write-all": {
+    "$comment": "Create, update, or delete any Discord resource.",
     "properties": {
       "method": {
         "enum": [
@@ -35,6 +38,7 @@
     ]
   },
   "discord-read-messages": {
+    "$comment": "Read messages in Discord channels.",
     "properties": {
       "method": {
         "const": "GET"
@@ -50,6 +54,7 @@
     ]
   },
   "discord-write-messages": {
+    "$comment": "Send, edit, or delete messages in Discord channels.",
     "properties": {
       "method": {
         "enum": [
@@ -70,6 +75,7 @@
     ]
   },
   "discord-read-channels": {
+    "$comment": "Read Discord channel information.",
     "properties": {
       "method": {
         "const": "GET"
@@ -85,6 +91,7 @@
     ]
   },
   "discord-write-channels": {
+    "$comment": "Create, edit, or delete Discord channels.",
     "properties": {
       "method": {
         "enum": [
@@ -105,6 +112,7 @@
     ]
   },
   "discord-read-guilds": {
+    "$comment": "Read Discord server (guild) information.",
     "properties": {
       "method": {
         "const": "GET"
@@ -120,6 +128,7 @@
     ]
   },
   "discord-write-guilds": {
+    "$comment": "Create, edit, or delete Discord servers (guilds).",
     "properties": {
       "method": {
         "enum": [
@@ -140,6 +149,7 @@
     ]
   },
   "discord-read-users": {
+    "$comment": "Read Discord user information.",
     "properties": {
       "method": {
         "const": "GET"

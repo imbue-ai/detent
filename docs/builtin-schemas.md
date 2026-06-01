@@ -154,6 +154,9 @@ See the main [README](../README.md) for how schemas and rules work together.
 ### gitlab
 
 - `gitlab-api` *(scope)*
+- `gitlab-git` *(scope)*
+- `gitlab-git-read`
+- `gitlab-git-write`
 - `gitlab-read-all`
 - `gitlab-write-all`
 - `gitlab-read-projects`

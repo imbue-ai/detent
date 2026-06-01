@@ -1,5 +1,6 @@
 {
   "coolify-api": {
+    "$comment": "Identifies requests to the Coolify API.",
     "properties": {
       "domain": {
         "const": "app.coolify.io"
@@ -10,6 +11,7 @@
     ]
   },
   "coolify-read-all": {
+    "$comment": "List and inspect all Coolify resources, excluding actions like start, stop, restart, deploy, and similar operations.",
     "properties": {
       "method": { "const": "GET" }
     },
@@ -40,6 +42,7 @@
     ]
   },
   "coolify-write-all": {
+    "$comment": "Create, update, delete, and perform actions (start, stop, restart, deploy, etc.) on all Coolify resources.",
     "anyOf": [
       {
         "properties": {
@@ -77,6 +80,7 @@
     ]
   },
   "coolify-read-applications": {
+    "$comment": "List and inspect applications.",
     "properties": {
       "method": {
         "const": "GET"
@@ -92,6 +96,7 @@
     ]
   },
   "coolify-write-applications": {
+    "$comment": "Create, update, or delete applications.",
     "properties": {
       "method": {
         "enum": [
@@ -112,6 +117,7 @@
     ]
   },
   "coolify-deployments": {
+    "$comment": "List, inspect, or trigger deployments.",
     "properties": {
       "path": {
         "type": "string",
@@ -123,6 +129,7 @@
     ]
   },
   "coolify-read-databases": {
+    "$comment": "List and inspect databases.",
     "properties": {
       "method": {
         "const": "GET"
@@ -138,6 +145,7 @@
     ]
   },
   "coolify-write-databases": {
+    "$comment": "Create, update, or delete databases.",
     "properties": {
       "method": {
         "enum": [
@@ -158,6 +166,7 @@
     ]
   },
   "coolify-read-servers": {
+    "$comment": "List and inspect servers.",
     "properties": {
       "method": {
         "const": "GET"
@@ -173,6 +182,7 @@
     ]
   },
   "coolify-write-servers": {
+    "$comment": "Create, update, or delete servers.",
     "properties": {
       "method": {
         "enum": [
@@ -193,6 +203,7 @@
     ]
   },
   "coolify-read-services": {
+    "$comment": "List and inspect services.",
     "properties": {
       "method": {
         "const": "GET"
@@ -208,6 +219,7 @@
     ]
   },
   "coolify-write-services": {
+    "$comment": "Create, update, or delete services.",
     "properties": {
       "method": {
         "enum": [
@@ -228,6 +240,7 @@
     ]
   },
   "coolify-read-projects": {
+    "$comment": "List and inspect projects.",
     "properties": {
       "method": {
         "const": "GET"
@@ -243,6 +256,7 @@
     ]
   },
   "coolify-write-projects": {
+    "$comment": "Create, update, or delete projects.",
     "properties": {
       "method": {
         "enum": [
@@ -263,6 +277,7 @@
     ]
   },
   "coolify-read-teams": {
+    "$comment": "List and inspect teams.",
     "properties": {
       "method": {
         "const": "GET"

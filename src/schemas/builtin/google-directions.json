@@ -1,5 +1,6 @@
 {
   "google-directions-api": {
+    "$comment": "Matches all Google Routes API traffic.",
     "properties": {
       "domain": {
         "const": "routes.googleapis.com"
@@ -10,6 +11,7 @@
     ]
   },
   "google-directions-read-all": {
+    "$comment": "Read any Google Directions data.",
     "properties": {
       "method": {
         "const": "GET"
@@ -20,6 +22,7 @@
     ]
   },
   "google-directions-write-all": {
+    "$comment": "Create, update, or delete any Google Directions data.",
     "properties": {
       "method": {
         "enum": [
@@ -35,6 +38,7 @@
     ]
   },
   "google-directions-compute-routes": {
+    "$comment": "Compute routes between locations.",
     "properties": {
       "method": {
         "const": "POST"
@@ -50,6 +54,7 @@
     ]
   },
   "google-directions-compute-route-matrix": {
+    "$comment": "Compute a distance and duration matrix between multiple origins and destinations.",
     "properties": {
       "method": {
         "const": "POST"

@@ -1,5 +1,6 @@
 {
   "slack-api": {
+    "$comment": "Any interaction with the Slack API.",
     "properties": {
       "domain": {
         "const": "slack.com"
@@ -10,6 +11,7 @@
     ]
   },
   "slack-read-all": {
+    "$comment": "All read operations across the entire Slack API, including messages, users, files, reactions, search, pins, bookmarks, and reminders.",
     "properties": {
       "path": {
         "type": "string",
@@ -21,6 +23,7 @@
     ]
   },
   "slack-write-all": {
+    "$comment": "All write operations across the entire Slack API, including sending messages, managing conversations, updating profiles, uploading files, and modifying pins, bookmarks, and reminders.",
     "properties": {
       "path": {
         "type": "string",
@@ -32,6 +35,7 @@
     ]
   },
   "slack-auth-read": {
+    "$comment": "Check authentication status and list teams.",
     "properties": {
       "path": {
         "type": "string",
@@ -43,6 +47,7 @@
     ]
   },
   "slack-auth-write": {
+    "$comment": "Revoke authentication tokens.",
     "properties": {
       "path": {
         "type": "string",
@@ -54,6 +59,7 @@
     ]
   },
   "slack-chat-read": {
+    "$comment": "Get message permalinks and list scheduled messages.",
     "properties": {
       "path": {
         "type": "string",
@@ -65,6 +71,7 @@
     ]
   },
   "slack-chat-write": {
+    "$comment": "Send, update, delete, and schedule messages.",
     "properties": {
       "path": {
         "type": "string",
@@ -76,6 +83,7 @@
     ]
   },
   "slack-conversations-read": {
+    "$comment": "Read conversation history, details, members, and replies.",
     "properties": {
       "path": {
         "type": "string",
@@ -87,6 +95,7 @@
     ]
   },
   "slack-conversations-write": {
+    "$comment": "Create, archive, rename, and manage conversations, including membership, invitations, topics, and purposes.",
     "properties": {
       "path": {
         "type": "string",
@@ -98,6 +107,7 @@
     ]
   },
   "slack-users-read": {
+    "$comment": "Read user profiles, presence, identity, and look up users by email.",
     "properties": {
       "path": {
         "type": "string",
@@ -109,6 +119,7 @@
     ]
   },
   "slack-users-write": {
+    "$comment": "Update user presence and profile information.",
     "properties": {
       "path": {
         "type": "string",
@@ -120,6 +131,7 @@
     ]
   },
   "slack-files-read": {
+    "$comment": "List and inspect files, including remote files.",
     "properties": {
       "path": {
         "type": "string",
@@ -131,6 +143,7 @@
     ]
   },
   "slack-files-write": {
+    "$comment": "Upload, delete, and share files, including remote files.",
     "properties": {
       "path": {
         "type": "string",
@@ -142,6 +155,7 @@
     ]
   },
   "slack-reactions-read": {
+    "$comment": "List and inspect emoji reactions on messages.",
     "properties": {
       "path": {
         "type": "string",
@@ -153,6 +167,7 @@
     ]
   },
   "slack-reactions-write": {
+    "$comment": "Add or remove emoji reactions.",
     "properties": {
       "path": {
         "type": "string",
@@ -164,6 +179,7 @@
     ]
   },
   "slack-search": {
+    "$comment": "Search messages, files, and all content.",
     "properties": {
       "path": {
         "type": "string",
@@ -175,6 +191,7 @@
     ]
   },
   "slack-pins-read": {
+    "$comment": "List pinned messages in a conversation.",
     "properties": {
       "path": {
         "type": "string",
@@ -186,6 +203,7 @@
     ]
   },
   "slack-pins-write": {
+    "$comment": "Pin or unpin messages in a conversation.",
     "properties": {
       "path": {
         "type": "string",
@@ -197,6 +215,7 @@
     ]
   },
   "slack-bookmarks-read": {
+    "$comment": "List bookmarks in a conversation.",
     "properties": {
       "path": {
         "type": "string",
@@ -208,6 +227,7 @@
     ]
   },
   "slack-bookmarks-write": {
+    "$comment": "Add, edit, or remove bookmarks.",
     "properties": {
       "path": {
         "type": "string",
@@ -219,6 +239,7 @@
     ]
   },
   "slack-reminders-read": {
+    "$comment": "List and inspect reminders.",
     "properties": {
       "path": {
         "type": "string",
@@ -230,6 +251,7 @@
     ]
   },
   "slack-reminders-write": {
+    "$comment": "Create, complete, or delete reminders.",
     "properties": {
       "path": {
         "type": "string",

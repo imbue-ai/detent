@@ -1,5 +1,6 @@
 {
   "gitlab-api": {
+    "$comment": "Any request to GitLab.",
     "properties": {
       "domain": {
         "const": "gitlab.com"
@@ -9,7 +10,116 @@
       "domain"
     ]
   },
+  "gitlab-git": {
+    "$comment": "Git operations (clone, fetch, push) on GitLab repositories.",
+    "properties": {
+      "domain": {
+        "const": "gitlab.com"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/[^/]+(/[^/]+)+/(info/refs|git-upload-pack|git-receive-pack)$"
+      }
+    },
+    "required": [
+      "domain",
+      "path"
+    ]
+  },
+  "gitlab-git-read": {
+    "$comment": "Read-only Git operations (clone, fetch) on GitLab repositories.",
+    "anyOf": [
+      {
+        "properties": {
+          "method": {
+            "const": "GET"
+          },
+          "path": {
+            "type": "string",
+            "pattern": "^/[^/]+(/[^/]+)+/info/refs$"
+          },
+          "queryParams": {
+            "properties": {
+              "service": {
+                "const": "git-upload-pack"
+              }
+            },
+            "required": [
+              "service"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "path",
+          "queryParams"
+        ]
+      },
+      {
+        "properties": {
+          "method": {
+            "const": "POST"
+          },
+          "path": {
+            "type": "string",
+            "pattern": "^/[^/]+(/[^/]+)+/git-upload-pack$"
+          }
+        },
+        "required": [
+          "method",
+          "path"
+        ]
+      }
+    ]
+  },
+  "gitlab-git-write": {
+    "$comment": "Git push operations on GitLab repositories.",
+    "anyOf": [
+      {
+        "properties": {
+          "method": {
+            "const": "GET"
+          },
+          "path": {
+            "type": "string",
+            "pattern": "^/[^/]+(/[^/]+)+/info/refs$"
+          },
+          "queryParams": {
+            "properties": {
+              "service": {
+                "const": "git-receive-pack"
+              }
+            },
+            "required": [
+              "service"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "path",
+          "queryParams"
+        ]
+      },
+      {
+        "properties": {
+          "method": {
+            "const": "POST"
+          },
+          "path": {
+            "type": "string",
+            "pattern": "^/[^/]+(/[^/]+)+/git-receive-pack$"
+          }
+        },
+        "required": [
+          "method",
+          "path"
+        ]
+      }
+    ]
+  },
   "gitlab-read-all": {
+    "$comment": "Any read-only action on GitLab.",
     "properties": {
       "method": {
         "const": "GET"
@@ -20,6 +130,7 @@
     ]
   },
   "gitlab-write-all": {
+    "$comment": "Any write action on GitLab.",
     "properties": {
       "method": {
         "enum": [
@@ -35,6 +146,7 @@
     ]
   },
   "gitlab-read-projects": {
+    "$comment": "List or view GitLab projects.",
     "properties": {
       "method": {
         "const": "GET"
@@ -50,6 +162,7 @@
     ]
   },
   "gitlab-write-projects": {
+    "$comment": "Create, update, or delete GitLab projects.",
     "properties": {
       "method": {
         "enum": [
@@ -70,6 +183,7 @@
     ]
   },
   "gitlab-read-repository": {
+    "$comment": "View repository contents, branches, tags, and commits on GitLab.",
     "properties": {
       "method": {
         "const": "GET"
@@ -85,6 +199,7 @@
     ]
   },
   "gitlab-write-repository": {
+    "$comment": "Modify repository contents, branches, tags, or commits on GitLab.",
     "properties": {
       "method": {
         "enum": [
@@ -105,6 +220,7 @@
     ]
   },
   "gitlab-read-merge-requests": {
+    "$comment": "List or view merge requests on GitLab.",
     "properties": {
       "method": {
         "const": "GET"
@@ -120,6 +236,7 @@
     ]
   },
   "gitlab-write-merge-requests": {
+    "$comment": "Create, update, or delete merge requests on GitLab.",
     "properties": {
       "method": {
         "enum": [
@@ -140,6 +257,7 @@
     ]
   },
   "gitlab-read-issues": {
+    "$comment": "List or view issues on GitLab.",
     "properties": {
       "method": {
         "const": "GET"
@@ -155,6 +273,7 @@
     ]
   },
   "gitlab-write-issues": {
+    "$comment": "Create, update, or delete issues on GitLab.",
     "properties": {
       "method": {
         "enum": [
@@ -175,6 +294,7 @@
     ]
   },
   "gitlab-read-pipelines": {
+    "$comment": "View CI/CD pipelines and jobs on GitLab.",
     "properties": {
       "method": {
         "const": "GET"
@@ -190,6 +310,7 @@
     ]
   },
   "gitlab-write-pipelines": {
+    "$comment": "Run, retry, or cancel CI/CD pipelines and jobs on GitLab.",
     "properties": {
       "method": {
         "enum": [
@@ -210,6 +331,7 @@
     ]
   },
   "gitlab-read-users": {
+    "$comment": "View user profiles and information on GitLab.",
     "properties": {
       "method": {
         "const": "GET"
@@ -225,6 +347,7 @@
     ]
   },
   "gitlab-read-groups": {
+    "$comment": "List or view groups on GitLab.",
     "properties": {
       "method": {
         "const": "GET"
@@ -240,6 +363,7 @@
     ]
   },
   "gitlab-write-groups": {
+    "$comment": "Create, update, or delete groups on GitLab.",
     "properties": {
       "method": {
         "enum": [

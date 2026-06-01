@@ -1,5 +1,6 @@
 {
   "google-analytics-api": {
+    "$comment": "Any request to the Google Analytics API (data and admin endpoints).",
     "properties": {
       "domain": {
         "enum": [
@@ -13,6 +14,7 @@
     ]
   },
   "google-analytics-read-all": {
+    "$comment": "Read-only access to all Google Analytics resources.",
     "properties": {
       "method": {
         "const": "GET"
@@ -23,6 +25,7 @@
     ]
   },
   "google-analytics-write-all": {
+    "$comment": "Write access to all Google Analytics resources.",
     "properties": {
       "method": {
         "enum": [
@@ -38,6 +41,7 @@
     ]
   },
   "google-analytics-run-reports": {
+    "$comment": "Run analytics reports, including standard, pivot, real-time, batch, compatibility, and access reports.",
     "properties": {
       "method": {
         "const": "POST"
@@ -53,6 +57,7 @@
     ]
   },
   "google-analytics-read-metadata": {
+    "$comment": "Read metadata (available dimensions and metrics) for an analytics property.",
     "properties": {
       "method": {
         "const": "GET"
@@ -68,6 +73,7 @@
     ]
   },
   "google-analytics-read-accounts": {
+    "$comment": "List or view Google Analytics accounts and account summaries.",
     "properties": {
       "method": {
         "const": "GET"
@@ -83,6 +89,7 @@
     ]
   },
   "google-analytics-read-properties": {
+    "$comment": "List or view Google Analytics properties.",
     "properties": {
       "method": {
         "const": "GET"
@@ -98,6 +105,7 @@
     ]
   },
   "google-analytics-write-properties": {
+    "$comment": "Create, update, or delete Google Analytics properties.",
     "properties": {
       "method": {
         "enum": [
@@ -118,6 +126,7 @@
     ]
   },
   "google-analytics-read-data-streams": {
+    "$comment": "List or view data streams for a Google Analytics property.",
     "properties": {
       "method": {
         "const": "GET"
@@ -133,6 +142,7 @@
     ]
   },
   "google-analytics-write-data-streams": {
+    "$comment": "Create, update, or delete data streams for a Google Analytics property.",
     "properties": {
       "method": {
         "enum": [

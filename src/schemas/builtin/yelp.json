@@ -1,5 +1,6 @@
 {
   "yelp-api": {
+    "$comment": "Any request to the Yelp API.",
     "properties": {
       "domain": {
         "const": "api.yelp.com"
@@ -10,6 +11,7 @@
     ]
   },
   "yelp-read-all": {
+    "$comment": "Read any Yelp data.",
     "properties": {
       "method": {
         "const": "GET"
@@ -20,6 +22,7 @@
     ]
   },
   "yelp-write-all": {
+    "$comment": "Create, update, or delete any Yelp data.",
     "properties": {
       "method": {
         "enum": [
@@ -35,6 +38,7 @@
     ]
   },
   "yelp-read-businesses": {
+    "$comment": "Look up businesses and transactions.",
     "properties": {
       "method": {
         "const": "GET"
@@ -50,6 +54,7 @@
     ]
   },
   "yelp-write-businesses": {
+    "$comment": "Create, update, or delete businesses and transactions.",
     "properties": {
       "method": {
         "enum": [
@@ -70,6 +75,7 @@
     ]
   },
   "yelp-read-reviews": {
+    "$comment": "Read reviews and review highlights for a business.",
     "properties": {
       "method": {
         "const": "GET"
@@ -85,6 +91,7 @@
     ]
   },
   "yelp-read-events": {
+    "$comment": "Browse and search Yelp events.",
     "properties": {
       "method": {
         "const": "GET"
@@ -100,6 +107,7 @@
     ]
   },
   "yelp-read-categories": {
+    "$comment": "List or look up business categories.",
     "properties": {
       "method": {
         "const": "GET"
@@ -115,6 +123,7 @@
     ]
   },
   "yelp-autocomplete": {
+    "$comment": "Get autocomplete suggestions.",
     "properties": {
       "method": {
         "const": "GET"
@@ -130,6 +139,7 @@
     ]
   },
   "yelp-ai-chat": {
+    "$comment": "Send messages to the Yelp AI chat.",
     "properties": {
       "method": {
         "const": "POST"

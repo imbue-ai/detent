@@ -1,5 +1,6 @@
 {
   "google-people-api": {
+    "$comment": "Any request to the Google People API.",
     "properties": {
       "domain": {
         "const": "people.googleapis.com"
@@ -10,6 +11,7 @@
     ]
   },
   "google-people-read-all": {
+    "$comment": "Read anything from the Google People API.",
     "properties": {
       "method": {
         "const": "GET"
@@ -20,6 +22,7 @@
     ]
   },
   "google-people-write-all": {
+    "$comment": "Create, update, or delete anything in the Google People API.",
     "properties": {
       "method": {
         "enum": [
@@ -35,6 +38,7 @@
     ]
   },
   "google-people-read-contacts": {
+    "$comment": "List or read contacts.",
     "properties": {
       "method": {
         "const": "GET"
@@ -50,6 +54,7 @@
     ]
   },
   "google-people-write-contacts": {
+    "$comment": "Create, update, or delete contacts.",
     "properties": {
       "method": {
         "enum": [
@@ -70,6 +75,7 @@
     ]
   },
   "google-people-read-contact-groups": {
+    "$comment": "List or read contact groups.",
     "properties": {
       "method": {
         "const": "GET"
@@ -85,6 +91,7 @@
     ]
   },
   "google-people-write-contact-groups": {
+    "$comment": "Create, update, or delete contact groups.",
     "properties": {
       "method": {
         "enum": [
@@ -105,6 +112,7 @@
     ]
   },
   "google-people-read-other-contacts": {
+    "$comment": "List or read other contacts (contacts outside the user's address book).",
     "properties": {
       "method": {
         "const": "GET"
@@ -120,6 +128,7 @@
     ]
   },
   "google-people-write-other-contacts": {
+    "$comment": "Create, update, or delete other contacts (contacts outside the user's address book).",
     "properties": {
       "method": {
         "enum": [

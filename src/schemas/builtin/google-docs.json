@@ -1,5 +1,6 @@
 {
   "google-docs-api": {
+    "$comment": "Any request to the Google Docs API.",
     "properties": {
       "domain": {
         "const": "docs.googleapis.com"
@@ -10,6 +11,7 @@
     ]
   },
   "google-docs-read-all": {
+    "$comment": "Read any Google Docs resource.",
     "properties": {
       "method": {
         "const": "GET"
@@ -20,6 +22,7 @@
     ]
   },
   "google-docs-write-all": {
+    "$comment": "Create, update, or delete any Google Docs resource.",
     "properties": {
       "method": {
         "enum": [
@@ -35,6 +38,7 @@
     ]
   },
   "google-docs-read-documents": {
+    "$comment": "Read a specific document.",
     "properties": {
       "method": {
         "const": "GET"
@@ -50,6 +54,7 @@
     ]
   },
   "google-docs-write-documents": {
+    "$comment": "Create, update, or delete documents.",
     "properties": {
       "method": {
         "enum": [
@@ -70,6 +75,7 @@
     ]
   },
   "google-docs-create-documents": {
+    "$comment": "Create new documents.",
     "properties": {
       "method": {
         "const": "POST"
@@ -85,6 +91,7 @@
     ]
   },
   "google-docs-update-documents": {
+    "$comment": "Apply batch updates to a document's content.",
     "properties": {
       "method": {
         "const": "POST"

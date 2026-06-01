@@ -1,5 +1,6 @@
 {
   "dropbox-api": {
+    "$comment": "Any Dropbox API activity.",
     "properties": {
       "domain": {
         "enum": [
@@ -14,6 +15,7 @@
     ]
   },
   "dropbox-files": {
+    "$comment": "Any Dropbox file operations.",
     "properties": {
       "path": {
         "type": "string",
@@ -25,6 +27,7 @@
     ]
   },
   "dropbox-files-read": {
+    "$comment": "Read-only Dropbox file operations such as listing, downloading, searching, and exporting files.",
     "properties": {
       "path": {
         "type": "string",
@@ -36,6 +39,7 @@
     ]
   },
   "dropbox-files-write": {
+    "$comment": "Dropbox file modifications such as copying, moving, uploading, deleting, and organizing files and folders.",
     "properties": {
       "path": {
         "type": "string",
@@ -47,6 +51,7 @@
     ]
   },
   "dropbox-sharing": {
+    "$comment": "Any Dropbox sharing operations.",
     "properties": {
       "path": {
         "type": "string",
@@ -58,6 +63,7 @@
     ]
   },
   "dropbox-sharing-read": {
+    "$comment": "Read-only Dropbox sharing operations such as checking permissions and listing shared items.",
     "properties": {
       "path": {
         "type": "string",
@@ -69,6 +75,7 @@
     ]
   },
   "dropbox-sharing-write": {
+    "$comment": "Dropbox sharing modifications such as creating, updating, and revoking shared links and folder memberships.",
     "properties": {
       "path": {
         "type": "string",
@@ -80,6 +87,7 @@
     ]
   },
   "dropbox-account": {
+    "$comment": "Dropbox user account information.",
     "properties": {
       "path": {
         "type": "string",
@@ -91,6 +99,7 @@
     ]
   },
   "dropbox-file-requests": {
+    "$comment": "Dropbox file request operations.",
     "properties": {
       "path": {
         "type": "string",
@@ -102,6 +111,7 @@
     ]
   },
   "dropbox-contacts": {
+    "$comment": "Dropbox contacts operations.",
     "properties": {
       "path": {
         "type": "string",

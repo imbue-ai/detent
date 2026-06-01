@@ -1,5 +1,6 @@
 {
   "google-gmail-api": {
+    "$comment": "Any request to the Gmail API.",
     "properties": {
       "domain": {
         "const": "gmail.googleapis.com"
@@ -10,6 +11,7 @@
     ]
   },
   "google-gmail-read-all": {
+    "$comment": "Read anything from Gmail.",
     "properties": {
       "method": {
         "const": "GET"
@@ -20,6 +22,7 @@
     ]
   },
   "google-gmail-write-all": {
+    "$comment": "Create, update, or delete anything in Gmail.",
     "properties": {
       "method": {
         "enum": [
@@ -35,6 +38,7 @@
     ]
   },
   "google-gmail-read-messages": {
+    "$comment": "List or read messages.",
     "properties": {
       "method": {
         "const": "GET"
@@ -50,6 +54,7 @@
     ]
   },
   "google-gmail-write-messages": {
+    "$comment": "Create, update, or delete messages, including uploads.",
     "properties": {
       "method": {
         "enum": [
@@ -70,6 +75,7 @@
     ]
   },
   "google-gmail-send-messages": {
+    "$comment": "Send messages, including uploads.",
     "properties": {
       "method": {
         "const": "POST"
@@ -85,6 +91,7 @@
     ]
   },
   "google-gmail-read-threads": {
+    "$comment": "List or read threads.",
     "properties": {
       "method": {
         "const": "GET"
@@ -100,6 +107,7 @@
     ]
   },
   "google-gmail-write-threads": {
+    "$comment": "Modify or delete threads.",
     "properties": {
       "method": {
         "enum": [
@@ -120,6 +128,7 @@
     ]
   },
   "google-gmail-read-labels": {
+    "$comment": "List or read labels.",
     "properties": {
       "method": {
         "const": "GET"
@@ -135,6 +144,7 @@
     ]
   },
   "google-gmail-write-labels": {
+    "$comment": "Create, update, or delete labels.",
     "properties": {
       "method": {
         "enum": [
@@ -155,6 +165,7 @@
     ]
   },
   "google-gmail-read-drafts": {
+    "$comment": "List or read drafts.",
     "properties": {
       "method": {
         "const": "GET"
@@ -170,6 +181,7 @@
     ]
   },
   "google-gmail-write-drafts": {
+    "$comment": "Create, update, or delete drafts, including uploads.",
     "properties": {
       "method": {
         "enum": [
@@ -190,6 +202,7 @@
     ]
   },
   "google-gmail-read-settings": {
+    "$comment": "Read account settings such as filters, forwarding, and IMAP/POP configuration.",
     "properties": {
       "method": {
         "const": "GET"
@@ -205,6 +218,7 @@
     ]
   },
   "google-gmail-write-settings": {
+    "$comment": "Change account settings such as filters, forwarding, and IMAP/POP configuration.",
     "properties": {
       "method": {
         "enum": [
@@ -225,6 +239,7 @@
     ]
   },
   "google-gmail-read-history": {
+    "$comment": "Read mailbox change history.",
     "properties": {
       "method": {
         "const": "GET"
@@ -240,6 +255,7 @@
     ]
   },
   "google-gmail-read-profile": {
+    "$comment": "Read the user's Gmail profile.",
     "properties": {
       "method": {
         "const": "GET"

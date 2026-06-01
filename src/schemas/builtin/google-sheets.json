@@ -1,5 +1,6 @@
 {
   "google-sheets-api": {
+    "$comment": "Any request to the Google Sheets API.",
     "properties": {
       "domain": {
         "const": "sheets.googleapis.com"
@@ -10,6 +11,7 @@
     ]
   },
   "google-sheets-read-all": {
+    "$comment": "Read anything from Google Sheets.",
     "properties": {
       "method": {
         "const": "GET"
@@ -20,6 +22,7 @@
     ]
   },
   "google-sheets-write-all": {
+    "$comment": "Create, update, or delete anything in Google Sheets.",
     "properties": {
       "method": {
         "enum": [
@@ -35,6 +38,7 @@
     ]
   },
   "google-sheets-read-spreadsheets": {
+    "$comment": "Read spreadsheet metadata (title, sheets, properties, etc.).",
     "properties": {
       "method": {
         "const": "GET"
@@ -50,6 +54,7 @@
     ]
   },
   "google-sheets-create-spreadsheets": {
+    "$comment": "Create new spreadsheets.",
     "properties": {
       "method": {
         "const": "POST"
@@ -65,6 +70,7 @@
     ]
   },
   "google-sheets-update-spreadsheets": {
+    "$comment": "Modify spreadsheet structure or formatting via batch updates.",
     "properties": {
       "method": {
         "const": "POST"
@@ -80,6 +86,7 @@
     ]
   },
   "google-sheets-read-values": {
+    "$comment": "Read cell values from a spreadsheet.",
     "properties": {
       "method": {
         "const": "GET"
@@ -95,6 +102,7 @@
     ]
   },
   "google-sheets-write-values": {
+    "$comment": "Write or append cell values in a spreadsheet.",
     "properties": {
       "method": {
         "enum": [

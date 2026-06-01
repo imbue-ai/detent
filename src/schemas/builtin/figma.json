@@ -1,5 +1,6 @@
 {
   "figma-api": {
+    "$comment": "Any request to the Figma API.",
     "properties": {
       "domain": {
         "const": "api.figma.com"
@@ -10,6 +11,7 @@
     ]
   },
   "figma-read-all": {
+    "$comment": "Read anything from Figma.",
     "properties": {
       "method": {
         "const": "GET"
@@ -20,6 +22,7 @@
     ]
   },
   "figma-write-all": {
+    "$comment": "Create, update, or delete anything in Figma.",
     "properties": {
       "method": {
         "enum": [
@@ -35,6 +38,7 @@
     ]
   },
   "figma-read-files": {
+    "$comment": "Read Figma files, including their images, metadata, and versions.",
     "properties": {
       "method": {
         "const": "GET"
@@ -50,6 +54,7 @@
     ]
   },
   "figma-read-comments": {
+    "$comment": "Read comments on Figma files.",
     "properties": {
       "method": {
         "const": "GET"
@@ -65,6 +70,7 @@
     ]
   },
   "figma-write-comments": {
+    "$comment": "Post or delete comments on Figma files.",
     "properties": {
       "method": {
         "enum": [
@@ -83,6 +89,7 @@
     ]
   },
   "figma-read-projects": {
+    "$comment": "List team projects and project files.",
     "properties": {
       "method": {
         "const": "GET"
@@ -98,6 +105,7 @@
     ]
   },
   "figma-read-components": {
+    "$comment": "Read components, component sets, and styles from Figma files or teams.",
     "properties": {
       "method": {
         "const": "GET"
@@ -113,6 +121,7 @@
     ]
   },
   "figma-read-webhooks": {
+    "$comment": "List webhooks and read their details.",
     "properties": {
       "method": {
         "const": "GET"
@@ -128,6 +137,7 @@
     ]
   },
   "figma-write-webhooks": {
+    "$comment": "Create, update, or delete webhooks.",
     "properties": {
       "method": {
         "enum": [
@@ -147,6 +157,7 @@
     ]
   },
   "figma-read-variables": {
+    "$comment": "Read variables from Figma files.",
     "properties": {
       "method": {
         "const": "GET"
@@ -162,6 +173,7 @@
     ]
   },
   "figma-write-variables": {
+    "$comment": "Create or update variables in Figma files.",
     "properties": {
       "method": {
         "const": "POST"
@@ -177,6 +189,7 @@
     ]
   },
   "figma-read-dev-resources": {
+    "$comment": "Read dev resources from Figma files.",
     "properties": {
       "method": {
         "const": "GET"
@@ -192,6 +205,7 @@
     ]
   },
   "figma-write-dev-resources": {
+    "$comment": "Create, update, or delete dev resources in Figma files.",
     "properties": {
       "method": {
         "enum": [
@@ -211,6 +225,7 @@
     ]
   },
   "figma-read-library-analytics": {
+    "$comment": "Read library usage analytics.",
     "properties": {
       "method": {
         "const": "GET"

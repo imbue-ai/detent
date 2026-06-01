@@ -1,5 +1,6 @@
 {
   "zoom-api": {
+    "$comment": "Requests to the Zoom API.",
     "properties": {
       "domain": {
         "const": "api.zoom.us"
@@ -10,6 +11,7 @@
     ]
   },
   "zoom-read-all": {
+    "$comment": "Read any Zoom data.",
     "properties": {
       "method": {
         "const": "GET"
@@ -20,6 +22,7 @@
     ]
   },
   "zoom-write-all": {
+    "$comment": "Create, update, or delete any Zoom data.",
     "properties": {
       "method": {
         "enum": [
@@ -35,6 +38,7 @@
     ]
   },
   "zoom-read-meetings": {
+    "$comment": "View meetings and meeting details.",
     "properties": {
       "method": {
         "const": "GET"
@@ -50,6 +54,7 @@
     ]
   },
   "zoom-write-meetings": {
+    "$comment": "Create, update, or delete meetings.",
     "properties": {
       "method": {
         "enum": [
@@ -70,6 +75,7 @@
     ]
   },
   "zoom-read-webinars": {
+    "$comment": "View webinars and webinar details.",
     "properties": {
       "method": {
         "const": "GET"
@@ -85,6 +91,7 @@
     ]
   },
   "zoom-write-webinars": {
+    "$comment": "Create, update, or delete webinars.",
     "properties": {
       "method": {
         "enum": [
@@ -105,6 +112,7 @@
     ]
   },
   "zoom-read-recordings": {
+    "$comment": "View meeting and user recordings.",
     "properties": {
       "method": {
         "const": "GET"
@@ -120,6 +128,7 @@
     ]
   },
   "zoom-write-recordings": {
+    "$comment": "Create, update, or delete meeting and user recordings.",
     "properties": {
       "method": {
         "enum": [
@@ -140,6 +149,7 @@
     ]
   },
   "zoom-read-reports": {
+    "$comment": "View reports and report data.",
     "properties": {
       "method": {
         "const": "GET"
@@ -155,6 +165,7 @@
     ]
   },
   "zoom-read-users": {
+    "$comment": "View user profiles and details.",
     "properties": {
       "method": {
         "const": "GET"
@@ -170,6 +181,7 @@
     ]
   },
   "zoom-write-users": {
+    "$comment": "Create, update, or delete users.",
     "properties": {
       "method": {
         "enum": [
