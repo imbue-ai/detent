@@ -1250,6 +1250,122 @@ describe('builtin schemas: notion', () => {
   });
 });
 
+describe('builtin schemas: notion-mcp', () => {
+  const toolCall = (name: string) =>
+    JSON.stringify({
+      jsonrpc: '2.0',
+      id: 1,
+      method: 'tools/call',
+      params: { name, arguments: {} },
+    });
+
+  const mcpRequest = (body: string) =>
+    makeRequest({ domain: 'mcp.notion.com', method: 'POST', path: '/mcp', body });
+
+  it('notion-mcp scope matches mcp.notion.com', () => {
+    expectSchemaExists('notion-mcp-api');
+    expect(
+      builtinRegistry.get('notion-mcp-api')!.match(makeRequest({ domain: 'mcp.notion.com' }))
+    ).toBe(true);
+  });
+
+  it('notion-mcp scope rejects the regular Notion API domain', () => {
+    expect(
+      builtinRegistry.get('notion-mcp-api')!.match(makeRequest({ domain: 'api.notion.com' }))
+    ).toBe(false);
+  });
+
+  it('notion-mcp-session matches the MCP handshake but not tool calls', () => {
+    expectSchemaExists('notion-mcp-session');
+    const initialize = JSON.stringify({ jsonrpc: '2.0', id: 1, method: 'initialize', params: {} });
+    expect(builtinRegistry.get('notion-mcp-session')!.match(mcpRequest(initialize))).toBe(true);
+    expect(
+      builtinRegistry
+        .get('notion-mcp-session')!
+        .match(mcpRequest(JSON.stringify({ jsonrpc: '2.0', id: 1, method: 'tools/list' })))
+    ).toBe(true);
+    expect(
+      builtinRegistry.get('notion-mcp-session')!.match(mcpRequest(toolCall('notion-search')))
+    ).toBe(false);
+  });
+
+  it('notion-mcp-search matches only the search tool call', () => {
+    expectSchemaExists('notion-mcp-search');
+    expect(
+      builtinRegistry.get('notion-mcp-search')!.match(mcpRequest(toolCall('notion-search')))
+    ).toBe(true);
+    expect(
+      builtinRegistry.get('notion-mcp-search')!.match(mcpRequest(toolCall('notion-create-pages')))
+    ).toBe(false);
+  });
+
+  it('notion-mcp-search requires the MCP endpoint path', () => {
+    expect(
+      builtinRegistry
+        .get('notion-mcp-search')!
+        .match(makeRequest({ method: 'POST', path: '/v1/search', body: toolCall('notion-search') }))
+    ).toBe(false);
+  });
+
+  it('notion-mcp-get-user does not match the get-users tool call', () => {
+    expectSchemaExists('notion-mcp-get-user');
+    expect(
+      builtinRegistry.get('notion-mcp-get-user')!.match(mcpRequest(toolCall('notion-get-user')))
+    ).toBe(true);
+    expect(
+      builtinRegistry.get('notion-mcp-get-user')!.match(mcpRequest(toolCall('notion-get-users')))
+    ).toBe(false);
+  });
+
+  it('notion-mcp-read-all matches read tools and the handshake but not writes', () => {
+    expectSchemaExists('notion-mcp-read-all');
+    const readAll = builtinRegistry.get('notion-mcp-read-all')!;
+    for (const tool of [
+      'notion-search',
+      'notion-fetch',
+      'notion-query-data-sources',
+      'notion-query-database-view',
+      'notion-get-comments',
+      'notion-get-teams',
+      'notion-get-users',
+      'notion-get-user',
+      'notion-get-self',
+    ]) {
+      expect(readAll.match(mcpRequest(toolCall(tool))), `read-all should allow ${tool}`).toBe(true);
+    }
+    expect(
+      readAll.match(mcpRequest(JSON.stringify({ jsonrpc: '2.0', id: 1, method: 'initialize' })))
+    ).toBe(true);
+    expect(readAll.match(mcpRequest(toolCall('notion-create-pages')))).toBe(false);
+    expect(readAll.match(mcpRequest(toolCall('notion-update-page')))).toBe(false);
+  });
+
+  it('notion-mcp-write-all matches write tools and the handshake but not reads', () => {
+    expectSchemaExists('notion-mcp-write-all');
+    const writeAll = builtinRegistry.get('notion-mcp-write-all')!;
+    for (const tool of [
+      'notion-create-pages',
+      'notion-update-page',
+      'notion-move-pages',
+      'notion-duplicate-page',
+      'notion-create-database',
+      'notion-update-data-source',
+      'notion-create-view',
+      'notion-update-view',
+      'notion-create-comment',
+    ]) {
+      expect(writeAll.match(mcpRequest(toolCall(tool))), `write-all should allow ${tool}`).toBe(
+        true
+      );
+    }
+    expect(
+      writeAll.match(mcpRequest(JSON.stringify({ jsonrpc: '2.0', id: 1, method: 'initialize' })))
+    ).toBe(true);
+    expect(writeAll.match(mcpRequest(toolCall('notion-search')))).toBe(false);
+    expect(writeAll.match(mcpRequest(toolCall('notion-fetch')))).toBe(false);
+  });
+});
+
 describe('builtin schemas: sentry', () => {
   it('sentry scope matches sentry.io', () => {
     expectSchemaExists('sentry-api');

@@ -299,6 +299,31 @@ See the main [README](../README.md) for how schemas and rules work together.
 - `mailchimp-read-ecommerce`
 - `mailchimp-write-ecommerce`
 
+### notion-mcp
+
+- `notion-mcp-api` *(scope)*
+- `notion-mcp-session`
+- `notion-mcp-read-all`
+- `notion-mcp-write-all`
+- `notion-mcp-search`
+- `notion-mcp-fetch`
+- `notion-mcp-query-data-sources`
+- `notion-mcp-query-database-view`
+- `notion-mcp-get-comments`
+- `notion-mcp-get-teams`
+- `notion-mcp-get-users`
+- `notion-mcp-get-user`
+- `notion-mcp-get-self`
+- `notion-mcp-create-pages`
+- `notion-mcp-update-page`
+- `notion-mcp-move-pages`
+- `notion-mcp-duplicate-page`
+- `notion-mcp-create-database`
+- `notion-mcp-update-data-source`
+- `notion-mcp-create-view`
+- `notion-mcp-update-view`
+- `notion-mcp-create-comment`
+
 ### notion
 
 - `notion-api` *(scope)*
