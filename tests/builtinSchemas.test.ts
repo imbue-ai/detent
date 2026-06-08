@@ -1338,6 +1338,10 @@ describe('builtin schemas: slack', () => {
       '/api/reminders.list',
       '/api/auth.test',
       '/api/auth.teams.list',
+      '/api/search.modules.messages',
+      '/api/client.counts',
+      '/api/subscriptions.thread.getView',
+      '/api/threads.getView',
     ];
     for (const path of readMethods) {
       expect(
@@ -1393,6 +1397,7 @@ describe('builtin schemas: slack', () => {
       '/api/bookmarks.add',
       '/api/reminders.add',
       '/api/auth.revoke',
+      '/api/subscriptions.thread.mark',
     ];
     for (const path of writeMethods) {
       expect(
@@ -1459,6 +1464,7 @@ describe('builtin schemas: slack', () => {
       '/api/reminders.complete',
       '/api/reminders.delete',
       '/api/auth.revoke',
+      '/api/subscriptions.thread.mark',
     ];
     for (const path of writeMethods) {
       expect(
@@ -1481,6 +1487,10 @@ describe('builtin schemas: slack', () => {
       '/api/pins.list',
       '/api/bookmarks.list',
       '/api/reminders.list',
+      '/api/search.modules.messages',
+      '/api/client.counts',
+      '/api/subscriptions.thread.getView',
+      '/api/threads.getView',
     ];
     for (const path of readMethods) {
       expect(
@@ -1771,6 +1781,11 @@ describe('builtin schemas: slack', () => {
     ).toBe(true);
     expect(
       builtinRegistry.get('slack-search')!.match(makeRequest({ path: '/api/search.all' }))
+    ).toBe(true);
+    expect(
+      builtinRegistry
+        .get('slack-search')!
+        .match(makeRequest({ path: '/api/search.modules.messages' }))
     ).toBe(true);
     expect(
       builtinRegistry.get('slack-search')!.match(makeRequest({ path: '/api/chat.postMessage' }))

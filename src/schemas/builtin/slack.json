@@ -11,11 +11,11 @@
     ]
   },
   "slack-read-all": {
-    "$comment": "All read operations across the entire Slack API, including messages, users, files, reactions, search, pins, bookmarks, and reminders.",
+    "$comment": "All read operations across the entire Slack API, including messages, users, files, reactions, search, pins, bookmarks, reminders, thread subscriptions, and unread counts.",
     "properties": {
       "path": {
         "type": "string",
-        "pattern": "^/api/(auth\\.(test|teams\\.list)|chat\\.(getPermalink|scheduledMessages\\.list)|conversations\\.(history|info|list|listConnectInvites|members|replies|requestSharedInvite\\.list)|users\\.(conversations|getPresence|identity|info|list|lookupByEmail|profile\\.get)|files\\.(info|list|remote\\.(info|list))|reactions\\.(get|list)|search\\.(all|files|messages)|pins\\.list|bookmarks\\.list|reminders\\.(info|list))$"
+        "pattern": "^/api/(auth\\.(test|teams\\.list)|chat\\.(getPermalink|scheduledMessages\\.list)|conversations\\.(history|info|list|listConnectInvites|members|replies|requestSharedInvite\\.list)|users\\.(conversations|getPresence|identity|info|list|lookupByEmail|profile\\.get)|files\\.(info|list|remote\\.(info|list))|reactions\\.(get|list)|search\\.(all|files|messages|modules\\.messages)|pins\\.list|bookmarks\\.list|reminders\\.(info|list)|client\\.counts|subscriptions\\.thread\\.getView|threads\\.getView)$"
       }
     },
     "required": [
@@ -23,11 +23,11 @@
     ]
   },
   "slack-write-all": {
-    "$comment": "All write operations across the entire Slack API, including sending messages, managing conversations, updating profiles, uploading files, and modifying pins, bookmarks, and reminders.",
+    "$comment": "All write operations across the entire Slack API, including sending messages, managing conversations, updating profiles, uploading files, marking thread subscriptions, and modifying pins, bookmarks, and reminders.",
     "properties": {
       "path": {
         "type": "string",
-        "pattern": "^/api/(auth\\.revoke|chat\\.(appendStream|delete|deleteScheduledMessage|meMessage|postEphemeral|postMessage|scheduleMessage|startStream|stopStream|unfurl|update)|conversations\\.(acceptSharedInvite|approveSharedInvite|archive|canvasCreate|close|create|declineSharedInvite|externalInvitePermissions\\.set|invite|inviteShared|join|kick|leave|mark|open|rename|requestSharedInvite\\.(approve|deny)|setPurpose|setTopic|unarchive)|users\\.(setPresence|profile\\.set)|files\\.(completeUploadExternal|delete|getUploadURLExternal|remote\\.(add|remove|share|update)|revokePublicURL|sharedPublicURL)|reactions\\.(add|remove)|pins\\.(add|remove)|bookmarks\\.(add|edit|remove)|reminders\\.(add|complete|delete))$"
+        "pattern": "^/api/(auth\\.revoke|chat\\.(appendStream|delete|deleteScheduledMessage|meMessage|postEphemeral|postMessage|scheduleMessage|startStream|stopStream|unfurl|update)|conversations\\.(acceptSharedInvite|approveSharedInvite|archive|canvasCreate|close|create|declineSharedInvite|externalInvitePermissions\\.set|invite|inviteShared|join|kick|leave|mark|open|rename|requestSharedInvite\\.(approve|deny)|setPurpose|setTopic|unarchive)|users\\.(setPresence|profile\\.set)|files\\.(completeUploadExternal|delete|getUploadURLExternal|remote\\.(add|remove|share|update)|revokePublicURL|sharedPublicURL)|reactions\\.(add|remove)|pins\\.(add|remove)|bookmarks\\.(add|edit|remove)|reminders\\.(add|complete|delete)|subscriptions\\.thread\\.mark)$"
       }
     },
     "required": [
@@ -183,7 +183,7 @@
     "properties": {
       "path": {
         "type": "string",
-        "pattern": "^/api/search\\.(all|files|messages)$"
+        "pattern": "^/api/search\\.(all|files|messages|modules\\.messages)$"
       }
     },
     "required": [
