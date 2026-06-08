@@ -1,0 +1,461 @@
+{
+  "notion-mcp-api": {
+    "$comment": "Any request to Notion's hosted MCP endpoint (mcp.notion.com).",
+    "properties": {
+      "domain": {
+        "const": "mcp.notion.com"
+      }
+    },
+    "required": [
+      "domain"
+    ]
+  },
+  "notion-mcp-session": {
+    "$comment": "Open and maintain an MCP session: initialize, list tools/prompts/resources, ping, and send notifications. Required for any MCP client to function; does not read or modify Notion content.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/mcp/?$"
+      },
+      "body": {
+        "type": "string",
+        "pattern": "\"method\"\\s*:\\s*\"(initialize|notifications/[A-Za-z/]+|ping|tools/list|prompts/(list|get)|resources/(list|read|templates/list)|completion/complete|logging/setLevel)\""
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "body"
+    ]
+  },
+  "notion-mcp-read-all": {
+    "$comment": "Run any read-only Notion MCP tool (search, fetch, queries, list users/teams/comments) plus the MCP session handshake.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/mcp/?$"
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "body"
+    ],
+    "anyOf": [
+      {
+        "properties": {
+          "body": {
+            "type": "string",
+            "pattern": "\"method\"\\s*:\\s*\"(initialize|notifications/[A-Za-z/]+|ping|tools/list|prompts/(list|get)|resources/(list|read|templates/list)|completion/complete|logging/setLevel)\""
+          }
+        }
+      },
+      {
+        "properties": {
+          "body": {
+            "type": "string",
+            "pattern": "(?=[\\s\\S]*\"method\"\\s*:\\s*\"tools/call\")(?=[\\s\\S]*\"name\"\\s*:\\s*\"(notion-search|notion-fetch|notion-query-data-sources|notion-query-database-view|notion-get-comments|notion-get-teams|notion-get-users?|notion-get-self)\")"
+          }
+        }
+      }
+    ]
+  },
+  "notion-mcp-write-all": {
+    "$comment": "Run any Notion MCP tool that creates or modifies content (create/update pages, databases, views, data sources, comments; move/duplicate pages) plus the MCP session handshake.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/mcp/?$"
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "body"
+    ],
+    "anyOf": [
+      {
+        "properties": {
+          "body": {
+            "type": "string",
+            "pattern": "\"method\"\\s*:\\s*\"(initialize|notifications/[A-Za-z/]+|ping|tools/list|prompts/(list|get)|resources/(list|read|templates/list)|completion/complete|logging/setLevel)\""
+          }
+        }
+      },
+      {
+        "properties": {
+          "body": {
+            "type": "string",
+            "pattern": "(?=[\\s\\S]*\"method\"\\s*:\\s*\"tools/call\")(?=[\\s\\S]*\"name\"\\s*:\\s*\"(notion-create-pages|notion-update-page|notion-move-pages|notion-duplicate-page|notion-create-database|notion-update-data-source|notion-create-view|notion-update-view|notion-create-comment)\")"
+          }
+        }
+      }
+    ]
+  },
+  "notion-mcp-search": {
+    "$comment": "Search across the Notion workspace and connected sources.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/mcp/?$"
+      },
+      "body": {
+        "type": "string",
+        "pattern": "(?=[\\s\\S]*\"method\"\\s*:\\s*\"tools/call\")(?=[\\s\\S]*\"name\"\\s*:\\s*\"(notion-search)\")"
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "body"
+    ]
+  },
+  "notion-mcp-fetch": {
+    "$comment": "Retrieve the content of a Notion page, database, or data source by URL or ID.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/mcp/?$"
+      },
+      "body": {
+        "type": "string",
+        "pattern": "(?=[\\s\\S]*\"method\"\\s*:\\s*\"tools/call\")(?=[\\s\\S]*\"name\"\\s*:\\s*\"(notion-fetch)\")"
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "body"
+    ]
+  },
+  "notion-mcp-query-data-sources": {
+    "$comment": "Query across one or more Notion data sources with filters, grouping, and summaries.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/mcp/?$"
+      },
+      "body": {
+        "type": "string",
+        "pattern": "(?=[\\s\\S]*\"method\"\\s*:\\s*\"tools/call\")(?=[\\s\\S]*\"name\"\\s*:\\s*\"(notion-query-data-sources)\")"
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "body"
+    ]
+  },
+  "notion-mcp-query-database-view": {
+    "$comment": "Query a Notion database using a predefined view's filters and sorts.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/mcp/?$"
+      },
+      "body": {
+        "type": "string",
+        "pattern": "(?=[\\s\\S]*\"method\"\\s*:\\s*\"tools/call\")(?=[\\s\\S]*\"name\"\\s*:\\s*\"(notion-query-database-view)\")"
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "body"
+    ]
+  },
+  "notion-mcp-get-comments": {
+    "$comment": "List comments and discussions on a Notion page.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/mcp/?$"
+      },
+      "body": {
+        "type": "string",
+        "pattern": "(?=[\\s\\S]*\"method\"\\s*:\\s*\"tools/call\")(?=[\\s\\S]*\"name\"\\s*:\\s*\"(notion-get-comments)\")"
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "body"
+    ]
+  },
+  "notion-mcp-get-teams": {
+    "$comment": "List the teams (teamspaces) in the current Notion workspace.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/mcp/?$"
+      },
+      "body": {
+        "type": "string",
+        "pattern": "(?=[\\s\\S]*\"method\"\\s*:\\s*\"tools/call\")(?=[\\s\\S]*\"name\"\\s*:\\s*\"(notion-get-teams)\")"
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "body"
+    ]
+  },
+  "notion-mcp-get-users": {
+    "$comment": "List all users in the Notion workspace, or retrieve a single user by ID (the notion-get-users and notion-get-user tools).",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/mcp/?$"
+      },
+      "body": {
+        "type": "string",
+        "pattern": "(?=[\\s\\S]*\"method\"\\s*:\\s*\"tools/call\")(?=[\\s\\S]*\"name\"\\s*:\\s*\"notion-get-users?\")"
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "body"
+    ]
+  },
+  "notion-mcp-get-self": {
+    "$comment": "Retrieve information about the connected bot user and workspace.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/mcp/?$"
+      },
+      "body": {
+        "type": "string",
+        "pattern": "(?=[\\s\\S]*\"method\"\\s*:\\s*\"tools/call\")(?=[\\s\\S]*\"name\"\\s*:\\s*\"(notion-get-self)\")"
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "body"
+    ]
+  },
+  "notion-mcp-create-pages": {
+    "$comment": "Create one or more Notion pages with properties and content.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/mcp/?$"
+      },
+      "body": {
+        "type": "string",
+        "pattern": "(?=[\\s\\S]*\"method\"\\s*:\\s*\"tools/call\")(?=[\\s\\S]*\"name\"\\s*:\\s*\"(notion-create-pages)\")"
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "body"
+    ]
+  },
+  "notion-mcp-update-page": {
+    "$comment": "Update a Notion page's properties, content, icon, or cover.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/mcp/?$"
+      },
+      "body": {
+        "type": "string",
+        "pattern": "(?=[\\s\\S]*\"method\"\\s*:\\s*\"tools/call\")(?=[\\s\\S]*\"name\"\\s*:\\s*\"(notion-update-page)\")"
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "body"
+    ]
+  },
+  "notion-mcp-move-pages": {
+    "$comment": "Move one or more Notion pages or databases to a new parent.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/mcp/?$"
+      },
+      "body": {
+        "type": "string",
+        "pattern": "(?=[\\s\\S]*\"method\"\\s*:\\s*\"tools/call\")(?=[\\s\\S]*\"name\"\\s*:\\s*\"(notion-move-pages)\")"
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "body"
+    ]
+  },
+  "notion-mcp-duplicate-page": {
+    "$comment": "Duplicate a Notion page within the workspace.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/mcp/?$"
+      },
+      "body": {
+        "type": "string",
+        "pattern": "(?=[\\s\\S]*\"method\"\\s*:\\s*\"tools/call\")(?=[\\s\\S]*\"name\"\\s*:\\s*\"(notion-duplicate-page)\")"
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "body"
+    ]
+  },
+  "notion-mcp-create-database": {
+    "$comment": "Create a new Notion database, data source, and initial view.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/mcp/?$"
+      },
+      "body": {
+        "type": "string",
+        "pattern": "(?=[\\s\\S]*\"method\"\\s*:\\s*\"tools/call\")(?=[\\s\\S]*\"name\"\\s*:\\s*\"(notion-create-database)\")"
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "body"
+    ]
+  },
+  "notion-mcp-update-data-source": {
+    "$comment": "Update a Notion data source's properties, name, or description.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/mcp/?$"
+      },
+      "body": {
+        "type": "string",
+        "pattern": "(?=[\\s\\S]*\"method\"\\s*:\\s*\"tools/call\")(?=[\\s\\S]*\"name\"\\s*:\\s*\"(notion-update-data-source)\")"
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "body"
+    ]
+  },
+  "notion-mcp-create-view": {
+    "$comment": "Create a new view on a Notion database.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/mcp/?$"
+      },
+      "body": {
+        "type": "string",
+        "pattern": "(?=[\\s\\S]*\"method\"\\s*:\\s*\"tools/call\")(?=[\\s\\S]*\"name\"\\s*:\\s*\"(notion-create-view)\")"
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "body"
+    ]
+  },
+  "notion-mcp-update-view": {
+    "$comment": "Update a Notion view's name, filters, sorts, or display configuration.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/mcp/?$"
+      },
+      "body": {
+        "type": "string",
+        "pattern": "(?=[\\s\\S]*\"method\"\\s*:\\s*\"tools/call\")(?=[\\s\\S]*\"name\"\\s*:\\s*\"(notion-update-view)\")"
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "body"
+    ]
+  },
+  "notion-mcp-create-comment": {
+    "$comment": "Add a comment to a Notion page or specific block.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/mcp/?$"
+      },
+      "body": {
+        "type": "string",
+        "pattern": "(?=[\\s\\S]*\"method\"\\s*:\\s*\"tools/call\")(?=[\\s\\S]*\"name\"\\s*:\\s*\"(notion-create-comment)\")"
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "body"
+    ]
+  }
+}
