@@ -312,7 +312,6 @@ See the main [README](../README.md) for how schemas and rules work together.
 - `notion-mcp-get-comments`
 - `notion-mcp-get-teams`
 - `notion-mcp-get-users`
-- `notion-mcp-get-user`
 - `notion-mcp-get-self`
 - `notion-mcp-create-pages`
 - `notion-mcp-update-page`

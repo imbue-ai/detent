@@ -1307,14 +1307,12 @@ describe('builtin schemas: notion-mcp', () => {
     ).toBe(false);
   });
 
-  it('notion-mcp-get-user does not match the get-users tool call', () => {
-    expectSchemaExists('notion-mcp-get-user');
-    expect(
-      builtinRegistry.get('notion-mcp-get-user')!.match(mcpRequest(toolCall('notion-get-user')))
-    ).toBe(true);
-    expect(
-      builtinRegistry.get('notion-mcp-get-user')!.match(mcpRequest(toolCall('notion-get-users')))
-    ).toBe(false);
+  it('notion-mcp-get-users matches both the list and single-user tool calls', () => {
+    expectSchemaExists('notion-mcp-get-users');
+    const getUsers = builtinRegistry.get('notion-mcp-get-users')!;
+    expect(getUsers.match(mcpRequest(toolCall('notion-get-users')))).toBe(true);
+    expect(getUsers.match(mcpRequest(toolCall('notion-get-user')))).toBe(true);
+    expect(getUsers.match(mcpRequest(toolCall('notion-get-self')))).toBe(false);
   });
 
   it('notion-mcp-read-all matches read tools and the handshake but not writes', () => {

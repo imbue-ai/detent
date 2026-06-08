@@ -60,7 +60,7 @@
         "properties": {
           "body": {
             "type": "string",
-            "pattern": "(?=[\\s\\S]*\"method\"\\s*:\\s*\"tools/call\")(?=[\\s\\S]*\"name\"\\s*:\\s*\"(notion-search|notion-fetch|notion-query-data-sources|notion-query-database-view|notion-get-comments|notion-get-teams|notion-get-users|notion-get-user|notion-get-self)\")"
+            "pattern": "(?=[\\s\\S]*\"method\"\\s*:\\s*\"tools/call\")(?=[\\s\\S]*\"name\"\\s*:\\s*\"(notion-search|notion-fetch|notion-query-data-sources|notion-query-database-view|notion-get-comments|notion-get-teams|notion-get-users?|notion-get-self)\")"
           }
         }
       }
@@ -228,7 +228,7 @@
     ]
   },
   "notion-mcp-get-users": {
-    "$comment": "List all users in the Notion workspace.",
+    "$comment": "List all users in the Notion workspace, or retrieve a single user by ID (the notion-get-users and notion-get-user tools).",
     "properties": {
       "method": {
         "const": "POST"
@@ -239,28 +239,7 @@
       },
       "body": {
         "type": "string",
-        "pattern": "(?=[\\s\\S]*\"method\"\\s*:\\s*\"tools/call\")(?=[\\s\\S]*\"name\"\\s*:\\s*\"(notion-get-users)\")"
-      }
-    },
-    "required": [
-      "method",
-      "path",
-      "body"
-    ]
-  },
-  "notion-mcp-get-user": {
-    "$comment": "Retrieve a single Notion user's information by ID.",
-    "properties": {
-      "method": {
-        "const": "POST"
-      },
-      "path": {
-        "type": "string",
-        "pattern": "^/mcp/?$"
-      },
-      "body": {
-        "type": "string",
-        "pattern": "(?=[\\s\\S]*\"method\"\\s*:\\s*\"tools/call\")(?=[\\s\\S]*\"name\"\\s*:\\s*\"(notion-get-user)\")"
+        "pattern": "(?=[\\s\\S]*\"method\"\\s*:\\s*\"tools/call\")(?=[\\s\\S]*\"name\"\\s*:\\s*\"notion-get-users?\")"
       }
     },
     "required": [
