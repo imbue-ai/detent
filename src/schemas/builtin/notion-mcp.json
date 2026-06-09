@@ -20,19 +20,41 @@
         "type": "string",
         "pattern": "^/mcp/?$"
       },
-      "body": {
-        "type": "string",
-        "pattern": "\"method\"\\s*:\\s*\"(initialize|notifications/[A-Za-z/]+|ping|tools/list|prompts/(list|get)|resources/(list|read|templates/list)|completion/complete|logging/setLevel)\""
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "enum": [
+              "initialize",
+              "notifications/initialized",
+              "notifications/cancelled",
+              "ping",
+              "tools/list",
+              "prompts/list",
+              "prompts/get",
+              "resources/list",
+              "resources/read",
+              "resources/templates/list",
+              "resources/subscribe",
+              "resources/unsubscribe",
+              "completion/complete",
+              "logging/setLevel"
+            ]
+          }
+        },
+        "required": [
+          "method"
+        ]
       }
     },
     "required": [
       "method",
       "path",
-      "body"
+      "parsedBody"
     ]
   },
   "notion-mcp-read-all": {
-    "$comment": "Run any read-only Notion MCP tool (search, fetch, queries, list users/teams/comments) plus the MCP session handshake.",
+    "$comment": "Run any read-only Notion MCP tool (search, fetch, queries, list comments/teams, bot info) plus the MCP session handshake.",
     "properties": {
       "method": {
         "const": "POST"
@@ -40,30 +62,74 @@
       "path": {
         "type": "string",
         "pattern": "^/mcp/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "anyOf": [
+          {
+            "type": "object",
+            "properties": {
+              "method": {
+                "enum": [
+                  "initialize",
+                  "notifications/initialized",
+                  "notifications/cancelled",
+                  "ping",
+                  "tools/list",
+                  "prompts/list",
+                  "prompts/get",
+                  "resources/list",
+                  "resources/read",
+                  "resources/templates/list",
+                  "resources/subscribe",
+                  "resources/unsubscribe",
+                  "completion/complete",
+                  "logging/setLevel"
+                ]
+              }
+            },
+            "required": [
+              "method"
+            ]
+          },
+          {
+            "type": "object",
+            "properties": {
+              "method": {
+                "const": "tools/call"
+              },
+              "params": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "enum": [
+                      "notion-search",
+                      "notion-fetch",
+                      "notion-query-data-sources",
+                      "notion-query-database-view",
+                      "notion-get-comments",
+                      "notion-get-teams",
+                      "notion-get-self"
+                    ]
+                  }
+                },
+                "required": [
+                  "name"
+                ]
+              }
+            },
+            "required": [
+              "method",
+              "params"
+            ]
+          }
+        ]
       }
     },
     "required": [
       "method",
       "path",
-      "body"
-    ],
-    "anyOf": [
-      {
-        "properties": {
-          "body": {
-            "type": "string",
-            "pattern": "\"method\"\\s*:\\s*\"(initialize|notifications/[A-Za-z/]+|ping|tools/list|prompts/(list|get)|resources/(list|read|templates/list)|completion/complete|logging/setLevel)\""
-          }
-        }
-      },
-      {
-        "properties": {
-          "body": {
-            "type": "string",
-            "pattern": "(?=[\\s\\S]*\"method\"\\s*:\\s*\"tools/call\")(?=[\\s\\S]*\"name\"\\s*:\\s*\"(notion-search|notion-fetch|notion-query-data-sources|notion-query-database-view|notion-get-comments|notion-get-teams|notion-get-users?|notion-get-self)\")"
-          }
-        }
-      }
+      "parsedBody"
     ]
   },
   "notion-mcp-write-all": {
@@ -75,30 +141,76 @@
       "path": {
         "type": "string",
         "pattern": "^/mcp/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "anyOf": [
+          {
+            "type": "object",
+            "properties": {
+              "method": {
+                "enum": [
+                  "initialize",
+                  "notifications/initialized",
+                  "notifications/cancelled",
+                  "ping",
+                  "tools/list",
+                  "prompts/list",
+                  "prompts/get",
+                  "resources/list",
+                  "resources/read",
+                  "resources/templates/list",
+                  "resources/subscribe",
+                  "resources/unsubscribe",
+                  "completion/complete",
+                  "logging/setLevel"
+                ]
+              }
+            },
+            "required": [
+              "method"
+            ]
+          },
+          {
+            "type": "object",
+            "properties": {
+              "method": {
+                "const": "tools/call"
+              },
+              "params": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "enum": [
+                      "notion-create-pages",
+                      "notion-update-page",
+                      "notion-move-pages",
+                      "notion-duplicate-page",
+                      "notion-create-database",
+                      "notion-update-data-source",
+                      "notion-create-view",
+                      "notion-update-view",
+                      "notion-create-comment"
+                    ]
+                  }
+                },
+                "required": [
+                  "name"
+                ]
+              }
+            },
+            "required": [
+              "method",
+              "params"
+            ]
+          }
+        ]
       }
     },
     "required": [
       "method",
       "path",
-      "body"
-    ],
-    "anyOf": [
-      {
-        "properties": {
-          "body": {
-            "type": "string",
-            "pattern": "\"method\"\\s*:\\s*\"(initialize|notifications/[A-Za-z/]+|ping|tools/list|prompts/(list|get)|resources/(list|read|templates/list)|completion/complete|logging/setLevel)\""
-          }
-        }
-      },
-      {
-        "properties": {
-          "body": {
-            "type": "string",
-            "pattern": "(?=[\\s\\S]*\"method\"\\s*:\\s*\"tools/call\")(?=[\\s\\S]*\"name\"\\s*:\\s*\"(notion-create-pages|notion-update-page|notion-move-pages|notion-duplicate-page|notion-create-database|notion-update-data-source|notion-create-view|notion-update-view|notion-create-comment)\")"
-          }
-        }
-      }
+      "parsedBody"
     ]
   },
   "notion-mcp-search": {
@@ -111,15 +223,34 @@
         "type": "string",
         "pattern": "^/mcp/?$"
       },
-      "body": {
-        "type": "string",
-        "pattern": "(?=[\\s\\S]*\"method\"\\s*:\\s*\"tools/call\")(?=[\\s\\S]*\"name\"\\s*:\\s*\"(notion-search)\")"
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "const": "tools/call"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "const": "notion-search"
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "params"
+        ]
       }
     },
     "required": [
       "method",
       "path",
-      "body"
+      "parsedBody"
     ]
   },
   "notion-mcp-fetch": {
@@ -132,15 +263,34 @@
         "type": "string",
         "pattern": "^/mcp/?$"
       },
-      "body": {
-        "type": "string",
-        "pattern": "(?=[\\s\\S]*\"method\"\\s*:\\s*\"tools/call\")(?=[\\s\\S]*\"name\"\\s*:\\s*\"(notion-fetch)\")"
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "const": "tools/call"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "const": "notion-fetch"
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "params"
+        ]
       }
     },
     "required": [
       "method",
       "path",
-      "body"
+      "parsedBody"
     ]
   },
   "notion-mcp-query-data-sources": {
@@ -153,15 +303,34 @@
         "type": "string",
         "pattern": "^/mcp/?$"
       },
-      "body": {
-        "type": "string",
-        "pattern": "(?=[\\s\\S]*\"method\"\\s*:\\s*\"tools/call\")(?=[\\s\\S]*\"name\"\\s*:\\s*\"(notion-query-data-sources)\")"
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "const": "tools/call"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "const": "notion-query-data-sources"
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "params"
+        ]
       }
     },
     "required": [
       "method",
       "path",
-      "body"
+      "parsedBody"
     ]
   },
   "notion-mcp-query-database-view": {
@@ -174,15 +343,34 @@
         "type": "string",
         "pattern": "^/mcp/?$"
       },
-      "body": {
-        "type": "string",
-        "pattern": "(?=[\\s\\S]*\"method\"\\s*:\\s*\"tools/call\")(?=[\\s\\S]*\"name\"\\s*:\\s*\"(notion-query-database-view)\")"
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "const": "tools/call"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "const": "notion-query-database-view"
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "params"
+        ]
       }
     },
     "required": [
       "method",
       "path",
-      "body"
+      "parsedBody"
     ]
   },
   "notion-mcp-get-comments": {
@@ -195,15 +383,34 @@
         "type": "string",
         "pattern": "^/mcp/?$"
       },
-      "body": {
-        "type": "string",
-        "pattern": "(?=[\\s\\S]*\"method\"\\s*:\\s*\"tools/call\")(?=[\\s\\S]*\"name\"\\s*:\\s*\"(notion-get-comments)\")"
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "const": "tools/call"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "const": "notion-get-comments"
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "params"
+        ]
       }
     },
     "required": [
       "method",
       "path",
-      "body"
+      "parsedBody"
     ]
   },
   "notion-mcp-get-teams": {
@@ -216,15 +423,34 @@
         "type": "string",
         "pattern": "^/mcp/?$"
       },
-      "body": {
-        "type": "string",
-        "pattern": "(?=[\\s\\S]*\"method\"\\s*:\\s*\"tools/call\")(?=[\\s\\S]*\"name\"\\s*:\\s*\"(notion-get-teams)\")"
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "const": "tools/call"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "const": "notion-get-teams"
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "params"
+        ]
       }
     },
     "required": [
       "method",
       "path",
-      "body"
+      "parsedBody"
     ]
   },
   "notion-mcp-get-users": {
@@ -237,15 +463,37 @@
         "type": "string",
         "pattern": "^/mcp/?$"
       },
-      "body": {
-        "type": "string",
-        "pattern": "(?=[\\s\\S]*\"method\"\\s*:\\s*\"tools/call\")(?=[\\s\\S]*\"name\"\\s*:\\s*\"notion-get-users?\")"
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "const": "tools/call"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "enum": [
+                  "notion-get-users",
+                  "notion-get-user"
+                ]
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "params"
+        ]
       }
     },
     "required": [
       "method",
       "path",
-      "body"
+      "parsedBody"
     ]
   },
   "notion-mcp-get-self": {
@@ -258,15 +506,34 @@
         "type": "string",
         "pattern": "^/mcp/?$"
       },
-      "body": {
-        "type": "string",
-        "pattern": "(?=[\\s\\S]*\"method\"\\s*:\\s*\"tools/call\")(?=[\\s\\S]*\"name\"\\s*:\\s*\"(notion-get-self)\")"
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "const": "tools/call"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "const": "notion-get-self"
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "params"
+        ]
       }
     },
     "required": [
       "method",
       "path",
-      "body"
+      "parsedBody"
     ]
   },
   "notion-mcp-create-pages": {
@@ -279,15 +546,34 @@
         "type": "string",
         "pattern": "^/mcp/?$"
       },
-      "body": {
-        "type": "string",
-        "pattern": "(?=[\\s\\S]*\"method\"\\s*:\\s*\"tools/call\")(?=[\\s\\S]*\"name\"\\s*:\\s*\"(notion-create-pages)\")"
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "const": "tools/call"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "const": "notion-create-pages"
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "params"
+        ]
       }
     },
     "required": [
       "method",
       "path",
-      "body"
+      "parsedBody"
     ]
   },
   "notion-mcp-update-page": {
@@ -300,15 +586,34 @@
         "type": "string",
         "pattern": "^/mcp/?$"
       },
-      "body": {
-        "type": "string",
-        "pattern": "(?=[\\s\\S]*\"method\"\\s*:\\s*\"tools/call\")(?=[\\s\\S]*\"name\"\\s*:\\s*\"(notion-update-page)\")"
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "const": "tools/call"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "const": "notion-update-page"
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "params"
+        ]
       }
     },
     "required": [
       "method",
       "path",
-      "body"
+      "parsedBody"
     ]
   },
   "notion-mcp-move-pages": {
@@ -321,15 +626,34 @@
         "type": "string",
         "pattern": "^/mcp/?$"
       },
-      "body": {
-        "type": "string",
-        "pattern": "(?=[\\s\\S]*\"method\"\\s*:\\s*\"tools/call\")(?=[\\s\\S]*\"name\"\\s*:\\s*\"(notion-move-pages)\")"
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "const": "tools/call"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "const": "notion-move-pages"
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "params"
+        ]
       }
     },
     "required": [
       "method",
       "path",
-      "body"
+      "parsedBody"
     ]
   },
   "notion-mcp-duplicate-page": {
@@ -342,15 +666,34 @@
         "type": "string",
         "pattern": "^/mcp/?$"
       },
-      "body": {
-        "type": "string",
-        "pattern": "(?=[\\s\\S]*\"method\"\\s*:\\s*\"tools/call\")(?=[\\s\\S]*\"name\"\\s*:\\s*\"(notion-duplicate-page)\")"
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "const": "tools/call"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "const": "notion-duplicate-page"
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "params"
+        ]
       }
     },
     "required": [
       "method",
       "path",
-      "body"
+      "parsedBody"
     ]
   },
   "notion-mcp-create-database": {
@@ -363,15 +706,34 @@
         "type": "string",
         "pattern": "^/mcp/?$"
       },
-      "body": {
-        "type": "string",
-        "pattern": "(?=[\\s\\S]*\"method\"\\s*:\\s*\"tools/call\")(?=[\\s\\S]*\"name\"\\s*:\\s*\"(notion-create-database)\")"
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "const": "tools/call"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "const": "notion-create-database"
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "params"
+        ]
       }
     },
     "required": [
       "method",
       "path",
-      "body"
+      "parsedBody"
     ]
   },
   "notion-mcp-update-data-source": {
@@ -384,15 +746,34 @@
         "type": "string",
         "pattern": "^/mcp/?$"
       },
-      "body": {
-        "type": "string",
-        "pattern": "(?=[\\s\\S]*\"method\"\\s*:\\s*\"tools/call\")(?=[\\s\\S]*\"name\"\\s*:\\s*\"(notion-update-data-source)\")"
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "const": "tools/call"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "const": "notion-update-data-source"
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "params"
+        ]
       }
     },
     "required": [
       "method",
       "path",
-      "body"
+      "parsedBody"
     ]
   },
   "notion-mcp-create-view": {
@@ -405,15 +786,34 @@
         "type": "string",
         "pattern": "^/mcp/?$"
       },
-      "body": {
-        "type": "string",
-        "pattern": "(?=[\\s\\S]*\"method\"\\s*:\\s*\"tools/call\")(?=[\\s\\S]*\"name\"\\s*:\\s*\"(notion-create-view)\")"
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "const": "tools/call"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "const": "notion-create-view"
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "params"
+        ]
       }
     },
     "required": [
       "method",
       "path",
-      "body"
+      "parsedBody"
     ]
   },
   "notion-mcp-update-view": {
@@ -426,15 +826,34 @@
         "type": "string",
         "pattern": "^/mcp/?$"
       },
-      "body": {
-        "type": "string",
-        "pattern": "(?=[\\s\\S]*\"method\"\\s*:\\s*\"tools/call\")(?=[\\s\\S]*\"name\"\\s*:\\s*\"(notion-update-view)\")"
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "const": "tools/call"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "const": "notion-update-view"
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "params"
+        ]
       }
     },
     "required": [
       "method",
       "path",
-      "body"
+      "parsedBody"
     ]
   },
   "notion-mcp-create-comment": {
@@ -447,15 +866,34 @@
         "type": "string",
         "pattern": "^/mcp/?$"
       },
-      "body": {
-        "type": "string",
-        "pattern": "(?=[\\s\\S]*\"method\"\\s*:\\s*\"tools/call\")(?=[\\s\\S]*\"name\"\\s*:\\s*\"(notion-create-comment)\")"
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "const": "tools/call"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "const": "notion-create-comment"
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "params"
+        ]
       }
     },
     "required": [
       "method",
       "path",
-      "body"
+      "parsedBody"
     ]
   }
 }
