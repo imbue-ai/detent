@@ -48,6 +48,47 @@ describe('decomposeRequest', () => {
     expect(data.method).toBe('POST');
   });
 
+  it('parses parsedBody for JSON request bodies', async () => {
+    const request = new Request('https://example.com/api', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json; charset=utf-8' },
+      body: '{"name":"alice","nested":{"x":1}}',
+    });
+    const data = await decomposeRequest(request);
+    expect(data.parsedBody).toEqual({ name: 'alice', nested: { x: 1 } });
+  });
+
+  it('parses parsedBody for +json content types', async () => {
+    const request = new Request('https://example.com/api', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/vnd.api+json' },
+      body: '[1,2,3]',
+    });
+    const data = await decomposeRequest(request);
+    expect(data.parsedBody).toEqual([1, 2, 3]);
+  });
+
+  it('leaves parsedBody undefined for non-JSON content types', async () => {
+    const request = new Request('https://example.com/api', {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain' },
+      body: '{"name":"alice"}',
+    });
+    const data = await decomposeRequest(request);
+    expect(data.parsedBody).toBeUndefined();
+    expect(data.body).toBe('{"name":"alice"}');
+  });
+
+  it('leaves parsedBody undefined for malformed JSON', async () => {
+    const request = new Request('https://example.com/api', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: '{not valid json',
+    });
+    const data = await decomposeRequest(request);
+    expect(data.parsedBody).toBeUndefined();
+  });
+
   it('uppercases the method even when the Request object does not normalize it', async () => {
     // The Fetch API only auto-uppercases the six standard methods
     // (DELETE, GET, HEAD, OPTIONS, POST, PUT). Others like PATCH

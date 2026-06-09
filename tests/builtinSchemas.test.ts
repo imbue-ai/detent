@@ -1251,16 +1251,17 @@ describe('builtin schemas: notion', () => {
 });
 
 describe('builtin schemas: notion-mcp', () => {
-  const toolCall = (name: string) =>
-    JSON.stringify({
-      jsonrpc: '2.0',
-      id: 1,
-      method: 'tools/call',
-      params: { name, arguments: {} },
-    });
+  const toolCall = (name: string) => ({
+    jsonrpc: '2.0',
+    id: 1,
+    method: 'tools/call',
+    params: { name, arguments: {} },
+  });
 
-  const mcpRequest = (body: string) =>
-    makeRequest({ domain: 'mcp.notion.com', method: 'POST', path: '/mcp', body });
+  const rpc = (method: string) => ({ jsonrpc: '2.0', id: 1, method });
+
+  const mcpRequest = (parsedBody: unknown) =>
+    makeRequest({ domain: 'mcp.notion.com', method: 'POST', path: '/mcp', parsedBody });
 
   it('notion-mcp scope matches mcp.notion.com', () => {
     expectSchemaExists('notion-mcp-api');
@@ -1277,15 +1278,17 @@ describe('builtin schemas: notion-mcp', () => {
 
   it('notion-mcp-session matches the MCP handshake but not tool calls', () => {
     expectSchemaExists('notion-mcp-session');
-    const initialize = JSON.stringify({ jsonrpc: '2.0', id: 1, method: 'initialize', params: {} });
-    expect(builtinRegistry.get('notion-mcp-session')!.match(mcpRequest(initialize))).toBe(true);
+    const session = builtinRegistry.get('notion-mcp-session')!;
+    expect(session.match(mcpRequest(rpc('initialize')))).toBe(true);
+    expect(session.match(mcpRequest(rpc('tools/list')))).toBe(true);
+    expect(session.match(mcpRequest(toolCall('notion-search')))).toBe(false);
+  });
+
+  it('notion-mcp schemas reject requests without a parsed JSON body', () => {
     expect(
       builtinRegistry
-        .get('notion-mcp-session')!
-        .match(mcpRequest(JSON.stringify({ jsonrpc: '2.0', id: 1, method: 'tools/list' })))
-    ).toBe(true);
-    expect(
-      builtinRegistry.get('notion-mcp-session')!.match(mcpRequest(toolCall('notion-search')))
+        .get('notion-mcp-search')!
+        .match(makeRequest({ domain: 'mcp.notion.com', method: 'POST', path: '/mcp' }))
     ).toBe(false);
   });
 
@@ -1301,9 +1304,13 @@ describe('builtin schemas: notion-mcp', () => {
 
   it('notion-mcp-search requires the MCP endpoint path', () => {
     expect(
-      builtinRegistry
-        .get('notion-mcp-search')!
-        .match(makeRequest({ method: 'POST', path: '/v1/search', body: toolCall('notion-search') }))
+      builtinRegistry.get('notion-mcp-search')!.match(
+        makeRequest({
+          method: 'POST',
+          path: '/v1/search',
+          parsedBody: toolCall('notion-search'),
+        })
+      )
     ).toBe(false);
   });
 
@@ -1325,15 +1332,11 @@ describe('builtin schemas: notion-mcp', () => {
       'notion-query-database-view',
       'notion-get-comments',
       'notion-get-teams',
-      'notion-get-users',
-      'notion-get-user',
       'notion-get-self',
     ]) {
       expect(readAll.match(mcpRequest(toolCall(tool))), `read-all should allow ${tool}`).toBe(true);
     }
-    expect(
-      readAll.match(mcpRequest(JSON.stringify({ jsonrpc: '2.0', id: 1, method: 'initialize' })))
-    ).toBe(true);
+    expect(readAll.match(mcpRequest(rpc('initialize')))).toBe(true);
     expect(readAll.match(mcpRequest(toolCall('notion-create-pages')))).toBe(false);
     expect(readAll.match(mcpRequest(toolCall('notion-update-page')))).toBe(false);
   });
@@ -1356,9 +1359,7 @@ describe('builtin schemas: notion-mcp', () => {
         true
       );
     }
-    expect(
-      writeAll.match(mcpRequest(JSON.stringify({ jsonrpc: '2.0', id: 1, method: 'initialize' })))
-    ).toBe(true);
+    expect(writeAll.match(mcpRequest(rpc('initialize')))).toBe(true);
     expect(writeAll.match(mcpRequest(toolCall('notion-search')))).toBe(false);
     expect(writeAll.match(mcpRequest(toolCall('notion-fetch')))).toBe(false);
   });

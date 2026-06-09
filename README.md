@@ -97,8 +97,9 @@ environment variable to specify a different path.
 
 An HTTP(s) request can be represented as an object that has
 several well-defined properties: `protocol`, `domain`, `port`,
-`path`, `method`, `headers`, `queryParams` and `body`. Using this
-representation, the `detent` tool uses [JSON schema](https://json-schema.org/) to:
+`path`, `method`, `headers`, `queryParams`, `body` and
+`parsedBody`. Using this representation, the `detent` tool uses
+[JSON schema](https://json-schema.org/) to:
 
 1. Match requests to permission checks.
 2. Define the "acceptable" shape of a request that is subject to a permission check. 
@@ -106,6 +107,14 @@ representation, the `detent` tool uses [JSON schema](https://json-schema.org/) t
 Some of the fields are normalized to canonical form before matching:
 `method` is always uppercase (e.g. `"GET"`), `protocol`,
 `domain` and `headers` keys are always lowercase (e.g. `"content-type"`).
+
+`body` holds the raw request body as a string. `parsedBody` holds
+a structured representation of the body and is only present when
+the body can be parsed, which currently happens for JSON bodies
+(content type `application/json` or `*+json`). Matching against
+`parsedBody` lets schemas inspect individual fields of a request
+body without resorting to brittle regular expressions. Support
+for other body formats (e.g. XML, GraphQL) may be added later.
 
 #### Request schemas
 
