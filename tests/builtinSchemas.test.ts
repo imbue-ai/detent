@@ -2271,6 +2271,9 @@ describe('builtin schemas: todoist', () => {
     const writeTasks = builtinRegistry.get('todoist-write-tasks')!;
     expect(writeTasks.match(makeRequest({ method: 'POST', path: '/api/v1/tasks' }))).toBe(true);
     expect(writeTasks.match(makeRequest({ method: 'POST', path: '/api/v1/tasks/123' }))).toBe(true);
+    expect(writeTasks.match(makeRequest({ method: 'POST', path: '/api/v1/tasks/quick_add' }))).toBe(
+      true
+    );
     expect(writeTasks.match(makeRequest({ method: 'DELETE', path: '/api/v1/tasks/123' }))).toBe(
       true
     );

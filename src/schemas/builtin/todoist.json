@@ -134,7 +134,7 @@
       },
       "path": {
         "type": "string",
-        "pattern": "^/(api|rest)/v[0-9]+/tasks(/quick_add|/[^/]+)?$"
+        "pattern": "^/(api|rest)/v[0-9]+/tasks(/[^/]+)?$"
       }
     },
     "required": [
