@@ -414,6 +414,24 @@ See the main [README](../README.md) for how schemas and rules work together.
 - `telegram-stickers`
 - `telegram-payments`
 
+### todoist
+
+- `todoist-api` *(scope)*
+- `todoist-read-all`
+- `todoist-write-all`
+- `todoist-read-projects`
+- `todoist-write-projects`
+- `todoist-read-sections`
+- `todoist-write-sections`
+- `todoist-read-tasks`
+- `todoist-write-tasks`
+- `todoist-complete-tasks`
+- `todoist-read-comments`
+- `todoist-write-comments`
+- `todoist-read-labels`
+- `todoist-write-labels`
+- `todoist-sync`
+
 ### umami
 
 - `umami-api` *(scope)*
