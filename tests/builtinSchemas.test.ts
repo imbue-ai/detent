@@ -2227,3 +2227,93 @@ describe('builtin schemas: zoom', () => {
     ).toBe(false);
   });
 });
+
+describe('builtin schemas: todoist', () => {
+  it('todoist scope matches api.todoist.com', () => {
+    expectSchemaExists('todoist-api');
+    expect(
+      builtinRegistry
+        .get('todoist-api')!
+        .match(makeRequest({ domain: 'api.todoist.com', path: '/api/v1/projects' }))
+    ).toBe(true);
+  });
+
+  it('todoist scope rejects unrelated domains', () => {
+    expect(
+      builtinRegistry.get('todoist-api')!.match(makeRequest({ domain: 'todoist.example.com' }))
+    ).toBe(false);
+  });
+
+  it('todoist-read-projects matches GET to projects, including collaborators', () => {
+    expectSchemaExists('todoist-read-projects');
+    expect(
+      builtinRegistry
+        .get('todoist-read-projects')!
+        .match(makeRequest({ method: 'GET', path: '/api/v1/projects/123/collaborators' }))
+    ).toBe(true);
+    expect(
+      builtinRegistry
+        .get('todoist-read-projects')!
+        .match(makeRequest({ method: 'GET', path: '/api/v1/tasks' }))
+    ).toBe(false);
+  });
+
+  it('todoist-read-projects also matches the legacy /rest/v2 prefix', () => {
+    expect(
+      builtinRegistry
+        .get('todoist-read-projects')!
+        .match(makeRequest({ method: 'GET', path: '/rest/v2/projects' }))
+    ).toBe(true);
+  });
+
+  it('todoist-write-tasks covers create, update, and delete but not completion', () => {
+    expectSchemaExists('todoist-write-tasks');
+    const writeTasks = builtinRegistry.get('todoist-write-tasks')!;
+    expect(writeTasks.match(makeRequest({ method: 'POST', path: '/api/v1/tasks' }))).toBe(true);
+    expect(writeTasks.match(makeRequest({ method: 'POST', path: '/api/v1/tasks/123' }))).toBe(true);
+    expect(writeTasks.match(makeRequest({ method: 'POST', path: '/api/v1/tasks/quick_add' }))).toBe(
+      true
+    );
+    expect(writeTasks.match(makeRequest({ method: 'DELETE', path: '/api/v1/tasks/123' }))).toBe(
+      true
+    );
+    expect(writeTasks.match(makeRequest({ method: 'POST', path: '/api/v1/tasks/123/close' }))).toBe(
+      false
+    );
+  });
+
+  it('todoist-complete-tasks matches only close, reopen, and move', () => {
+    expectSchemaExists('todoist-complete-tasks');
+    const complete = builtinRegistry.get('todoist-complete-tasks')!;
+    expect(complete.match(makeRequest({ method: 'POST', path: '/api/v1/tasks/123/close' }))).toBe(
+      true
+    );
+    expect(complete.match(makeRequest({ method: 'POST', path: '/api/v1/tasks/123/move' }))).toBe(
+      true
+    );
+    expect(complete.match(makeRequest({ method: 'POST', path: '/api/v1/tasks/123' }))).toBe(false);
+  });
+
+  it('todoist-read-labels covers shared labels', () => {
+    expectSchemaExists('todoist-read-labels');
+    expect(
+      builtinRegistry
+        .get('todoist-read-labels')!
+        .match(makeRequest({ method: 'GET', path: '/api/v1/labels/shared' }))
+    ).toBe(true);
+  });
+
+  it('todoist-sync matches POST to the sync endpoint only', () => {
+    expectSchemaExists('todoist-sync');
+    expect(
+      builtinRegistry
+        .get('todoist-sync')!
+        .match(makeRequest({ method: 'POST', path: '/api/v1/sync' }))
+    ).toBe(true);
+    expect(
+      builtinRegistry
+        .get('todoist-sync')!
+        .match(makeRequest({ method: 'GET', path: '/api/v1/sync' }))
+    ).toBe(false);
+  });
+});
