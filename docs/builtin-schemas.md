@@ -276,6 +276,27 @@ See the main [README](../README.md) for how schemas and rules work together.
 - `google-sheets-read-values`
 - `google-sheets-write-values`
 
+### greenhouse
+
+- `greenhouse-api` *(scope)*
+- `greenhouse-read-all`
+- `greenhouse-write-all`
+- `greenhouse-read-candidates`
+- `greenhouse-write-candidates`
+- `greenhouse-read-applications`
+- `greenhouse-write-applications`
+- `greenhouse-read-jobs`
+- `greenhouse-write-jobs`
+- `greenhouse-read-offers`
+- `greenhouse-read-scorecards`
+- `greenhouse-read-scheduled-interviews`
+- `greenhouse-write-scheduled-interviews`
+- `greenhouse-read-users`
+- `greenhouse-write-users`
+- `greenhouse-read-sources`
+- `greenhouse-read-departments`
+- `greenhouse-read-offices`
+
 ### linear
 
 - `linear-api` *(scope)*
@@ -339,6 +360,58 @@ See the main [README](../README.md) for how schemas and rules work together.
 - `notion-read-comments`
 - `notion-write-comments`
 - `notion-search`
+
+### quickbooks
+
+- `quickbooks-api` *(scope)*
+- `quickbooks-read-all`
+- `quickbooks-write-all`
+- `quickbooks-query`
+- `quickbooks-read-reports`
+- `quickbooks-read-company`
+- `quickbooks-read-customers`
+- `quickbooks-write-customers`
+- `quickbooks-read-invoices`
+- `quickbooks-write-invoices`
+- `quickbooks-read-bills`
+- `quickbooks-write-bills`
+- `quickbooks-read-payments`
+- `quickbooks-write-payments`
+- `quickbooks-read-vendors`
+- `quickbooks-write-vendors`
+- `quickbooks-read-items`
+- `quickbooks-write-items`
+- `quickbooks-read-accounts`
+- `quickbooks-write-accounts`
+- `quickbooks-read-employees`
+- `quickbooks-write-employees`
+
+### ramp
+
+- `ramp-api` *(scope)*
+- `ramp-read-all`
+- `ramp-write-all`
+- `ramp-read-transactions`
+- `ramp-read-reimbursements`
+- `ramp-read-users`
+- `ramp-write-users`
+- `ramp-read-cards`
+- `ramp-write-cards`
+- `ramp-read-limits`
+- `ramp-write-limits`
+- `ramp-read-spend-programs`
+- `ramp-read-bills`
+- `ramp-write-bills`
+- `ramp-read-receipts`
+- `ramp-read-merchants`
+- `ramp-read-departments`
+- `ramp-write-departments`
+- `ramp-read-locations`
+- `ramp-write-locations`
+- `ramp-read-accounting`
+- `ramp-write-accounting`
+- `ramp-read-statements`
+- `ramp-read-business`
 
 ### sentry
 

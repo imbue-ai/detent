@@ -1,0 +1,305 @@
+{
+  "greenhouse-api": {
+    "$comment": "Any request to the Greenhouse Harvest API.",
+    "properties": {
+      "domain": {
+        "const": "harvest.greenhouse.io"
+      }
+    },
+    "required": [
+      "domain"
+    ]
+  },
+  "greenhouse-read-all": {
+    "$comment": "Read anything from Greenhouse.",
+    "properties": {
+      "method": {
+        "const": "GET"
+      }
+    },
+    "required": [
+      "method"
+    ]
+  },
+  "greenhouse-write-all": {
+    "$comment": "Create, update, or delete anything in Greenhouse.",
+    "properties": {
+      "method": {
+        "enum": [
+          "POST",
+          "PUT",
+          "PATCH",
+          "DELETE"
+        ]
+      }
+    },
+    "required": [
+      "method"
+    ]
+  },
+  "greenhouse-read-candidates": {
+    "$comment": "Read candidates and prospects, including their activity feed.",
+    "properties": {
+      "method": {
+        "const": "GET"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/v[0-9]+/candidates(/.*)?$"
+      }
+    },
+    "required": [
+      "method",
+      "path"
+    ]
+  },
+  "greenhouse-write-candidates": {
+    "$comment": "Add, edit, anonymize, merge, or delete candidates and prospects.",
+    "properties": {
+      "method": {
+        "enum": [
+          "POST",
+          "PUT",
+          "PATCH",
+          "DELETE"
+        ]
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/v[0-9]+/candidates(/.*)?$"
+      }
+    },
+    "required": [
+      "method",
+      "path"
+    ]
+  },
+  "greenhouse-read-applications": {
+    "$comment": "Read job applications and their offers.",
+    "properties": {
+      "method": {
+        "const": "GET"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/v[0-9]+/applications(/.*)?$"
+      }
+    },
+    "required": [
+      "method",
+      "path"
+    ]
+  },
+  "greenhouse-write-applications": {
+    "$comment": "Advance, move, reject, hire, or otherwise update job applications.",
+    "properties": {
+      "method": {
+        "enum": [
+          "POST",
+          "PUT",
+          "PATCH",
+          "DELETE"
+        ]
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/v[0-9]+/applications(/.*)?$"
+      }
+    },
+    "required": [
+      "method",
+      "path"
+    ]
+  },
+  "greenhouse-read-jobs": {
+    "$comment": "Read jobs, job posts, and job openings.",
+    "properties": {
+      "method": {
+        "const": "GET"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/v[0-9]+/(jobs|job_posts)(/.*)?$"
+      }
+    },
+    "required": [
+      "method",
+      "path"
+    ]
+  },
+  "greenhouse-write-jobs": {
+    "$comment": "Create or update jobs, job posts, and job openings.",
+    "properties": {
+      "method": {
+        "enum": [
+          "POST",
+          "PUT",
+          "PATCH",
+          "DELETE"
+        ]
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/v[0-9]+/(jobs|job_posts)(/.*)?$"
+      }
+    },
+    "required": [
+      "method",
+      "path"
+    ]
+  },
+  "greenhouse-read-offers": {
+    "$comment": "Read offers extended to candidates.",
+    "properties": {
+      "method": {
+        "const": "GET"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/v[0-9]+/offers(/.*)?$"
+      }
+    },
+    "required": [
+      "method",
+      "path"
+    ]
+  },
+  "greenhouse-read-scorecards": {
+    "$comment": "Read interview scorecards and feedback.",
+    "properties": {
+      "method": {
+        "const": "GET"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/v[0-9]+/scorecards(/.*)?$"
+      }
+    },
+    "required": [
+      "method",
+      "path"
+    ]
+  },
+  "greenhouse-read-scheduled-interviews": {
+    "$comment": "Read scheduled interviews.",
+    "properties": {
+      "method": {
+        "const": "GET"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/v[0-9]+/scheduled_interviews(/.*)?$"
+      }
+    },
+    "required": [
+      "method",
+      "path"
+    ]
+  },
+  "greenhouse-write-scheduled-interviews": {
+    "$comment": "Create, update, or delete scheduled interviews.",
+    "properties": {
+      "method": {
+        "enum": [
+          "POST",
+          "PUT",
+          "PATCH",
+          "DELETE"
+        ]
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/v[0-9]+/scheduled_interviews(/.*)?$"
+      }
+    },
+    "required": [
+      "method",
+      "path"
+    ]
+  },
+  "greenhouse-read-users": {
+    "$comment": "Read users, including pending approvals.",
+    "properties": {
+      "method": {
+        "const": "GET"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/v[0-9]+/users(/.*)?$"
+      }
+    },
+    "required": [
+      "method",
+      "path"
+    ]
+  },
+  "greenhouse-write-users": {
+    "$comment": "Create, update, enable, or disable users.",
+    "properties": {
+      "method": {
+        "enum": [
+          "POST",
+          "PUT",
+          "PATCH",
+          "DELETE"
+        ]
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/v[0-9]+/users(/.*)?$"
+      }
+    },
+    "required": [
+      "method",
+      "path"
+    ]
+  },
+  "greenhouse-read-sources": {
+    "$comment": "Read candidate sources.",
+    "properties": {
+      "method": {
+        "const": "GET"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/v[0-9]+/sources(/.*)?$"
+      }
+    },
+    "required": [
+      "method",
+      "path"
+    ]
+  },
+  "greenhouse-read-departments": {
+    "$comment": "Read departments.",
+    "properties": {
+      "method": {
+        "const": "GET"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/v[0-9]+/departments(/.*)?$"
+      }
+    },
+    "required": [
+      "method",
+      "path"
+    ]
+  },
+  "greenhouse-read-offices": {
+    "$comment": "Read offices.",
+    "properties": {
+      "method": {
+        "const": "GET"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/v[0-9]+/offices(/.*)?$"
+      }
+    },
+    "required": [
+      "method",
+      "path"
+    ]
+  }
+}

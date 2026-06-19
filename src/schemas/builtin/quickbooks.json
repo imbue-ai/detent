@@ -1,0 +1,367 @@
+{
+  "quickbooks-api": {
+    "$comment": "Any request to the QuickBooks Online API, in production or sandbox.",
+    "properties": {
+      "domain": {
+        "type": "string",
+        "pattern": "^(sandbox-)?quickbooks\\.api\\.intuit\\.com$"
+      }
+    },
+    "required": [
+      "domain"
+    ]
+  },
+  "quickbooks-read-all": {
+    "$comment": "Read anything from QuickBooks.",
+    "properties": {
+      "method": {
+        "const": "GET"
+      }
+    },
+    "required": [
+      "method"
+    ]
+  },
+  "quickbooks-write-all": {
+    "$comment": "Create, update, or delete anything in QuickBooks.",
+    "properties": {
+      "method": {
+        "enum": [
+          "POST",
+          "DELETE"
+        ]
+      }
+    },
+    "required": [
+      "method"
+    ]
+  },
+  "quickbooks-query": {
+    "$comment": "Run read-only queries to list or search records.",
+    "properties": {
+      "method": {
+        "const": "GET"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/v3/company/[^/]+/query$"
+      }
+    },
+    "required": [
+      "method",
+      "path"
+    ]
+  },
+  "quickbooks-read-reports": {
+    "$comment": "Read financial reports such as profit and loss or balance sheet.",
+    "properties": {
+      "method": {
+        "const": "GET"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/v3/company/[^/]+/reports(/.*)?$"
+      }
+    },
+    "required": [
+      "method",
+      "path"
+    ]
+  },
+  "quickbooks-read-company": {
+    "$comment": "Read the company's profile information.",
+    "properties": {
+      "method": {
+        "const": "GET"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/v3/company/[^/]+/companyinfo(/.*)?$"
+      }
+    },
+    "required": [
+      "method",
+      "path"
+    ]
+  },
+  "quickbooks-read-customers": {
+    "$comment": "Read customers.",
+    "properties": {
+      "method": {
+        "const": "GET"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/v3/company/[^/]+/customer(/.*)?$"
+      }
+    },
+    "required": [
+      "method",
+      "path"
+    ]
+  },
+  "quickbooks-write-customers": {
+    "$comment": "Create, update, or delete customers.",
+    "properties": {
+      "method": {
+        "enum": [
+          "POST",
+          "DELETE"
+        ]
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/v3/company/[^/]+/customer(/.*)?$"
+      }
+    },
+    "required": [
+      "method",
+      "path"
+    ]
+  },
+  "quickbooks-read-invoices": {
+    "$comment": "Read invoices.",
+    "properties": {
+      "method": {
+        "const": "GET"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/v3/company/[^/]+/invoice(/.*)?$"
+      }
+    },
+    "required": [
+      "method",
+      "path"
+    ]
+  },
+  "quickbooks-write-invoices": {
+    "$comment": "Create, update, send, or delete invoices.",
+    "properties": {
+      "method": {
+        "enum": [
+          "POST",
+          "DELETE"
+        ]
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/v3/company/[^/]+/invoice(/.*)?$"
+      }
+    },
+    "required": [
+      "method",
+      "path"
+    ]
+  },
+  "quickbooks-read-bills": {
+    "$comment": "Read bills.",
+    "properties": {
+      "method": {
+        "const": "GET"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/v3/company/[^/]+/bill(/.*)?$"
+      }
+    },
+    "required": [
+      "method",
+      "path"
+    ]
+  },
+  "quickbooks-write-bills": {
+    "$comment": "Create, update, or delete bills.",
+    "properties": {
+      "method": {
+        "enum": [
+          "POST",
+          "DELETE"
+        ]
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/v3/company/[^/]+/bill(/.*)?$"
+      }
+    },
+    "required": [
+      "method",
+      "path"
+    ]
+  },
+  "quickbooks-read-payments": {
+    "$comment": "Read payments.",
+    "properties": {
+      "method": {
+        "const": "GET"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/v3/company/[^/]+/payment(/.*)?$"
+      }
+    },
+    "required": [
+      "method",
+      "path"
+    ]
+  },
+  "quickbooks-write-payments": {
+    "$comment": "Create, update, or delete payments.",
+    "properties": {
+      "method": {
+        "enum": [
+          "POST",
+          "DELETE"
+        ]
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/v3/company/[^/]+/payment(/.*)?$"
+      }
+    },
+    "required": [
+      "method",
+      "path"
+    ]
+  },
+  "quickbooks-read-vendors": {
+    "$comment": "Read vendors.",
+    "properties": {
+      "method": {
+        "const": "GET"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/v3/company/[^/]+/vendor(/.*)?$"
+      }
+    },
+    "required": [
+      "method",
+      "path"
+    ]
+  },
+  "quickbooks-write-vendors": {
+    "$comment": "Create, update, or delete vendors.",
+    "properties": {
+      "method": {
+        "enum": [
+          "POST",
+          "DELETE"
+        ]
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/v3/company/[^/]+/vendor(/.*)?$"
+      }
+    },
+    "required": [
+      "method",
+      "path"
+    ]
+  },
+  "quickbooks-read-items": {
+    "$comment": "Read products and services (items).",
+    "properties": {
+      "method": {
+        "const": "GET"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/v3/company/[^/]+/item(/.*)?$"
+      }
+    },
+    "required": [
+      "method",
+      "path"
+    ]
+  },
+  "quickbooks-write-items": {
+    "$comment": "Create, update, or delete products and services (items).",
+    "properties": {
+      "method": {
+        "enum": [
+          "POST",
+          "DELETE"
+        ]
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/v3/company/[^/]+/item(/.*)?$"
+      }
+    },
+    "required": [
+      "method",
+      "path"
+    ]
+  },
+  "quickbooks-read-accounts": {
+    "$comment": "Read chart-of-accounts accounts.",
+    "properties": {
+      "method": {
+        "const": "GET"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/v3/company/[^/]+/account(/.*)?$"
+      }
+    },
+    "required": [
+      "method",
+      "path"
+    ]
+  },
+  "quickbooks-write-accounts": {
+    "$comment": "Create or update chart-of-accounts accounts.",
+    "properties": {
+      "method": {
+        "enum": [
+          "POST",
+          "DELETE"
+        ]
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/v3/company/[^/]+/account(/.*)?$"
+      }
+    },
+    "required": [
+      "method",
+      "path"
+    ]
+  },
+  "quickbooks-read-employees": {
+    "$comment": "Read employees.",
+    "properties": {
+      "method": {
+        "const": "GET"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/v3/company/[^/]+/employee(/.*)?$"
+      }
+    },
+    "required": [
+      "method",
+      "path"
+    ]
+  },
+  "quickbooks-write-employees": {
+    "$comment": "Create or update employees.",
+    "properties": {
+      "method": {
+        "enum": [
+          "POST",
+          "DELETE"
+        ]
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/v3/company/[^/]+/employee(/.*)?$"
+      }
+    },
+    "required": [
+      "method",
+      "path"
+    ]
+  }
+}

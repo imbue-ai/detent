@@ -2227,3 +2227,172 @@ describe('builtin schemas: zoom', () => {
     ).toBe(false);
   });
 });
+
+describe('builtin schemas: greenhouse', () => {
+  it('greenhouse scope matches harvest.greenhouse.io', () => {
+    expectSchemaExists('greenhouse-api');
+    expect(
+      builtinRegistry
+        .get('greenhouse-api')!
+        .match(makeRequest({ domain: 'harvest.greenhouse.io', path: '/v1/candidates' }))
+    ).toBe(true);
+  });
+
+  it('greenhouse scope rejects unrelated domains', () => {
+    expect(
+      builtinRegistry.get('greenhouse-api')!.match(makeRequest({ domain: 'api.greenhouse.io' }))
+    ).toBe(false);
+  });
+
+  it('greenhouse-read-candidates matches GET to candidates, including the activity feed', () => {
+    expectSchemaExists('greenhouse-read-candidates');
+    const readCandidates = builtinRegistry.get('greenhouse-read-candidates')!;
+    expect(
+      readCandidates.match(makeRequest({ method: 'GET', path: '/v1/candidates/123/activity_feed' }))
+    ).toBe(true);
+    expect(readCandidates.match(makeRequest({ method: 'GET', path: '/v1/jobs' }))).toBe(false);
+    expect(readCandidates.match(makeRequest({ method: 'POST', path: '/v1/candidates' }))).toBe(
+      false
+    );
+  });
+
+  it('greenhouse-write-candidates covers create, update, and delete but not reads', () => {
+    expectSchemaExists('greenhouse-write-candidates');
+    const writeCandidates = builtinRegistry.get('greenhouse-write-candidates')!;
+    expect(writeCandidates.match(makeRequest({ method: 'POST', path: '/v1/candidates' }))).toBe(
+      true
+    );
+    expect(
+      writeCandidates.match(makeRequest({ method: 'PATCH', path: '/v1/candidates/123' }))
+    ).toBe(true);
+    expect(
+      writeCandidates.match(makeRequest({ method: 'DELETE', path: '/v1/candidates/123' }))
+    ).toBe(true);
+    expect(writeCandidates.match(makeRequest({ method: 'GET', path: '/v1/candidates' }))).toBe(
+      false
+    );
+  });
+
+  it('greenhouse-read-jobs also covers job posts', () => {
+    expect(
+      builtinRegistry
+        .get('greenhouse-read-jobs')!
+        .match(makeRequest({ method: 'GET', path: '/v1/job_posts' }))
+    ).toBe(true);
+  });
+});
+
+describe('builtin schemas: ramp', () => {
+  it('ramp scope matches api.ramp.com', () => {
+    expectSchemaExists('ramp-api');
+    expect(
+      builtinRegistry
+        .get('ramp-api')!
+        .match(makeRequest({ domain: 'api.ramp.com', path: '/developer/v1/transactions' }))
+    ).toBe(true);
+  });
+
+  it('ramp scope rejects unrelated domains', () => {
+    expect(
+      builtinRegistry.get('ramp-api')!.match(makeRequest({ domain: 'demo-api.ramp.com' }))
+    ).toBe(false);
+  });
+
+  it('ramp-read-transactions matches GET to transactions only', () => {
+    expectSchemaExists('ramp-read-transactions');
+    const readTransactions = builtinRegistry.get('ramp-read-transactions')!;
+    expect(
+      readTransactions.match(makeRequest({ method: 'GET', path: '/developer/v1/transactions/abc' }))
+    ).toBe(true);
+    expect(
+      readTransactions.match(makeRequest({ method: 'GET', path: '/developer/v1/users' }))
+    ).toBe(false);
+  });
+
+  it('ramp-write-users covers deactivation but not reads', () => {
+    expectSchemaExists('ramp-write-users');
+    const writeUsers = builtinRegistry.get('ramp-write-users')!;
+    expect(
+      writeUsers.match(makeRequest({ method: 'POST', path: '/developer/v1/users/abc/deactivate' }))
+    ).toBe(true);
+    expect(writeUsers.match(makeRequest({ method: 'GET', path: '/developer/v1/users' }))).toBe(
+      false
+    );
+  });
+
+  it('ramp-read-accounting matches nested accounting resources', () => {
+    expect(
+      builtinRegistry
+        .get('ramp-read-accounting')!
+        .match(makeRequest({ method: 'GET', path: '/developer/v1/accounting/gl-accounts' }))
+    ).toBe(true);
+  });
+
+  it('ramp resource scopes tolerate a future API version', () => {
+    expect(
+      builtinRegistry
+        .get('ramp-read-transactions')!
+        .match(makeRequest({ method: 'GET', path: '/developer/v2/transactions' }))
+    ).toBe(true);
+  });
+});
+
+describe('builtin schemas: quickbooks', () => {
+  it('quickbooks scope matches production and sandbox hosts', () => {
+    expectSchemaExists('quickbooks-api');
+    const scope = builtinRegistry.get('quickbooks-api')!;
+    expect(scope.match(makeRequest({ domain: 'quickbooks.api.intuit.com' }))).toBe(true);
+    expect(scope.match(makeRequest({ domain: 'sandbox-quickbooks.api.intuit.com' }))).toBe(true);
+  });
+
+  it('quickbooks scope rejects unrelated intuit hosts', () => {
+    expect(
+      builtinRegistry
+        .get('quickbooks-api')!
+        .match(makeRequest({ domain: 'accounts.platform.intuit.com' }))
+    ).toBe(false);
+  });
+
+  it('quickbooks-query matches only the query endpoint', () => {
+    expectSchemaExists('quickbooks-query');
+    const query = builtinRegistry.get('quickbooks-query')!;
+    expect(query.match(makeRequest({ method: 'GET', path: '/v3/company/9130/query' }))).toBe(true);
+    expect(query.match(makeRequest({ method: 'GET', path: '/v3/company/9130/customer/1' }))).toBe(
+      false
+    );
+  });
+
+  it('quickbooks-read-customers matches reading a customer by id', () => {
+    expectSchemaExists('quickbooks-read-customers');
+    const readCustomers = builtinRegistry.get('quickbooks-read-customers')!;
+    expect(
+      readCustomers.match(makeRequest({ method: 'GET', path: '/v3/company/9130/customer/1' }))
+    ).toBe(true);
+    // The bill entity must not be matched by the customer schema.
+    expect(
+      readCustomers.match(makeRequest({ method: 'GET', path: '/v3/company/9130/bill/1' }))
+    ).toBe(false);
+  });
+
+  it('quickbooks-write-invoices covers create and delete but not reads', () => {
+    expectSchemaExists('quickbooks-write-invoices');
+    const writeInvoices = builtinRegistry.get('quickbooks-write-invoices')!;
+    expect(
+      writeInvoices.match(makeRequest({ method: 'POST', path: '/v3/company/9130/invoice' }))
+    ).toBe(true);
+    expect(
+      writeInvoices.match(makeRequest({ method: 'DELETE', path: '/v3/company/9130/invoice' }))
+    ).toBe(true);
+    expect(
+      writeInvoices.match(makeRequest({ method: 'GET', path: '/v3/company/9130/invoice/1' }))
+    ).toBe(false);
+  });
+
+  it('quickbooks-read-bills does not leak into billpayment paths', () => {
+    expect(
+      builtinRegistry
+        .get('quickbooks-read-bills')!
+        .match(makeRequest({ method: 'GET', path: '/v3/company/9130/billpayment/1' }))
+    ).toBe(false);
+  });
+});
