@@ -2273,12 +2273,52 @@ describe('builtin schemas: greenhouse', () => {
     );
   });
 
-  it('greenhouse-read-jobs also covers job posts', () => {
-    expect(
-      builtinRegistry
-        .get('greenhouse-read-jobs')!
-        .match(makeRequest({ method: 'GET', path: '/v1/job_posts' }))
-    ).toBe(true);
+  it('greenhouse-read-jobs and greenhouse-read-job-posts are distinct categories', () => {
+    const readJobs = builtinRegistry.get('greenhouse-read-jobs')!;
+    const readJobPosts = builtinRegistry.get('greenhouse-read-job-posts')!;
+    expect(readJobs.match(makeRequest({ method: 'GET', path: '/v1/jobs/5' }))).toBe(true);
+    // top-level job posts are their own category, not covered by read-jobs
+    expect(readJobs.match(makeRequest({ method: 'GET', path: '/v1/job_posts' }))).toBe(false);
+    expect(readJobPosts.match(makeRequest({ method: 'GET', path: '/v1/job_posts' }))).toBe(true);
+    expect(readJobPosts.match(makeRequest({ method: 'GET', path: '/v1/jobs/5/job_posts' }))).toBe(
+      true
+    );
+  });
+
+  it('greenhouse covers the full Harvest resource surface', () => {
+    for (const name of [
+      'greenhouse-read-activity-feed',
+      'greenhouse-read-approvals',
+      'greenhouse-write-approvals',
+      'greenhouse-read-custom-fields',
+      'greenhouse-write-custom-fields',
+      'greenhouse-read-demographics',
+      'greenhouse-read-eeoc',
+      'greenhouse-read-scorecards',
+      'greenhouse-read-scheduled-interviews',
+      'greenhouse-write-scheduled-interviews',
+      'greenhouse-read-offices',
+      'greenhouse-write-offices',
+      'greenhouse-read-sources',
+      'greenhouse-read-user-roles',
+      'greenhouse-read-tags',
+      'greenhouse-write-tags',
+    ]) {
+      expectSchemaExists(name);
+    }
+  });
+
+  it('greenhouse-write-offices matches mutations but not reads', () => {
+    const writeOffices = builtinRegistry.get('greenhouse-write-offices')!;
+    expect(writeOffices.match(makeRequest({ method: 'POST', path: '/v1/offices' }))).toBe(true);
+    expect(writeOffices.match(makeRequest({ method: 'PATCH', path: '/v1/offices/5' }))).toBe(true);
+    expect(writeOffices.match(makeRequest({ method: 'GET', path: '/v1/offices' }))).toBe(false);
+  });
+
+  it('greenhouse read-only categories expose no write counterpart', () => {
+    expect(builtinRegistry.get('greenhouse-write-scorecards')).toBeUndefined();
+    expect(builtinRegistry.get('greenhouse-write-sources')).toBeUndefined();
+    expect(builtinRegistry.get('greenhouse-write-eeoc')).toBeUndefined();
   });
 });
 
@@ -2292,10 +2332,34 @@ describe('builtin schemas: ramp', () => {
     ).toBe(true);
   });
 
-  it('ramp scope rejects unrelated domains', () => {
+  it('ramp scope matches the demo (sandbox) host but rejects unrelated domains', () => {
+    const scope = builtinRegistry.get('ramp-api')!;
+    expect(scope.match(makeRequest({ domain: 'demo-api.ramp.com' }))).toBe(true);
+    expect(scope.match(makeRequest({ domain: 'ramp.com' }))).toBe(false);
+    expect(scope.match(makeRequest({ domain: 'evil-api.ramp.com' }))).toBe(false);
+  });
+
+  it('ramp covers the full resource surface (read/write split where applicable)', () => {
+    for (const name of [
+      'ramp-read-card-programs',
+      'ramp-write-card-programs',
+      'ramp-read-vendors',
+      'ramp-write-vendors',
+      'ramp-read-receipt-integrations',
+      'ramp-read-cashbacks',
+      'ramp-read-entities',
+      'ramp-read-memos',
+    ]) {
+      expectSchemaExists(name);
+    }
+    // read-only categories expose no write counterpart
+    expect(builtinRegistry.get('ramp-write-transactions')).toBeUndefined();
+    expect(builtinRegistry.get('ramp-write-cashbacks')).toBeUndefined();
     expect(
-      builtinRegistry.get('ramp-api')!.match(makeRequest({ domain: 'demo-api.ramp.com' }))
-    ).toBe(false);
+      builtinRegistry
+        .get('ramp-write-vendors')!
+        .match(makeRequest({ method: 'POST', path: '/developer/v1/vendors' }))
+    ).toBe(true);
   });
 
   it('ramp-read-transactions matches GET to transactions only', () => {
@@ -2394,5 +2458,43 @@ describe('builtin schemas: quickbooks', () => {
         .get('quickbooks-read-bills')!
         .match(makeRequest({ method: 'GET', path: '/v3/company/9130/billpayment/1' }))
     ).toBe(false);
+  });
+
+  it('quickbooks covers the full entity surface plus query/cdc/batch operations', () => {
+    for (const name of [
+      'quickbooks-query',
+      'quickbooks-change-data-capture',
+      'quickbooks-batch',
+      'quickbooks-tax-service',
+      'quickbooks-read-accounts',
+      'quickbooks-write-accounts',
+      'quickbooks-read-employees',
+      'quickbooks-write-employees',
+      'quickbooks-read-estimates',
+      'quickbooks-write-estimates',
+      'quickbooks-read-journal-entries',
+      'quickbooks-write-journal-entries',
+      'quickbooks-read-purchase-orders',
+      'quickbooks-write-purchase-orders',
+      'quickbooks-read-sales-receipts',
+      'quickbooks-write-sales-receipts',
+      'quickbooks-read-vendor-credits',
+      'quickbooks-write-vendor-credits',
+    ]) {
+      expectSchemaExists(name);
+    }
+  });
+
+  it('quickbooks-batch matches only POST to the batch endpoint', () => {
+    const batch = builtinRegistry.get('quickbooks-batch')!;
+    expect(batch.match(makeRequest({ method: 'POST', path: '/v3/company/9130/batch' }))).toBe(true);
+    expect(batch.match(makeRequest({ method: 'GET', path: '/v3/company/9130/batch' }))).toBe(false);
+  });
+
+  it('quickbooks read-only entities expose no write counterpart', () => {
+    expect(builtinRegistry.get('quickbooks-read-budgets')).toBeDefined();
+    expect(builtinRegistry.get('quickbooks-write-budgets')).toBeUndefined();
+    expect(builtinRegistry.get('quickbooks-write-customer-types')).toBeUndefined();
+    expect(builtinRegistry.get('quickbooks-write-tax-classifications')).toBeUndefined();
   });
 });

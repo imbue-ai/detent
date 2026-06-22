@@ -1,9 +1,10 @@
 {
   "ramp-api": {
-    "$comment": "Any request to the Ramp developer API.",
+    "$comment": "Any request to the Ramp developer API, in production or the demo (sandbox) environment.",
     "properties": {
       "domain": {
-        "const": "api.ramp.com"
+        "type": "string",
+        "pattern": "^(demo-)?api\\.ramp\\.com$"
       }
     },
     "required": [
@@ -143,6 +144,80 @@
       "path"
     ]
   },
+  "ramp-read-card-programs": {
+    "$comment": "Read card programs.",
+    "properties": {
+      "method": {
+        "const": "GET"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/developer/v[0-9]+/card-programs(/.*)?$"
+      }
+    },
+    "required": [
+      "method",
+      "path"
+    ]
+  },
+  "ramp-write-card-programs": {
+    "$comment": "Create or update card programs.",
+    "properties": {
+      "method": {
+        "enum": [
+          "POST",
+          "PUT",
+          "PATCH",
+          "DELETE"
+        ]
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/developer/v[0-9]+/card-programs(/.*)?$"
+      }
+    },
+    "required": [
+      "method",
+      "path"
+    ]
+  },
+  "ramp-read-spend-programs": {
+    "$comment": "Read spend programs.",
+    "properties": {
+      "method": {
+        "const": "GET"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/developer/v[0-9]+/spend-programs(/.*)?$"
+      }
+    },
+    "required": [
+      "method",
+      "path"
+    ]
+  },
+  "ramp-write-spend-programs": {
+    "$comment": "Create or update spend programs.",
+    "properties": {
+      "method": {
+        "enum": [
+          "POST",
+          "PUT",
+          "PATCH",
+          "DELETE"
+        ]
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/developer/v[0-9]+/spend-programs(/.*)?$"
+      }
+    },
+    "required": [
+      "method",
+      "path"
+    ]
+  },
   "ramp-read-limits": {
     "$comment": "Read spend limits.",
     "properties": {
@@ -173,91 +248,6 @@
       "path": {
         "type": "string",
         "pattern": "^/developer/v[0-9]+/limits(/.*)?$"
-      }
-    },
-    "required": [
-      "method",
-      "path"
-    ]
-  },
-  "ramp-read-spend-programs": {
-    "$comment": "Read spend programs.",
-    "properties": {
-      "method": {
-        "const": "GET"
-      },
-      "path": {
-        "type": "string",
-        "pattern": "^/developer/v[0-9]+/spend-programs(/.*)?$"
-      }
-    },
-    "required": [
-      "method",
-      "path"
-    ]
-  },
-  "ramp-read-bills": {
-    "$comment": "Read bills.",
-    "properties": {
-      "method": {
-        "const": "GET"
-      },
-      "path": {
-        "type": "string",
-        "pattern": "^/developer/v[0-9]+/bills(/.*)?$"
-      }
-    },
-    "required": [
-      "method",
-      "path"
-    ]
-  },
-  "ramp-write-bills": {
-    "$comment": "Create, update, or delete bills.",
-    "properties": {
-      "method": {
-        "enum": [
-          "POST",
-          "PUT",
-          "PATCH",
-          "DELETE"
-        ]
-      },
-      "path": {
-        "type": "string",
-        "pattern": "^/developer/v[0-9]+/bills(/.*)?$"
-      }
-    },
-    "required": [
-      "method",
-      "path"
-    ]
-  },
-  "ramp-read-receipts": {
-    "$comment": "Read receipts.",
-    "properties": {
-      "method": {
-        "const": "GET"
-      },
-      "path": {
-        "type": "string",
-        "pattern": "^/developer/v[0-9]+/receipts(/.*)?$"
-      }
-    },
-    "required": [
-      "method",
-      "path"
-    ]
-  },
-  "ramp-read-merchants": {
-    "$comment": "Read merchant data.",
-    "properties": {
-      "method": {
-        "const": "GET"
-      },
-      "path": {
-        "type": "string",
-        "pattern": "^/developer/v[0-9]+/merchants(/.*)?$"
       }
     },
     "required": [
@@ -339,8 +329,167 @@
       "path"
     ]
   },
+  "ramp-read-bills": {
+    "$comment": "Read bills.",
+    "properties": {
+      "method": {
+        "const": "GET"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/developer/v[0-9]+/bills(/.*)?$"
+      }
+    },
+    "required": [
+      "method",
+      "path"
+    ]
+  },
+  "ramp-write-bills": {
+    "$comment": "Create, update, or delete bills.",
+    "properties": {
+      "method": {
+        "enum": [
+          "POST",
+          "PUT",
+          "PATCH",
+          "DELETE"
+        ]
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/developer/v[0-9]+/bills(/.*)?$"
+      }
+    },
+    "required": [
+      "method",
+      "path"
+    ]
+  },
+  "ramp-read-vendors": {
+    "$comment": "Read vendors.",
+    "properties": {
+      "method": {
+        "const": "GET"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/developer/v[0-9]+/vendors(/.*)?$"
+      }
+    },
+    "required": [
+      "method",
+      "path"
+    ]
+  },
+  "ramp-write-vendors": {
+    "$comment": "Create, update, or delete vendors.",
+    "properties": {
+      "method": {
+        "enum": [
+          "POST",
+          "PUT",
+          "PATCH",
+          "DELETE"
+        ]
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/developer/v[0-9]+/vendors(/.*)?$"
+      }
+    },
+    "required": [
+      "method",
+      "path"
+    ]
+  },
+  "ramp-read-receipts": {
+    "$comment": "Read receipts.",
+    "properties": {
+      "method": {
+        "const": "GET"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/developer/v[0-9]+/receipts(/.*)?$"
+      }
+    },
+    "required": [
+      "method",
+      "path"
+    ]
+  },
+  "ramp-read-receipt-integrations": {
+    "$comment": "Read receipt integrations.",
+    "properties": {
+      "method": {
+        "const": "GET"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/developer/v[0-9]+/receipt-integrations(/.*)?$"
+      }
+    },
+    "required": [
+      "method",
+      "path"
+    ]
+  },
+  "ramp-write-receipt-integrations": {
+    "$comment": "Create or update receipt integrations.",
+    "properties": {
+      "method": {
+        "enum": [
+          "POST",
+          "PUT",
+          "PATCH",
+          "DELETE"
+        ]
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/developer/v[0-9]+/receipt-integrations(/.*)?$"
+      }
+    },
+    "required": [
+      "method",
+      "path"
+    ]
+  },
+  "ramp-read-memos": {
+    "$comment": "Read accounting memos.",
+    "properties": {
+      "method": {
+        "const": "GET"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/developer/v[0-9]+/memos(/.*)?$"
+      }
+    },
+    "required": [
+      "method",
+      "path"
+    ]
+  },
+  "ramp-read-merchants": {
+    "$comment": "Read merchant data.",
+    "properties": {
+      "method": {
+        "const": "GET"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/developer/v[0-9]+/merchants(/.*)?$"
+      }
+    },
+    "required": [
+      "method",
+      "path"
+    ]
+  },
   "ramp-read-accounting": {
-    "$comment": "Read accounting configuration such as GL accounts, vendors, and field mappings.",
+    "$comment": "Read accounting configuration such as GL accounts, fields, subsidiaries, tracking categories, and vendors.",
     "properties": {
       "method": {
         "const": "GET"
@@ -356,7 +505,7 @@
     ]
   },
   "ramp-write-accounting": {
-    "$comment": "Create, update, or delete accounting configuration and sync accounting data.",
+    "$comment": "Create, update, delete, or sync accounting configuration and data.",
     "properties": {
       "method": {
         "enum": [
@@ -385,6 +534,54 @@
       "path": {
         "type": "string",
         "pattern": "^/developer/v[0-9]+/statements(/.*)?$"
+      }
+    },
+    "required": [
+      "method",
+      "path"
+    ]
+  },
+  "ramp-read-transfers": {
+    "$comment": "Read transfers.",
+    "properties": {
+      "method": {
+        "const": "GET"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/developer/v[0-9]+/transfers(/.*)?$"
+      }
+    },
+    "required": [
+      "method",
+      "path"
+    ]
+  },
+  "ramp-read-cashbacks": {
+    "$comment": "Read cashbacks.",
+    "properties": {
+      "method": {
+        "const": "GET"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/developer/v[0-9]+/cashbacks(/.*)?$"
+      }
+    },
+    "required": [
+      "method",
+      "path"
+    ]
+  },
+  "ramp-read-entities": {
+    "$comment": "Read business entities.",
+    "properties": {
+      "method": {
+        "const": "GET"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/developer/v[0-9]+/entities(/.*)?$"
       }
     },
     "required": [
