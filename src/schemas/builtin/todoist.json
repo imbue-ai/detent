@@ -1,0 +1,247 @@
+{
+  "todoist-api": {
+    "$comment": "Any request to the Todoist API.",
+    "properties": {
+      "domain": {
+        "const": "api.todoist.com"
+      }
+    },
+    "required": [
+      "domain"
+    ]
+  },
+  "todoist-read-all": {
+    "$comment": "Read anything from Todoist.",
+    "properties": {
+      "method": {
+        "const": "GET"
+      }
+    },
+    "required": [
+      "method"
+    ]
+  },
+  "todoist-write-all": {
+    "$comment": "Create, update, or delete anything in Todoist.",
+    "properties": {
+      "method": {
+        "enum": [
+          "POST",
+          "PUT",
+          "PATCH",
+          "DELETE"
+        ]
+      }
+    },
+    "required": [
+      "method"
+    ]
+  },
+  "todoist-read-projects": {
+    "$comment": "Read projects, including collaborators, search, and archived projects.",
+    "properties": {
+      "method": {
+        "const": "GET"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/(api|rest)/v[0-9]+/projects(/.*)?$"
+      }
+    },
+    "required": [
+      "method",
+      "path"
+    ]
+  },
+  "todoist-write-projects": {
+    "$comment": "Create, update, delete, archive, or unarchive projects.",
+    "properties": {
+      "method": {
+        "enum": [
+          "POST",
+          "DELETE"
+        ]
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/(api|rest)/v[0-9]+/projects(/.*)?$"
+      }
+    },
+    "required": [
+      "method",
+      "path"
+    ]
+  },
+  "todoist-read-sections": {
+    "$comment": "Read sections, including search.",
+    "properties": {
+      "method": {
+        "const": "GET"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/(api|rest)/v[0-9]+/sections(/.*)?$"
+      }
+    },
+    "required": [
+      "method",
+      "path"
+    ]
+  },
+  "todoist-write-sections": {
+    "$comment": "Create, update, delete, archive, or unarchive sections.",
+    "properties": {
+      "method": {
+        "enum": [
+          "POST",
+          "DELETE"
+        ]
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/(api|rest)/v[0-9]+/sections(/.*)?$"
+      }
+    },
+    "required": [
+      "method",
+      "path"
+    ]
+  },
+  "todoist-read-tasks": {
+    "$comment": "Read tasks, including filters and completed tasks.",
+    "properties": {
+      "method": {
+        "const": "GET"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/(api|rest)/v[0-9]+/tasks(/.*)?$"
+      }
+    },
+    "required": [
+      "method",
+      "path"
+    ]
+  },
+  "todoist-write-tasks": {
+    "$comment": "Create, update, delete, or quick-add tasks (not completion — see todoist-complete-tasks).",
+    "properties": {
+      "method": {
+        "enum": [
+          "POST",
+          "DELETE"
+        ]
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/(api|rest)/v[0-9]+/tasks(/[^/]+)?$"
+      }
+    },
+    "required": [
+      "method",
+      "path"
+    ]
+  },
+  "todoist-complete-tasks": {
+    "$comment": "Close, reopen, or move tasks without creating, updating, or deleting them.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/(api|rest)/v[0-9]+/tasks/[^/]+/(close|reopen|move)$"
+      }
+    },
+    "required": [
+      "method",
+      "path"
+    ]
+  },
+  "todoist-read-comments": {
+    "$comment": "Read comments on tasks and projects.",
+    "properties": {
+      "method": {
+        "const": "GET"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/(api|rest)/v[0-9]+/comments(/.*)?$"
+      }
+    },
+    "required": [
+      "method",
+      "path"
+    ]
+  },
+  "todoist-write-comments": {
+    "$comment": "Create, update, or delete comments.",
+    "properties": {
+      "method": {
+        "enum": [
+          "POST",
+          "DELETE"
+        ]
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/(api|rest)/v[0-9]+/comments(/.*)?$"
+      }
+    },
+    "required": [
+      "method",
+      "path"
+    ]
+  },
+  "todoist-read-labels": {
+    "$comment": "Read personal and shared labels, including search.",
+    "properties": {
+      "method": {
+        "const": "GET"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/(api|rest)/v[0-9]+/labels(/.*)?$"
+      }
+    },
+    "required": [
+      "method",
+      "path"
+    ]
+  },
+  "todoist-write-labels": {
+    "$comment": "Create, update, or delete personal labels and manage shared labels.",
+    "properties": {
+      "method": {
+        "enum": [
+          "POST",
+          "DELETE"
+        ]
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/(api|rest)/v[0-9]+/labels(/.*)?$"
+      }
+    },
+    "required": [
+      "method",
+      "path"
+    ]
+  },
+  "todoist-sync": {
+    "$comment": "Use the batched Sync endpoint (reads and writes in a single request).",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/(api|rest)/v[0-9]+/sync$"
+      }
+    },
+    "required": [
+      "method",
+      "path"
+    ]
+  }
+}
