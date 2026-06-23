@@ -2245,64 +2245,112 @@ describe('builtin schemas: ramp', () => {
     expect(scope.match(makeRequest({ domain: 'evil-api.ramp.com' }))).toBe(false);
   });
 
-  it('ramp covers the full resource surface (read/write split where applicable)', () => {
+  it('ramp covers the agent-tools resource surface (read/write split where applicable)', () => {
     for (const name of [
-      'ramp-read-card-programs',
-      'ramp-write-card-programs',
+      'ramp-read-bills',
+      'ramp-read-cards',
+      'ramp-write-cards',
+      'ramp-read-transactions',
+      'ramp-write-transactions',
       'ramp-read-vendors',
       'ramp-write-vendors',
-      'ramp-read-receipt-integrations',
-      'ramp-read-cashbacks',
-      'ramp-read-entities',
+      'ramp-read-limits',
+      'ramp-write-limits',
+      'ramp-read-treasury',
       'ramp-read-memos',
+      'ramp-write-x402',
     ]) {
       expectSchemaExists(name);
     }
-    // read-only categories expose no write counterpart
-    expect(builtinRegistry.get('ramp-write-transactions')).toBeUndefined();
-    expect(builtinRegistry.get('ramp-write-cashbacks')).toBeUndefined();
-    expect(
-      builtinRegistry
-        .get('ramp-write-vendors')!
-        .match(makeRequest({ method: 'POST', path: '/developer/v1/vendors' }))
-    ).toBe(true);
+    // read-only capabilities expose no write counterpart
+    expect(builtinRegistry.get('ramp-write-treasury')).toBeUndefined();
+    expect(builtinRegistry.get('ramp-write-bills')).toBeUndefined();
+    expect(builtinRegistry.get('ramp-write-memos')).toBeUndefined();
+    // schemas from the old standard-REST design are gone
+    expect(builtinRegistry.get('ramp-read-card-programs')).toBeUndefined();
+    expect(builtinRegistry.get('ramp-write-users')).toBeUndefined();
   });
 
-  it('ramp-read-transactions matches GET to transactions only', () => {
-    expectSchemaExists('ramp-read-transactions');
-    const readTransactions = builtinRegistry.get('ramp-read-transactions')!;
+  it('reads are POST agent-tools calls (with a rationale body), not GET', () => {
+    // list-cards is gated by limits:read on Ramp's side, so it lives under ramp-read-limits
     expect(
-      readTransactions.match(makeRequest({ method: 'GET', path: '/developer/v1/transactions/abc' }))
+      builtinRegistry
+        .get('ramp-read-limits')!
+        .match(makeRequest({ method: 'POST', path: '/developer/v1/agent-tools/list-cards' }))
     ).toBe(true);
     expect(
-      readTransactions.match(makeRequest({ method: 'GET', path: '/developer/v1/users' }))
+      builtinRegistry
+        .get('ramp-read-bills')!
+        .match(makeRequest({ method: 'POST', path: '/developer/v1/agent-tools/get-bill-details' }))
+    ).toBe(true);
+    // ...and NOT under ramp-read-cards (which is the agent-card creds/funds tools)
+    expect(
+      builtinRegistry
+        .get('ramp-read-cards')!
+        .match(makeRequest({ method: 'POST', path: '/developer/v1/agent-tools/list-cards' }))
     ).toBe(false);
   });
 
-  it('ramp-write-users covers deactivation but not reads', () => {
-    expectSchemaExists('ramp-write-users');
-    const writeUsers = builtinRegistry.get('ramp-write-users')!;
+  it('ramp-write-cards matches a card mutation but not a card read tool', () => {
+    const writeCards = builtinRegistry.get('ramp-write-cards')!;
     expect(
-      writeUsers.match(makeRequest({ method: 'POST', path: '/developer/v1/users/abc/deactivate' }))
+      writeCards.match(
+        makeRequest({ method: 'POST', path: '/developer/v1/agent-tools/activate-card' })
+      )
     ).toBe(true);
-    expect(writeUsers.match(makeRequest({ method: 'GET', path: '/developer/v1/users' }))).toBe(
-      false
-    );
+    expect(
+      writeCards.match(
+        makeRequest({ method: 'POST', path: '/developer/v1/agent-tools/get-agent-card-creds' })
+      )
+    ).toBe(false);
   });
 
-  it('ramp-read-accounting matches nested accounting resources', () => {
+  it('ramp-read-all matches reads (incl. POST agent-tools) but never writes', () => {
+    const readAll = builtinRegistry.get('ramp-read-all')!;
+    expect(
+      readAll.match(
+        makeRequest({ method: 'POST', path: '/developer/v1/agent-tools/get-bill-details' })
+      )
+    ).toBe(true);
+    expect(
+      readAll.match(
+        makeRequest({ method: 'POST', path: '/developer/v1/agent-tools/activate-card' })
+      )
+    ).toBe(false);
+  });
+
+  it('ramp-write-all matches writes but never reads', () => {
+    const writeAll = builtinRegistry.get('ramp-write-all')!;
+    expect(
+      writeAll.match(
+        makeRequest({ method: 'POST', path: '/developer/v1/agent-tools/activate-card' })
+      )
+    ).toBe(true);
+    expect(
+      writeAll.match(
+        makeRequest({ method: 'POST', path: '/developer/v1/agent-tools/get-bill-details' })
+      )
+    ).toBe(false);
+  });
+
+  it('ramp plain-REST capabilities match (applications, bank-accounts)', () => {
     expect(
       builtinRegistry
-        .get('ramp-read-accounting')!
-        .match(makeRequest({ method: 'GET', path: '/developer/v1/accounting/gl-accounts' }))
+        .get('ramp-read-applications')!
+        .match(makeRequest({ method: 'GET', path: '/developer/v1/applications/documents' }))
+    ).toBe(true);
+    expect(
+      builtinRegistry
+        .get('ramp-read-bank-accounts')!
+        .match(makeRequest({ method: 'GET', path: '/developer/v1/bank-accounts' }))
     ).toBe(true);
   });
 
   it('ramp resource scopes tolerate a future API version', () => {
     expect(
       builtinRegistry
-        .get('ramp-read-transactions')!
-        .match(makeRequest({ method: 'GET', path: '/developer/v2/transactions' }))
+        .get('ramp-read-bills')!
+        .match(makeRequest({ method: 'POST', path: '/developer/v2/agent-tools/get-bill-details' }))
     ).toBe(true);
   });
 });
