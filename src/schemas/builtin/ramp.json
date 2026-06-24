@@ -1,6 +1,6 @@
 {
   "ramp-api": {
-    "$comment": "Any request to the Ramp agent-tools API (production). Only the agent-tools API (/developer/v*/agent-tools/<tool>) is supported; the standard/regular Ramp REST API is NOT -- agent keys are barred from it, so no ramp-* permission grants it. This is the whole-service scope; grant a narrower ramp-<verb>-<resource> permission to limit what the agent can do.",
+    "$comment": "Any request to the Ramp agent-tools API (production). For now this models only the agent-tools API (/developer/v*/agent-tools/<tool>); the REST API is not currently supported, so no ramp-* permission grants it today (this may change in future). This is the whole-service scope; grant a narrower ramp-<verb>-<resource> permission to limit what the agent can do.",
     "properties": {
       "domain": {
         "type": "string",
