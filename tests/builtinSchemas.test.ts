@@ -2238,9 +2238,11 @@ describe('builtin schemas: ramp', () => {
     ).toBe(true);
   });
 
-  it('ramp scope matches the demo (sandbox) host but rejects unrelated domains', () => {
+  it('ramp scope matches only the production host (no sandbox, no unrelated domains)', () => {
     const scope = builtinRegistry.get('ramp-api')!;
-    expect(scope.match(makeRequest({ domain: 'demo-api.ramp.com' }))).toBe(true);
+    expect(scope.match(makeRequest({ domain: 'api.ramp.com' }))).toBe(true);
+    // sandbox support was dropped -- production only
+    expect(scope.match(makeRequest({ domain: 'demo-api.ramp.com' }))).toBe(false);
     expect(scope.match(makeRequest({ domain: 'ramp.com' }))).toBe(false);
     expect(scope.match(makeRequest({ domain: 'evil-api.ramp.com' }))).toBe(false);
   });
@@ -2333,17 +2335,29 @@ describe('builtin schemas: ramp', () => {
     ).toBe(false);
   });
 
-  it('ramp plain-REST capabilities match (applications, bank-accounts)', () => {
+  it('standard-REST permissions and paths are gone (agent-tools only)', () => {
+    // The regular Ramp REST API is out of scope for agent keys, so those
+    // permissions were dropped entirely.
+    expect(builtinRegistry.get('ramp-read-applications')).toBeUndefined();
+    expect(builtinRegistry.get('ramp-write-applications')).toBeUndefined();
+    expect(builtinRegistry.get('ramp-read-bank-accounts')).toBeUndefined();
+    expect(builtinRegistry.get('ramp-read-agent-account-numbers')).toBeUndefined();
+    // ...and the catch-all read/write scopes no longer match standard-REST paths.
     expect(
       builtinRegistry
-        .get('ramp-read-applications')!
+        .get('ramp-read-all')!
         .match(makeRequest({ method: 'GET', path: '/developer/v1/applications/documents' }))
-    ).toBe(true);
+    ).toBe(false);
     expect(
       builtinRegistry
-        .get('ramp-read-bank-accounts')!
+        .get('ramp-read-all')!
         .match(makeRequest({ method: 'GET', path: '/developer/v1/bank-accounts' }))
-    ).toBe(true);
+    ).toBe(false);
+    expect(
+      builtinRegistry
+        .get('ramp-write-all')!
+        .match(makeRequest({ method: 'PATCH', path: '/developer/v1/applications' }))
+    ).toBe(false);
   });
 
   it('ramp resource scopes tolerate a future API version', () => {

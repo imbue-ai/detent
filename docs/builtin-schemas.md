@@ -346,10 +346,7 @@ See the main [README](../README.md) for how schemas and rules work together.
 - `ramp-read-all`
 - `ramp-write-all`
 - `ramp-read-accounting`
-- `ramp-read-agent-account-numbers`
 - `ramp-read-ai-spend`
-- `ramp-read-applications`
-- `ramp-read-bank-accounts`
 - `ramp-read-bills`
 - `ramp-read-cards`
 - `ramp-read-help-center`
@@ -364,7 +361,6 @@ See the main [README](../README.md) for how schemas and rules work together.
 - `ramp-read-unified-requests`
 - `ramp-read-users`
 - `ramp-read-vendors`
-- `ramp-write-applications`
 - `ramp-write-approvals`
 - `ramp-write-cards`
 - `ramp-write-comments`
