@@ -1,0 +1,389 @@
+{
+  "ramp-api": {
+    "$comment": "Any interaction with the Ramp API.",
+    "properties": {
+      "domain": {
+        "type": "string",
+        "pattern": "^api\\.ramp\\.com$"
+      }
+    },
+    "required": ["domain"]
+  },
+  "ramp-read-all": {
+    "$comment": "Read anything from Ramp: every read capability across all resources (transactions, cards, bills, reimbursements, treasury, vendors, users, accounting, trips, limits, and more). Limited to Ramp's agent-tools capabilities.",
+    "properties": {
+      "method": {
+        "enum": ["GET", "POST"]
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^(/developer/v[0-9]+/agent-tools/(answer-policy-question|enroll-business-in-agent-cards|estimate-mileage-reimbursement|estimate-per-diem-amount|execute-analyst-query|get-account-balance-history|get-agent-card-creds|get-agent-card-funds|get-ai-token-spend-aggregates|get-ai-token-spend-connections|get-ai-token-spend-current-spend|get-ai-token-spend-filter-options|get-analyst-artifact-status|get-analyst-catalog|get-analyst-metric-metadata|get-analyst-spend-facts-domain-docs|get-analyst-table-domain-docs|get-attention-feed|get-bill-amount-summary|get-bill-comments|get-bill-details|get-bill-history|get-bill-invoices|get-bill-metrics|get-bill-status|get-bills-for-approval|get-bookings|get-candidate-trips-for-transaction|get-decline-explanation|get-draft-bill-details|get-flight-booking-locations|get-full-transaction-metadata|get-funds|get-investment-account-balance|get-managed-portfolio-account-balance|get-org-chart|get-outstanding-reimbursements-by-currency|get-purchase-order-details|get-ramp-business-account-balance|get-recurring-bill|get-reimbursement-receipts|get-reimbursements|get-reimbursements-for-approval|get-requests-to-review|get-simplified-user-detail|get-tracking-categories|get-tracking-category-options|get-transaction-missing-items|get-transaction-suggested-memos|get-transactions|get-traveler-profile|get-treasury-balance-history|get-unified-request-details|get-user-recent-reimbursements|get-user-trips|get-vendor-agreement|get-vendor-document-bulk-status|list-bills|list-business-accounts|list-cards|list-treasury-accounts|list-users|list-vendor-agreements|list-wallet-transfers|search-bills|search-flights|search-help-center-snippets|search-purchase-orders|search-reimbursements|search-unified-requests|search-user|search-user-reimbursements|search-vendors|submit-flight-booking))$"
+      }
+    },
+    "required": ["method", "path"]
+  },
+  "ramp-write-all": {
+    "$comment": "Create or modify anything in Ramp: every write capability across all resources (activate/lock cards, approve transactions & reimbursements, edit limits, issue funds, manage trips & vendors, pay via x402, and more). Limited to Ramp's agent-tools capabilities.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^(/developer/v[0-9]+/agent-tools/(activate-card|approve-or-reject-reimbursement|approve-or-reject-request|approve-or-reject-transaction|attach-receipt-to-transaction|attach-vendor-document|bulk-upload-vendor-documents|cancel-reimbursement-payment|create-reimbursement-from-receipt|create-trip|duplicate-reimbursement|edit-reimbursement|edit-transaction|issue-one-off-funds|limit-increase|lock-or-unlock-card|lock-or-unlock-spend-allocation|lock-or-unlock-spend-allocation-member|mark-transaction-missing-receipt|pay-with-x402|post-comment|provide-no-receipt-reason|request-transaction-repayment|resubmit-reimbursement|submit-reimbursement|update-category-restrictions|update-merchant-restrictions|update-transaction-amount-limit|update-traveler-profile|upload-receipt-file))$"
+      }
+    },
+    "required": ["method", "path"]
+  },
+  "ramp-read-accounting": {
+    "$comment": "Read accounting / analyst queries. Limited to Ramp's agent-tools capabilities. Includes: execute analyst query, get analyst artifact status, get analyst catalog, get analyst metric metadata, get analyst spend facts domain docs, get analyst table domain docs, get tracking categories, get tracking category options.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^(/developer/v[0-9]+/agent-tools/(execute-analyst-query|get-analyst-artifact-status|get-analyst-catalog|get-analyst-metric-metadata|get-analyst-spend-facts-domain-docs|get-analyst-table-domain-docs|get-tracking-categories|get-tracking-category-options))$"
+      }
+    },
+    "required": ["method", "path"]
+  },
+  "ramp-read-ai-spend": {
+    "$comment": "Read AI token spend. Limited to Ramp's agent-tools capabilities. Includes: get ai token spend aggregates, get ai token spend connections, get ai token spend current spend, get ai token spend filter options.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^(/developer/v[0-9]+/agent-tools/(get-ai-token-spend-aggregates|get-ai-token-spend-connections|get-ai-token-spend-current-spend|get-ai-token-spend-filter-options))$"
+      }
+    },
+    "required": ["method", "path"]
+  },
+  "ramp-read-bills": {
+    "$comment": "Read bills. Limited to Ramp's agent-tools capabilities. Includes: get bill amount summary, get bill comments, get bill details, get bill history, get bill invoices, get bill metrics, get bill status, get bills for approval, get draft bill details, get recurring bill, list bills, search bills.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^(/developer/v[0-9]+/agent-tools/(get-bill-amount-summary|get-bill-comments|get-bill-details|get-bill-history|get-bill-invoices|get-bill-metrics|get-bill-status|get-bills-for-approval|get-draft-bill-details|get-recurring-bill|list-bills|search-bills))$"
+      }
+    },
+    "required": ["method", "path"]
+  },
+  "ramp-read-cards": {
+    "$comment": "Read cards. Limited to Ramp's agent-tools capabilities. Includes: enroll business in agent cards, get agent card creds, get agent card funds.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^(/developer/v[0-9]+/agent-tools/(enroll-business-in-agent-cards|get-agent-card-creds|get-agent-card-funds))$"
+      }
+    },
+    "required": ["method", "path"]
+  },
+  "ramp-read-help-center": {
+    "$comment": "Read Ramp help-center articles. Limited to Ramp's agent-tools capabilities. Includes: search help center snippets.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^(/developer/v[0-9]+/agent-tools/(search-help-center-snippets))$"
+      }
+    },
+    "required": ["method", "path"]
+  },
+  "ramp-read-limits": {
+    "$comment": "Read spend limits & allocations. Limited to Ramp's agent-tools capabilities. Includes: get funds, list cards.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^(/developer/v[0-9]+/agent-tools/(get-funds|list-cards))$"
+      }
+    },
+    "required": ["method", "path"]
+  },
+  "ramp-read-memos": {
+    "$comment": "Read transaction memos. Limited to Ramp's agent-tools capabilities. Includes: get transaction suggested memos.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^(/developer/v[0-9]+/agent-tools/(get-transaction-suggested-memos))$"
+      }
+    },
+    "required": ["method", "path"]
+  },
+  "ramp-read-purchase-orders": {
+    "$comment": "Read purchase orders. Limited to Ramp's agent-tools capabilities. Includes: get purchase order details, search purchase orders.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^(/developer/v[0-9]+/agent-tools/(get-purchase-order-details|search-purchase-orders))$"
+      }
+    },
+    "required": ["method", "path"]
+  },
+  "ramp-read-reimbursements": {
+    "$comment": "Read out-of-pocket reimbursements. Limited to Ramp's agent-tools capabilities. Includes: estimate mileage reimbursement, estimate per diem amount, get outstanding reimbursements by currency, get reimbursement receipts, get reimbursements, get reimbursements for approval, get user recent reimbursements, search reimbursements, search user reimbursements.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^(/developer/v[0-9]+/agent-tools/(estimate-mileage-reimbursement|estimate-per-diem-amount|get-outstanding-reimbursements-by-currency|get-reimbursement-receipts|get-reimbursements|get-reimbursements-for-approval|get-user-recent-reimbursements|search-reimbursements|search-user-reimbursements))$"
+      }
+    },
+    "required": ["method", "path"]
+  },
+  "ramp-read-tasks": {
+    "$comment": "Read attention feed / tasks. Limited to Ramp's agent-tools capabilities. Includes: get attention feed.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^(/developer/v[0-9]+/agent-tools/(get-attention-feed))$"
+      }
+    },
+    "required": ["method", "path"]
+  },
+  "ramp-read-transactions": {
+    "$comment": "Read card transactions. Limited to Ramp's agent-tools capabilities. Includes: answer policy question, get decline explanation, get full transaction metadata, get transaction missing items, get transactions.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^(/developer/v[0-9]+/agent-tools/(answer-policy-question|get-decline-explanation|get-full-transaction-metadata|get-transaction-missing-items|get-transactions))$"
+      }
+    },
+    "required": ["method", "path"]
+  },
+  "ramp-read-treasury": {
+    "$comment": "Read treasury / business account balances. Limited to Ramp's agent-tools capabilities. Includes: get account balance history, get investment account balance, get managed portfolio account balance, get ramp business account balance, get treasury balance history, list business accounts, list treasury accounts, list wallet transfers.",
+    "properties": {
+      "method": {
+        "const": "GET"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^(/developer/v[0-9]+/agent-tools/(get-account-balance-history|get-investment-account-balance|get-managed-portfolio-account-balance|get-ramp-business-account-balance|get-treasury-balance-history|list-business-accounts|list-treasury-accounts|list-wallet-transfers))$"
+      }
+    },
+    "required": ["method", "path"]
+  },
+  "ramp-read-trips": {
+    "$comment": "Read travel & trips. Limited to Ramp's agent-tools capabilities. Includes: get bookings, get candidate trips for transaction, get flight booking locations, get traveler profile, get user trips, search flights, submit flight booking.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^(/developer/v[0-9]+/agent-tools/(get-bookings|get-candidate-trips-for-transaction|get-flight-booking-locations|get-traveler-profile|get-user-trips|search-flights|submit-flight-booking))$"
+      }
+    },
+    "required": ["method", "path"]
+  },
+  "ramp-read-unified-requests": {
+    "$comment": "Read unified requests (approvals inbox). Limited to Ramp's agent-tools capabilities. Includes: get requests to review, get unified request details, search unified requests.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^(/developer/v[0-9]+/agent-tools/(get-requests-to-review|get-unified-request-details|search-unified-requests))$"
+      }
+    },
+    "required": ["method", "path"]
+  },
+  "ramp-read-users": {
+    "$comment": "Read users & org chart. Limited to Ramp's agent-tools capabilities. Includes: get org chart, get simplified user detail, list users, search user.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^(/developer/v[0-9]+/agent-tools/(get-org-chart|get-simplified-user-detail|list-users|search-user))$"
+      }
+    },
+    "required": ["method", "path"]
+  },
+  "ramp-read-vendors": {
+    "$comment": "Read vendors. Limited to Ramp's agent-tools capabilities. Includes: get vendor agreement, get vendor document bulk status, list vendor agreements, search vendors.",
+    "properties": {
+      "method": {
+        "enum": ["GET", "POST"]
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^(/developer/v[0-9]+/agent-tools/(get-vendor-agreement|get-vendor-document-bulk-status|list-vendor-agreements|search-vendors))$"
+      }
+    },
+    "required": ["method", "path"]
+  },
+  "ramp-write-approvals": {
+    "$comment": "Create or modify approval decisions. Limited to Ramp's agent-tools capabilities. Includes: approve or reject request.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^(/developer/v[0-9]+/agent-tools/(approve-or-reject-request))$"
+      }
+    },
+    "required": ["method", "path"]
+  },
+  "ramp-write-cards": {
+    "$comment": "Create or modify cards. Limited to Ramp's agent-tools capabilities. Includes: activate card, lock or unlock card.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^(/developer/v[0-9]+/agent-tools/(activate-card|lock-or-unlock-card))$"
+      }
+    },
+    "required": ["method", "path"]
+  },
+  "ramp-write-comments": {
+    "$comment": "Create or modify comments. Limited to Ramp's agent-tools capabilities. Includes: post comment.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^(/developer/v[0-9]+/agent-tools/(post-comment))$"
+      }
+    },
+    "required": ["method", "path"]
+  },
+  "ramp-write-funds": {
+    "$comment": "Create or modify agent-card funds. Limited to Ramp's agent-tools capabilities. Includes: issue one off funds.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^(/developer/v[0-9]+/agent-tools/(issue-one-off-funds))$"
+      }
+    },
+    "required": ["method", "path"]
+  },
+  "ramp-write-limits": {
+    "$comment": "Create or modify spend limits & allocations. Limited to Ramp's agent-tools capabilities. Includes: limit increase, lock or unlock spend allocation, lock or unlock spend allocation member, update category restrictions, update merchant restrictions, update transaction amount limit.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^(/developer/v[0-9]+/agent-tools/(limit-increase|lock-or-unlock-spend-allocation|lock-or-unlock-spend-allocation-member|update-category-restrictions|update-merchant-restrictions|update-transaction-amount-limit))$"
+      }
+    },
+    "required": ["method", "path"]
+  },
+  "ramp-write-receipts": {
+    "$comment": "Create or modify receipts. Limited to Ramp's agent-tools capabilities. Includes: attach receipt to transaction, mark transaction missing receipt, provide no receipt reason, upload receipt file.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^(/developer/v[0-9]+/agent-tools/(attach-receipt-to-transaction|mark-transaction-missing-receipt|provide-no-receipt-reason|upload-receipt-file))$"
+      }
+    },
+    "required": ["method", "path"]
+  },
+  "ramp-write-reimbursements": {
+    "$comment": "Create or modify out-of-pocket reimbursements. Limited to Ramp's agent-tools capabilities. Includes: approve or reject reimbursement, cancel reimbursement payment, create reimbursement from receipt, duplicate reimbursement, edit reimbursement, resubmit reimbursement, submit reimbursement.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^(/developer/v[0-9]+/agent-tools/(approve-or-reject-reimbursement|cancel-reimbursement-payment|create-reimbursement-from-receipt|duplicate-reimbursement|edit-reimbursement|resubmit-reimbursement|submit-reimbursement))$"
+      }
+    },
+    "required": ["method", "path"]
+  },
+  "ramp-write-transactions": {
+    "$comment": "Create or modify card transactions. Limited to Ramp's agent-tools capabilities. Includes: approve or reject transaction, edit transaction, request transaction repayment.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^(/developer/v[0-9]+/agent-tools/(approve-or-reject-transaction|edit-transaction|request-transaction-repayment))$"
+      }
+    },
+    "required": ["method", "path"]
+  },
+  "ramp-write-trips": {
+    "$comment": "Create or modify travel & trips. Limited to Ramp's agent-tools capabilities. Includes: create trip, update traveler profile.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^(/developer/v[0-9]+/agent-tools/(create-trip|update-traveler-profile))$"
+      }
+    },
+    "required": ["method", "path"]
+  },
+  "ramp-write-vendors": {
+    "$comment": "Create or modify vendors. Limited to Ramp's agent-tools capabilities. Includes: attach vendor document, bulk upload vendor documents.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^(/developer/v[0-9]+/agent-tools/(attach-vendor-document|bulk-upload-vendor-documents))$"
+      }
+    },
+    "required": ["method", "path"]
+  },
+  "ramp-write-x402": {
+    "$comment": "Create or modify x402 protocol payments. Limited to Ramp's agent-tools capabilities. Includes: pay with x402.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^(/developer/v[0-9]+/agent-tools/(pay-with-x402))$"
+      }
+    },
+    "required": ["method", "path"]
+  }
+}

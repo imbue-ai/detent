@@ -2228,6 +2228,147 @@ describe('builtin schemas: zoom', () => {
   });
 });
 
+describe('builtin schemas: ramp', () => {
+  it('ramp scope matches api.ramp.com', () => {
+    expectSchemaExists('ramp-api');
+    expect(
+      builtinRegistry
+        .get('ramp-api')!
+        .match(makeRequest({ domain: 'api.ramp.com', path: '/developer/v1/transactions' }))
+    ).toBe(true);
+  });
+
+  it('ramp scope matches only the production host (no sandbox, no unrelated domains)', () => {
+    const scope = builtinRegistry.get('ramp-api')!;
+    expect(scope.match(makeRequest({ domain: 'api.ramp.com' }))).toBe(true);
+    // sandbox support was dropped -- production only
+    expect(scope.match(makeRequest({ domain: 'demo-api.ramp.com' }))).toBe(false);
+    expect(scope.match(makeRequest({ domain: 'ramp.com' }))).toBe(false);
+    expect(scope.match(makeRequest({ domain: 'evil-api.ramp.com' }))).toBe(false);
+  });
+
+  it('ramp covers the agent-tools resource surface (read/write split where applicable)', () => {
+    for (const name of [
+      'ramp-read-bills',
+      'ramp-read-cards',
+      'ramp-write-cards',
+      'ramp-read-transactions',
+      'ramp-write-transactions',
+      'ramp-read-vendors',
+      'ramp-write-vendors',
+      'ramp-read-limits',
+      'ramp-write-limits',
+      'ramp-read-treasury',
+      'ramp-read-memos',
+      'ramp-write-x402',
+    ]) {
+      expectSchemaExists(name);
+    }
+    // read-only capabilities expose no write counterpart
+    expect(builtinRegistry.get('ramp-write-treasury')).toBeUndefined();
+    expect(builtinRegistry.get('ramp-write-bills')).toBeUndefined();
+    expect(builtinRegistry.get('ramp-write-memos')).toBeUndefined();
+    // schemas from the old standard-REST design are gone
+    expect(builtinRegistry.get('ramp-read-card-programs')).toBeUndefined();
+    expect(builtinRegistry.get('ramp-write-users')).toBeUndefined();
+  });
+
+  it('reads are POST agent-tools calls (with a rationale body), not GET', () => {
+    // list-cards is gated by limits:read on Ramp's side, so it lives under ramp-read-limits
+    expect(
+      builtinRegistry
+        .get('ramp-read-limits')!
+        .match(makeRequest({ method: 'POST', path: '/developer/v1/agent-tools/list-cards' }))
+    ).toBe(true);
+    expect(
+      builtinRegistry
+        .get('ramp-read-bills')!
+        .match(makeRequest({ method: 'POST', path: '/developer/v1/agent-tools/get-bill-details' }))
+    ).toBe(true);
+    // ...and NOT under ramp-read-cards (which is the agent-card creds/funds tools)
+    expect(
+      builtinRegistry
+        .get('ramp-read-cards')!
+        .match(makeRequest({ method: 'POST', path: '/developer/v1/agent-tools/list-cards' }))
+    ).toBe(false);
+  });
+
+  it('ramp-write-cards matches a card mutation but not a card read tool', () => {
+    const writeCards = builtinRegistry.get('ramp-write-cards')!;
+    expect(
+      writeCards.match(
+        makeRequest({ method: 'POST', path: '/developer/v1/agent-tools/activate-card' })
+      )
+    ).toBe(true);
+    expect(
+      writeCards.match(
+        makeRequest({ method: 'POST', path: '/developer/v1/agent-tools/get-agent-card-creds' })
+      )
+    ).toBe(false);
+  });
+
+  it('ramp-read-all matches reads (incl. POST agent-tools) but never writes', () => {
+    const readAll = builtinRegistry.get('ramp-read-all')!;
+    expect(
+      readAll.match(
+        makeRequest({ method: 'POST', path: '/developer/v1/agent-tools/get-bill-details' })
+      )
+    ).toBe(true);
+    expect(
+      readAll.match(
+        makeRequest({ method: 'POST', path: '/developer/v1/agent-tools/activate-card' })
+      )
+    ).toBe(false);
+  });
+
+  it('ramp-write-all matches writes but never reads', () => {
+    const writeAll = builtinRegistry.get('ramp-write-all')!;
+    expect(
+      writeAll.match(
+        makeRequest({ method: 'POST', path: '/developer/v1/agent-tools/activate-card' })
+      )
+    ).toBe(true);
+    expect(
+      writeAll.match(
+        makeRequest({ method: 'POST', path: '/developer/v1/agent-tools/get-bill-details' })
+      )
+    ).toBe(false);
+  });
+
+  it('standard-REST permissions and paths are gone (agent-tools only)', () => {
+    // The regular Ramp REST API is out of scope for agent keys, so those
+    // permissions were dropped entirely.
+    expect(builtinRegistry.get('ramp-read-applications')).toBeUndefined();
+    expect(builtinRegistry.get('ramp-write-applications')).toBeUndefined();
+    expect(builtinRegistry.get('ramp-read-bank-accounts')).toBeUndefined();
+    expect(builtinRegistry.get('ramp-read-agent-account-numbers')).toBeUndefined();
+    // ...and the catch-all read/write scopes no longer match standard-REST paths.
+    expect(
+      builtinRegistry
+        .get('ramp-read-all')!
+        .match(makeRequest({ method: 'GET', path: '/developer/v1/applications/documents' }))
+    ).toBe(false);
+    expect(
+      builtinRegistry
+        .get('ramp-read-all')!
+        .match(makeRequest({ method: 'GET', path: '/developer/v1/bank-accounts' }))
+    ).toBe(false);
+    expect(
+      builtinRegistry
+        .get('ramp-write-all')!
+        .match(makeRequest({ method: 'PATCH', path: '/developer/v1/applications' }))
+    ).toBe(false);
+  });
+
+  it('ramp resource scopes tolerate a future API version', () => {
+    expect(
+      builtinRegistry
+        .get('ramp-read-bills')!
+        .match(makeRequest({ method: 'POST', path: '/developer/v2/agent-tools/get-bill-details' }))
+    ).toBe(true);
+  });
+});
+
 describe('builtin schemas: todoist', () => {
   it('todoist scope matches api.todoist.com', () => {
     expectSchemaExists('todoist-api');

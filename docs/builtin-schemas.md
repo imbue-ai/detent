@@ -340,6 +340,39 @@ See the main [README](../README.md) for how schemas and rules work together.
 - `notion-write-comments`
 - `notion-search`
 
+### ramp
+
+- `ramp-api` *(scope)*
+- `ramp-read-all`
+- `ramp-write-all`
+- `ramp-read-accounting`
+- `ramp-read-ai-spend`
+- `ramp-read-bills`
+- `ramp-read-cards`
+- `ramp-read-help-center`
+- `ramp-read-limits`
+- `ramp-read-memos`
+- `ramp-read-purchase-orders`
+- `ramp-read-reimbursements`
+- `ramp-read-tasks`
+- `ramp-read-transactions`
+- `ramp-read-treasury`
+- `ramp-read-trips`
+- `ramp-read-unified-requests`
+- `ramp-read-users`
+- `ramp-read-vendors`
+- `ramp-write-approvals`
+- `ramp-write-cards`
+- `ramp-write-comments`
+- `ramp-write-funds`
+- `ramp-write-limits`
+- `ramp-write-receipts`
+- `ramp-write-reimbursements`
+- `ramp-write-transactions`
+- `ramp-write-trips`
+- `ramp-write-vendors`
+- `ramp-write-x402`
+
 ### sentry
 
 - `sentry-api` *(scope)*
