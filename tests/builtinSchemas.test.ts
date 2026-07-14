@@ -422,6 +422,18 @@ describe('builtin schemas: github', () => {
     expect(builtinRegistry.get('github-rest-api')!.match(request)).toBe(true);
   });
 
+  it('github-graphql-api matches the graphql endpoint', () => {
+    expectSchemaExists('github-graphql-api');
+    const schema = builtinRegistry.get('github-graphql-api')!;
+    expect(schema.match(makeRequest({ domain: 'api.github.com', path: '/graphql' }))).toBe(true);
+    expect(
+      schema.match(makeRequest({ domain: 'api.github.com', path: '/repos/octocat/hello' }))
+    ).toBe(false);
+    expect(schema.match(makeRequest({ domain: 'github.example.com', path: '/graphql' }))).toBe(
+      false
+    );
+  });
+
   it('github-read-issues matches issues path but not pulls', () => {
     expectSchemaExists('github-read-issues');
     expect(
