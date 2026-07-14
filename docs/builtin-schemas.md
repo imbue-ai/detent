@@ -133,6 +133,7 @@ See the main [README](../README.md) for how schemas and rules work together.
 ### github
 
 - `github-rest-api` *(scope)*
+- `github-graphql-api` *(scope)*
 - `github-git` *(scope)*
 - `github-git-read`
 - `github-git-write`

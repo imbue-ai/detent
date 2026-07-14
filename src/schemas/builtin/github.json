@@ -1,6 +1,6 @@
 {
   "github-rest-api": {
-    "$comment": "Any interaction with the GitHub REST API, excluding GraphQL.",
+    "$comment": "Any interaction with the GitHub REST API.",
     "properties": {
       "domain": {
         "const": "api.github.com"
@@ -10,6 +10,21 @@
         "not": {
           "pattern": "^/graphql$"
         }
+      }
+    },
+    "required": [
+      "domain",
+      "path"
+    ]
+  },
+  "github-graphql-api": {
+    "$comment": "Any interaction with the GitHub GraphQL API.",
+    "properties": {
+      "domain": {
+        "const": "api.github.com"
+      },
+      "path": {
+        "const": "/graphql"
       }
     },
     "required": [
