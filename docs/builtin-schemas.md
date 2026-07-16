@@ -151,6 +151,8 @@ See the main [README](../README.md) for how schemas and rules work together.
 - `github-search`
 - `github-read-notifications`
 - `github-write-notifications`
+- `github-read-activity`
+- `github-write-activity`
 
 ### gitlab
 
@@ -276,6 +278,16 @@ See the main [README](../README.md) for how schemas and rules work together.
 - `google-sheets-update-spreadsheets`
 - `google-sheets-read-values`
 - `google-sheets-write-values`
+
+### google-slides
+
+- `google-slides-api` *(scope)*
+- `google-slides-read-all`
+- `google-slides-write-all`
+- `google-slides-read-presentations`
+- `google-slides-create-presentations`
+- `google-slides-update-presentations`
+- `google-slides-read-pages`
 
 ### linear
 
