@@ -578,6 +578,71 @@ describe('builtin schemas: github', () => {
       )
     ).toBe(false);
   });
+
+  it('github-read-activity matches starring and watching reads', () => {
+    expectSchemaExists('github-read-activity');
+    const schema = builtinRegistry.get('github-read-activity')!;
+    expect(
+      schema.match(makeRequest({ method: 'GET', path: '/repos/octocat/Hello-World/stargazers' }))
+    ).toBe(true);
+    expect(
+      schema.match(makeRequest({ method: 'GET', path: '/repos/octocat/Hello-World/subscribers' }))
+    ).toBe(true);
+    expect(
+      schema.match(makeRequest({ method: 'GET', path: '/repos/octocat/Hello-World/subscription' }))
+    ).toBe(true);
+    expect(schema.match(makeRequest({ method: 'GET', path: '/user/starred' }))).toBe(true);
+    expect(schema.match(makeRequest({ method: 'GET', path: '/user/subscriptions' }))).toBe(true);
+    expect(schema.match(makeRequest({ method: 'GET', path: '/users/octocat/starred' }))).toBe(true);
+    expect(schema.match(makeRequest({ method: 'GET', path: '/users/octocat/subscriptions' }))).toBe(
+      true
+    );
+    expect(
+      schema.match(makeRequest({ method: 'GET', path: '/repos/octocat/Hello-World/issues' }))
+    ).toBe(false);
+  });
+
+  it('github-read-activity matches events and feeds reads', () => {
+    const schema = builtinRegistry.get('github-read-activity')!;
+    expect(schema.match(makeRequest({ method: 'GET', path: '/events' }))).toBe(true);
+    expect(schema.match(makeRequest({ method: 'GET', path: '/feeds' }))).toBe(true);
+    expect(
+      schema.match(makeRequest({ method: 'GET', path: '/repos/octocat/Hello-World/events' }))
+    ).toBe(true);
+    expect(
+      schema.match(makeRequest({ method: 'GET', path: '/networks/octocat/Hello-World/events' }))
+    ).toBe(true);
+    expect(schema.match(makeRequest({ method: 'GET', path: '/orgs/github/events' }))).toBe(true);
+    expect(schema.match(makeRequest({ method: 'GET', path: '/users/octocat/events/public' }))).toBe(
+      true
+    );
+    expect(
+      schema.match(makeRequest({ method: 'GET', path: '/users/octocat/received_events' }))
+    ).toBe(true);
+    expect(schema.match(makeRequest({ method: 'GET', path: '/repos/octocat/Hello-World' }))).toBe(
+      false
+    );
+  });
+
+  it('github-write-activity matches starring and subscription writes', () => {
+    expectSchemaExists('github-write-activity');
+    const schema = builtinRegistry.get('github-write-activity')!;
+    expect(
+      schema.match(makeRequest({ method: 'PUT', path: '/user/starred/octocat/Hello-World' }))
+    ).toBe(true);
+    expect(
+      schema.match(makeRequest({ method: 'DELETE', path: '/user/starred/octocat/Hello-World' }))
+    ).toBe(true);
+    expect(
+      schema.match(makeRequest({ method: 'PUT', path: '/repos/octocat/Hello-World/subscription' }))
+    ).toBe(true);
+    expect(
+      schema.match(
+        makeRequest({ method: 'DELETE', path: '/repos/octocat/Hello-World/subscription' })
+      )
+    ).toBe(true);
+    expect(schema.match(makeRequest({ method: 'GET', path: '/user/starred' }))).toBe(false);
+  });
 });
 
 describe('builtin schemas: gitlab', () => {
@@ -1107,6 +1172,58 @@ describe('builtin schemas: google-sheets', () => {
       builtinRegistry
         .get('google-sheets-create-spreadsheets')!
         .match(makeRequest({ method: 'POST', path: '/v4/spreadsheets' }))
+    ).toBe(true);
+  });
+});
+
+describe('builtin schemas: google-slides', () => {
+  it('google-slides scope matches slides.googleapis.com', () => {
+    expectSchemaExists('google-slides-api');
+    const request = makeRequest({
+      domain: 'slides.googleapis.com',
+      path: '/v1/presentations/abc123',
+    });
+    expect(builtinRegistry.get('google-slides-api')!.match(request)).toBe(true);
+  });
+
+  it('google-slides scope rejects unrelated domains', () => {
+    const request = makeRequest({ domain: 'sheets.googleapis.com' });
+    expect(builtinRegistry.get('google-slides-api')!.match(request)).toBe(false);
+  });
+
+  it('google-slides-read-presentations matches GET to /v1/presentations path', () => {
+    expectSchemaExists('google-slides-read-presentations');
+    expect(
+      builtinRegistry
+        .get('google-slides-read-presentations')!
+        .match(makeRequest({ method: 'GET', path: '/v1/presentations/abc123' }))
+    ).toBe(true);
+  });
+
+  it('google-slides-create-presentations matches POST to /v1/presentations', () => {
+    expectSchemaExists('google-slides-create-presentations');
+    expect(
+      builtinRegistry
+        .get('google-slides-create-presentations')!
+        .match(makeRequest({ method: 'POST', path: '/v1/presentations' }))
+    ).toBe(true);
+  });
+
+  it('google-slides-update-presentations matches POST batchUpdate', () => {
+    expectSchemaExists('google-slides-update-presentations');
+    expect(
+      builtinRegistry
+        .get('google-slides-update-presentations')!
+        .match(makeRequest({ method: 'POST', path: '/v1/presentations/abc123:batchUpdate' }))
+    ).toBe(true);
+  });
+
+  it('google-slides-read-pages matches GET to a page thumbnail', () => {
+    expectSchemaExists('google-slides-read-pages');
+    expect(
+      builtinRegistry
+        .get('google-slides-read-pages')!
+        .match(makeRequest({ method: 'GET', path: '/v1/presentations/abc123/pages/p1/thumbnail' }))
     ).toBe(true);
   });
 });

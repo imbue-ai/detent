@@ -1,0 +1,104 @@
+{
+  "google-slides-api": {
+    "$comment": "Any request to the Google Slides API.",
+    "properties": {
+      "domain": {
+        "const": "slides.googleapis.com"
+      }
+    },
+    "required": [
+      "domain"
+    ]
+  },
+  "google-slides-read-all": {
+    "$comment": "Read anything from Google Slides.",
+    "properties": {
+      "method": {
+        "const": "GET"
+      }
+    },
+    "required": [
+      "method"
+    ]
+  },
+  "google-slides-write-all": {
+    "$comment": "Create, update, or delete anything in Google Slides.",
+    "properties": {
+      "method": {
+        "enum": [
+          "POST",
+          "PUT",
+          "PATCH",
+          "DELETE"
+        ]
+      }
+    },
+    "required": [
+      "method"
+    ]
+  },
+  "google-slides-read-presentations": {
+    "$comment": "Read a specific presentation.",
+    "properties": {
+      "method": {
+        "const": "GET"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/v[0-9]+/presentations/[^/]+$"
+      }
+    },
+    "required": [
+      "method",
+      "path"
+    ]
+  },
+  "google-slides-create-presentations": {
+    "$comment": "Create new presentations.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/v[0-9]+/presentations$"
+      }
+    },
+    "required": [
+      "method",
+      "path"
+    ]
+  },
+  "google-slides-update-presentations": {
+    "$comment": "Apply batch updates to a presentation's content.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/v[0-9]+/presentations/[^/:]+:batchUpdate$"
+      }
+    },
+    "required": [
+      "method",
+      "path"
+    ]
+  },
+  "google-slides-read-pages": {
+    "$comment": "Read a specific page or its thumbnail from a presentation.",
+    "properties": {
+      "method": {
+        "const": "GET"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/v[0-9]+/presentations/[^/]+/pages/[^/]+(/thumbnail)?$"
+      }
+    },
+    "required": [
+      "method",
+      "path"
+    ]
+  }
+}
