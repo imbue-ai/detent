@@ -382,5 +382,40 @@
       "method",
       "path"
     ]
+  },
+  "github-read-activity": {
+    "$comment": "Read GitHub activity: starring and watching (stargazers, watchers, and the repositories a user starred or watches), event streams, and feeds.",
+    "properties": {
+      "method": {
+        "const": "GET"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/(events|feeds|repos/[^/]+/[^/]+/(stargazers|subscribers|subscription|events)|networks/[^/]+/[^/]+/events|orgs/[^/]+/events|user/(starred|subscriptions)|users/[^/]+/(starred|subscriptions|events|received_events))(/.*)?$"
+      }
+    },
+    "required": [
+      "method",
+      "path"
+    ]
+  },
+  "github-write-activity": {
+    "$comment": "Star or unstar a repository, or set or delete a repository watch subscription, for the authenticated user.",
+    "properties": {
+      "method": {
+        "enum": [
+          "PUT",
+          "DELETE"
+        ]
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/(user/starred/[^/]+/[^/]+|repos/[^/]+/[^/]+/subscription)$"
+      }
+    },
+    "required": [
+      "method",
+      "path"
+    ]
   }
 }
