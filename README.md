@@ -172,6 +172,12 @@ In the Detent config, schemas are identified by names, like this:
 For a complete example config that defines custom schemas, see
 [docs/example-cloudflare.json](docs/example-cloudflare.json).
 
+#### Composing schemas
+
+Schemas can build on other schemas. Every named schema (built-in
+or user-defined) is referencable as `#/$defs/<schema-name>`.
+
+
 #### Custom metadata
 
 `customMetadata` is an optional object with arbitrary subfields
