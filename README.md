@@ -172,11 +172,6 @@ In the Detent config, schemas are identified by names, like this:
 For a complete example config that defines custom schemas, see
 [docs/example-cloudflare.json](docs/example-cloudflare.json).
 
-#### Composing schemas
-
-Schemas can build on other schemas. Every named schema (built-in
-or user-defined) is referencable as `#/$defs/<schema-name>`.
-
 
 #### Custom metadata
 
@@ -208,6 +203,34 @@ Schemas refer to it like any other property:
     }
   },
   "required": ["customMetadata"]
+}
+```
+
+#### Composing schemas
+
+Schemas can build on other schemas. Every named schema (built-in
+or user-defined) is referencable as `#/$defs/<schema-name>`
+using JSON schema's standard `$ref` mechanism. For example:
+
+```json
+{
+  "schemas": {
+    "slack-but-only-for-code-agent": {
+      "allOf": [
+        { "$ref": "#/$defs/slack-api" },
+        {
+          "properties": {
+            "customMetadata": {
+              "type": "object",
+              "properties": { "account": { "const": "code-agent" } },
+              "required": ["account"]
+            }
+          },
+          "required": ["customMetadata"]
+        }
+      ]
+    }
+  }
 }
 ```
 
