@@ -32,7 +32,8 @@ program
     `
 Environment variables:
   DETENT_CONFIG                        Path to config file (default: ${defaultConfigPath})
-  DETENT_DO_NOT_USE_BUILTIN_SCHEMAS    When set to any non-empty value, disables built-in schemas`
+  DETENT_DO_NOT_USE_BUILTIN_SCHEMAS    When set to any non-empty value, disables built-in schemas
+  DETENT_CUSTOM_METADATA               JSON object exposed to schemas and hooks as "customMetadata"`
   );
 
 program
