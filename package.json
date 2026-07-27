@@ -1,6 +1,6 @@
 {
   "name": "@imbue-ai/detent",
-  "version": "1.11.0",
+  "version": "1.11.1",
   "description": "Fine-grained HTTP permissions for AI agents.",
   "author": "Imbue <hynek@imbue.com>",
   "repository": {
