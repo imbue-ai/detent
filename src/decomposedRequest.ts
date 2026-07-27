@@ -8,6 +8,13 @@
  *  - headers:  keys are lowercase (e.g. "content-type")
  */
 
+/**
+ * Caller-supplied metadata that is not derived from the request itself
+ * (e.g. the identity of the agent making the request). Subfields are
+ * arbitrary; schemas and hooks can inspect them.
+ */
+export type CustomMetadata = Readonly<Record<string, unknown>>;
+
 const decomposedRequestCoreFieldTypes = {
   protocol: '' as string,
   domain: '' as string,
@@ -20,17 +27,20 @@ const decomposedRequestCoreFieldTypes = {
 } as const satisfies Record<string, unknown>;
 
 /**
- * The structured form of the body. Only present when the raw body could be
- * parsed into a structured value, which currently happens for JSON request
- * bodies. Other content types (e.g. XML, GraphQL) may be supported later.
+ * `parsedBody` is the structured form of the body. It is only present when the
+ * raw body could be parsed into a structured value, which currently happens for
+ * JSON request bodies. Other content types (e.g. XML, GraphQL) may be supported
+ * later. `customMetadata` is only present when the caller supplied it.
  */
 export type DecomposedRequest = Readonly<typeof decomposedRequestCoreFieldTypes> & {
   readonly parsedBody?: unknown;
+  readonly customMetadata?: CustomMetadata;
 };
 
 export const decomposedRequestPropertyNames: ReadonlySet<string> = new Set([
   ...Object.keys(decomposedRequestCoreFieldTypes),
   'parsedBody',
+  'customMetadata',
 ]);
 
 function isJsonContentType(contentType: string | undefined): boolean {
@@ -49,7 +59,10 @@ function tryParseJson(text: string): unknown {
   }
 }
 
-export async function decomposeRequest(request: Request): Promise<DecomposedRequest> {
+export async function decomposeRequest(
+  request: Request,
+  customMetadata?: CustomMetadata
+): Promise<DecomposedRequest> {
   const url = new URL(request.url);
 
   const headers: Record<string, string> = {};
@@ -87,5 +100,6 @@ export async function decomposeRequest(request: Request): Promise<DecomposedRequ
     queryParams,
     body,
     ...(parsedBody === undefined ? {} : { parsedBody }),
+    ...(customMetadata === undefined ? {} : { customMetadata }),
   };
 }

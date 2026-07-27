@@ -60,6 +60,72 @@ describe('CLI', () => {
     }
   });
 
+  it('honors DETENT_CUSTOM_METADATA when matching schemas', async () => {
+    writeFileSync(
+      configPath,
+      JSON.stringify({
+        schemas: {
+          everything: {},
+          'alice-only': {
+            properties: {
+              customMetadata: {
+                type: 'object',
+                properties: { actor: { const: 'alice' } },
+                required: ['actor'],
+              },
+            },
+            required: ['customMetadata'],
+          },
+        },
+        rules: [{ everything: ['alice-only'] }],
+      })
+    );
+
+    const { stdout } = await execFileAsync('node', [cliPath, 'curl', 'https://example.com'], {
+      env: {
+        ...process.env,
+        DETENT_CONFIG: configPath,
+        DETENT_CUSTOM_METADATA: JSON.stringify({ actor: 'alice' }),
+      },
+    });
+    expect(stdout.trim()).toBe('approved');
+
+    try {
+      await execFileAsync('node', [cliPath, 'curl', 'https://example.com'], {
+        env: {
+          ...process.env,
+          DETENT_CONFIG: configPath,
+          DETENT_CUSTOM_METADATA: JSON.stringify({ actor: 'bob' }),
+        },
+      });
+      expect.fail('Should have exited with non-zero');
+    } catch (error: unknown) {
+      const execError = error as { code: number; stdout: string };
+      expect(execError.code).toBe(1);
+      expect(execError.stdout.trim()).toBe('rejected');
+    }
+  });
+
+  it('exits 2 for invalid DETENT_CUSTOM_METADATA', async () => {
+    writeFileSync(
+      configPath,
+      JSON.stringify({
+        schemas: { everything: {}, 'allow-all': {} },
+        rules: [{ everything: ['allow-all'] }],
+      })
+    );
+    try {
+      await execFileAsync('node', [cliPath, 'curl', 'https://example.com'], {
+        env: { ...process.env, DETENT_CONFIG: configPath, DETENT_CUSTOM_METADATA: '{not json}' },
+      });
+      expect.fail('Should have exited with non-zero');
+    } catch (error: unknown) {
+      const execError = error as { code: number; stderr: string };
+      expect(execError.code).toBe(2);
+      expect(execError.stderr).toContain('custom metadata');
+    }
+  });
+
   it('exits 0 and outputs JSON for dump subcommand', async () => {
     writeFileSync(
       configPath,

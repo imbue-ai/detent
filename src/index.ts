@@ -13,4 +13,5 @@ export {
   getAllBuiltinSchemas,
 } from './schemas/requestSchema.js';
 export { decomposeRequest } from './decomposedRequest.js';
-export type { DecomposedRequest } from './decomposedRequest.js';
+export type { DecomposedRequest, CustomMetadata } from './decomposedRequest.js';
+export { CustomMetadataError } from './environment.js';
