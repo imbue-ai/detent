@@ -15,7 +15,7 @@ const validRequestPropertyNames = decomposedRequestPropertyNames;
 function findInvalidPropertyName(schema: Record<string, unknown>): string | undefined {
   const properties = schema.properties;
   if (typeof properties === 'object' && properties !== null) {
-    for (const key of Object.keys(properties as Record<string, unknown>)) {
+    for (const key of Object.keys(properties)) {
       if (!validRequestPropertyNames.has(key)) {
         return key;
       }
