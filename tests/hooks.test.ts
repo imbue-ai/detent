@@ -364,6 +364,22 @@ describe('rule object form: hooks input contract', () => {
     expect(captured.headers).toMatchObject({ 'x-test': 'value' });
   });
 
+  it('includes custom metadata in the decomposed request passed to hooks', async () => {
+    const captureFile = join(tempDir, 'captured-metadata.json');
+    const captureHook = writeHookScript('capture.sh', `cat "$1" > "${captureFile}"\nexit 0`);
+    const configPath = writeConfig({
+      schemas: {
+        scope: { properties: { domain: { const: 'example.com' } }, required: ['domain'] },
+      },
+      rules: [{ scope: { hooks: [captureHook] } }],
+    });
+    const config = new Config(configPath, true);
+    await config.check(new Request('https://example.com'), { actor: 'alice', attempt: 2 });
+
+    const captured = JSON.parse(readFileSync(captureFile, 'utf-8')) as Record<string, unknown>;
+    expect(captured.customMetadata).toEqual({ actor: 'alice', attempt: 2 });
+  });
+
   it('removes the temp request file after the hooks finish', async () => {
     const okHook = writeHookScript('ok.sh', 'exit 0');
     const configPath = writeConfig({

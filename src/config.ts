@@ -7,7 +7,7 @@ import {
   SchemaRegistry,
   getAllBuiltinSchemas,
 } from './schemas/requestSchema.js';
-import { decomposeRequest } from './decomposedRequest.js';
+import { decomposeRequest, type CustomMetadata } from './decomposedRequest.js';
 import { runHooksAll, type HookSpec } from './hooks.js';
 
 export class ConfigError extends Error {
@@ -126,8 +126,8 @@ export class Config {
     this.rules = resolveRules(rawConfig, ruleOriginDirectories, registry);
   }
 
-  async check(request: Request): Promise<boolean> {
-    const decomposedRequest = await decomposeRequest(request);
+  async check(request: Request, customMetadata?: CustomMetadata): Promise<boolean> {
+    const decomposedRequest = await decomposeRequest(request, customMetadata);
 
     for (let index = 0; index < this.rules.length; index++) {
       const rule = this.rules[index]!;

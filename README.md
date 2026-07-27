@@ -87,6 +87,16 @@ const request = new Request("https://api.example.com/users", {
 const result = await check(request);
 ```
 
+`check` optionally takes a config path, a flag controlling
+built-in schemas, and custom metadata:
+
+```ts
+const result = await check(request, "/path/to/config.json", true, {
+  actor: "code-agent",
+  sessionId: "abc123",
+});
+```
+
 ### Configuration
 
 All the configuration goes to `~/.config/detent/config.json` (or
@@ -97,8 +107,8 @@ environment variable to specify a different path.
 
 An HTTP(s) request can be represented as an object that has
 several well-defined properties: `protocol`, `domain`, `port`,
-`path`, `method`, `headers`, `queryParams`, `body` and
-`parsedBody`. Using this representation, the `detent` tool uses
+`path`, `method`, `headers`, `queryParams`, `body`,
+`parsedBody` and `customMetadata`. Using this representation, the `detent` tool uses
 [JSON schema](https://json-schema.org/) to:
 
 1. Match requests to permission checks.
@@ -161,6 +171,39 @@ In the Detent config, schemas are identified by names, like this:
 
 For a complete example config that defines custom schemas, see
 [docs/example-cloudflare.json](docs/example-cloudflare.json).
+
+#### Custom metadata
+
+`customMetadata` is an optional object with arbitrary subfields
+that is not derived from the request itself. It lets callers
+attach their own context (e.g. which agent is making the request)
+and write rules against it.
+
+Provided either through the library API:
+
+```ts
+await check(request, configPath, useBuiltinSchemas, { actor: "code-agent", attempt: 2 });
+```
+
+or, for the CLI, through the `DETENT_CUSTOM_METADATA` environment variable holding a JSON object:
+
+```bash
+DETENT_CUSTOM_METADATA='{"actor":"code-agent"}' detent curl -s https://api.github.com/user
+```
+
+Schemas refer to it like any other property:
+
+```json
+{
+  "properties": {
+    "customMetadata": {
+      "properties": { "actor": { "const": "code-agent" } },
+      "required": ["actor"]
+    }
+  },
+  "required": ["customMetadata"]
+}
+```
 
 ### Permission rules
 
@@ -269,6 +312,12 @@ names, run `detent dump | jq '.schemas | keys'`.
 If you don't want to use the built-in schemas, set the
 `DETENT_DO_NOT_USE_BUILTIN_SCHEMAS` environment variable to
 a non-empty value.
+
+### Environment variables
+
+- `DETENT_CONFIG`: path to the config file
+- `DETENT_DO_NOT_USE_BUILTIN_SCHEMAS`: when non-empty, disables built-in schemas
+- `DETENT_CUSTOM_METADATA`: JSON object exposed to schemas and hooks as `customMetadata`
 
 
 ### Including other config files

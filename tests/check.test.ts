@@ -6,6 +6,7 @@ import { check } from '../src/check.js';
 import { Config, ConfigError } from '../src/config.js';
 import { RequestSchema, RequestSchemaError } from '../src/schemas/requestSchema.js';
 import { decomposeRequest } from '../src/decomposedRequest.js';
+import { CustomMetadataError } from '../src/environment.js';
 import type { DecomposedRequest } from '../src/decomposedRequest.js';
 
 describe('decomposeRequest', () => {
@@ -259,6 +260,8 @@ describe('RequestSchema', () => {
             headers: { type: 'object' },
             queryParams: { type: 'object' },
             body: { type: 'string' },
+            parsedBody: {},
+            customMetadata: { type: 'object' },
           },
           required: ['protocol', 'domain', 'port', 'path', 'method', 'headers', 'queryParams'],
         })
@@ -928,5 +931,133 @@ describe('check (top-level function)', () => {
       })
     );
     await expect(check(new Request('https://example.com'), configPath, false)).rejects.toThrow();
+  });
+});
+
+describe('customMetadata', () => {
+  let tempDir: string;
+
+  beforeEach(() => {
+    tempDir = join(
+      tmpdir(),
+      `detent-test-${String(Date.now())}-${Math.random().toString(36).slice(2)}`
+    );
+    mkdirSync(tempDir, { recursive: true });
+  });
+
+  afterEach(() => {
+    rmSync(tempDir, { recursive: true, force: true });
+  });
+
+  function writeMetadataConfig(): string {
+    const configPath = join(tempDir, 'config.json');
+    writeFileSync(
+      configPath,
+      JSON.stringify({
+        schemas: {
+          scope: { properties: { domain: { const: 'example.com' } }, required: ['domain'] },
+          'alice-only': {
+            properties: {
+              customMetadata: {
+                type: 'object',
+                properties: { actor: { const: 'alice' } },
+                required: ['actor'],
+              },
+            },
+            required: ['customMetadata'],
+          },
+        },
+        rules: [{ scope: ['alice-only'] }],
+      })
+    );
+    return configPath;
+  }
+
+  it('is absent from the decomposed request when not provided', async () => {
+    const data = await decomposeRequest(new Request('https://example.com'));
+    expect(data.customMetadata).toBeUndefined();
+    expect(Object.hasOwn(data, 'customMetadata')).toBe(false);
+  });
+
+  it('is included in the decomposed request when provided', async () => {
+    const data = await decomposeRequest(new Request('https://example.com'), {
+      actor: 'alice',
+      nested: { attempt: 3 },
+    });
+    expect(data.customMetadata).toEqual({ actor: 'alice', nested: { attempt: 3 } });
+  });
+
+  it('can be matched by request schemas', () => {
+    const schema = new RequestSchema('alice-only', {
+      properties: {
+        customMetadata: {
+          type: 'object',
+          properties: { actor: { const: 'alice' } },
+          required: ['actor'],
+        },
+      },
+      required: ['customMetadata'],
+    });
+
+    const base: DecomposedRequest = {
+      protocol: 'https',
+      domain: 'example.com',
+      port: 443,
+      path: '/',
+      method: 'GET',
+      headers: {},
+      queryParams: {},
+      body: undefined,
+    };
+
+    expect(schema.match({ ...base, customMetadata: { actor: 'alice' } })).toBe(true);
+    expect(schema.match({ ...base, customMetadata: { actor: 'bob' } })).toBe(false);
+    expect(schema.match(base)).toBe(false);
+  });
+
+  it('is honored by Config.check', async () => {
+    const config = new Config(writeMetadataConfig(), true);
+    const request = new Request('https://example.com');
+
+    expect(await config.check(request, { actor: 'alice' })).toBe(true);
+    expect(await config.check(request, { actor: 'bob' })).toBe(false);
+    expect(await config.check(request)).toBe(false);
+  });
+
+  it('is honored by the top-level check', async () => {
+    const configPath = writeMetadataConfig();
+    const request = new Request('https://example.com');
+
+    expect(await check(request, configPath, true, { actor: 'alice' })).toBe(true);
+    expect(await check(request, configPath, true, { actor: 'bob' })).toBe(false);
+    expect(await check(request, configPath)).toBe(false);
+  });
+
+  it('defaults to the DETENT_CUSTOM_METADATA environment variable', async () => {
+    const configPath = writeMetadataConfig();
+    const request = new Request('https://example.com');
+    // eslint-disable-next-line @typescript-eslint/dot-notation
+    const previous = process.env['DETENT_CUSTOM_METADATA'];
+    try {
+      // eslint-disable-next-line @typescript-eslint/dot-notation
+      process.env['DETENT_CUSTOM_METADATA'] = JSON.stringify({ actor: 'alice' });
+      expect(await check(request, configPath)).toBe(true);
+
+      // Explicitly passed metadata takes precedence over the environment.
+      expect(await check(request, configPath, true, { actor: 'bob' })).toBe(false);
+
+      // eslint-disable-next-line @typescript-eslint/dot-notation
+      process.env['DETENT_CUSTOM_METADATA'] = '{not json}';
+      await expect(check(request, configPath)).rejects.toThrow(CustomMetadataError);
+
+      // eslint-disable-next-line @typescript-eslint/dot-notation
+      process.env['DETENT_CUSTOM_METADATA'] = '["alice"]';
+      await expect(check(request, configPath)).rejects.toThrow(/must be a JSON object/);
+    } finally {
+      // eslint-disable-next-line @typescript-eslint/dot-notation
+      if (previous === undefined) delete process.env['DETENT_CUSTOM_METADATA'];
+      // eslint-disable-next-line @typescript-eslint/dot-notation
+      else process.env['DETENT_CUSTOM_METADATA'] = previous;
+    }
   });
 });
