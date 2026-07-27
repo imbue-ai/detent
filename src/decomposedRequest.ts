@@ -15,16 +15,16 @@
  */
 export type CustomMetadata = Readonly<Record<string, unknown>>;
 
-const decomposedRequestCoreFieldTypes = {
-  protocol: '' as string,
-  domain: '' as string,
-  port: 0 as number,
-  path: '' as string,
-  method: '' as string,
-  headers: {} as Readonly<Record<string, string>>,
-  queryParams: {} as Readonly<Record<string, string>>,
-  body: undefined as string | undefined,
-} as const satisfies Record<string, unknown>;
+interface DecomposedRequestCoreFields {
+  readonly protocol: string;
+  readonly domain: string;
+  readonly port: number;
+  readonly path: string;
+  readonly method: string;
+  readonly headers: Readonly<Record<string, string>>;
+  readonly queryParams: Readonly<Record<string, string>>;
+  readonly body: string | undefined;
+}
 
 /**
  * `parsedBody` is the structured form of the body. It is only present when the
@@ -32,16 +32,29 @@ const decomposedRequestCoreFieldTypes = {
  * JSON request bodies. Other content types (e.g. XML, GraphQL) may be supported
  * later. `customMetadata` is only present when the caller supplied it.
  */
-export type DecomposedRequest = Readonly<typeof decomposedRequestCoreFieldTypes> & {
+export type DecomposedRequest = DecomposedRequestCoreFields & {
   readonly parsedBody?: unknown;
   readonly customMetadata?: CustomMetadata;
 };
 
-export const decomposedRequestPropertyNames: ReadonlySet<string> = new Set([
-  ...Object.keys(decomposedRequestCoreFieldTypes),
-  'parsedBody',
-  'customMetadata',
-]);
+// Listing every key explicitly is enforced by the `Record<keyof ...>` type, so
+// the set of valid property names cannot drift from `DecomposedRequest`.
+const decomposedRequestPropertyNameFlags: Record<keyof DecomposedRequest, true> = {
+  protocol: true,
+  domain: true,
+  port: true,
+  path: true,
+  method: true,
+  headers: true,
+  queryParams: true,
+  body: true,
+  parsedBody: true,
+  customMetadata: true,
+};
+
+export const decomposedRequestPropertyNames: ReadonlySet<string> = new Set(
+  Object.keys(decomposedRequestPropertyNameFlags)
+);
 
 function isJsonContentType(contentType: string | undefined): boolean {
   if (contentType === undefined) {
