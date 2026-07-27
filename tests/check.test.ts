@@ -4,7 +4,7 @@ import { join } from 'node:path';
 import { tmpdir } from 'node:os';
 import { check } from '../src/check.js';
 import { Config, ConfigError } from '../src/config.js';
-import { RequestSchema, RequestSchemaError } from '../src/schemas/requestSchema.js';
+import { RequestSchema, RequestSchemaError, SchemaRegistry } from '../src/schemas/requestSchema.js';
 import { decomposeRequest } from '../src/decomposedRequest.js';
 import { CustomMetadataError } from '../src/environment.js';
 import type { DecomposedRequest } from '../src/decomposedRequest.js';
@@ -304,6 +304,124 @@ describe('RequestSchema', () => {
     expect(schema.match(getData)).toBe(true);
     expect(schema.match(postSearchData)).toBe(true);
     expect(schema.match(postOtherData)).toBe(false);
+  });
+});
+
+describe('schema composition via $defs references', () => {
+  const baseRequest: DecomposedRequest = {
+    protocol: 'https',
+    domain: 'slack.com',
+    port: 443,
+    path: '/api/chat.postMessage',
+    method: 'POST',
+    headers: {},
+    queryParams: {},
+    body: undefined,
+  };
+
+  const availableSchemas = {
+    'slack-api': {
+      properties: { domain: { const: 'slack.com' } },
+      required: ['domain'],
+    },
+    'alice-only': {
+      allOf: [{ $ref: '#/$defs/slack-api' }],
+      properties: {
+        customMetadata: {
+          type: 'object',
+          properties: { account: { const: 'alice' } },
+          required: ['account'],
+        },
+      },
+      required: ['customMetadata'],
+    },
+  };
+
+  it('composes a referenced schema with additional constraints', () => {
+    const schema = new RequestSchema(
+      'slack-with-account',
+      {
+        allOf: [
+          { $ref: '#/$defs/slack-api' },
+          {
+            properties: {
+              customMetadata: {
+                type: 'object',
+                properties: { account: { type: 'string', minLength: 1 } },
+                required: ['account'],
+              },
+            },
+            required: ['customMetadata'],
+          },
+        ],
+      },
+      availableSchemas
+    );
+
+    expect(schema.match({ ...baseRequest, customMetadata: { account: 'alice' } })).toBe(true);
+    expect(schema.match(baseRequest)).toBe(false);
+    expect(
+      schema.match({ ...baseRequest, domain: 'example.com', customMetadata: { account: 'alice' } })
+    ).toBe(false);
+  });
+
+  it('resolves references transitively', () => {
+    const schema = new RequestSchema(
+      'composed',
+      { allOf: [{ $ref: '#/$defs/alice-only' }] },
+      availableSchemas
+    );
+
+    expect(schema.match({ ...baseRequest, customMetadata: { account: 'alice' } })).toBe(true);
+    expect(schema.match({ ...baseRequest, customMetadata: { account: 'bob' } })).toBe(false);
+    expect(schema.match({ ...baseRequest, domain: 'example.com' })).toBe(false);
+  });
+
+  it('supports pointers into a referenced schema', () => {
+    const schema = new RequestSchema(
+      'domain-only',
+      { properties: { domain: { $ref: '#/$defs/slack-api/properties/domain' } } },
+      availableSchemas
+    );
+
+    expect(schema.match(baseRequest)).toBe(true);
+    expect(schema.match({ ...baseRequest, domain: 'example.com' })).toBe(false);
+  });
+
+  it('lets inline $defs shadow named schemas', () => {
+    const schema = new RequestSchema(
+      'shadowing',
+      {
+        allOf: [{ $ref: '#/$defs/slack-api' }],
+        $defs: {
+          'slack-api': { properties: { domain: { const: 'example.com' } }, required: ['domain'] },
+        },
+      },
+      availableSchemas
+    );
+
+    expect(schema.match(baseRequest)).toBe(false);
+    expect(schema.match({ ...baseRequest, domain: 'example.com' })).toBe(true);
+  });
+
+  it('throws RequestSchemaError for a reference to an unknown schema', () => {
+    expect(
+      () => new RequestSchema('bad', { allOf: [{ $ref: '#/$defs/nope' }] }, availableSchemas)
+    ).toThrow(/references unknown schema "#\/\$defs\/nope"/);
+  });
+
+  it('resolves references between schemas in a registry', () => {
+    const registry = new SchemaRegistry(availableSchemas);
+    const schema = registry.get('alice-only')!;
+
+    expect(schema.match({ ...baseRequest, customMetadata: { account: 'alice' } })).toBe(true);
+    expect(
+      schema.match({
+        ...baseRequest,
+        domain: 'example.com',
+        customMetadata: { account: 'alice' },
+      })
+    ).toBe(false);
   });
 });
 
@@ -858,6 +976,47 @@ describe('Config', () => {
     // "permission" came from "patterns" and still works
     const postRequest = new Request('https://new.com/test', { method: 'POST' });
     expect(await config.check(postRequest)).toBe(false);
+  });
+
+  it('lets a user schema compose a built-in schema via $defs', async () => {
+    const configPath = writeConfig({
+      schemas: {
+        'slack-for-alice': {
+          allOf: [
+            { $ref: '#/$defs/slack-api' },
+            {
+              properties: {
+                customMetadata: {
+                  type: 'object',
+                  properties: { account: { const: 'alice' } },
+                  required: ['account'],
+                },
+              },
+              required: ['customMetadata'],
+            },
+          ],
+        },
+      },
+      rules: [{ 'slack-for-alice': ['any'] }],
+    });
+    const config = new Config(configPath, false);
+
+    const slackRequest = new Request('https://slack.com/api/chat.postMessage', { method: 'POST' });
+    expect(await config.check(slackRequest, { account: 'alice' })).toBe(true);
+    expect(await config.check(slackRequest, { account: 'bob' })).toBe(false);
+    expect(await config.check(new Request('https://example.com'), { account: 'alice' })).toBe(
+      false
+    );
+  });
+
+  it('throws when a schema references an unknown schema', () => {
+    const configPath = writeConfig({
+      schemas: {
+        broken: { allOf: [{ $ref: '#/$defs/does-not-exist' }] },
+      },
+      rules: [{ broken: ['broken'] }],
+    });
+    expect(() => new Config(configPath, true)).toThrow(RequestSchemaError);
   });
 });
 
