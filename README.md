@@ -268,6 +268,26 @@ that don't match any rule get rejected. If you want to allow
 requests by default, append the `{"any": ["any"]}` rule to the
 end of your rule list.
 
+### Unknown schema names are skipped, not fatal
+
+If a rule references a schema name that doesn't exist (for example
+a typo, or a built-in schema that isn't available because
+`DETENT_DO_NOT_USE_BUILTIN_SCHEMAS` is set), Detent no longer aborts
+the whole config. Instead it skips the offending entry and keeps
+going, so a single bad name can't take down an entire gateway:
+
+- An unknown **scope** name causes that rule to be dropped (the
+  request falls through to later rules, or the default deny).
+- An unknown **permission** (or `schemas` entry in object form) is
+  filtered out; any valid names in the same rule still apply.
+
+These skips are recorded as warnings, exposed on the `Config`
+instance as `config.warnings` and printed to stderr by
+`detent dump` so the misconfiguration stays discoverable. A
+`$ref` to an unknown schema *inside a schema definition* is still
+a hard error, since that indicates a broken schema rather than a
+missing named permission.
+
 ### Hooks (custom executable checks)
 
 In addition to the plain list of schemas shown above, a rule's

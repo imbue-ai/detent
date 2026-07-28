@@ -111,14 +111,16 @@ describe('rule object form: config validation', () => {
     expect(() => new Config(configPath, true)).toThrow(ConfigError);
   });
 
-  it('rejects unknown schema names in schemas', () => {
+  it('skips unknown schema names in schemas instead of throwing', () => {
     const configPath = writeConfig({
       schemas: {
         scope: { properties: { domain: { const: 'example.com' } }, required: ['domain'] },
       },
       rules: [{ scope: { schemas: ['nonexistent'] } }],
     });
-    expect(() => new Config(configPath, true)).toThrow(/Unknown schema/);
+    const config = new Config(configPath, true);
+    expect(config.warnings).toHaveLength(1);
+    expect(config.warnings[0]).toMatch(/Unknown schema "nonexistent" used in schemas/);
   });
 
   it('does not validate hook executable existence at config load', () => {

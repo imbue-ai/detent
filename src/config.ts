@@ -1,12 +1,7 @@
 import { existsSync, readFileSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 import { Validator } from '@cfworker/json-schema';
-import {
-  RequestSchema,
-  RequestSchemaError,
-  SchemaRegistry,
-  getAllBuiltinSchemas,
-} from './schemas/requestSchema.js';
+import { RequestSchema, SchemaRegistry, getAllBuiltinSchemas } from './schemas/requestSchema.js';
 import { decomposeRequest, type CustomMetadata } from './decomposedRequest.js';
 import { runHooksAll, type HookSpec } from './hooks.js';
 
@@ -119,11 +114,18 @@ export function createSchemaRegistry(
 
 export class Config {
   private readonly rules: readonly ResolvedRule[];
+  /**
+   * Human-readable warnings produced while resolving rules, e.g. references to
+   * unknown schema names that were skipped instead of failing the whole config.
+   */
+  readonly warnings: readonly string[];
 
   constructor(configPath: string, doNotUseBuiltinSchemas: boolean) {
     const { rawConfig, ruleOriginDirectories } = readRawConfigWithOrigins(configPath);
     const registry = createSchemaRegistry(rawConfig, doNotUseBuiltinSchemas);
-    this.rules = resolveRules(rawConfig, ruleOriginDirectories, registry);
+    const { rules, warnings } = resolveRules(rawConfig, ruleOriginDirectories, registry);
+    this.rules = rules;
+    this.warnings = warnings;
   }
 
   async check(request: Request, customMetadata?: CustomMetadata): Promise<boolean> {
@@ -270,19 +272,22 @@ function readRawConfigRecursive(
   };
 }
 
-export function validateRules(rawConfig: RawConfig, registry: SchemaRegistry): void {
+export function validateRules(rawConfig: RawConfig, registry: SchemaRegistry): readonly string[] {
   // Origin directories are not relevant for validation (they only affect
   // hook-path resolution at exec time). Pass empty placeholders.
   const placeholders = rawConfig.rules.map(() => '');
-  resolveRules(rawConfig, placeholders, registry);
+  return resolveRules(rawConfig, placeholders, registry).warnings;
 }
 
 function resolveRules(
   rawConfig: RawConfig,
   ruleOriginDirectories: readonly string[],
   registry: SchemaRegistry
-): readonly ResolvedRule[] {
-  return rawConfig.rules.map((ruleObject, index) => {
+): { readonly rules: readonly ResolvedRule[]; readonly warnings: readonly string[] } {
+  const warnings: string[] = [];
+  const rules: ResolvedRule[] = [];
+
+  rawConfig.rules.forEach((ruleObject, index) => {
     const entries = Object.entries(ruleObject);
     if (entries.length !== 1) {
       throw new ConfigError(
@@ -291,48 +296,65 @@ function resolveRules(
     }
 
     const [scopeName, body] = entries[0]!;
-    const scope = resolveSchema(scopeName, registry, `scope of rule at index ${String(index)}`);
+    const scope = resolveSchema(scopeName, registry);
+    if (scope === null) {
+      warnings.push(
+        `Unknown schema "${scopeName}" used as scope of rule at index ${String(index)}; skipping this rule.`
+      );
+      return;
+    }
     const originDirectory = ruleOriginDirectories[index] ?? '';
 
     if (isListRuleBody(body)) {
-      const schemas = body.map((schemaName) =>
-        resolveSchema(
-          schemaName,
-          registry,
-          `permission "${schemaName}" in rule at index ${String(index)}`
-        )
-      );
-      return { scope, body: { kind: 'list', schemas } };
+      const schemas: RequestSchema[] = [];
+      for (const schemaName of body) {
+        const schema = resolveSchema(schemaName, registry);
+        if (schema === null) {
+          warnings.push(
+            `Unknown schema "${schemaName}" used as a permission in rule at index ${String(index)}; skipping this permission.`
+          );
+        } else {
+          schemas.push(schema);
+        }
+      }
+      rules.push({ scope, body: { kind: 'list', schemas } });
+      return;
     }
 
     const objectBody = body;
     const schemaAnyNames = objectBody.schemas ?? [];
     const hookStrings = objectBody.hooks ?? [];
 
-    const schemaAny = schemaAnyNames.map((schemaName) =>
-      resolveSchema(
-        schemaName,
-        registry,
-        `schemas entry "${schemaName}" in rule at index ${String(index)}`
-      )
-    );
+    const schemaAny: RequestSchema[] = [];
+    for (const schemaName of schemaAnyNames) {
+      const schema = resolveSchema(schemaName, registry);
+      if (schema === null) {
+        warnings.push(
+          `Unknown schema "${schemaName}" used in schemas of rule at index ${String(index)}; skipping this schema.`
+        );
+      } else {
+        schemaAny.push(schema);
+      }
+    }
     const hooks: readonly HookSpec[] = hookStrings.map((hookString) => ({
       hookString,
       configDirectory: originDirectory,
     }));
 
-    return { scope, body: { kind: 'object', schemaAny, hooks } };
+    rules.push({ scope, body: { kind: 'object', schemaAny, hooks } });
   });
+
+  return { rules, warnings };
 }
 
 function isListRuleBody(body: RawRuleBody): body is readonly string[] {
   return Array.isArray(body);
 }
 
-function resolveSchema(name: string, registry: SchemaRegistry, context: string): RequestSchema {
-  const schema = registry.get(name);
-  if (schema === undefined) {
-    throw new RequestSchemaError(`Unknown schema "${name}" used in ${context}`);
-  }
-  return schema;
+function resolveSchema(name: string, registry: SchemaRegistry): RequestSchema | null {
+  // Don't throw on an unknown name: a typo'd or hallucinated schema name in a
+  // single rule must not take down the entire gateway. Callers skip the
+  // offending rule/permission and record a warning so the misconfiguration is
+  // still discoverable.
+  return registry.get(name) ?? null;
 }

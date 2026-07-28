@@ -13,7 +13,10 @@ export function dump(configPath?: string): DumpedConfig {
   const registry = createSchemaRegistry(rawConfig, !useBuiltinSchemas());
 
   registry.compileAll();
-  validateRules(rawConfig, registry);
+  const warnings = validateRules(rawConfig, registry);
+  for (const warning of warnings) {
+    console.warn(`detent: ${warning}`);
+  }
 
   return {
     schemas: registry.allSchemas(),

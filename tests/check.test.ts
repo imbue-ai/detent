@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
-import { writeFileSync, mkdirSync, rmSync } from 'node:fs';
+import { writeFileSync, mkdirSync, rmSync, chmodSync } from 'node:fs';
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';
 import { check } from '../src/check.js';
@@ -642,15 +642,18 @@ describe('Config', () => {
     expect(() => new Config(configPath, true)).toThrow(ConfigError);
   });
 
-  it('throws RequestSchemaError for unknown schema name in rule scope', () => {
+  it('skips a rule whose scope schema name is unknown instead of throwing', () => {
     const configPath = writeConfig({
       schemas: {},
       rules: [{ 'unknown-scope': ['also-unknown'] }],
     });
-    expect(() => new Config(configPath, true)).toThrow(RequestSchemaError);
+    const config = new Config(configPath, true);
+    // The rule is dropped, so the request falls through to the default deny.
+    expect(config.warnings).toHaveLength(1);
+    expect(config.warnings[0]).toMatch(/Unknown schema "unknown-scope" used as scope/);
   });
 
-  it('throws RequestSchemaError for unknown schema name in permissions', () => {
+  it('skips an unknown permission schema name instead of throwing', () => {
     const configPath = writeConfig({
       schemas: {
         'github-api': {
@@ -660,7 +663,11 @@ describe('Config', () => {
       },
       rules: [{ 'github-api': ['nonexistent-permission'] }],
     });
-    expect(() => new Config(configPath, true)).toThrow(RequestSchemaError);
+    const config = new Config(configPath, true);
+    expect(config.warnings).toHaveLength(1);
+    expect(config.warnings[0]).toMatch(
+      /Unknown schema "nonexistent-permission" used as a permission/
+    );
   });
 
   it('throws ConfigError for rule with multiple keys', () => {
@@ -1020,6 +1027,148 @@ describe('Config', () => {
   });
 });
 
+describe('Config unknown-schema handling (soft skip)', () => {
+  let tempDir: string;
+
+  beforeEach(() => {
+    tempDir = join(
+      tmpdir(),
+      `detent-test-${String(Date.now())}-${Math.random().toString(36).slice(2)}`
+    );
+    mkdirSync(tempDir, { recursive: true });
+  });
+
+  afterEach(() => {
+    rmSync(tempDir, { recursive: true, force: true });
+  });
+
+  function writeConfig(config: object): string {
+    const configPath = join(tempDir, 'config.json');
+    writeFileSync(configPath, JSON.stringify(config));
+    return configPath;
+  }
+
+  it('does not throw when a rule scope name is a typo, and other rules still work', async () => {
+    const configPath = writeConfig({
+      schemas: {
+        'github-api': {
+          properties: { domain: { const: 'api.github.com' } },
+          required: ['domain'],
+        },
+        'get-only': { properties: { method: { const: 'GET' } }, required: ['method'] },
+      },
+      rules: [
+        // A typo'd scope name that doesn't match any schema.
+        { 'github-apy': ['get-only'] },
+        { 'github-api': ['get-only'] },
+      ],
+    });
+
+    const config = new Config(configPath, true);
+    expect(config.warnings).toHaveLength(1);
+    expect(config.warnings[0]).toMatch(/Unknown schema "github-apy" used as scope/);
+
+    // The second, valid rule still grants access.
+    const request = new Request('https://api.github.com/repos');
+    expect(await config.check(request)).toBe(true);
+  });
+
+  it('skips an unknown permission but keeps a valid one in the same rule', async () => {
+    const configPath = writeConfig({
+      schemas: {
+        'github-api': {
+          properties: { domain: { const: 'api.github.com' } },
+          required: ['domain'],
+        },
+        'get-only': { properties: { method: { const: 'GET' } }, required: ['method'] },
+      },
+      rules: [{ 'github-api': ['typo-permission', 'get-only'] }],
+    });
+
+    const config = new Config(configPath, true);
+    expect(config.warnings).toHaveLength(1);
+    expect(config.warnings[0]).toMatch(/Unknown schema "typo-permission" used as a permission/);
+
+    // The valid "get-only" permission still allows the GET request.
+    expect(await config.check(new Request('https://api.github.com/repos'))).toBe(true);
+    // A non-GET request is rejected because the only surviving permission is "get-only".
+    expect(
+      await config.check(new Request('https://api.github.com/repos', { method: 'DELETE' }))
+    ).toBe(false);
+  });
+
+  it('rejects (rather than throwing) when every permission in a rule is unknown', async () => {
+    const configPath = writeConfig({
+      schemas: {
+        'github-api': {
+          properties: { domain: { const: 'api.github.com' } },
+          required: ['domain'],
+        },
+      },
+      rules: [{ 'github-api': ['typo-one', 'typo-two'] }],
+    });
+
+    const config = new Config(configPath, true);
+    expect(config.warnings).toHaveLength(2);
+
+    // Scope matches but no permission survives, so the rule rejects.
+    expect(await config.check(new Request('https://api.github.com/repos'))).toBe(false);
+  });
+
+  it('skips unknown schemas in the object-form "schemas" list but keeps valid ones', async () => {
+    const configPath = writeConfig({
+      schemas: {
+        'github-api': {
+          properties: { domain: { const: 'api.github.com' } },
+          required: ['domain'],
+        },
+        'get-only': { properties: { method: { const: 'GET' } }, required: ['method'] },
+      },
+      rules: [{ 'github-api': { schemas: ['typo-schema', 'get-only'], hooks: [] } }],
+    });
+
+    const config = new Config(configPath, true);
+    expect(config.warnings).toHaveLength(1);
+    expect(config.warnings[0]).toMatch(/Unknown schema "typo-schema" used in schemas/);
+
+    expect(await config.check(new Request('https://api.github.com/repos'))).toBe(true);
+  });
+
+  it('still runs hooks for an object-form rule even if some schemas are unknown', async () => {
+    const hookPath = join(tempDir, 'always-allow.sh');
+    writeFileSync(hookPath, '#!/bin/sh\nexit 0\n');
+    chmodSync(hookPath, 0o755);
+
+    const configPath = writeConfig({
+      schemas: {
+        'github-api': {
+          properties: { domain: { const: 'api.github.com' } },
+          required: ['domain'],
+        },
+      },
+      rules: [{ 'github-api': { schemas: ['typo-schema'], hooks: [hookPath] } }],
+    });
+
+    const config = new Config(configPath, true);
+    expect(config.warnings).toHaveLength(1);
+
+    // The hook approves the request even though the (only) schema was unknown and skipped.
+    expect(await config.check(new Request('https://api.github.com/repos'))).toBe(true);
+  });
+
+  it('constructing a config with unknown schema names never throws', () => {
+    const configPath = writeConfig({
+      schemas: {},
+      rules: [
+        { 'unknown-scope': ['unknown-permission'] },
+        { 'also-unknown': { schemas: ['nope'], hooks: [] } },
+      ],
+    });
+
+    expect(() => new Config(configPath, true)).not.toThrow();
+  });
+});
+
 describe('check (top-level function)', () => {
   let tempDir: string;
 
@@ -1089,7 +1238,10 @@ describe('check (top-level function)', () => {
         rules: [{ scope: ['any'] }],
       })
     );
-    await expect(check(new Request('https://example.com'), configPath, false)).rejects.toThrow();
+    // With builtins disabled, "any" is an unknown schema name. It is now
+    // skipped (rather than throwing), leaving the rule with no matching
+    // permission, so the request is rejected instead of erroring.
+    await expect(check(new Request('https://example.com'), configPath, false)).resolves.toBe(false);
   });
 });
 
