@@ -2615,4 +2615,40 @@ describe('builtin schemas: ngrok', () => {
     expect(writeAll.match(makeRequest({ method: 'DELETE' }))).toBe(true);
     expect(writeAll.match(makeRequest({ method: 'GET' }))).toBe(false);
   });
+
+  it('ngrok-write-all covers state-changing action endpoints (POST restart/stop)', () => {
+    const writeAll = builtinRegistry.get('ngrok-write-all')!;
+    expect(
+      writeAll.match(makeRequest({ method: 'POST', path: '/tunnel_sessions/ts_123/restart' }))
+    ).toBe(true);
+    expect(
+      writeAll.match(makeRequest({ method: 'POST', path: '/tunnel_sessions/ts_123/stop' }))
+    ).toBe(true);
+  });
+
+  it('ngrok-write-credentials mints/updates/deletes tunnel authtokens but not other writes', () => {
+    expectSchemaExists('ngrok-write-credentials');
+    const writeCreds = builtinRegistry.get('ngrok-write-credentials')!;
+    expect(writeCreds.match(makeRequest({ method: 'POST', path: '/credentials' }))).toBe(true);
+    expect(writeCreds.match(makeRequest({ method: 'DELETE', path: '/credentials/cr_123' }))).toBe(
+      true
+    );
+    expect(writeCreds.match(makeRequest({ method: 'GET', path: '/credentials' }))).toBe(false);
+    expect(writeCreds.match(makeRequest({ method: 'POST', path: '/endpoints' }))).toBe(false);
+  });
+
+  it('ngrok-read-credentials lists/inspects authtokens (GET only)', () => {
+    expectSchemaExists('ngrok-read-credentials');
+    const readCreds = builtinRegistry.get('ngrok-read-credentials')!;
+    expect(readCreds.match(makeRequest({ method: 'GET', path: '/credentials/cr_123' }))).toBe(true);
+    expect(readCreds.match(makeRequest({ method: 'POST', path: '/credentials' }))).toBe(false);
+  });
+
+  it('ngrok-write-api-keys is scoped to api_keys mutations only', () => {
+    expectSchemaExists('ngrok-write-api-keys');
+    const writeKeys = builtinRegistry.get('ngrok-write-api-keys')!;
+    expect(writeKeys.match(makeRequest({ method: 'POST', path: '/api_keys' }))).toBe(true);
+    expect(writeKeys.match(makeRequest({ method: 'POST', path: '/credentials' }))).toBe(false);
+    expect(writeKeys.match(makeRequest({ method: 'GET', path: '/api_keys' }))).toBe(false);
+  });
 });

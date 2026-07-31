@@ -317,6 +317,10 @@ See the main [README](../README.md) for how schemas and rules work together.
 - `ngrok-api` *(scope)*
 - `ngrok-read-all`
 - `ngrok-write-all`
+- `ngrok-read-credentials`
+- `ngrok-write-credentials`
+- `ngrok-read-api-keys`
+- `ngrok-write-api-keys`
 
 ### notion-mcp
 
