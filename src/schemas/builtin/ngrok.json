@@ -11,7 +11,7 @@
     ]
   },
   "ngrok-read-all": {
-    "$comment": "Read anything from the ngrok API. Every ngrok read is a GET (list/get); no GET mutates state.",
+    "$comment": "Read anything from the ngrok API.",
     "properties": {
       "method": {
         "const": "GET"
