@@ -2587,3 +2587,32 @@ describe('builtin schemas: todoist', () => {
     ).toBe(false);
   });
 });
+
+describe('builtin schemas: ngrok', () => {
+  it('ngrok scope matches api.ngrok.com', () => {
+    expectSchemaExists('ngrok-api');
+    const request = makeRequest({ domain: 'api.ngrok.com', path: '/api_keys' });
+    expect(builtinRegistry.get('ngrok-api')!.match(request)).toBe(true);
+  });
+
+  it('ngrok scope rejects unrelated domains', () => {
+    const request = makeRequest({ domain: 'ngrok.example.com' });
+    expect(builtinRegistry.get('ngrok-api')!.match(request)).toBe(false);
+  });
+
+  it('ngrok-read-all matches GET requests', () => {
+    expectSchemaExists('ngrok-read-all');
+    expect(builtinRegistry.get('ngrok-read-all')!.match(makeRequest({ method: 'GET' }))).toBe(true);
+    expect(builtinRegistry.get('ngrok-read-all')!.match(makeRequest({ method: 'POST' }))).toBe(
+      false
+    );
+  });
+
+  it('ngrok-write-all matches mutating methods but rejects GET', () => {
+    expectSchemaExists('ngrok-write-all');
+    const writeAll = builtinRegistry.get('ngrok-write-all')!;
+    expect(writeAll.match(makeRequest({ method: 'POST' }))).toBe(true);
+    expect(writeAll.match(makeRequest({ method: 'DELETE' }))).toBe(true);
+    expect(writeAll.match(makeRequest({ method: 'GET' }))).toBe(false);
+  });
+});
