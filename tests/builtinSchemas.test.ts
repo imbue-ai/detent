@@ -2644,11 +2644,12 @@ describe('builtin schemas: ngrok', () => {
     expect(readCreds.match(makeRequest({ method: 'POST', path: '/credentials' }))).toBe(false);
   });
 
-  it('ngrok-write-api-keys is scoped to api_keys mutations only', () => {
-    expectSchemaExists('ngrok-write-api-keys');
-    const writeKeys = builtinRegistry.get('ngrok-write-api-keys')!;
-    expect(writeKeys.match(makeRequest({ method: 'POST', path: '/api_keys' }))).toBe(true);
-    expect(writeKeys.match(makeRequest({ method: 'POST', path: '/credentials' }))).toBe(false);
-    expect(writeKeys.match(makeRequest({ method: 'GET', path: '/api_keys' }))).toBe(false);
+  it('ngrok credentials scopes do not leak to /ssh_credentials (^-anchor)', () => {
+    // /ssh_credentials is a distinct ngrok resource whose name contains
+    // "credentials"; the ^-anchored path pattern must not match it.
+    const readCreds = builtinRegistry.get('ngrok-read-credentials')!;
+    const writeCreds = builtinRegistry.get('ngrok-write-credentials')!;
+    expect(readCreds.match(makeRequest({ method: 'GET', path: '/ssh_credentials' }))).toBe(false);
+    expect(writeCreds.match(makeRequest({ method: 'POST', path: '/ssh_credentials' }))).toBe(false);
   });
 });

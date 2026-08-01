@@ -72,41 +72,5 @@
       "method",
       "path"
     ]
-  },
-  "ngrok-read-api-keys": {
-    "$comment": "List and inspect API keys.",
-    "properties": {
-      "method": {
-        "const": "GET"
-      },
-      "path": {
-        "type": "string",
-        "pattern": "^/api_keys(/.*)?$"
-      }
-    },
-    "required": [
-      "method",
-      "path"
-    ]
-  },
-  "ngrok-write-api-keys": {
-    "$comment": "Create, update, or delete API keys.",
-    "properties": {
-      "method": {
-        "enum": [
-          "POST",
-          "PATCH",
-          "DELETE"
-        ]
-      },
-      "path": {
-        "type": "string",
-        "pattern": "^/api_keys(/.*)?$"
-      }
-    },
-    "required": [
-      "method",
-      "path"
-    ]
   }
 }
