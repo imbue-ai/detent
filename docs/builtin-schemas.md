@@ -312,6 +312,14 @@ See the main [README](../README.md) for how schemas and rules work together.
 - `mailchimp-read-ecommerce`
 - `mailchimp-write-ecommerce`
 
+### ngrok
+
+- `ngrok-api` *(scope)*
+- `ngrok-read-all`
+- `ngrok-write-all`
+- `ngrok-read-credentials`
+- `ngrok-write-credentials`
+
 ### notion-mcp
 
 - `notion-mcp-api` *(scope)*
