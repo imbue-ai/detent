@@ -1,0 +1,54 @@
+{
+  "huggingface-api": {
+    "$comment": "All requests to the Hugging Face Hub and Inference APIs.",
+    "properties": {
+      "domain": {
+        "enum": [
+          "huggingface.co",
+          "router.huggingface.co"
+        ]
+      }
+    },
+    "required": [
+      "domain"
+    ]
+  },
+  "huggingface-read": {
+    "$comment": "Read anything from the Hugging Face APIs: list and search models, datasets, and Spaces, and download their files.",
+    "properties": {
+      "method": {
+        "const": "GET"
+      }
+    },
+    "required": [
+      "method"
+    ]
+  },
+  "huggingface-write": {
+    "$comment": "Create, update, or delete through the Hugging Face APIs: create repos, upload files, and manage settings.",
+    "properties": {
+      "method": {
+        "enum": [
+          "POST",
+          "PUT",
+          "PATCH",
+          "DELETE"
+        ]
+      }
+    },
+    "required": [
+      "method"
+    ]
+  },
+  "huggingface-inference": {
+    "$comment": "Run hosted inference through the Hugging Face Inference Providers router (consumes compute/quota).",
+    "properties": {
+      "domain": {
+        "const": "router.huggingface.co"
+      }
+    },
+    "required": [
+      "domain"
+    ]
+  }
+}
