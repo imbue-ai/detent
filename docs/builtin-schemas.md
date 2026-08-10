@@ -294,7 +294,7 @@ See the main [README](../README.md) for how schemas and rules work together.
 - `huggingface-api` *(scope)*
 - `huggingface-read`
 - `huggingface-write`
-- `huggingface-inference` *(scope)*
+- `huggingface-inference`
 
 ### linear
 

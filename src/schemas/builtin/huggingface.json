@@ -3,52 +3,42 @@
     "$comment": "All requests to the Hugging Face Hub and Inference APIs.",
     "properties": {
       "domain": {
-        "enum": [
-          "huggingface.co",
-          "router.huggingface.co"
-        ]
+        "enum": ["huggingface.co", "router.huggingface.co"]
       }
     },
-    "required": [
-      "domain"
-    ]
+    "required": ["domain"]
   },
   "huggingface-read": {
-    "$comment": "Read anything from the Hugging Face APIs: list and search models, datasets, and Spaces, and download their files.",
+    "$comment": "Read from the Hugging Face APIs: list and search models, datasets, and Spaces, and download their files. Safe methods only, including the HEAD request huggingface_hub issues before a download.",
     "properties": {
       "method": {
-        "const": "GET"
+        "enum": ["GET", "HEAD", "OPTIONS"]
       }
     },
-    "required": [
-      "method"
-    ]
+    "required": ["method"]
   },
   "huggingface-write": {
-    "$comment": "Create, update, or delete through the Hugging Face APIs: create repos, upload files, and manage settings.",
+    "$comment": "Create, update, or delete on the Hugging Face Hub (huggingface.co): create repos, upload files, manage settings. Does not cover the inference router.",
     "properties": {
+      "domain": {
+        "const": "huggingface.co"
+      },
       "method": {
-        "enum": [
-          "POST",
-          "PUT",
-          "PATCH",
-          "DELETE"
-        ]
+        "enum": ["POST", "PUT", "PATCH", "DELETE"]
       }
     },
-    "required": [
-      "method"
-    ]
+    "required": ["domain", "method"]
   },
   "huggingface-inference": {
-    "$comment": "Run hosted inference through the Hugging Face Inference Providers router (consumes compute/quota).",
+    "$comment": "Run hosted inference through the Inference Providers router: a POST to router.huggingface.co. Consumes compute/quota.",
     "properties": {
       "domain": {
         "const": "router.huggingface.co"
+      },
+      "method": {
+        "const": "POST"
       }
     },
-    "required": [
-      "domain"
-    ]
+    "required": ["domain", "method"]
   }
 }

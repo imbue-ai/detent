@@ -2677,13 +2677,19 @@ describe('builtin schemas: huggingface', () => {
     ).toBe(false);
   });
 
-  it('huggingface-read matches GET but not writes', () => {
+  it('huggingface-read matches safe methods, including the HEAD that precedes a download', () => {
     expectSchemaExists('huggingface-read');
-    expect(
-      builtinRegistry
-        .get('huggingface-read')!
-        .match(makeRequest({ method: 'GET', domain: 'huggingface.co', path: '/api/models' }))
-    ).toBe(true);
+    for (const method of ['GET', 'HEAD', 'OPTIONS'] as const) {
+      expect(
+        builtinRegistry.get('huggingface-read')!.match(
+          makeRequest({
+            method,
+            domain: 'huggingface.co',
+            path: '/gpt2/resolve/main/config.json',
+          })
+        )
+      ).toBe(true);
+    }
     expect(
       builtinRegistry
         .get('huggingface-read')!
@@ -2691,7 +2697,7 @@ describe('builtin schemas: huggingface', () => {
     ).toBe(false);
   });
 
-  it('huggingface-write matches writes but not GET', () => {
+  it('huggingface-write matches Hub writes but not the paid inference router', () => {
     expectSchemaExists('huggingface-write');
     expect(
       builtinRegistry
@@ -2699,21 +2705,41 @@ describe('builtin schemas: huggingface', () => {
         .match(makeRequest({ method: 'POST', domain: 'huggingface.co', path: '/api/repos/create' }))
     ).toBe(true);
     expect(
+      builtinRegistry.get('huggingface-write')!.match(
+        makeRequest({
+          method: 'POST',
+          domain: 'router.huggingface.co',
+          path: '/v1/chat/completions',
+        })
+      )
+    ).toBe(false);
+    expect(
       builtinRegistry
         .get('huggingface-write')!
         .match(makeRequest({ method: 'GET', domain: 'huggingface.co' }))
     ).toBe(false);
   });
 
-  it('huggingface-inference matches only the Inference router domain', () => {
+  it('huggingface-inference matches a POST to the router only', () => {
     expectSchemaExists('huggingface-inference');
+    expect(
+      builtinRegistry.get('huggingface-inference')!.match(
+        makeRequest({
+          method: 'POST',
+          domain: 'router.huggingface.co',
+          path: '/v1/chat/completions',
+        })
+      )
+    ).toBe(true);
     expect(
       builtinRegistry
         .get('huggingface-inference')!
-        .match(makeRequest({ domain: 'router.huggingface.co', path: '/v1/chat/completions' }))
-    ).toBe(true);
+        .match(makeRequest({ method: 'GET', domain: 'router.huggingface.co' }))
+    ).toBe(false);
     expect(
-      builtinRegistry.get('huggingface-inference')!.match(makeRequest({ domain: 'huggingface.co' }))
+      builtinRegistry
+        .get('huggingface-inference')!
+        .match(makeRequest({ method: 'POST', domain: 'huggingface.co' }))
     ).toBe(false);
   });
 });
