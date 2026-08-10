@@ -2653,3 +2653,95 @@ describe('builtin schemas: ngrok', () => {
     expect(writeCreds.match(makeRequest({ method: 'POST', path: '/ssh_credentials' }))).toBe(false);
   });
 });
+
+describe('builtin schemas: openrouter', () => {
+  it('openrouter-api matches openrouter.ai', () => {
+    expectSchemaExists('openrouter-api');
+    expect(
+      builtinRegistry
+        .get('openrouter-api')!
+        .match(makeRequest({ domain: 'openrouter.ai', path: '/api/v1/chat/completions' }))
+    ).toBe(true);
+  });
+
+  it('openrouter-api rejects unrelated domains', () => {
+    expect(
+      builtinRegistry
+        .get('openrouter-api')!
+        .match(makeRequest({ domain: 'openrouter.example.com' }))
+    ).toBe(false);
+  });
+
+  it('openrouter-read matches GET but not writes', () => {
+    expectSchemaExists('openrouter-read');
+    expect(
+      builtinRegistry
+        .get('openrouter-read')!
+        .match(makeRequest({ method: 'GET', domain: 'openrouter.ai', path: '/api/v1/models' }))
+    ).toBe(true);
+    expect(
+      builtinRegistry
+        .get('openrouter-read')!
+        .match(
+          makeRequest({ method: 'POST', domain: 'openrouter.ai', path: '/api/v1/chat/completions' })
+        )
+    ).toBe(false);
+  });
+
+  it('openrouter-write matches writes but not GET', () => {
+    expectSchemaExists('openrouter-write');
+    const write = builtinRegistry.get('openrouter-write')!;
+    expect(
+      write.match(makeRequest({ method: 'POST', domain: 'openrouter.ai', path: '/api/v1/keys' }))
+    ).toBe(true);
+    expect(
+      write.match(
+        makeRequest({ method: 'DELETE', domain: 'openrouter.ai', path: '/api/v1/keys/abc' })
+      )
+    ).toBe(true);
+    expect(write.match(makeRequest({ method: 'GET', domain: 'openrouter.ai' }))).toBe(false);
+  });
+
+  it('openrouter-inference matches the credit-consuming model endpoints only', () => {
+    expectSchemaExists('openrouter-inference');
+    const inference = builtinRegistry.get('openrouter-inference')!;
+    // Every model-invoking endpoint in the OpenRouter OpenAPI spec.
+    const inferencePaths = [
+      '/api/v1/chat/completions',
+      '/api/v1/messages',
+      '/api/v1/responses',
+      '/api/v1/embeddings',
+      '/api/v1/rerank',
+      '/api/v1/images',
+      '/api/v1/videos',
+      '/api/v1/audio/speech',
+      '/api/v1/audio/transcriptions',
+    ];
+    for (const path of inferencePaths) {
+      expect(
+        inference.match(makeRequest({ method: 'POST', domain: 'openrouter.ai', path })),
+        `expected inference to match POST ${path}`
+      ).toBe(true);
+    }
+    // Account/key management writes and read-side GETs are excluded.
+    expect(
+      inference.match(
+        makeRequest({ method: 'POST', domain: 'openrouter.ai', path: '/api/v1/keys' })
+      )
+    ).toBe(false);
+    expect(
+      inference.match(
+        makeRequest({
+          method: 'POST',
+          domain: 'openrouter.ai',
+          path: '/api/v1/generation/feedback',
+        })
+      )
+    ).toBe(false);
+    expect(
+      inference.match(
+        makeRequest({ method: 'GET', domain: 'openrouter.ai', path: '/api/v1/chat/completions' })
+      )
+    ).toBe(false);
+  });
+});

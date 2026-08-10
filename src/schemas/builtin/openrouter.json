@@ -1,0 +1,56 @@
+{
+  "openrouter-api": {
+    "$comment": "All requests to the OpenRouter API.",
+    "properties": {
+      "domain": {
+        "const": "openrouter.ai"
+      }
+    },
+    "required": [
+      "domain"
+    ]
+  },
+  "openrouter-read": {
+    "$comment": "Read anything from the OpenRouter API: list models and providers, and read key, credit, and generation metadata.",
+    "properties": {
+      "method": {
+        "const": "GET"
+      }
+    },
+    "required": [
+      "method"
+    ]
+  },
+  "openrouter-write": {
+    "$comment": "Create, update, or delete through the OpenRouter API: manage API keys, workspaces, guardrails, files, and account settings. Also covers running inference.",
+    "properties": {
+      "method": {
+        "enum": [
+          "POST",
+          "PUT",
+          "PATCH",
+          "DELETE"
+        ]
+      }
+    },
+    "required": [
+      "method"
+    ]
+  },
+  "openrouter-inference": {
+    "$comment": "Run models through the OpenRouter inference endpoints (POST chat/completions, messages, responses, embeddings, rerank, images, videos, and audio speech/transcriptions), which consume credits. Verified against the OpenRouter OpenAPI spec.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/api/v1/(chat/completions|messages|responses|embeddings|rerank|images|videos|audio/speech|audio/transcriptions)$"
+      }
+    },
+    "required": [
+      "method",
+      "path"
+    ]
+  }
+}
