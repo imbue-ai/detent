@@ -369,6 +369,13 @@ See the main [README](../README.md) for how schemas and rules work together.
 - `notion-write-comments`
 - `notion-search`
 
+### openrouter
+
+- `openrouter-api` *(scope)*
+- `openrouter-read-all`
+- `openrouter-write-all`
+- `openrouter-inference`
+
 ### ramp
 
 - `ramp-api` *(scope)*
