@@ -2654,6 +2654,205 @@ describe('builtin schemas: ngrok', () => {
   });
 });
 
+describe('builtin schemas: huggingface', () => {
+  const scope = () => builtinRegistry.get('huggingface-api')!;
+
+  it('huggingface-api matches the Hub API, the hf.co alias, and repository files', () => {
+    expectSchemaExists('huggingface-api');
+    expect(scope().match(makeRequest({ domain: 'huggingface.co', path: '/api/whoami-v2' }))).toBe(
+      true
+    );
+    expect(scope().match(makeRequest({ domain: 'hf.co', path: '/api/models/gpt2' }))).toBe(true);
+    expect(
+      scope().match(
+        makeRequest({ domain: 'huggingface.co', path: '/gpt2/resolve/main/config.json' })
+      )
+    ).toBe(true);
+    expect(
+      scope().match(
+        makeRequest({
+          domain: 'huggingface.co',
+          path: '/datasets/stanfordnlp/imdb/resolve/main/README.md',
+        })
+      )
+    ).toBe(true);
+    expect(
+      scope().match(
+        makeRequest({ domain: 'huggingface.co', path: '/openai-community/gpt2.git/info/refs' })
+      )
+    ).toBe(true);
+  });
+
+  it('huggingface-api covers the router, the storage hosts downloads redirect to, and the dataset viewer', () => {
+    expect(
+      scope().match(makeRequest({ domain: 'router.huggingface.co', path: '/v1/chat/completions' }))
+    ).toBe(true);
+    for (const domain of [
+      'us.aws.cdn.hf.co',
+      'cdn-lfs-us-1.hf.co',
+      'cas-bridge.xethub.hf.co',
+      'transfer.xethub.hf.co',
+    ]) {
+      expect(scope().match(makeRequest({ domain, path: '/xet-bridge-us/abc123' }))).toBe(true);
+    }
+    expect(
+      scope().match(makeRequest({ domain: 'datasets-server.huggingface.co', path: '/splits' }))
+    ).toBe(true);
+  });
+
+  it('huggingface-api rejects unrelated domains and the non-API parts of huggingface.co', () => {
+    expect(scope().match(makeRequest({ domain: 'huggingface.example.com' }))).toBe(false);
+    for (const path of ['/', '/mcp', '/oauth/token', '/settings/tokens']) {
+      expect(scope().match(makeRequest({ domain: 'huggingface.co', path }))).toBe(false);
+    }
+    expect(scope().match(makeRequest({ domain: 'gradio-hello-world.hf.space', path: '/' }))).toBe(
+      false
+    );
+  });
+
+  it('huggingface-read-all matches safe methods, including the HEAD that precedes a download', () => {
+    expectSchemaExists('huggingface-read-all');
+    for (const method of ['GET', 'HEAD', 'OPTIONS'] as const) {
+      expect(
+        builtinRegistry.get('huggingface-read-all')!.match(
+          makeRequest({
+            method,
+            domain: 'huggingface.co',
+            path: '/gpt2/resolve/main/config.json',
+          })
+        )
+      ).toBe(true);
+    }
+    expect(
+      builtinRegistry
+        .get('huggingface-read-all')!
+        .match(makeRequest({ method: 'POST', domain: 'huggingface.co', path: '/api/repos/create' }))
+    ).toBe(false);
+  });
+
+  it('huggingface-write-all matches Hub writes but not the paid inference router', () => {
+    expectSchemaExists('huggingface-write-all');
+    const writeAll = builtinRegistry.get('huggingface-write-all')!;
+    expect(
+      writeAll.match(
+        makeRequest({ method: 'POST', domain: 'huggingface.co', path: '/api/repos/create' })
+      )
+    ).toBe(true);
+    expect(
+      writeAll.match(
+        makeRequest({ method: 'POST', domain: 'huggingface.co', path: '/api/jobs/acme' })
+      )
+    ).toBe(true);
+    expect(
+      writeAll.match(
+        makeRequest({ method: 'PUT', domain: 'transfer.xethub.hf.co', path: '/xet/abc' })
+      )
+    ).toBe(true);
+    expect(
+      writeAll.match(
+        makeRequest({
+          method: 'POST',
+          domain: 'router.huggingface.co',
+          path: '/v1/chat/completions',
+        })
+      )
+    ).toBe(false);
+    expect(writeAll.match(makeRequest({ method: 'GET', domain: 'huggingface.co' }))).toBe(false);
+  });
+
+  it('huggingface-inference matches a POST to the router only', () => {
+    expectSchemaExists('huggingface-inference');
+    expect(
+      builtinRegistry.get('huggingface-inference')!.match(
+        makeRequest({
+          method: 'POST',
+          domain: 'router.huggingface.co',
+          path: '/v1/chat/completions',
+        })
+      )
+    ).toBe(true);
+    expect(
+      builtinRegistry
+        .get('huggingface-inference')!
+        .match(makeRequest({ method: 'GET', domain: 'router.huggingface.co' }))
+    ).toBe(false);
+    expect(
+      builtinRegistry
+        .get('huggingface-inference')!
+        .match(makeRequest({ method: 'POST', domain: 'huggingface.co' }))
+    ).toBe(false);
+  });
+
+  it('huggingface-download covers every transport a repository download uses', () => {
+    expectSchemaExists('huggingface-download');
+    const download = builtinRegistry.get('huggingface-download')!;
+    expect(
+      download.match(
+        makeRequest({
+          method: 'HEAD',
+          domain: 'huggingface.co',
+          path: '/gpt2/resolve/main/config.json',
+        })
+      )
+    ).toBe(true);
+    expect(
+      download.match(
+        makeRequest({
+          method: 'GET',
+          domain: 'huggingface.co',
+          path: '/api/resolve-cache/datasets/stanfordnlp/imdb/abc/README.md',
+        })
+      )
+    ).toBe(true);
+    expect(
+      download.match(
+        makeRequest({ method: 'GET', domain: 'us.aws.cdn.hf.co', path: '/xet-bridge-us/abc123' })
+      )
+    ).toBe(true);
+    expect(
+      download.match(
+        makeRequest({
+          method: 'GET',
+          domain: 'huggingface.co',
+          path: '/openai-community/gpt2.git/info/refs',
+          queryParams: { service: 'git-upload-pack' },
+        })
+      )
+    ).toBe(true);
+    expect(
+      download.match(
+        makeRequest({
+          method: 'POST',
+          domain: 'huggingface.co',
+          path: '/openai-community/gpt2.git/info/lfs/objects/batch',
+        })
+      )
+    ).toBe(true);
+    expect(
+      download.match(
+        makeRequest({
+          method: 'GET',
+          domain: 'huggingface.co',
+          path: '/openai-community/gpt2.git/info/refs',
+          queryParams: { service: 'git-receive-pack' },
+        })
+      )
+    ).toBe(false);
+    expect(
+      download.match(
+        makeRequest({
+          method: 'POST',
+          domain: 'huggingface.co',
+          path: '/openai-community/gpt2.git/git-receive-pack',
+        })
+      )
+    ).toBe(false);
+    expect(
+      download.match(makeRequest({ method: 'GET', domain: 'huggingface.co', path: '/api/models' }))
+    ).toBe(false);
+  });
+});
+
 describe('builtin schemas: openrouter', () => {
   it('openrouter-api matches openrouter.ai', () => {
     expectSchemaExists('openrouter-api');
