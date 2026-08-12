@@ -289,6 +289,14 @@ See the main [README](../README.md) for how schemas and rules work together.
 - `google-slides-update-presentations`
 - `google-slides-read-pages`
 
+### huggingface
+
+- `huggingface-api` *(scope)*
+- `huggingface-read-all`
+- `huggingface-write-all`
+- `huggingface-inference`
+- `huggingface-download`
+
 ### linear
 
 - `linear-api` *(scope)*
