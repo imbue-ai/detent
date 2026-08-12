@@ -1,15 +1,69 @@
 {
   "huggingface-api": {
-    "$comment": "All requests to the Hugging Face Hub and Inference APIs.",
+    "$comment": "Any Hugging Face API activity: the Hub API and repository file/git transfers on huggingface.co (or its hf.co alias), the Inference Providers router, the storage hosts that repository downloads and uploads are redirected to, and the dataset viewer. Does not cover, OAuth, the Hub MCP server, apps hosted on *.hf.space, or the Inference Endpoints management API.",
     "properties": {
       "domain": {
-        "enum": ["huggingface.co", "router.huggingface.co"]
+        "type": "string"
+      },
+      "path": {
+        "type": "string"
       }
     },
-    "required": ["domain"]
+    "required": ["domain", "path"],
+    "anyOf": [
+      {
+        "$comment": "Hub REST API, e.g. /api/models, /api/datasets, /api/whoami-v2, /api/jobs.",
+        "properties": {
+          "domain": {
+            "enum": ["huggingface.co", "hf.co"]
+          },
+          "path": {
+            "type": "string",
+            "pattern": "^/api(/|$)"
+          }
+        },
+        "required": ["domain", "path"]
+      },
+      {
+        "$comment": "Repository file contents, e.g. /openai-community/gpt2/resolve/main/config.json or /datasets/foo/bar/raw/main/README.md.",
+        "properties": {
+          "domain": {
+            "enum": ["huggingface.co", "hf.co"]
+          },
+          "path": {
+            "type": "string",
+            "pattern": "^/(datasets/|spaces/)?[^/]+/([^/]+/)?(resolve|raw)/"
+          }
+        },
+        "required": ["domain", "path"]
+      },
+      {
+        "$comment": "Git-over-HTTP and Git LFS endpoints of Hub repositories.",
+        "properties": {
+          "domain": {
+            "enum": ["huggingface.co", "hf.co"]
+          },
+          "path": {
+            "type": "string",
+            "pattern": "^/.+/(info/refs|git-upload-pack|git-receive-pack|info/lfs(/.*)?)$"
+          }
+        },
+        "required": ["domain", "path"]
+      },
+      {
+        "$comment": "The Inference Providers router and the storage hosts that repository transfers are redirected to (signed, opaque paths).",
+        "properties": {
+          "domain": {
+            "type": "string",
+            "pattern": "^(router\\.huggingface\\.co|datasets-server\\.huggingface\\.co|([a-z0-9-]+\\.)*(cdn|xethub)\\.hf\\.co|cdn-lfs(-[a-z0-9-]+)?\\.hf\\.co)$"
+          }
+        },
+        "required": ["domain"]
+      }
+    ]
   },
-  "huggingface-read": {
-    "$comment": "Read from the Hugging Face APIs: list and search models, datasets, and Spaces, and download their files. Safe methods only, including the HEAD request huggingface_hub issues before a download.",
+  "huggingface-read-all": {
+    "$comment": "Read anything from the Hugging Face APIs: list and search models, datasets and Spaces, inspect repositories, download files, and browse the dataset viewer. Safe methods only, including the HEAD request huggingface_hub issues before a download.",
     "properties": {
       "method": {
         "enum": ["GET", "HEAD", "OPTIONS"]
@@ -17,17 +71,19 @@
     },
     "required": ["method"]
   },
-  "huggingface-write": {
-    "$comment": "Create, update, or delete on the Hugging Face Hub (huggingface.co): create repos, upload files, manage settings. Does not cover the inference router.",
+  "huggingface-write-all": {
+    "$comment": "Change anything through the Hugging Face APIs: create repositories, upload files, push commits, edit settings, manage Spaces, and submit jobs. Covers every unsafe method except requests to the inference router.",
     "properties": {
-      "domain": {
-        "const": "huggingface.co"
-      },
       "method": {
         "enum": ["POST", "PUT", "PATCH", "DELETE"]
+      },
+      "domain": {
+        "not": {
+          "const": "router.huggingface.co"
+        }
       }
     },
-    "required": ["domain", "method"]
+    "required": ["method", "domain"]
   },
   "huggingface-inference": {
     "$comment": "Run hosted inference through the Inference Providers router: a POST to router.huggingface.co. Consumes compute/quota.",
@@ -40,5 +96,66 @@
       }
     },
     "required": ["domain", "method"]
+  },
+  "huggingface-download": {
+    "$comment": "Download repository contents by any transport: resolve/raw file requests, the redirected CDN and Xet storage hosts, and a read-only Git clone or fetch (including the LFS batch call it needs). Does not grant access to the rest of the Hub API.",
+    "anyOf": [
+      {
+        "properties": {
+          "method": {
+            "enum": ["GET", "HEAD"]
+          },
+          "path": {
+            "type": "string",
+            "pattern": "^(/api/resolve-cache/|/api/(models|datasets|spaces)/.+/xet-read-token/|/(datasets/|spaces/)?[^/]+/([^/]+/)?(resolve|raw)/)"
+          }
+        },
+        "required": ["method", "path"]
+      },
+      {
+        "properties": {
+          "method": {
+            "enum": ["GET", "HEAD"]
+          },
+          "domain": {
+            "type": "string",
+            "pattern": "^(([a-z0-9-]+\\.)*(cdn|xethub)\\.hf\\.co|cdn-lfs(-[a-z0-9-]+)?\\.hf\\.co)$"
+          }
+        },
+        "required": ["method", "domain"]
+      },
+      {
+        "properties": {
+          "method": {
+            "const": "GET"
+          },
+          "path": {
+            "type": "string",
+            "pattern": "^/.+/info/refs$"
+          },
+          "queryParams": {
+            "properties": {
+              "service": {
+                "const": "git-upload-pack"
+              }
+            },
+            "required": ["service"]
+          }
+        },
+        "required": ["method", "path", "queryParams"]
+      },
+      {
+        "properties": {
+          "method": {
+            "const": "POST"
+          },
+          "path": {
+            "type": "string",
+            "pattern": "^/.+/(git-upload-pack|info/lfs/objects/batch)$"
+          }
+        },
+        "required": ["method", "path"]
+      }
+    ]
   }
 }

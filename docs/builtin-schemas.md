@@ -292,9 +292,10 @@ See the main [README](../README.md) for how schemas and rules work together.
 ### huggingface
 
 - `huggingface-api` *(scope)*
-- `huggingface-read`
-- `huggingface-write`
+- `huggingface-read-all`
+- `huggingface-write-all`
 - `huggingface-inference`
+- `huggingface-download`
 
 ### linear
 
