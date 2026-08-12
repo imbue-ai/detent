@@ -2668,29 +2668,37 @@ describe('builtin schemas: openrouter', () => {
     expect(
       builtinRegistry
         .get('openrouter-api')!
-        .match(makeRequest({ domain: 'openrouter.example.com' }))
+        .match(makeRequest({ domain: 'openrouter.example.com', path: '/api/v1/models' }))
     ).toBe(false);
   });
 
-  it('openrouter-read matches GET but not writes', () => {
-    expectSchemaExists('openrouter-read');
+  it('openrouter-api rejects non-API paths on openrouter.ai', () => {
     expect(
       builtinRegistry
-        .get('openrouter-read')!
+        .get('openrouter-api')!
+        .match(makeRequest({ domain: 'openrouter.ai', path: '/models' }))
+    ).toBe(false);
+  });
+
+  it('openrouter-read-all matches GET but not writes', () => {
+    expectSchemaExists('openrouter-read-all');
+    expect(
+      builtinRegistry
+        .get('openrouter-read-all')!
         .match(makeRequest({ method: 'GET', domain: 'openrouter.ai', path: '/api/v1/models' }))
     ).toBe(true);
     expect(
       builtinRegistry
-        .get('openrouter-read')!
+        .get('openrouter-read-all')!
         .match(
           makeRequest({ method: 'POST', domain: 'openrouter.ai', path: '/api/v1/chat/completions' })
         )
     ).toBe(false);
   });
 
-  it('openrouter-write matches writes but not GET', () => {
-    expectSchemaExists('openrouter-write');
-    const write = builtinRegistry.get('openrouter-write')!;
+  it('openrouter-write-all matches writes but not GET', () => {
+    expectSchemaExists('openrouter-write-all');
+    const write = builtinRegistry.get('openrouter-write-all')!;
     expect(
       write.match(makeRequest({ method: 'POST', domain: 'openrouter.ai', path: '/api/v1/keys' }))
     ).toBe(true);

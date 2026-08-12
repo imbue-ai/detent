@@ -4,13 +4,18 @@
     "properties": {
       "domain": {
         "const": "openrouter.ai"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/api/"
       }
     },
     "required": [
-      "domain"
+      "domain",
+      "path"
     ]
   },
-  "openrouter-read": {
+  "openrouter-read-all": {
     "$comment": "Read anything from the OpenRouter API: list models and providers, and read key, credit, and generation metadata.",
     "properties": {
       "method": {
@@ -21,7 +26,7 @@
       "method"
     ]
   },
-  "openrouter-write": {
+  "openrouter-write-all": {
     "$comment": "Create, update, or delete through the OpenRouter API: manage API keys, workspaces, guardrails, files, and account settings. Also covers running inference.",
     "properties": {
       "method": {
