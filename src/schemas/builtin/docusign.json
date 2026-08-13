@@ -1,6 +1,6 @@
 {
   "docusign-api": {
-    "$comment": "All requests to the DocuSign eSignature REST API: the account.docusign.com auth/userinfo host and every regional API host (e.g. na4.docusign.net, na4-app.docusign.net, eu.docusign.net). The bearer is minted from the user's web session and injected on all of these. Production only; the demo/sandbox environment is not supported.",
+    "$comment": "All requests to the DocuSign eSignature REST API: the account.docusign.com auth/userinfo host and the regional API hosts (e.g. na4.docusign.net, na4-app.docusign.net). Production only; demo/sandbox is not supported.",
     "properties": {
       "domain": {
         "type": "string",
@@ -10,7 +10,7 @@
     "required": ["domain"]
   },
   "docusign-read-all": {
-    "$comment": "Read anything from the DocuSign eSignature API: list and inspect envelopes, templates, folders, recipients, and documents, download signed documents, and read account info (userinfo). Safe method only.",
+    "$comment": "Read from the DocuSign eSignature API: list and inspect envelopes, templates, folders, recipients, and documents. Safe method only.",
     "properties": {
       "method": {
         "const": "GET"
@@ -19,7 +19,7 @@
     "required": ["method"]
   },
   "docusign-write-all": {
-    "$comment": "Change anything through the DocuSign eSignature API: create and send envelopes (request signatures), update or correct them, void or delete envelopes, manage templates and recipients, and create recipient/sender/console view URLs. Every unsafe method.",
+    "$comment": "Write through the DocuSign eSignature API: create, send, correct, void, or delete envelopes, and manage templates and recipients. Any mutating method.",
     "properties": {
       "method": {
         "enum": ["POST", "PUT", "PATCH", "DELETE"]
