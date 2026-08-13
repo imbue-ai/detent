@@ -1,10 +1,10 @@
 {
   "docusign-api": {
-    "$comment": "All requests to the DocuSign eSignature REST API: the account.docusign.com auth/userinfo host and every regional API host (e.g. na4.docusign.net, na4-app.docusign.net, eu.docusign.net), plus their demo/sandbox variants (account-d.docusign.com, demo.docusign.net). The bearer is minted from the user's web session and injected on all of these.",
+    "$comment": "All requests to the DocuSign eSignature REST API: the account.docusign.com auth/userinfo host and every regional API host (e.g. na4.docusign.net, na4-app.docusign.net, eu.docusign.net). The bearer is minted from the user's web session and injected on all of these. Production only; the demo/sandbox environment is not supported.",
     "properties": {
       "domain": {
         "type": "string",
-        "pattern": "^(account(-d)?\\.docusign\\.com|[a-z0-9-]+\\.docusign\\.net)$"
+        "pattern": "^(account\\.docusign\\.com|[a-z0-9-]+\\.docusign\\.net)$"
       }
     },
     "required": ["domain"]
