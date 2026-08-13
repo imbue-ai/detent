@@ -57,18 +57,13 @@ whatever tool the agent uses to access third-party services.
 point to a Detent config in order to control what agents can and
 can't access.
 
-Detent only gates *which requests* an agent is allowed to make. The
-underlying credential the Latchkey connector mints has to actually be
-capable of those operations, or an approved request will still fail at the
-service. So when a service exposes a scope that writes or otherwise acts
-(for example `huggingface-write-all` or `huggingface-inference`), the
-Latchkey connector for that service should mint a token that backs the
-full set of scopes an agent might be granted -- a Hugging Face `write`
-token covers read, write, and inference -- rather than a narrower token
-that silently 403s at the API. Latchkey keeps its connectors standalone
-and does not reference Detent scope names; the contract is one-way: Detent
-knows about Latchkey, and defines scopes that a connector's token is
-expected to back.
+Detent gates which requests an agent may make; the credential Latchkey mints
+must actually be capable of them, or an approved request still fails at the
+service. So a connector should mint a token that backs the full set of scopes an
+agent might be granted -- a Hugging Face `write` token covers read, write, and
+inference -- not a narrower one that silently 403s. Latchkey stays standalone and
+never references Detent scope names; the contract is one-way: Detent knows about
+Latchkey, not the reverse.
 
 ## Details and architecture
 
