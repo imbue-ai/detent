@@ -1,0 +1,33 @@
+{
+  "tailscale-api": {
+    "$comment": "All requests to the Tailscale admin REST API (api.tailscale.com), which is served under /api/v2/. Covers tailnet-wide user management (roles, approval, suspension, deletion), device management, ACL/policy, DNS, keys, logs, and webhooks. Does not cover the admin console (console.tailscale.com) or the sign-in host (login.tailscale.com), which the browser login visits but which are not API targets.",
+    "properties": {
+      "domain": {
+        "const": "api.tailscale.com"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/api/"
+      }
+    },
+    "required": ["domain", "path"]
+  },
+  "tailscale-read-all": {
+    "$comment": "Read anything from the Tailscale admin API: list users, devices, keys, webhooks, posture integrations, services, tailnets, DNS and logging configuration, and the policy file. Safe methods only.",
+    "properties": {
+      "method": {
+        "enum": ["GET", "HEAD", "OPTIONS"]
+      }
+    },
+    "required": ["method"]
+  },
+  "tailscale-write-all": {
+    "$comment": "Change anything through the Tailscale admin API: change user roles, approve/suspend/restore/delete users, authorize/expire/delete devices, set device tags/routes/names, set the policy file, configure DNS and logging, create and revoke keys, and manage webhooks and OAuth apps. Covers every unsafe method.",
+    "properties": {
+      "method": {
+        "enum": ["POST", "PUT", "PATCH", "DELETE"]
+      }
+    },
+    "required": ["method"]
+  }
+}

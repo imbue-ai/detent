@@ -472,6 +472,12 @@ See the main [README](../README.md) for how schemas and rules work together.
 - `stripe-write-payouts`
 - `stripe-read-events`
 
+### tailscale
+
+- `tailscale-api` *(scope)*
+- `tailscale-read-all`
+- `tailscale-write-all`
+
 ### telegram
 
 - `telegram-api` *(scope)*
