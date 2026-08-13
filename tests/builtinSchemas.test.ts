@@ -2952,3 +2952,56 @@ describe('builtin schemas: openrouter', () => {
     ).toBe(false);
   });
 });
+
+describe('builtin schemas: docusign', () => {
+  it('docusign scope matches the auth host and every regional API host', () => {
+    expectSchemaExists('docusign-api');
+    const api = builtinRegistry.get('docusign-api')!;
+    expect(
+      api.match(makeRequest({ domain: 'account.docusign.com', path: '/oauth/userinfo' }))
+    ).toBe(true);
+    expect(api.match(makeRequest({ domain: 'na4.docusign.net' }))).toBe(true);
+    expect(api.match(makeRequest({ domain: 'na4-app.docusign.net' }))).toBe(true);
+    expect(api.match(makeRequest({ domain: 'eu.docusign.net' }))).toBe(true);
+  });
+
+  it('docusign scope matches the demo/sandbox variants', () => {
+    const api = builtinRegistry.get('docusign-api')!;
+    expect(api.match(makeRequest({ domain: 'account-d.docusign.com' }))).toBe(true);
+    expect(api.match(makeRequest({ domain: 'demo.docusign.net' }))).toBe(true);
+  });
+
+  it('docusign scope rejects unrelated and look-alike domains', () => {
+    const api = builtinRegistry.get('docusign-api')!;
+    expect(api.match(makeRequest({ domain: 'example.com' }))).toBe(false);
+    expect(api.match(makeRequest({ domain: 'docusign.com' }))).toBe(false);
+    // The $-anchor must reject a docusign host used as a subdomain of an attacker domain.
+    expect(api.match(makeRequest({ domain: 'account.docusign.com.evil.com' }))).toBe(false);
+    expect(api.match(makeRequest({ domain: 'na4.docusign.net.evil.com' }))).toBe(false);
+  });
+
+  it('docusign-read-all matches GET but not mutating methods', () => {
+    expectSchemaExists('docusign-read-all');
+    const readAll = builtinRegistry.get('docusign-read-all')!;
+    expect(readAll.match(makeRequest({ method: 'GET' }))).toBe(true);
+    expect(readAll.match(makeRequest({ method: 'POST' }))).toBe(false);
+  });
+
+  it('docusign-write-all covers sending an envelope (POST) and other writes but not GET', () => {
+    expectSchemaExists('docusign-write-all');
+    const writeAll = builtinRegistry.get('docusign-write-all')!;
+    // Sending a contract for signature is POST /envelopes with status "sent".
+    expect(
+      writeAll.match(
+        makeRequest({
+          method: 'POST',
+          domain: 'na4.docusign.net',
+          path: '/restapi/v2.1/accounts/123/envelopes',
+        })
+      )
+    ).toBe(true);
+    expect(writeAll.match(makeRequest({ method: 'PUT' }))).toBe(true);
+    expect(writeAll.match(makeRequest({ method: 'DELETE' }))).toBe(true);
+    expect(writeAll.match(makeRequest({ method: 'GET' }))).toBe(false);
+  });
+});
