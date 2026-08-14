@@ -1,0 +1,374 @@
+[
+  {
+    "method": "POST",
+    "path": "/api/v2/device-invites/-/accept"
+  },
+  {
+    "method": "DELETE",
+    "path": "/api/v2/device-invites/di123"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v2/device-invites/di123"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v2/device-invites/di123/resend"
+  },
+  {
+    "method": "DELETE",
+    "path": "/api/v2/device/d123"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v2/device/d123"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v2/device/d123/attributes"
+  },
+  {
+    "method": "DELETE",
+    "path": "/api/v2/device/d123/attributes/custom:foo"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v2/device/d123/attributes/custom:foo"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v2/device/d123/authorized"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v2/device/d123/device-invites"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v2/device/d123/device-invites"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v2/device/d123/expire"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v2/device/d123/ip"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v2/device/d123/key"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v2/device/d123/name"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v2/device/d123/routes"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v2/device/d123/routes"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v2/device/d123/tags"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v2/organizations/org1/tailnets"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v2/organizations/org1/tailnets"
+  },
+  {
+    "method": "DELETE",
+    "path": "/api/v2/posture/integrations/i123"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v2/posture/integrations/i123"
+  },
+  {
+    "method": "PATCH",
+    "path": "/api/v2/posture/integrations/i123"
+  },
+  {
+    "method": "DELETE",
+    "path": "/api/v2/tailnet/example.com"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v2/tailnet/example.com/acl"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v2/tailnet/example.com/acl"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v2/tailnet/example.com/acl/preview"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v2/tailnet/example.com/acl/validate"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v2/tailnet/example.com/aws-external-id"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v2/tailnet/example.com/aws-external-id/i123/validate-aws-trust-policy"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v2/tailnet/example.com/contacts"
+  },
+  {
+    "method": "PATCH",
+    "path": "/api/v2/tailnet/example.com/contacts/billing"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v2/tailnet/example.com/contacts/billing/resend-verification-email"
+  },
+  {
+    "method": "PATCH",
+    "path": "/api/v2/tailnet/example.com/device-attributes"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v2/tailnet/example.com/devices"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v2/tailnet/example.com/dns/configuration"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v2/tailnet/example.com/dns/configuration"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v2/tailnet/example.com/dns/nameservers"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v2/tailnet/example.com/dns/nameservers"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v2/tailnet/example.com/dns/preferences"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v2/tailnet/example.com/dns/preferences"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v2/tailnet/example.com/dns/searchpaths"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v2/tailnet/example.com/dns/searchpaths"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v2/tailnet/example.com/dns/split-dns"
+  },
+  {
+    "method": "PATCH",
+    "path": "/api/v2/tailnet/example.com/dns/split-dns"
+  },
+  {
+    "method": "PUT",
+    "path": "/api/v2/tailnet/example.com/dns/split-dns"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v2/tailnet/example.com/keys"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v2/tailnet/example.com/keys"
+  },
+  {
+    "method": "DELETE",
+    "path": "/api/v2/tailnet/example.com/keys/k123"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v2/tailnet/example.com/keys/k123"
+  },
+  {
+    "method": "PUT",
+    "path": "/api/v2/tailnet/example.com/keys/k123"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v2/tailnet/example.com/logging/configuration"
+  },
+  {
+    "method": "DELETE",
+    "path": "/api/v2/tailnet/example.com/logging/configuration/stream"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v2/tailnet/example.com/logging/configuration/stream"
+  },
+  {
+    "method": "PUT",
+    "path": "/api/v2/tailnet/example.com/logging/configuration/stream"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v2/tailnet/example.com/logging/configuration/stream/status"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v2/tailnet/example.com/logging/network"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v2/tailnet/example.com/oauth-apps"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v2/tailnet/example.com/oauth-apps"
+  },
+  {
+    "method": "DELETE",
+    "path": "/api/v2/tailnet/example.com/oauth-apps/a123"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v2/tailnet/example.com/oauth-apps/a123"
+  },
+  {
+    "method": "PUT",
+    "path": "/api/v2/tailnet/example.com/oauth-apps/a123"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v2/tailnet/example.com/posture/integrations"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v2/tailnet/example.com/posture/integrations"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v2/tailnet/example.com/services"
+  },
+  {
+    "method": "DELETE",
+    "path": "/api/v2/tailnet/example.com/services/svc1"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v2/tailnet/example.com/services/svc1"
+  },
+  {
+    "method": "PUT",
+    "path": "/api/v2/tailnet/example.com/services/svc1"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v2/tailnet/example.com/services/svc1/device/d123/approved"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v2/tailnet/example.com/services/svc1/device/d123/approved"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v2/tailnet/example.com/services/svc1/devices"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v2/tailnet/example.com/settings"
+  },
+  {
+    "method": "PATCH",
+    "path": "/api/v2/tailnet/example.com/settings"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v2/tailnet/example.com/user-invites"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v2/tailnet/example.com/user-invites"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v2/tailnet/example.com/users"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v2/tailnet/example.com/webhooks"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v2/tailnet/example.com/webhooks"
+  },
+  {
+    "method": "DELETE",
+    "path": "/api/v2/user-invites/ui123"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v2/user-invites/ui123"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v2/user-invites/ui123/resend"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v2/users/u123"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v2/users/u123/approve"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v2/users/u123/delete"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v2/users/u123/restore"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v2/users/u123/role"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v2/users/u123/suspend"
+  },
+  {
+    "method": "DELETE",
+    "path": "/api/v2/webhooks/e123"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v2/webhooks/e123"
+  },
+  {
+    "method": "PATCH",
+    "path": "/api/v2/webhooks/e123"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v2/webhooks/e123/rotate"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v2/webhooks/e123/test"
+  }
+]
