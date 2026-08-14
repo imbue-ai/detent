@@ -83,7 +83,7 @@
     "required": ["method", "path"]
   },
   "tailscale-read-keys": {
-    "$comment": "Read auth keys and trust credentials: list and inspect the tailnet's keys. Safe methods on the keys endpoint only. Maps to Tailscale's own OAuth `auth_keys:read` scope.",
+    "$comment": "Read the tailnet's keys: list and inspect auth keys (tskey-auth, for the tailscale CLI), API access tokens, OAuth clients, and federated identities. Safe methods on the keys endpoint only. Tailscale's own OAuth model splits this across `auth_keys:read`, `api_access_tokens:read`, `oauth_keys:read`, and `federated_keys:read`, but those are all served by the same `/tailnet/{tailnet}/keys` endpoint and cannot be separated by path.",
     "properties": {
       "method": {
         "enum": ["GET", "HEAD", "OPTIONS"]
@@ -96,7 +96,7 @@
     "required": ["method", "path"]
   },
   "tailscale-write-keys": {
-    "$comment": "Mint, update, or revoke auth keys and trust credentials -- the `tskey-auth` keys that the `tailscale` CLI consumes to bring up nodes. Unsafe methods on the keys endpoint only. Maps to Tailscale's own OAuth `auth_keys` scope. This is the scope an agent needs to connect new machines to the tailnet.",
+    "$comment": "Mint, update, or revoke any key the tailnet's keys endpoint serves: auth keys (tskey-auth, which the tailscale CLI consumes to bring up nodes), API access tokens, OAuth clients, and federated identities. Unsafe methods on the keys endpoint only. Note that minting an OAuth client or federated identity creates a long-lived credential that can mint further access tokens, so this scope is broader than Tailscale's own `auth_keys` OAuth scope (which covers device auth keys only) -- detent matches by method and path, not request body, so the keyType field that distinguishes them cannot be narrowed here. This is the scope an agent needs to connect new machines to the tailnet.",
     "properties": {
       "method": {
         "enum": ["POST", "PUT", "PATCH", "DELETE"]
