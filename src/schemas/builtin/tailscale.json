@@ -29,5 +29,83 @@
       }
     },
     "required": ["method"]
+  },
+  "tailscale-read-users": {
+    "$comment": "Read user information and invitations: list users and user invites, get a user's details. Safe methods on the users and user-invites endpoints only. Maps to Tailscale's own OAuth `users:read` scope.",
+    "properties": {
+      "method": {
+        "enum": ["GET", "HEAD", "OPTIONS"]
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/api/v2/(users/|user-invites/|tailnet/[^/]+/users|tailnet/[^/]+/user-invites)"
+      }
+    },
+    "required": ["method", "path"]
+  },
+  "tailscale-write-users": {
+    "$comment": "Change user roles and handle user approval, suspension, deletion, and restoration; create and resend user invites. Unsafe methods on the users and user-invites endpoints only. Maps to Tailscale's own OAuth `users` scope.",
+    "properties": {
+      "method": {
+        "enum": ["POST", "PUT", "PATCH", "DELETE"]
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/api/v2/(users/|user-invites/|tailnet/[^/]+/users|tailnet/[^/]+/user-invites)"
+      }
+    },
+    "required": ["method", "path"]
+  },
+  "tailscale-read-devices": {
+    "$comment": "Read device information: list tailnet devices, get a device's details, posture attributes, and routes. Safe methods on the device and device-invites endpoints only. Maps to Tailscale's own OAuth `devices:read` scope.",
+    "properties": {
+      "method": {
+        "enum": ["GET", "HEAD", "OPTIONS"]
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/api/v2/(device-invites/|device/|tailnet/[^/]+/devices|tailnet/[^/]+/device-attributes)"
+      }
+    },
+    "required": ["method", "path"]
+  },
+  "tailscale-write-devices": {
+    "$comment": "Add or edit machines: authorize, expire, rename, retag, re-route, or delete devices, and manage device invites and posture attributes. Unsafe methods on the device and device-invites endpoints only. Maps to Tailscale's own OAuth `devices` scope.",
+    "properties": {
+      "method": {
+        "enum": ["POST", "PUT", "PATCH", "DELETE"]
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/api/v2/(device-invites/|device/|tailnet/[^/]+/devices|tailnet/[^/]+/device-attributes)"
+      }
+    },
+    "required": ["method", "path"]
+  },
+  "tailscale-read-keys": {
+    "$comment": "Read auth keys and trust credentials: list and inspect the tailnet's keys. Safe methods on the keys endpoint only. Maps to Tailscale's own OAuth `auth_keys:read` scope.",
+    "properties": {
+      "method": {
+        "enum": ["GET", "HEAD", "OPTIONS"]
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/api/v2/tailnet/[^/]+/keys"
+      }
+    },
+    "required": ["method", "path"]
+  },
+  "tailscale-write-keys": {
+    "$comment": "Mint, update, or revoke auth keys and trust credentials -- the `tskey-auth` keys that the `tailscale` CLI consumes to bring up nodes. Unsafe methods on the keys endpoint only. Maps to Tailscale's own OAuth `auth_keys` scope. This is the scope an agent needs to connect new machines to the tailnet.",
+    "properties": {
+      "method": {
+        "enum": ["POST", "PUT", "PATCH", "DELETE"]
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/api/v2/tailnet/[^/]+/keys"
+      }
+    },
+    "required": ["method", "path"]
   }
 }

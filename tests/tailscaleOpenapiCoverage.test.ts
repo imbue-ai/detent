@@ -10,7 +10,9 @@
  * For each scope we compare the matcher's verdict over the full inventory to an
  * independently computed intended set, so a side-effecting GET or a read-only
  * write (the class of anomaly that would make a read/write split unsound) is
- * caught as a mismatch. Mirrors the verification the ngrok scopes shipped with.
+ * caught as a mismatch. The granular scopes (users, devices, keys) are checked
+ * the same way, narrowed by path pattern. Mirrors the verification the ngrok
+ * scopes shipped with.
  */
 
 import { describe, it, expect } from 'vitest';
@@ -52,6 +54,32 @@ function request(method: string, path: string): DecomposedRequest {
 const READ_METHODS = new Set(['GET', 'HEAD', 'OPTIONS']);
 const WRITE_METHODS = new Set(['POST', 'PUT', 'PATCH', 'DELETE']);
 
+// Independently computed path patterns for the three granular areas. These are
+// the same patterns the schemas declare, written here from scratch so a typo in
+// the schema that narrows the wrong surface is caught as a mismatch.
+const AREA_PATTERNS = {
+  users: /^\/api\/v2\/(users\/|user-invites\/|tailnet\/[^/]+\/users|tailnet\/[^/]+\/user-invites)/,
+  devices:
+    /^\/api\/v2\/(device-invites\/|device\/|tailnet\/[^/]+\/devices|tailnet\/[^/]+\/device-attributes)/,
+  keys: /^\/api\/v2\/tailnet\/[^/]+\/keys/,
+} as const;
+
+function verifyScopeMatchesExactly(
+  scopeName: string,
+  isIntended: (endpoint: EndpointEntry) => boolean
+): void {
+  const scope = registry.get(scopeName)!;
+  expect(scope, `scope ${scopeName} should exist`).toBeDefined();
+  for (const endpoint of endpoints) {
+    const intended = isIntended(endpoint);
+    const matched = scope.match(request(endpoint.method, endpoint.path));
+    expect(
+      matched === intended,
+      `${scopeName}: ${endpoint.method} ${endpoint.path} should ${intended ? 'match' : 'NOT match'}`
+    ).toBe(true);
+  }
+}
+
 describe('tailscale scopes vs the real Tailscale OpenAPI surface', () => {
   it('the vendored inventory covers every operation exactly once', () => {
     const seen = new Set<string>();
@@ -89,51 +117,14 @@ describe('tailscale scopes vs the real Tailscale OpenAPI surface', () => {
   });
 
   it('tailscale-read-all matches exactly the safe-method operations', () => {
-    const scope = registry.get('tailscale-read-all')!;
-    // Independently computed intended set: the GETs (the spec declares no
-    // HEAD/OPTIONS operations). A side-effecting GET or a write mislabelled as
-    // a read would surface here as a mismatch.
-    const intendedReads = endpoints.filter((e) => READ_METHODS.has(e.method));
-    const intendedWrites = endpoints.filter((e) => !READ_METHODS.has(e.method));
-
-    for (const endpoint of intendedReads) {
-      expect(
-        scope.match(request(endpoint.method, endpoint.path)),
-        `read-all should match ${endpoint.method} ${endpoint.path}`
-      ).toBe(true);
-    }
-    for (const endpoint of intendedWrites) {
-      expect(
-        scope.match(request(endpoint.method, endpoint.path)),
-        `read-all should NOT match ${endpoint.method} ${endpoint.path}`
-      ).toBe(false);
-    }
+    verifyScopeMatchesExactly('tailscale-read-all', (e) => READ_METHODS.has(e.method));
   });
 
   it('tailscale-write-all matches exactly the unsafe-method operations', () => {
-    const scope = registry.get('tailscale-write-all')!;
-    const intendedReads = endpoints.filter((e) => READ_METHODS.has(e.method));
-    const intendedWrites = endpoints.filter((e) => WRITE_METHODS.has(e.method));
-
-    // Every operation is either a read or a write (the spec declares no methods
-    // outside these two classes), so the split is exhaustive and sound.
-    expect(endpoints.length).toBe(intendedReads.length + intendedWrites.length);
-
-    for (const endpoint of intendedWrites) {
-      expect(
-        scope.match(request(endpoint.method, endpoint.path)),
-        `write-all should match ${endpoint.method} ${endpoint.path}`
-      ).toBe(true);
-    }
-    for (const endpoint of intendedReads) {
-      expect(
-        scope.match(request(endpoint.method, endpoint.path)),
-        `write-all should NOT match ${endpoint.method} ${endpoint.path}`
-      ).toBe(false);
-    }
+    verifyScopeMatchesExactly('tailscale-write-all', (e) => WRITE_METHODS.has(e.method));
   });
 
-  it('the read/write split is exhaustive (no side-effecting GETs, no read-only writes)', () => {
+  it('the read/write umbrella split is exhaustive (no side-effecting GETs, no read-only writes)', () => {
     // The read and write scopes partition the surface with no remainder and no
     // overlap: every operation is matched by exactly one of them.
     const read = registry.get('tailscale-read-all')!;
@@ -144,6 +135,69 @@ describe('tailscale scopes vs the real Tailscale OpenAPI surface', () => {
       expect(
         isRead === !isWrite,
         `${endpoint.method} ${endpoint.path} split between read and write`
+      ).toBe(true);
+    }
+  });
+
+  // The granular scopes narrow the surface by area (users, devices, keys),
+  // split read/write within each. Each is verified against its independently
+  // computed intended set over the full real endpoint inventory.
+  describe('granular scopes: users', () => {
+    it('tailscale-read-users matches exactly the safe-method user operations', () => {
+      verifyScopeMatchesExactly(
+        'tailscale-read-users',
+        (e) => READ_METHODS.has(e.method) && AREA_PATTERNS.users.test(e.path)
+      );
+    });
+    it('tailscale-write-users matches exactly the unsafe-method user operations', () => {
+      verifyScopeMatchesExactly(
+        'tailscale-write-users',
+        (e) => WRITE_METHODS.has(e.method) && AREA_PATTERNS.users.test(e.path)
+      );
+    });
+  });
+
+  describe('granular scopes: devices', () => {
+    it('tailscale-read-devices matches exactly the safe-method device operations', () => {
+      verifyScopeMatchesExactly(
+        'tailscale-read-devices',
+        (e) => READ_METHODS.has(e.method) && AREA_PATTERNS.devices.test(e.path)
+      );
+    });
+    it('tailscale-write-devices matches exactly the unsafe-method device operations', () => {
+      verifyScopeMatchesExactly(
+        'tailscale-write-devices',
+        (e) => WRITE_METHODS.has(e.method) && AREA_PATTERNS.devices.test(e.path)
+      );
+    });
+  });
+
+  describe('granular scopes: keys', () => {
+    it('tailscale-read-keys matches exactly the safe-method key operations', () => {
+      verifyScopeMatchesExactly(
+        'tailscale-read-keys',
+        (e) => READ_METHODS.has(e.method) && AREA_PATTERNS.keys.test(e.path)
+      );
+    });
+    it('tailscale-write-keys matches exactly the unsafe-method key operations', () => {
+      verifyScopeMatchesExactly(
+        'tailscale-write-keys',
+        (e) => WRITE_METHODS.has(e.method) && AREA_PATTERNS.keys.test(e.path)
+      );
+    });
+  });
+
+  it('the three granular areas partition the surface with no overlap', () => {
+    for (const endpoint of endpoints) {
+      const areas = [
+        AREA_PATTERNS.users.test(endpoint.path),
+        AREA_PATTERNS.devices.test(endpoint.path),
+        AREA_PATTERNS.keys.test(endpoint.path),
+      ];
+      const count = areas.filter(Boolean).length;
+      expect(
+        count <= 1,
+        `${endpoint.method} ${endpoint.path} matched ${String(count)} areas (should be 0 or 1)`
       ).toBe(true);
     }
   });
