@@ -2952,3 +2952,44 @@ describe('builtin schemas: openrouter', () => {
     ).toBe(false);
   });
 });
+
+describe('builtin schemas: docusign', () => {
+  it('docusign scope matches API paths on the auth + regional hosts, rejects non-API paths and look-alikes', () => {
+    expectSchemaExists('docusign-api');
+    const api = builtinRegistry.get('docusign-api')!;
+    // OAuth userinfo on the account host, and eSignature REST on the regional hosts.
+    expect(
+      api.match(makeRequest({ domain: 'account.docusign.com', path: '/oauth/userinfo' }))
+    ).toBe(true);
+    expect(
+      api.match(
+        makeRequest({ domain: 'na4.docusign.net', path: '/restapi/v2.1/accounts/123/envelopes' })
+      )
+    ).toBe(true);
+    expect(
+      api.match(makeRequest({ domain: 'na4-app.docusign.net', path: '/restapi/v2/folders' }))
+    ).toBe(true);
+    // Non-API paths on a docusign host are not the API (path prefix must match).
+    expect(api.match(makeRequest({ domain: 'na4.docusign.net', path: '/some/web/page' }))).toBe(
+      false
+    );
+    // The account host carries OAuth, not the REST API; the regional hosts carry REST, not OAuth.
+    expect(
+      api.match(makeRequest({ domain: 'account.docusign.com', path: '/restapi/v2.1/accounts' }))
+    ).toBe(false);
+    // The $-anchor must reject a docusign host used as a subdomain of an attacker domain.
+    expect(
+      api.match(makeRequest({ domain: 'na4.docusign.net.evil.com', path: '/restapi/v2.1/x' }))
+    ).toBe(false);
+  });
+
+  it('docusign read/write split: read is GET, write is the mutating methods', () => {
+    const readAll = builtinRegistry.get('docusign-read-all')!;
+    const writeAll = builtinRegistry.get('docusign-write-all')!;
+    expect(readAll.match(makeRequest({ method: 'GET' }))).toBe(true);
+    expect(readAll.match(makeRequest({ method: 'POST' }))).toBe(false);
+    // Sending a contract for signature is POST /envelopes -> write.
+    expect(writeAll.match(makeRequest({ method: 'POST' }))).toBe(true);
+    expect(writeAll.match(makeRequest({ method: 'GET' }))).toBe(false);
+  });
+});

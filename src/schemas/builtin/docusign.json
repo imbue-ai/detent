@@ -1,0 +1,61 @@
+{
+  "docusign-api": {
+    "$comment": "All requests to the DocuSign eSignature REST API: the account.docusign.com auth/userinfo host and the regional API hosts (e.g. na4.docusign.net, na4-app.docusign.net). Production only; demo/sandbox is not supported.",
+    "properties": {
+      "domain": {
+        "type": "string"
+      },
+      "path": {
+        "type": "string"
+      }
+    },
+    "required": ["domain", "path"],
+    "anyOf": [
+      {
+        "$comment": "The eSignature REST API on the regional hosts, e.g. /restapi/v2.1/accounts/{id}/envelopes. Only the API path prefix matches, not the rest of the host.",
+        "properties": {
+          "domain": {
+            "type": "string",
+            "pattern": "^[a-z0-9-]+\\.docusign\\.net$"
+          },
+          "path": {
+            "type": "string",
+            "pattern": "^/restapi/v2(\\.[0-9]+)?/"
+          }
+        },
+        "required": ["domain", "path"]
+      },
+      {
+        "$comment": "OAuth userinfo on the account host, used to resolve the account_id and base_uri (regional host). Only /oauth/ matches, not the rest of the host.",
+        "properties": {
+          "domain": {
+            "const": "account.docusign.com"
+          },
+          "path": {
+            "type": "string",
+            "pattern": "^/oauth/"
+          }
+        },
+        "required": ["domain", "path"]
+      }
+    ]
+  },
+  "docusign-read-all": {
+    "$comment": "Read from the DocuSign eSignature API: list and inspect envelopes, templates, folders, recipients, and documents. Safe method only.",
+    "properties": {
+      "method": {
+        "const": "GET"
+      }
+    },
+    "required": ["method"]
+  },
+  "docusign-write-all": {
+    "$comment": "Write through the DocuSign eSignature API: create, send, correct, void, or delete envelopes, and manage templates and recipients. Any mutating method.",
+    "properties": {
+      "method": {
+        "enum": ["POST", "PUT", "PATCH", "DELETE"]
+      }
+    },
+    "required": ["method"]
+  }
+}
