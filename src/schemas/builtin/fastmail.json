@@ -1,0 +1,299 @@
+{
+  "fastmail-api": {
+    "$comment": "Any request to Fastmail's JMAP API or its blob download host. Accounts are homed on regional shards, so the API host may carry a shard prefix (phl.api.fastmail.com) and the blob host may carry a matching one (phl-www.fastmailusercontent.com).",
+    "properties": {
+      "domain": {
+        "type": "string",
+        "pattern": "^(([a-z0-9-]+\\.)?api\\.fastmail\\.com|([a-z0-9-]+-)?www\\.fastmailusercontent\\.com)$"
+      }
+    },
+    "required": ["domain"]
+  },
+  "fastmail-session": {
+    "$comment": "Fetch the JMAP session document, which names the apiUrl, downloadUrl and account ids. Required for any JMAP client to function; reveals account metadata but no mail, contact or calendar content.",
+    "properties": {
+      "method": { "const": "GET" },
+      "path": { "type": "string", "pattern": "^/(jmap/session|\\.well-known/jmap)$" }
+    },
+    "required": ["method", "path"]
+  },
+  "fastmail-read-all": {
+    "$comment": "Read anything over JMAP: the session document, any /get, /changes, /query, /queryChanges or /parse method call, and blob downloads. Every method call in the batch must be a read, so a single write anywhere in the envelope fails to match.",
+    "anyOf": [
+      {
+        "type": "object",
+        "properties": {
+          "method": { "const": "GET" },
+          "path": {
+            "type": "string",
+            "pattern": "^/(jmap/session|\\.well-known/jmap|jmap/download/|jmap/event/)"
+          }
+        },
+        "required": ["method", "path"]
+      },
+      {
+        "type": "object",
+        "properties": {
+          "method": { "const": "POST" },
+          "path": { "type": "string", "pattern": "^/jmap/api/?$" },
+          "parsedBody": {
+            "type": "object",
+            "properties": {
+              "methodCalls": {
+                "type": "array",
+                "items": {
+                  "type": "array",
+                  "prefixItems": [
+                    {
+                      "type": "string",
+                      "pattern": "^(Core/echo|[A-Za-z]+/(get|changes|query|queryChanges|parse))$"
+                    }
+                  ]
+                }
+              }
+            },
+            "required": ["methodCalls"]
+          }
+        },
+        "required": ["method", "path", "parsedBody"]
+      }
+    ]
+  },
+  "fastmail-write-all": {
+    "$comment": "Create, update or delete anything over JMAP (any /set, /copy, /import or /upload method call), and upload blobs. Includes sending mail via EmailSubmission/set — grant fastmail-send-mail alone if that is the only write needed.",
+    "anyOf": [
+      {
+        "type": "object",
+        "properties": {
+          "method": { "const": "POST" },
+          "path": { "type": "string", "pattern": "^/jmap/api/?$" },
+          "parsedBody": {
+            "type": "object",
+            "properties": {
+              "methodCalls": {
+                "type": "array",
+                "items": {
+                  "type": "array",
+                  "prefixItems": [
+                    {
+                      "type": "string",
+                      "pattern": "^[A-Za-z]+/(set|copy|import|upload)$"
+                    }
+                  ]
+                }
+              }
+            },
+            "required": ["methodCalls"]
+          }
+        },
+        "required": ["method", "path", "parsedBody"]
+      },
+      {
+        "type": "object",
+        "properties": {
+          "method": { "const": "POST" },
+          "path": { "type": "string", "pattern": "^/jmap/upload/" }
+        },
+        "required": ["method", "path"]
+      }
+    ]
+  },
+  "fastmail-read-mail": {
+    "$comment": "Read mailboxes, threads, messages and search snippets (RFC 8621).",
+    "properties": {
+      "method": { "const": "POST" },
+      "path": { "type": "string", "pattern": "^/jmap/api/?$" },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "methodCalls": {
+            "type": "array",
+            "items": {
+              "type": "array",
+              "prefixItems": [
+                {
+                  "type": "string",
+                  "pattern": "^(Core/echo|(Mailbox|Thread|Email|SearchSnippet|Identity|VacationResponse)/(get|changes|query|queryChanges|parse))$"
+                }
+              ]
+            }
+          }
+        },
+        "required": ["methodCalls"]
+      }
+    },
+    "required": ["method", "path", "parsedBody"]
+  },
+  "fastmail-write-mail": {
+    "$comment": "Create, update, move or delete mailboxes and messages. Does not include sending — that is fastmail-send-mail.",
+    "properties": {
+      "method": { "const": "POST" },
+      "path": { "type": "string", "pattern": "^/jmap/api/?$" },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "methodCalls": {
+            "type": "array",
+            "items": {
+              "type": "array",
+              "prefixItems": [
+                {
+                  "type": "string",
+                  "pattern": "^(Mailbox|Thread|Email|Identity|VacationResponse)/(set|copy|import)$"
+                }
+              ]
+            }
+          }
+        },
+        "required": ["methodCalls"]
+      }
+    },
+    "required": ["method", "path", "parsedBody"]
+  },
+  "fastmail-send-mail": {
+    "$comment": "Send mail on the account's behalf (EmailSubmission/set). Separate from fastmail-write-mail because sending is externally visible and irreversible.",
+    "properties": {
+      "method": { "const": "POST" },
+      "path": { "type": "string", "pattern": "^/jmap/api/?$" },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "methodCalls": {
+            "type": "array",
+            "items": {
+              "type": "array",
+              "prefixItems": [
+                {
+                  "type": "string",
+                  "pattern": "^(Core/echo|Email/(get|set|import)|EmailSubmission/(get|set|changes|query|queryChanges))$"
+                }
+              ]
+            }
+          }
+        },
+        "required": ["methodCalls"]
+      }
+    },
+    "required": ["method", "path", "parsedBody"]
+  },
+  "fastmail-read-contacts": {
+    "$comment": "Read address books and contact cards (RFC 9610), including the legacy Contact and ContactGroup types.",
+    "properties": {
+      "method": { "const": "POST" },
+      "path": { "type": "string", "pattern": "^/jmap/api/?$" },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "methodCalls": {
+            "type": "array",
+            "items": {
+              "type": "array",
+              "prefixItems": [
+                {
+                  "type": "string",
+                  "pattern": "^(Core/echo|(AddressBook|ContactCard|Contact|ContactGroup)/(get|changes|query|queryChanges|parse))$"
+                }
+              ]
+            }
+          }
+        },
+        "required": ["methodCalls"]
+      }
+    },
+    "required": ["method", "path", "parsedBody"]
+  },
+  "fastmail-write-contacts": {
+    "$comment": "Create, update or delete address books and contact cards.",
+    "properties": {
+      "method": { "const": "POST" },
+      "path": { "type": "string", "pattern": "^/jmap/api/?$" },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "methodCalls": {
+            "type": "array",
+            "items": {
+              "type": "array",
+              "prefixItems": [
+                {
+                  "type": "string",
+                  "pattern": "^(AddressBook|ContactCard|Contact|ContactGroup)/(set|copy)$"
+                }
+              ]
+            }
+          }
+        },
+        "required": ["methodCalls"]
+      }
+    },
+    "required": ["method", "path", "parsedBody"]
+  },
+  "fastmail-read-calendars": {
+    "$comment": "Read calendars and calendar events (RFC 8984 / JSCalendar over JMAP).",
+    "properties": {
+      "method": { "const": "POST" },
+      "path": { "type": "string", "pattern": "^/jmap/api/?$" },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "methodCalls": {
+            "type": "array",
+            "items": {
+              "type": "array",
+              "prefixItems": [
+                {
+                  "type": "string",
+                  "pattern": "^(Core/echo|(Calendar|CalendarEvent|CalendarEventNotification|ParticipantIdentity)/(get|changes|query|queryChanges|parse))$"
+                }
+              ]
+            }
+          }
+        },
+        "required": ["methodCalls"]
+      }
+    },
+    "required": ["method", "path", "parsedBody"]
+  },
+  "fastmail-write-calendars": {
+    "$comment": "Create, update or delete calendars and calendar events, including sending invitations to participants.",
+    "properties": {
+      "method": { "const": "POST" },
+      "path": { "type": "string", "pattern": "^/jmap/api/?$" },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "methodCalls": {
+            "type": "array",
+            "items": {
+              "type": "array",
+              "prefixItems": [
+                {
+                  "type": "string",
+                  "pattern": "^(Calendar|CalendarEvent|CalendarEventNotification|ParticipantIdentity)/(set|copy)$"
+                }
+              ]
+            }
+          }
+        },
+        "required": ["methodCalls"]
+      }
+    },
+    "required": ["method", "path", "parsedBody"]
+  },
+  "fastmail-download-blobs": {
+    "$comment": "Download message sources and attachments from the blob host named by the session document's downloadUrl.",
+    "properties": {
+      "method": { "const": "GET" },
+      "path": { "type": "string", "pattern": "^/jmap/download/" }
+    },
+    "required": ["method", "path"]
+  },
+  "fastmail-upload-blobs": {
+    "$comment": "Upload blobs (attachments, message sources) for later use in a method call.",
+    "properties": {
+      "method": { "const": "POST" },
+      "path": { "type": "string", "pattern": "^/jmap/upload/" }
+    },
+    "required": ["method", "path"]
+  }
+}
