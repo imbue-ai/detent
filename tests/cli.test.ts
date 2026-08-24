@@ -4,10 +4,15 @@ import { promisify } from 'node:util';
 import { writeFileSync, mkdirSync, rmSync, chmodSync } from 'node:fs';
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';
+import { fileURLToPath } from 'node:url';
 
 const execFileAsync = promisify(execFile);
 
-const cliPath = new URL('../dist/src/cli.js', import.meta.url).pathname;
+// `URL.pathname` is percent-encoded, so a checkout path containing a space
+// yields ".../Imbue%20Dropbox/..." and every spawn below fails with
+// MODULE_NOT_FOUND. fileURLToPath decodes it (and handles Windows drive
+// letters).
+const cliPath = fileURLToPath(new URL('../dist/src/cli.js', import.meta.url));
 
 describe('CLI', () => {
   let tempDir: string;
