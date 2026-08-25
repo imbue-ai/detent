@@ -2953,6 +2953,116 @@ describe('builtin schemas: openrouter', () => {
   });
 });
 
+describe('builtin schemas: tailscale', () => {
+  it('tailscale-api matches api.tailscale.com under /api/', () => {
+    expectSchemaExists('tailscale-api');
+    const scope = builtinRegistry.get('tailscale-api')!;
+    expect(
+      scope.match(
+        makeRequest({ domain: 'api.tailscale.com', path: '/api/v2/tailnet/example.com/users' })
+      )
+    ).toBe(true);
+    expect(
+      scope.match(
+        makeRequest({ domain: 'api.tailscale.com', path: '/api/v2/tailnet/example.com/keys' })
+      )
+    ).toBe(true);
+  });
+
+  it('tailscale-api rejects unrelated domains', () => {
+    expect(
+      builtinRegistry
+        .get('tailscale-api')!
+        .match(makeRequest({ domain: 'api.tailscale.com.example.com', path: '/api/v2/' }))
+    ).toBe(false);
+  });
+
+  it('tailscale-api rejects the admin console and sign-in hosts', () => {
+    const scope = builtinRegistry.get('tailscale-api')!;
+    expect(
+      scope.match(makeRequest({ domain: 'console.tailscale.com', path: '/admin/users' }))
+    ).toBe(false);
+    expect(scope.match(makeRequest({ domain: 'login.tailscale.com', path: '/admin' }))).toBe(false);
+  });
+
+  it('tailscale-api rejects non-API paths on api.tailscale.com', () => {
+    expect(
+      builtinRegistry
+        .get('tailscale-api')!
+        .match(makeRequest({ domain: 'api.tailscale.com', path: '/' }))
+    ).toBe(false);
+  });
+
+  it('tailscale-read-all matches GET but not writes', () => {
+    expectSchemaExists('tailscale-read-all');
+    const read = builtinRegistry.get('tailscale-read-all')!;
+    expect(
+      read.match(
+        makeRequest({
+          method: 'GET',
+          domain: 'api.tailscale.com',
+          path: '/api/v2/tailnet/example.com/users',
+        })
+      )
+    ).toBe(true);
+    expect(
+      read.match(
+        makeRequest({
+          method: 'HEAD',
+          domain: 'api.tailscale.com',
+          path: '/api/v2/tailnet/example.com/users',
+        })
+      )
+    ).toBe(true);
+    expect(
+      read.match(
+        makeRequest({
+          method: 'POST',
+          domain: 'api.tailscale.com',
+          path: '/api/v2/users/123/role',
+        })
+      )
+    ).toBe(false);
+  });
+
+  it('tailscale-write-all matches writes but not GET', () => {
+    expectSchemaExists('tailscale-write-all');
+    const write = builtinRegistry.get('tailscale-write-all')!;
+    expect(
+      write.match(
+        makeRequest({ method: 'POST', domain: 'api.tailscale.com', path: '/api/v2/users/123/role' })
+      )
+    ).toBe(true);
+    expect(
+      write.match(
+        makeRequest({
+          method: 'DELETE',
+          domain: 'api.tailscale.com',
+          path: '/api/v2/tailnet/example.com/keys/k123',
+        })
+      )
+    ).toBe(true);
+    expect(
+      write.match(
+        makeRequest({
+          method: 'PATCH',
+          domain: 'api.tailscale.com',
+          path: '/api/v2/tailnet/example.com/settings',
+        })
+      )
+    ).toBe(true);
+    expect(
+      write.match(
+        makeRequest({
+          method: 'GET',
+          domain: 'api.tailscale.com',
+          path: '/api/v2/tailnet/example.com/users',
+        })
+      )
+    ).toBe(false);
+  });
+});
+
 describe('builtin schemas: fastmail', () => {
   /** A JMAP method-call envelope: `POST /jmap/api/` carrying the named calls. */
   function jmapRequest(methodNames: readonly string[], domain = 'phl.api.fastmail.com') {

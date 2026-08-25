@@ -499,6 +499,18 @@ See the main [README](../README.md) for how schemas and rules work together.
 - `stripe-write-payouts`
 - `stripe-read-events`
 
+### tailscale
+
+- `tailscale-api` *(scope)*
+- `tailscale-read-all`
+- `tailscale-write-all`
+- `tailscale-read-users`
+- `tailscale-write-users`
+- `tailscale-read-devices`
+- `tailscale-write-devices`
+- `tailscale-read-keys`
+- `tailscale-write-keys`
+
 ### telegram
 
 - `telegram-api` *(scope)*
