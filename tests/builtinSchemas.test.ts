@@ -3196,7 +3196,7 @@ describe('builtin schemas: fastmail', () => {
   });
 });
 
-describe('builtin schemas: fastmail-dav', () => {
+describe('builtin schemas: fastmail (DAV scope)', () => {
   it('fastmail-dav-api matches the CardDAV and CalDAV hosts only', () => {
     expectSchemaExists('fastmail-dav-api');
     const api = builtinRegistry.get('fastmail-dav-api')!;

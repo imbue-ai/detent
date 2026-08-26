@@ -112,20 +112,10 @@ See the main [README](../README.md) for how schemas and rules work together.
 - `dropbox-file-requests`
 - `dropbox-contacts`
 
-### fastmail-dav
-
-- `fastmail-dav-api` *(scope)*
-- `fastmail-dav-discover`
-- `fastmail-dav-read-all`
-- `fastmail-dav-write-all`
-- `fastmail-dav-read-contacts`
-- `fastmail-dav-write-contacts`
-- `fastmail-dav-read-calendars`
-- `fastmail-dav-write-calendars`
-
 ### fastmail
 
 - `fastmail-api` *(scope)*
+- `fastmail-dav-api` *(scope)*
 - `fastmail-session`
 - `fastmail-read-all`
 - `fastmail-write-all`
@@ -138,6 +128,13 @@ See the main [README](../README.md) for how schemas and rules work together.
 - `fastmail-write-calendars`
 - `fastmail-download-blobs`
 - `fastmail-upload-blobs`
+- `fastmail-dav-discover`
+- `fastmail-dav-read-all`
+- `fastmail-dav-write-all`
+- `fastmail-dav-read-contacts`
+- `fastmail-dav-write-contacts`
+- `fastmail-dav-read-calendars`
+- `fastmail-dav-write-calendars`
 
 ### figma
 

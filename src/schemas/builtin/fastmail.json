@@ -9,6 +9,16 @@
     },
     "required": ["domain"]
   },
+  "fastmail-dav-api": {
+    "$comment": "Any request to Fastmail's CardDAV or CalDAV hosts. Separate from fastmail-api because these endpoints take an app password over Basic auth rather than the JMAP OAuth token.",
+    "properties": {
+      "domain": {
+        "type": "string",
+        "pattern": "^([a-z0-9-]+[.-])?(carddav|caldav)\\.fastmail\\.com$"
+      }
+    },
+    "required": ["domain"]
+  },
   "fastmail-session": {
     "$comment": "Fetch the JMAP session document, which names the apiUrl, downloadUrl and account ids. Required for any JMAP client to function; reveals account metadata but no mail, contact or calendar content.",
     "properties": {
@@ -293,6 +303,64 @@
     "properties": {
       "method": { "const": "POST" },
       "path": { "type": "string", "pattern": "^/jmap/upload/" }
+    },
+    "required": ["method", "path"]
+  },
+  "fastmail-dav-discover": {
+    "$comment": "Discover the authenticated principal and the collections belonging to it (a current-user-principal PROPFIND, RFC 5397). Required before any DAV client can locate an address book or calendar.",
+    "properties": {
+      "method": { "enum": ["PROPFIND", "OPTIONS"] },
+      "path": { "type": "string", "pattern": "^/(dav/principals|\\.well-known/(carddav|caldav))" }
+    },
+    "required": ["method", "path"]
+  },
+  "fastmail-dav-read-all": {
+    "$comment": "Read any DAV resource: PROPFIND and REPORT to enumerate and sync collections, GET to fetch individual vCards or iCalendar objects.",
+    "properties": {
+      "method": { "enum": ["GET", "HEAD", "OPTIONS", "PROPFIND", "REPORT"] }
+    },
+    "required": ["method"]
+  },
+  "fastmail-dav-write-all": {
+    "$comment": "Create, update or delete any DAV resource or collection.",
+    "properties": {
+      "method": {
+        "enum": ["PUT", "POST", "DELETE", "PROPPATCH", "MKCOL", "MKCALENDAR", "COPY", "MOVE", "ACL"]
+      }
+    },
+    "required": ["method"]
+  },
+  "fastmail-dav-read-contacts": {
+    "$comment": "Read address books and vCards over CardDAV (RFC 6352).",
+    "properties": {
+      "method": { "enum": ["GET", "HEAD", "OPTIONS", "PROPFIND", "REPORT"] },
+      "path": { "type": "string", "pattern": "^/dav/addressbooks(/.*)?$" }
+    },
+    "required": ["method", "path"]
+  },
+  "fastmail-dav-write-contacts": {
+    "$comment": "Create, update or delete address books and vCards over CardDAV.",
+    "properties": {
+      "method": { "enum": ["PUT", "POST", "DELETE", "PROPPATCH", "MKCOL", "COPY", "MOVE"] },
+      "path": { "type": "string", "pattern": "^/dav/addressbooks(/.*)?$" }
+    },
+    "required": ["method", "path"]
+  },
+  "fastmail-dav-read-calendars": {
+    "$comment": "Read calendars and iCalendar objects over CalDAV (RFC 4791).",
+    "properties": {
+      "method": { "enum": ["GET", "HEAD", "OPTIONS", "PROPFIND", "REPORT"] },
+      "path": { "type": "string", "pattern": "^/dav/calendars(/.*)?$" }
+    },
+    "required": ["method", "path"]
+  },
+  "fastmail-dav-write-calendars": {
+    "$comment": "Create, update or delete calendars and events over CalDAV, including scheduling messages sent to participants.",
+    "properties": {
+      "method": {
+        "enum": ["PUT", "POST", "DELETE", "PROPPATCH", "MKCOL", "MKCALENDAR", "COPY", "MOVE"]
+      },
+      "path": { "type": "string", "pattern": "^/dav/calendars(/.*)?$" }
     },
     "required": ["method", "path"]
   }
