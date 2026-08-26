@@ -3062,3 +3062,230 @@ describe('builtin schemas: tailscale', () => {
     ).toBe(false);
   });
 });
+
+describe('builtin schemas: fastmail', () => {
+  /** A JMAP method-call envelope: `POST /jmap/api/` carrying the named calls. */
+  function jmapRequest(methodNames: readonly string[], domain = 'phl.api.fastmail.com') {
+    return makeRequest({
+      domain,
+      method: 'POST',
+      path: '/jmap/api/',
+      parsedBody: {
+        using: ['urn:ietf:params:jmap:core', 'urn:ietf:params:jmap:mail'],
+        methodCalls: methodNames.map((name, index) => [name, {}, String(index)]),
+      },
+    });
+  }
+
+  it('fastmail-api matches the API host, its regional shards, and the blob host', () => {
+    expectSchemaExists('fastmail-api');
+    const api = builtinRegistry.get('fastmail-api')!;
+    for (const domain of [
+      'api.fastmail.com',
+      'phl.api.fastmail.com',
+      'www.fastmailusercontent.com',
+      'phl-www.fastmailusercontent.com',
+    ]) {
+      expect(api.match(makeRequest({ domain })), `expected fastmail-api to match ${domain}`).toBe(
+        true
+      );
+    }
+  });
+
+  it('fastmail-api rejects lookalike and DAV domains', () => {
+    const api = builtinRegistry.get('fastmail-api')!;
+    // The DAV hosts take a different credential and have their own schemas.
+    expect(api.match(makeRequest({ domain: 'carddav.fastmail.com' }))).toBe(false);
+    expect(api.match(makeRequest({ domain: 'api.fastmail.com.evil.test' }))).toBe(false);
+    expect(api.match(makeRequest({ domain: 'fastmailusercontent.com.evil.test' }))).toBe(false);
+  });
+
+  it('fastmail-read-all matches read-only method calls, the session document and downloads', () => {
+    expectSchemaExists('fastmail-read-all');
+    const read = builtinRegistry.get('fastmail-read-all')!;
+    expect(read.match(jmapRequest(['Email/get', 'Mailbox/changes', 'Thread/get']))).toBe(true);
+    expect(read.match(jmapRequest(['Email/query', 'Email/queryChanges']))).toBe(true);
+    expect(
+      read.match(makeRequest({ domain: 'api.fastmail.com', method: 'GET', path: '/jmap/session' }))
+    ).toBe(true);
+    expect(
+      read.match(
+        makeRequest({
+          domain: 'phl-www.fastmailusercontent.com',
+          method: 'GET',
+          path: '/jmap/download/u1/G1/message.eml',
+        })
+      )
+    ).toBe(true);
+  });
+
+  it('fastmail-read-all rejects a batch where any single call writes', () => {
+    // JMAP batches many calls into one request, so a read-only grant is only
+    // meaningful if one write anywhere in the envelope disqualifies the whole
+    // request.
+    const read = builtinRegistry.get('fastmail-read-all')!;
+    expect(read.match(jmapRequest(['Email/set']))).toBe(false);
+    expect(read.match(jmapRequest(['Email/get', 'Email/set']))).toBe(false);
+    expect(read.match(jmapRequest(['Email/get', 'Mailbox/get', 'EmailSubmission/set']))).toBe(
+      false
+    );
+  });
+
+  it('fastmail-write-all matches writes and blob uploads', () => {
+    expectSchemaExists('fastmail-write-all');
+    const write = builtinRegistry.get('fastmail-write-all')!;
+    expect(write.match(jmapRequest(['Email/set', 'Mailbox/set']))).toBe(true);
+    expect(write.match(jmapRequest(['Email/import']))).toBe(true);
+    expect(
+      write.match(
+        makeRequest({ domain: 'phl.api.fastmail.com', method: 'POST', path: '/jmap/upload/u1/' })
+      )
+    ).toBe(true);
+    expect(write.match(jmapRequest(['Email/get']))).toBe(false);
+  });
+
+  it('per-capability schemas keep mail, contacts and calendars apart', () => {
+    for (const name of [
+      'fastmail-read-mail',
+      'fastmail-read-contacts',
+      'fastmail-read-calendars',
+    ]) {
+      expectSchemaExists(name);
+    }
+    const mail = builtinRegistry.get('fastmail-read-mail')!;
+    const contacts = builtinRegistry.get('fastmail-read-contacts')!;
+    const calendars = builtinRegistry.get('fastmail-read-calendars')!;
+
+    expect(mail.match(jmapRequest(['Email/get', 'Mailbox/get']))).toBe(true);
+    expect(mail.match(jmapRequest(['ContactCard/get']))).toBe(false);
+    expect(mail.match(jmapRequest(['CalendarEvent/get']))).toBe(false);
+
+    expect(contacts.match(jmapRequest(['AddressBook/get', 'ContactCard/query']))).toBe(true);
+    expect(contacts.match(jmapRequest(['Email/get']))).toBe(false);
+    expect(contacts.match(jmapRequest(['ContactCard/set']))).toBe(false);
+
+    expect(calendars.match(jmapRequest(['Calendar/get', 'CalendarEvent/query']))).toBe(true);
+    expect(calendars.match(jmapRequest(['Email/get']))).toBe(false);
+  });
+
+  it('fastmail-send-mail is separate from fastmail-write-mail', () => {
+    expectSchemaExists('fastmail-send-mail');
+    const send = builtinRegistry.get('fastmail-send-mail')!;
+    const writeMail = builtinRegistry.get('fastmail-write-mail')!;
+    // Sending is externally visible and irreversible, so mailbox writes must not
+    // carry it along.
+    expect(send.match(jmapRequest(['EmailSubmission/set']))).toBe(true);
+    expect(writeMail.match(jmapRequest(['EmailSubmission/set']))).toBe(false);
+    expect(writeMail.match(jmapRequest(['Email/set', 'Mailbox/set']))).toBe(true);
+  });
+
+  it('fastmail-session covers discovery without exposing content', () => {
+    expectSchemaExists('fastmail-session');
+    const session = builtinRegistry.get('fastmail-session')!;
+    expect(
+      session.match(
+        makeRequest({ domain: 'api.fastmail.com', method: 'GET', path: '/jmap/session' })
+      )
+    ).toBe(true);
+    expect(
+      session.match(
+        makeRequest({ domain: 'api.fastmail.com', method: 'GET', path: '/.well-known/jmap' })
+      )
+    ).toBe(true);
+    expect(session.match(jmapRequest(['Email/get']))).toBe(false);
+  });
+});
+
+describe('builtin schemas: fastmail (DAV scope)', () => {
+  it('fastmail-dav-api matches the CardDAV and CalDAV hosts only', () => {
+    expectSchemaExists('fastmail-dav-api');
+    const api = builtinRegistry.get('fastmail-dav-api')!;
+    for (const domain of ['carddav.fastmail.com', 'caldav.fastmail.com']) {
+      expect(api.match(makeRequest({ domain })), `expected match for ${domain}`).toBe(true);
+    }
+    // The JMAP hosts take a different credential entirely.
+    expect(api.match(makeRequest({ domain: 'api.fastmail.com' }))).toBe(false);
+    expect(api.match(makeRequest({ domain: 'carddav.fastmail.com.evil.test' }))).toBe(false);
+  });
+
+  it('fastmail-dav read and write split on the DAV method verbs', () => {
+    expectSchemaExists('fastmail-dav-read-all');
+    expectSchemaExists('fastmail-dav-write-all');
+    const read = builtinRegistry.get('fastmail-dav-read-all')!;
+    const write = builtinRegistry.get('fastmail-dav-write-all')!;
+    const dav = {
+      domain: 'carddav.fastmail.com',
+      path: '/dav/addressbooks/user/a@b.test/Default/',
+    };
+
+    for (const method of ['GET', 'PROPFIND', 'REPORT', 'OPTIONS', 'HEAD']) {
+      expect(read.match(makeRequest({ ...dav, method })), `read should match ${method}`).toBe(true);
+      expect(write.match(makeRequest({ ...dav, method })), `write should not match ${method}`).toBe(
+        false
+      );
+    }
+    for (const method of ['PUT', 'DELETE', 'PROPPATCH', 'MKCOL', 'MOVE']) {
+      expect(write.match(makeRequest({ ...dav, method })), `write should match ${method}`).toBe(
+        true
+      );
+      expect(read.match(makeRequest({ ...dav, method })), `read should not match ${method}`).toBe(
+        false
+      );
+    }
+  });
+
+  it('fastmail-dav per-capability schemas split on collection path', () => {
+    const contacts = builtinRegistry.get('fastmail-dav-read-contacts')!;
+    const calendars = builtinRegistry.get('fastmail-dav-read-calendars')!;
+    expect(
+      contacts.match(
+        makeRequest({
+          domain: 'carddav.fastmail.com',
+          method: 'PROPFIND',
+          path: '/dav/addressbooks/user/a@b.test/Default/',
+        })
+      )
+    ).toBe(true);
+    expect(
+      contacts.match(
+        makeRequest({
+          domain: 'caldav.fastmail.com',
+          method: 'PROPFIND',
+          path: '/dav/calendars/user/a@b.test/Default/',
+        })
+      )
+    ).toBe(false);
+    expect(
+      calendars.match(
+        makeRequest({
+          domain: 'caldav.fastmail.com',
+          method: 'PROPFIND',
+          path: '/dav/calendars/user/a@b.test/Default/',
+        })
+      )
+    ).toBe(true);
+  });
+
+  it('fastmail-dav-discover covers the principal lookup a client must make first', () => {
+    expectSchemaExists('fastmail-dav-discover');
+    const discover = builtinRegistry.get('fastmail-dav-discover')!;
+    expect(
+      discover.match(
+        makeRequest({
+          domain: 'carddav.fastmail.com',
+          method: 'PROPFIND',
+          path: '/dav/principals/',
+        })
+      )
+    ).toBe(true);
+    expect(
+      discover.match(
+        makeRequest({
+          domain: 'carddav.fastmail.com',
+          method: 'PROPFIND',
+          path: '/dav/addressbooks/user/a@b.test/',
+        })
+      )
+    ).toBe(false);
+  });
+});
