@@ -1,265 +1,320 @@
 {
   "slack-api": {
-    "$comment": "Any interaction with the Slack API.",
+    "$comment": "Any interaction with the Slack API, including downloading file content and thumbnails from Slack's file-storage host.",
     "properties": {
       "domain": {
-        "const": "slack.com"
+        "enum": ["slack.com", "files.slack.com"]
       }
     },
-    "required": [
-      "domain"
-    ]
+    "required": ["domain"]
   },
   "slack-read-all": {
-    "$comment": "All read operations across the entire Slack API, including messages, users, files, reactions, search, pins, bookmarks, reminders, thread subscriptions, and unread counts.",
-    "properties": {
-      "path": {
-        "type": "string",
-        "pattern": "^/api/(auth\\.(test|teams\\.list)|chat\\.(getPermalink|scheduledMessages\\.list)|conversations\\.(history|info|list|listConnectInvites|members|replies|requestSharedInvite\\.list)|users\\.(conversations|getPresence|identity|info|list|lookupByEmail|profile\\.get)|files\\.(info|list|remote\\.(info|list))|reactions\\.(get|list)|search\\.(all|files|messages|modules\\.messages)|pins\\.list|bookmarks\\.list|reminders\\.(info|list)|client\\.counts|subscriptions\\.thread\\.getView|threads\\.getView)$"
+    "$comment": "All read operations across the entire Slack API, including messages, users, files, reactions, search, pins, bookmarks, reminders, thread subscriptions, unread counts, and downloading file content and thumbnails.",
+    "anyOf": [
+      {
+        "type": "object",
+        "properties": {
+          "domain": {
+            "const": "slack.com"
+          },
+          "path": {
+            "type": "string",
+            "pattern": "^/api/(auth\\.(test|teams\\.list)|chat\\.(getPermalink|scheduledMessages\\.list)|conversations\\.(history|info|list|listConnectInvites|members|replies|requestSharedInvite\\.list)|users\\.(conversations|getPresence|identity|info|list|lookupByEmail|profile\\.get)|files\\.(info|list|remote\\.(info|list))|reactions\\.(get|list)|search\\.(all|files|messages|modules\\.messages)|pins\\.list|bookmarks\\.list|reminders\\.(info|list)|client\\.counts|subscriptions\\.thread\\.getView|threads\\.getView)$"
+          }
+        },
+        "required": ["domain", "path"]
+      },
+      {
+        "type": "object",
+        "properties": {
+          "domain": {
+            "const": "files.slack.com"
+          },
+          "path": {
+            "type": "string",
+            "pattern": "^/files-(pri|tmb)/[^/]+/(download/)?[^/]+$"
+          }
+        },
+        "required": ["domain", "path"]
       }
-    },
-    "required": [
-      "path"
     ]
   },
   "slack-write-all": {
     "$comment": "All write operations across the entire Slack API, including sending messages, managing conversations, updating profiles, uploading files, marking thread subscriptions, and modifying pins, bookmarks, and reminders.",
     "properties": {
+      "domain": {
+        "const": "slack.com"
+      },
       "path": {
         "type": "string",
         "pattern": "^/api/(auth\\.revoke|chat\\.(appendStream|delete|deleteScheduledMessage|meMessage|postEphemeral|postMessage|scheduleMessage|startStream|stopStream|unfurl|update)|conversations\\.(acceptSharedInvite|approveSharedInvite|archive|canvasCreate|close|create|declineSharedInvite|externalInvitePermissions\\.set|invite|inviteShared|join|kick|leave|mark|open|rename|requestSharedInvite\\.(approve|deny)|setPurpose|setTopic|unarchive)|users\\.(setPresence|profile\\.set)|files\\.(completeUploadExternal|delete|getUploadURLExternal|remote\\.(add|remove|share|update)|revokePublicURL|sharedPublicURL)|reactions\\.(add|remove)|pins\\.(add|remove)|bookmarks\\.(add|edit|remove)|reminders\\.(add|complete|delete)|subscriptions\\.thread\\.mark)$"
       }
     },
-    "required": [
-      "path"
-    ]
+    "required": ["domain", "path"]
   },
   "slack-auth-read": {
     "$comment": "Check authentication status and list teams.",
     "properties": {
+      "domain": {
+        "const": "slack.com"
+      },
       "path": {
         "type": "string",
         "pattern": "^/api/auth\\.(test|teams\\.list)$"
       }
     },
-    "required": [
-      "path"
-    ]
+    "required": ["domain", "path"]
   },
   "slack-auth-write": {
     "$comment": "Revoke authentication tokens.",
     "properties": {
+      "domain": {
+        "const": "slack.com"
+      },
       "path": {
         "type": "string",
         "pattern": "^/api/auth\\.revoke$"
       }
     },
-    "required": [
-      "path"
-    ]
+    "required": ["domain", "path"]
   },
   "slack-chat-read": {
     "$comment": "Get message permalinks and list scheduled messages.",
     "properties": {
+      "domain": {
+        "const": "slack.com"
+      },
       "path": {
         "type": "string",
         "pattern": "^/api/chat\\.(getPermalink|scheduledMessages\\.list)$"
       }
     },
-    "required": [
-      "path"
-    ]
+    "required": ["domain", "path"]
   },
   "slack-chat-write": {
     "$comment": "Send, update, delete, and schedule messages.",
     "properties": {
+      "domain": {
+        "const": "slack.com"
+      },
       "path": {
         "type": "string",
         "pattern": "^/api/chat\\.(appendStream|delete|deleteScheduledMessage|meMessage|postEphemeral|postMessage|scheduleMessage|startStream|stopStream|unfurl|update)$"
       }
     },
-    "required": [
-      "path"
-    ]
+    "required": ["domain", "path"]
   },
   "slack-conversations-read": {
     "$comment": "Read conversation history, details, members, and replies.",
     "properties": {
+      "domain": {
+        "const": "slack.com"
+      },
       "path": {
         "type": "string",
         "pattern": "^/api/conversations\\.(history|info|list|listConnectInvites|members|replies|requestSharedInvite\\.list)$"
       }
     },
-    "required": [
-      "path"
-    ]
+    "required": ["domain", "path"]
   },
   "slack-conversations-write": {
     "$comment": "Create, archive, rename, and manage conversations, including membership, invitations, topics, and purposes.",
     "properties": {
+      "domain": {
+        "const": "slack.com"
+      },
       "path": {
         "type": "string",
         "pattern": "^/api/conversations\\.(acceptSharedInvite|approveSharedInvite|archive|canvasCreate|close|create|declineSharedInvite|externalInvitePermissions\\.set|invite|inviteShared|join|kick|leave|mark|open|rename|requestSharedInvite\\.(approve|deny)|setPurpose|setTopic|unarchive)$"
       }
     },
-    "required": [
-      "path"
-    ]
+    "required": ["domain", "path"]
   },
   "slack-users-read": {
     "$comment": "Read user profiles, presence, identity, and look up users by email.",
     "properties": {
+      "domain": {
+        "const": "slack.com"
+      },
       "path": {
         "type": "string",
         "pattern": "^/api/users\\.(conversations|getPresence|identity|info|list|lookupByEmail|profile\\.get)$"
       }
     },
-    "required": [
-      "path"
-    ]
+    "required": ["domain", "path"]
   },
   "slack-users-write": {
     "$comment": "Update user presence and profile information.",
     "properties": {
+      "domain": {
+        "const": "slack.com"
+      },
       "path": {
         "type": "string",
         "pattern": "^/api/users\\.(setPresence|profile\\.set)$"
       }
     },
-    "required": [
-      "path"
-    ]
+    "required": ["domain", "path"]
   },
   "slack-files-read": {
-    "$comment": "List and inspect files, including remote files.",
-    "properties": {
-      "path": {
-        "type": "string",
-        "pattern": "^/api/files\\.(info|list|remote\\.(info|list))$"
+    "$comment": "List and inspect files, including remote files, and download file content and thumbnails.",
+    "anyOf": [
+      {
+        "type": "object",
+        "properties": {
+          "domain": {
+            "const": "slack.com"
+          },
+          "path": {
+            "type": "string",
+            "pattern": "^/api/files\\.(info|list|remote\\.(info|list))$"
+          }
+        },
+        "required": ["domain", "path"]
+      },
+      {
+        "type": "object",
+        "properties": {
+          "domain": {
+            "const": "files.slack.com"
+          },
+          "path": {
+            "type": "string",
+            "pattern": "^/files-(pri|tmb)/[^/]+/(download/)?[^/]+$"
+          }
+        },
+        "required": ["domain", "path"]
       }
-    },
-    "required": [
-      "path"
     ]
   },
   "slack-files-write": {
     "$comment": "Upload, delete, and share files, including remote files.",
     "properties": {
+      "domain": {
+        "const": "slack.com"
+      },
       "path": {
         "type": "string",
         "pattern": "^/api/files\\.(completeUploadExternal|delete|getUploadURLExternal|remote\\.(add|remove|share|update)|revokePublicURL|sharedPublicURL)$"
       }
     },
-    "required": [
-      "path"
-    ]
+    "required": ["domain", "path"]
   },
   "slack-reactions-read": {
     "$comment": "List and inspect emoji reactions on messages.",
     "properties": {
+      "domain": {
+        "const": "slack.com"
+      },
       "path": {
         "type": "string",
         "pattern": "^/api/reactions\\.(get|list)$"
       }
     },
-    "required": [
-      "path"
-    ]
+    "required": ["domain", "path"]
   },
   "slack-reactions-write": {
     "$comment": "Add or remove emoji reactions.",
     "properties": {
+      "domain": {
+        "const": "slack.com"
+      },
       "path": {
         "type": "string",
         "pattern": "^/api/reactions\\.(add|remove)$"
       }
     },
-    "required": [
-      "path"
-    ]
+    "required": ["domain", "path"]
   },
   "slack-search": {
     "$comment": "Search messages, files, and all content.",
     "properties": {
+      "domain": {
+        "const": "slack.com"
+      },
       "path": {
         "type": "string",
         "pattern": "^/api/search\\.(all|files|messages|modules\\.messages)$"
       }
     },
-    "required": [
-      "path"
-    ]
+    "required": ["domain", "path"]
   },
   "slack-pins-read": {
     "$comment": "List pinned messages in a conversation.",
     "properties": {
+      "domain": {
+        "const": "slack.com"
+      },
       "path": {
         "type": "string",
         "pattern": "^/api/pins\\.list$"
       }
     },
-    "required": [
-      "path"
-    ]
+    "required": ["domain", "path"]
   },
   "slack-pins-write": {
     "$comment": "Pin or unpin messages in a conversation.",
     "properties": {
+      "domain": {
+        "const": "slack.com"
+      },
       "path": {
         "type": "string",
         "pattern": "^/api/pins\\.(add|remove)$"
       }
     },
-    "required": [
-      "path"
-    ]
+    "required": ["domain", "path"]
   },
   "slack-bookmarks-read": {
     "$comment": "List bookmarks in a conversation.",
     "properties": {
+      "domain": {
+        "const": "slack.com"
+      },
       "path": {
         "type": "string",
         "pattern": "^/api/bookmarks\\.list$"
       }
     },
-    "required": [
-      "path"
-    ]
+    "required": ["domain", "path"]
   },
   "slack-bookmarks-write": {
     "$comment": "Add, edit, or remove bookmarks.",
     "properties": {
+      "domain": {
+        "const": "slack.com"
+      },
       "path": {
         "type": "string",
         "pattern": "^/api/bookmarks\\.(add|edit|remove)$"
       }
     },
-    "required": [
-      "path"
-    ]
+    "required": ["domain", "path"]
   },
   "slack-reminders-read": {
     "$comment": "List and inspect reminders.",
     "properties": {
+      "domain": {
+        "const": "slack.com"
+      },
       "path": {
         "type": "string",
         "pattern": "^/api/reminders\\.(info|list)$"
       }
     },
-    "required": [
-      "path"
-    ]
+    "required": ["domain", "path"]
   },
   "slack-reminders-write": {
     "$comment": "Create, complete, or delete reminders.",
     "properties": {
+      "domain": {
+        "const": "slack.com"
+      },
       "path": {
         "type": "string",
         "pattern": "^/api/reminders\\.(add|complete|delete)$"
       }
     },
-    "required": [
-      "path"
-    ]
+    "required": ["domain", "path"]
   }
 }
