@@ -1534,23 +1534,26 @@ describe('builtin schemas: sentry', () => {
 });
 
 describe('builtin schemas: slack', () => {
+  function makeSlackRequest(overrides: Partial<DecomposedRequest> = {}): DecomposedRequest {
+    return makeRequest({ domain: 'slack.com', ...overrides });
+  }
+
   it('slack scope matches slack.com', () => {
     expectSchemaExists('slack-api');
-    const request = makeRequest({
-      domain: 'slack.com',
+    const request = makeSlackRequest({
       path: '/api/chat.postMessage',
     });
     expect(builtinRegistry.get('slack-api')!.match(request)).toBe(true);
   });
 
   it('slack scope rejects unrelated domains', () => {
-    const request = makeRequest({ domain: 'slack.example.com' });
+    const request = makeSlackRequest({ domain: 'slack.example.com' });
     expect(builtinRegistry.get('slack-api')!.match(request)).toBe(false);
   });
 
   it('slack scope matches files.slack.com, the file-content host', () => {
     expectSchemaExists('slack-api');
-    const request = makeRequest({
+    const request = makeSlackRequest({
       domain: 'files.slack.com',
       path: '/files-pri/TEAM123-FILE456/download/image.png',
     });
@@ -1595,47 +1598,91 @@ describe('builtin schemas: slack', () => {
       '/api/client.counts',
       '/api/subscriptions.thread.getView',
       '/api/threads.getView',
-      '/files-pri/TEAM123-FILE456/image.png',
-      '/files-pri/TEAM123-FILE456/download/image.png',
-      '/files-tmb/TEAM123-FILE456-abcdef1234/image_360.png',
     ];
     for (const path of readMethods) {
       expect(
-        builtinRegistry.get('slack-read-all')!.match(makeRequest({ path })),
+        builtinRegistry.get('slack-read-all')!.match(makeSlackRequest({ path })),
         `Expected slack-read-all to match "${path}"`
       ).toBe(true);
     }
   });
 
+  it('slack-read-all matches file content and thumbnail downloads on files.slack.com only', () => {
+    const filePaths = [
+      '/files-pri/TEAM123-FILE456/image.png',
+      '/files-pri/TEAM123-FILE456/download/image.png',
+      '/files-tmb/TEAM123-FILE456-abcdef1234/image_360.png',
+    ];
+    for (const path of filePaths) {
+      expect(
+        builtinRegistry
+          .get('slack-read-all')!
+          .match(makeRequest({ domain: 'files.slack.com', path })),
+        `Expected slack-read-all to match "${path}" on files.slack.com`
+      ).toBe(true);
+      expect(
+        builtinRegistry.get('slack-read-all')!.match(makeSlackRequest({ path })),
+        `Expected slack-read-all to reject "${path}" on slack.com`
+      ).toBe(false);
+    }
+    expect(
+      builtinRegistry
+        .get('slack-read-all')!
+        .match(makeRequest({ domain: 'files.slack.com', path: '/api/conversations.history' }))
+    ).toBe(false);
+  });
+
+  it('slack scopes reject unrelated domains even for matching paths', () => {
+    expect(
+      builtinRegistry
+        .get('slack-read-all')!
+        .match(makeRequest({ path: '/api/conversations.history' }))
+    ).toBe(false);
+    expect(
+      builtinRegistry.get('slack-chat-write')!.match(makeRequest({ path: '/api/chat.postMessage' }))
+    ).toBe(false);
+    expect(
+      builtinRegistry
+        .get('slack-files-read')!
+        .match(makeRequest({ path: '/files-pri/TEAM123-FILE456/download/image.png' }))
+    ).toBe(false);
+  });
+
   it('slack-auth-read matches read auth methods but not write', () => {
     expectSchemaExists('slack-auth-read');
     expect(
-      builtinRegistry.get('slack-auth-read')!.match(makeRequest({ path: '/api/auth.test' }))
+      builtinRegistry.get('slack-auth-read')!.match(makeSlackRequest({ path: '/api/auth.test' }))
     ).toBe(true);
     expect(
-      builtinRegistry.get('slack-auth-read')!.match(makeRequest({ path: '/api/auth.teams.list' }))
+      builtinRegistry
+        .get('slack-auth-read')!
+        .match(makeSlackRequest({ path: '/api/auth.teams.list' }))
     ).toBe(true);
     expect(
-      builtinRegistry.get('slack-auth-read')!.match(makeRequest({ path: '/api/auth.revoke' }))
+      builtinRegistry.get('slack-auth-read')!.match(makeSlackRequest({ path: '/api/auth.revoke' }))
     ).toBe(false);
     expect(
-      builtinRegistry.get('slack-auth-read')!.match(makeRequest({ path: '/api/auth.testfoo' }))
+      builtinRegistry.get('slack-auth-read')!.match(makeSlackRequest({ path: '/api/auth.testfoo' }))
     ).toBe(false);
     expect(
-      builtinRegistry.get('slack-auth-read')!.match(makeRequest({ path: '/api/chat.postMessage' }))
+      builtinRegistry
+        .get('slack-auth-read')!
+        .match(makeSlackRequest({ path: '/api/chat.postMessage' }))
     ).toBe(false);
   });
 
   it('slack-auth-write matches write auth methods but not read', () => {
     expectSchemaExists('slack-auth-write');
     expect(
-      builtinRegistry.get('slack-auth-write')!.match(makeRequest({ path: '/api/auth.revoke' }))
+      builtinRegistry.get('slack-auth-write')!.match(makeSlackRequest({ path: '/api/auth.revoke' }))
     ).toBe(true);
     expect(
-      builtinRegistry.get('slack-auth-write')!.match(makeRequest({ path: '/api/auth.test' }))
+      builtinRegistry.get('slack-auth-write')!.match(makeSlackRequest({ path: '/api/auth.test' }))
     ).toBe(false);
     expect(
-      builtinRegistry.get('slack-auth-write')!.match(makeRequest({ path: '/api/auth.teams.list' }))
+      builtinRegistry
+        .get('slack-auth-write')!
+        .match(makeSlackRequest({ path: '/api/auth.teams.list' }))
     ).toBe(false);
   });
 
@@ -1657,7 +1704,7 @@ describe('builtin schemas: slack', () => {
     ];
     for (const path of writeMethods) {
       expect(
-        builtinRegistry.get('slack-read-all')!.match(makeRequest({ path })),
+        builtinRegistry.get('slack-read-all')!.match(makeSlackRequest({ path })),
         `Expected slack-read-all to reject "${path}"`
       ).toBe(false);
     }
@@ -1724,7 +1771,7 @@ describe('builtin schemas: slack', () => {
     ];
     for (const path of writeMethods) {
       expect(
-        builtinRegistry.get('slack-write-all')!.match(makeRequest({ path })),
+        builtinRegistry.get('slack-write-all')!.match(makeSlackRequest({ path })),
         `Expected slack-write-all to match "${path}"`
       ).toBe(true);
     }
@@ -1750,7 +1797,7 @@ describe('builtin schemas: slack', () => {
     ];
     for (const path of readMethods) {
       expect(
-        builtinRegistry.get('slack-write-all')!.match(makeRequest({ path })),
+        builtinRegistry.get('slack-write-all')!.match(makeSlackRequest({ path })),
         `Expected slack-write-all to reject "${path}"`
       ).toBe(false);
     }
@@ -1759,47 +1806,57 @@ describe('builtin schemas: slack', () => {
   it('slack-chat-read matches read chat methods but not write', () => {
     expectSchemaExists('slack-chat-read');
     expect(
-      builtinRegistry.get('slack-chat-read')!.match(makeRequest({ path: '/api/chat.getPermalink' }))
+      builtinRegistry
+        .get('slack-chat-read')!
+        .match(makeSlackRequest({ path: '/api/chat.getPermalink' }))
     ).toBe(true);
     expect(
       builtinRegistry
         .get('slack-chat-read')!
-        .match(makeRequest({ path: '/api/chat.scheduledMessages.list' }))
+        .match(makeSlackRequest({ path: '/api/chat.scheduledMessages.list' }))
     ).toBe(true);
     expect(
-      builtinRegistry.get('slack-chat-read')!.match(makeRequest({ path: '/api/chat.postMessage' }))
+      builtinRegistry
+        .get('slack-chat-read')!
+        .match(makeSlackRequest({ path: '/api/chat.postMessage' }))
     ).toBe(false);
     expect(
-      builtinRegistry.get('slack-chat-read')!.match(makeRequest({ path: '/api/chat.delete' }))
+      builtinRegistry.get('slack-chat-read')!.match(makeSlackRequest({ path: '/api/chat.delete' }))
     ).toBe(false);
   });
 
   it('slack-chat-write matches write chat methods but not read', () => {
     expectSchemaExists('slack-chat-write');
     expect(
-      builtinRegistry.get('slack-chat-write')!.match(makeRequest({ path: '/api/chat.postMessage' }))
+      builtinRegistry
+        .get('slack-chat-write')!
+        .match(makeSlackRequest({ path: '/api/chat.postMessage' }))
     ).toBe(true);
     expect(
-      builtinRegistry.get('slack-chat-write')!.match(makeRequest({ path: '/api/chat.delete' }))
+      builtinRegistry.get('slack-chat-write')!.match(makeSlackRequest({ path: '/api/chat.delete' }))
     ).toBe(true);
     expect(
-      builtinRegistry.get('slack-chat-write')!.match(makeRequest({ path: '/api/chat.update' }))
+      builtinRegistry.get('slack-chat-write')!.match(makeSlackRequest({ path: '/api/chat.update' }))
     ).toBe(true);
     expect(
       builtinRegistry
         .get('slack-chat-write')!
-        .match(makeRequest({ path: '/api/chat.appendStream' }))
-    ).toBe(true);
-    expect(
-      builtinRegistry.get('slack-chat-write')!.match(makeRequest({ path: '/api/chat.startStream' }))
-    ).toBe(true);
-    expect(
-      builtinRegistry.get('slack-chat-write')!.match(makeRequest({ path: '/api/chat.stopStream' }))
+        .match(makeSlackRequest({ path: '/api/chat.appendStream' }))
     ).toBe(true);
     expect(
       builtinRegistry
         .get('slack-chat-write')!
-        .match(makeRequest({ path: '/api/chat.getPermalink' }))
+        .match(makeSlackRequest({ path: '/api/chat.startStream' }))
+    ).toBe(true);
+    expect(
+      builtinRegistry
+        .get('slack-chat-write')!
+        .match(makeSlackRequest({ path: '/api/chat.stopStream' }))
+    ).toBe(true);
+    expect(
+      builtinRegistry
+        .get('slack-chat-write')!
+        .match(makeSlackRequest({ path: '/api/chat.getPermalink' }))
     ).toBe(false);
   });
 
@@ -1808,32 +1865,32 @@ describe('builtin schemas: slack', () => {
     expect(
       builtinRegistry
         .get('slack-conversations-read')!
-        .match(makeRequest({ path: '/api/conversations.list' }))
+        .match(makeSlackRequest({ path: '/api/conversations.list' }))
     ).toBe(true);
     expect(
       builtinRegistry
         .get('slack-conversations-read')!
-        .match(makeRequest({ path: '/api/conversations.history' }))
+        .match(makeSlackRequest({ path: '/api/conversations.history' }))
     ).toBe(true);
     expect(
       builtinRegistry
         .get('slack-conversations-read')!
-        .match(makeRequest({ path: '/api/conversations.listConnectInvites' }))
+        .match(makeSlackRequest({ path: '/api/conversations.listConnectInvites' }))
     ).toBe(true);
     expect(
       builtinRegistry
         .get('slack-conversations-read')!
-        .match(makeRequest({ path: '/api/conversations.requestSharedInvite.list' }))
+        .match(makeSlackRequest({ path: '/api/conversations.requestSharedInvite.list' }))
     ).toBe(true);
     expect(
       builtinRegistry
         .get('slack-conversations-read')!
-        .match(makeRequest({ path: '/api/conversations.kick' }))
+        .match(makeSlackRequest({ path: '/api/conversations.kick' }))
     ).toBe(false);
     expect(
       builtinRegistry
         .get('slack-conversations-read')!
-        .match(makeRequest({ path: '/api/conversations.archive' }))
+        .match(makeSlackRequest({ path: '/api/conversations.archive' }))
     ).toBe(false);
   });
 
@@ -1842,82 +1899,82 @@ describe('builtin schemas: slack', () => {
     expect(
       builtinRegistry
         .get('slack-conversations-write')!
-        .match(makeRequest({ path: '/api/conversations.kick' }))
+        .match(makeSlackRequest({ path: '/api/conversations.kick' }))
     ).toBe(true);
     expect(
       builtinRegistry
         .get('slack-conversations-write')!
-        .match(makeRequest({ path: '/api/conversations.archive' }))
+        .match(makeSlackRequest({ path: '/api/conversations.archive' }))
     ).toBe(true);
     expect(
       builtinRegistry
         .get('slack-conversations-write')!
-        .match(makeRequest({ path: '/api/conversations.create' }))
+        .match(makeSlackRequest({ path: '/api/conversations.create' }))
     ).toBe(true);
     expect(
       builtinRegistry
         .get('slack-conversations-write')!
-        .match(makeRequest({ path: '/api/conversations.acceptSharedInvite' }))
+        .match(makeSlackRequest({ path: '/api/conversations.acceptSharedInvite' }))
     ).toBe(true);
     expect(
       builtinRegistry
         .get('slack-conversations-write')!
-        .match(makeRequest({ path: '/api/conversations.canvasCreate' }))
+        .match(makeSlackRequest({ path: '/api/conversations.canvasCreate' }))
     ).toBe(true);
     expect(
       builtinRegistry
         .get('slack-conversations-write')!
-        .match(makeRequest({ path: '/api/conversations.inviteShared' }))
+        .match(makeSlackRequest({ path: '/api/conversations.inviteShared' }))
     ).toBe(true);
     expect(
       builtinRegistry
         .get('slack-conversations-write')!
-        .match(makeRequest({ path: '/api/conversations.externalInvitePermissions.set' }))
+        .match(makeSlackRequest({ path: '/api/conversations.externalInvitePermissions.set' }))
     ).toBe(true);
     expect(
       builtinRegistry
         .get('slack-conversations-write')!
-        .match(makeRequest({ path: '/api/conversations.requestSharedInvite.approve' }))
+        .match(makeSlackRequest({ path: '/api/conversations.requestSharedInvite.approve' }))
     ).toBe(true);
     expect(
       builtinRegistry
         .get('slack-conversations-write')!
-        .match(makeRequest({ path: '/api/conversations.requestSharedInvite.deny' }))
+        .match(makeSlackRequest({ path: '/api/conversations.requestSharedInvite.deny' }))
     ).toBe(true);
     expect(
       builtinRegistry
         .get('slack-conversations-write')!
-        .match(makeRequest({ path: '/api/conversations.list' }))
+        .match(makeSlackRequest({ path: '/api/conversations.list' }))
     ).toBe(false);
     expect(
       builtinRegistry
         .get('slack-conversations-write')!
-        .match(makeRequest({ path: '/api/conversations.history' }))
+        .match(makeSlackRequest({ path: '/api/conversations.history' }))
     ).toBe(false);
   });
 
   it('slack-users-read matches read user methods but not write', () => {
     expectSchemaExists('slack-users-read');
     expect(
-      builtinRegistry.get('slack-users-read')!.match(makeRequest({ path: '/api/users.list' }))
+      builtinRegistry.get('slack-users-read')!.match(makeSlackRequest({ path: '/api/users.list' }))
     ).toBe(true);
     expect(
-      builtinRegistry.get('slack-users-read')!.match(makeRequest({ path: '/api/users.info' }))
-    ).toBe(true);
-    expect(
-      builtinRegistry
-        .get('slack-users-read')!
-        .match(makeRequest({ path: '/api/users.profile.get' }))
+      builtinRegistry.get('slack-users-read')!.match(makeSlackRequest({ path: '/api/users.info' }))
     ).toBe(true);
     expect(
       builtinRegistry
         .get('slack-users-read')!
-        .match(makeRequest({ path: '/api/users.setPresence' }))
+        .match(makeSlackRequest({ path: '/api/users.profile.get' }))
+    ).toBe(true);
+    expect(
+      builtinRegistry
+        .get('slack-users-read')!
+        .match(makeSlackRequest({ path: '/api/users.setPresence' }))
     ).toBe(false);
     expect(
       builtinRegistry
         .get('slack-users-read')!
-        .match(makeRequest({ path: '/api/users.profile.set' }))
+        .match(makeSlackRequest({ path: '/api/users.profile.set' }))
     ).toBe(false);
   });
 
@@ -1926,58 +1983,72 @@ describe('builtin schemas: slack', () => {
     expect(
       builtinRegistry
         .get('slack-users-write')!
-        .match(makeRequest({ path: '/api/users.setPresence' }))
+        .match(makeSlackRequest({ path: '/api/users.setPresence' }))
     ).toBe(true);
     expect(
       builtinRegistry
         .get('slack-users-write')!
-        .match(makeRequest({ path: '/api/users.profile.set' }))
+        .match(makeSlackRequest({ path: '/api/users.profile.set' }))
     ).toBe(true);
     expect(
-      builtinRegistry.get('slack-users-write')!.match(makeRequest({ path: '/api/users.list' }))
+      builtinRegistry.get('slack-users-write')!.match(makeSlackRequest({ path: '/api/users.list' }))
     ).toBe(false);
   });
 
   it('slack-files-read matches read file methods but not write', () => {
     expectSchemaExists('slack-files-read');
     expect(
-      builtinRegistry.get('slack-files-read')!.match(makeRequest({ path: '/api/files.info' }))
+      builtinRegistry.get('slack-files-read')!.match(makeSlackRequest({ path: '/api/files.info' }))
     ).toBe(true);
     expect(
-      builtinRegistry.get('slack-files-read')!.match(makeRequest({ path: '/api/files.list' }))
-    ).toBe(true);
-    expect(
-      builtinRegistry
-        .get('slack-files-read')!
-        .match(makeRequest({ path: '/api/files.remote.info' }))
+      builtinRegistry.get('slack-files-read')!.match(makeSlackRequest({ path: '/api/files.list' }))
     ).toBe(true);
     expect(
       builtinRegistry
         .get('slack-files-read')!
-        .match(makeRequest({ path: '/api/files.getUploadURLExternal' }))
+        .match(makeSlackRequest({ path: '/api/files.remote.info' }))
+    ).toBe(true);
+    expect(
+      builtinRegistry
+        .get('slack-files-read')!
+        .match(makeSlackRequest({ path: '/api/files.getUploadURLExternal' }))
     ).toBe(false);
     expect(
-      builtinRegistry.get('slack-files-read')!.match(makeRequest({ path: '/api/files.delete' }))
+      builtinRegistry
+        .get('slack-files-read')!
+        .match(makeSlackRequest({ path: '/api/files.delete' }))
     ).toBe(false);
   });
 
-  it('slack-files-read matches file content and thumbnail downloads', () => {
+  it('slack-files-read matches file content and thumbnail downloads on files.slack.com only', () => {
     expectSchemaExists('slack-files-read');
+    const filesDomain = 'files.slack.com';
     expect(
       builtinRegistry
         .get('slack-files-read')!
-        .match(makeRequest({ path: '/files-pri/TEAM123-FILE456/image.png' }))
+        .match(makeRequest({ domain: filesDomain, path: '/files-pri/TEAM123-FILE456/image.png' }))
+    ).toBe(true);
+    expect(
+      builtinRegistry.get('slack-files-read')!.match(
+        makeRequest({
+          domain: filesDomain,
+          path: '/files-pri/TEAM123-FILE456/download/image.png',
+        })
+      )
+    ).toBe(true);
+    expect(
+      builtinRegistry.get('slack-files-read')!.match(
+        makeRequest({
+          domain: filesDomain,
+          path: '/files-tmb/TEAM123-FILE456-abcdef1234/image_360.png',
+        })
+      )
     ).toBe(true);
     expect(
       builtinRegistry
         .get('slack-files-read')!
-        .match(makeRequest({ path: '/files-pri/TEAM123-FILE456/download/image.png' }))
-    ).toBe(true);
-    expect(
-      builtinRegistry
-        .get('slack-files-read')!
-        .match(makeRequest({ path: '/files-tmb/TEAM123-FILE456-abcdef1234/image_360.png' }))
-    ).toBe(true);
+        .match(makeRequest({ domain: filesDomain, path: '/api/files.info' }))
+    ).toBe(false);
   });
 
   it('slack-files-write matches write file methods but not read', () => {
@@ -1985,26 +2056,28 @@ describe('builtin schemas: slack', () => {
     expect(
       builtinRegistry
         .get('slack-files-write')!
-        .match(makeRequest({ path: '/api/files.getUploadURLExternal' }))
+        .match(makeSlackRequest({ path: '/api/files.getUploadURLExternal' }))
     ).toBe(true);
     expect(
       builtinRegistry
         .get('slack-files-write')!
-        .match(makeRequest({ path: '/api/files.completeUploadExternal' }))
-    ).toBe(true);
-    expect(
-      builtinRegistry.get('slack-files-write')!.match(makeRequest({ path: '/api/files.delete' }))
+        .match(makeSlackRequest({ path: '/api/files.completeUploadExternal' }))
     ).toBe(true);
     expect(
       builtinRegistry
         .get('slack-files-write')!
-        .match(makeRequest({ path: '/api/files.remote.remove' }))
+        .match(makeSlackRequest({ path: '/api/files.delete' }))
     ).toBe(true);
     expect(
-      builtinRegistry.get('slack-files-write')!.match(makeRequest({ path: '/api/files.info' }))
+      builtinRegistry
+        .get('slack-files-write')!
+        .match(makeSlackRequest({ path: '/api/files.remote.remove' }))
+    ).toBe(true);
+    expect(
+      builtinRegistry.get('slack-files-write')!.match(makeSlackRequest({ path: '/api/files.info' }))
     ).toBe(false);
     expect(
-      builtinRegistry.get('slack-files-write')!.match(makeRequest({ path: '/api/files.list' }))
+      builtinRegistry.get('slack-files-write')!.match(makeSlackRequest({ path: '/api/files.list' }))
     ).toBe(false);
   });
 
@@ -2013,17 +2086,17 @@ describe('builtin schemas: slack', () => {
     expect(
       builtinRegistry
         .get('slack-reactions-read')!
-        .match(makeRequest({ path: '/api/reactions.get' }))
+        .match(makeSlackRequest({ path: '/api/reactions.get' }))
     ).toBe(true);
     expect(
       builtinRegistry
         .get('slack-reactions-read')!
-        .match(makeRequest({ path: '/api/reactions.list' }))
+        .match(makeSlackRequest({ path: '/api/reactions.list' }))
     ).toBe(true);
     expect(
       builtinRegistry
         .get('slack-reactions-read')!
-        .match(makeRequest({ path: '/api/reactions.add' }))
+        .match(makeSlackRequest({ path: '/api/reactions.add' }))
     ).toBe(false);
   });
 
@@ -2032,61 +2105,63 @@ describe('builtin schemas: slack', () => {
     expect(
       builtinRegistry
         .get('slack-reactions-write')!
-        .match(makeRequest({ path: '/api/reactions.add' }))
+        .match(makeSlackRequest({ path: '/api/reactions.add' }))
     ).toBe(true);
     expect(
       builtinRegistry
         .get('slack-reactions-write')!
-        .match(makeRequest({ path: '/api/reactions.remove' }))
+        .match(makeSlackRequest({ path: '/api/reactions.remove' }))
     ).toBe(true);
     expect(
       builtinRegistry
         .get('slack-reactions-write')!
-        .match(makeRequest({ path: '/api/reactions.get' }))
+        .match(makeSlackRequest({ path: '/api/reactions.get' }))
     ).toBe(false);
   });
 
   it('slack-search matches search methods', () => {
     expectSchemaExists('slack-search');
     expect(
-      builtinRegistry.get('slack-search')!.match(makeRequest({ path: '/api/search.messages' }))
+      builtinRegistry.get('slack-search')!.match(makeSlackRequest({ path: '/api/search.messages' }))
     ).toBe(true);
     expect(
-      builtinRegistry.get('slack-search')!.match(makeRequest({ path: '/api/search.files' }))
+      builtinRegistry.get('slack-search')!.match(makeSlackRequest({ path: '/api/search.files' }))
     ).toBe(true);
     expect(
-      builtinRegistry.get('slack-search')!.match(makeRequest({ path: '/api/search.all' }))
+      builtinRegistry.get('slack-search')!.match(makeSlackRequest({ path: '/api/search.all' }))
     ).toBe(true);
     expect(
       builtinRegistry
         .get('slack-search')!
-        .match(makeRequest({ path: '/api/search.modules.messages' }))
+        .match(makeSlackRequest({ path: '/api/search.modules.messages' }))
     ).toBe(true);
     expect(
-      builtinRegistry.get('slack-search')!.match(makeRequest({ path: '/api/chat.postMessage' }))
+      builtinRegistry
+        .get('slack-search')!
+        .match(makeSlackRequest({ path: '/api/chat.postMessage' }))
     ).toBe(false);
   });
 
   it('slack-pins-read matches pins.list but not pins.add', () => {
     expectSchemaExists('slack-pins-read');
     expect(
-      builtinRegistry.get('slack-pins-read')!.match(makeRequest({ path: '/api/pins.list' }))
+      builtinRegistry.get('slack-pins-read')!.match(makeSlackRequest({ path: '/api/pins.list' }))
     ).toBe(true);
     expect(
-      builtinRegistry.get('slack-pins-read')!.match(makeRequest({ path: '/api/pins.add' }))
+      builtinRegistry.get('slack-pins-read')!.match(makeSlackRequest({ path: '/api/pins.add' }))
     ).toBe(false);
   });
 
   it('slack-pins-write matches pins.add and pins.remove but not pins.list', () => {
     expectSchemaExists('slack-pins-write');
     expect(
-      builtinRegistry.get('slack-pins-write')!.match(makeRequest({ path: '/api/pins.add' }))
+      builtinRegistry.get('slack-pins-write')!.match(makeSlackRequest({ path: '/api/pins.add' }))
     ).toBe(true);
     expect(
-      builtinRegistry.get('slack-pins-write')!.match(makeRequest({ path: '/api/pins.remove' }))
+      builtinRegistry.get('slack-pins-write')!.match(makeSlackRequest({ path: '/api/pins.remove' }))
     ).toBe(true);
     expect(
-      builtinRegistry.get('slack-pins-write')!.match(makeRequest({ path: '/api/pins.list' }))
+      builtinRegistry.get('slack-pins-write')!.match(makeSlackRequest({ path: '/api/pins.list' }))
     ).toBe(false);
   });
 
@@ -2095,12 +2170,12 @@ describe('builtin schemas: slack', () => {
     expect(
       builtinRegistry
         .get('slack-bookmarks-read')!
-        .match(makeRequest({ path: '/api/bookmarks.list' }))
+        .match(makeSlackRequest({ path: '/api/bookmarks.list' }))
     ).toBe(true);
     expect(
       builtinRegistry
         .get('slack-bookmarks-read')!
-        .match(makeRequest({ path: '/api/bookmarks.add' }))
+        .match(makeSlackRequest({ path: '/api/bookmarks.add' }))
     ).toBe(false);
   });
 
@@ -2109,17 +2184,17 @@ describe('builtin schemas: slack', () => {
     expect(
       builtinRegistry
         .get('slack-bookmarks-write')!
-        .match(makeRequest({ path: '/api/bookmarks.add' }))
+        .match(makeSlackRequest({ path: '/api/bookmarks.add' }))
     ).toBe(true);
     expect(
       builtinRegistry
         .get('slack-bookmarks-write')!
-        .match(makeRequest({ path: '/api/bookmarks.edit' }))
+        .match(makeSlackRequest({ path: '/api/bookmarks.edit' }))
     ).toBe(true);
     expect(
       builtinRegistry
         .get('slack-bookmarks-write')!
-        .match(makeRequest({ path: '/api/bookmarks.list' }))
+        .match(makeSlackRequest({ path: '/api/bookmarks.list' }))
     ).toBe(false);
   });
 
@@ -2128,17 +2203,17 @@ describe('builtin schemas: slack', () => {
     expect(
       builtinRegistry
         .get('slack-reminders-read')!
-        .match(makeRequest({ path: '/api/reminders.info' }))
+        .match(makeSlackRequest({ path: '/api/reminders.info' }))
     ).toBe(true);
     expect(
       builtinRegistry
         .get('slack-reminders-read')!
-        .match(makeRequest({ path: '/api/reminders.list' }))
+        .match(makeSlackRequest({ path: '/api/reminders.list' }))
     ).toBe(true);
     expect(
       builtinRegistry
         .get('slack-reminders-read')!
-        .match(makeRequest({ path: '/api/reminders.add' }))
+        .match(makeSlackRequest({ path: '/api/reminders.add' }))
     ).toBe(false);
   });
 
@@ -2147,17 +2222,17 @@ describe('builtin schemas: slack', () => {
     expect(
       builtinRegistry
         .get('slack-reminders-write')!
-        .match(makeRequest({ path: '/api/reminders.add' }))
+        .match(makeSlackRequest({ path: '/api/reminders.add' }))
     ).toBe(true);
     expect(
       builtinRegistry
         .get('slack-reminders-write')!
-        .match(makeRequest({ path: '/api/reminders.delete' }))
+        .match(makeSlackRequest({ path: '/api/reminders.delete' }))
     ).toBe(true);
     expect(
       builtinRegistry
         .get('slack-reminders-write')!
-        .match(makeRequest({ path: '/api/reminders.list' }))
+        .match(makeSlackRequest({ path: '/api/reminders.list' }))
     ).toBe(false);
   });
 });

@@ -27,12 +27,18 @@ function isScopeSchema(schema: SchemaDefinition): boolean {
 // AWS service-specific schemas (aws-s3, aws-ec2, …) only match on domain,
 // so they look like scopes structurally, but they double as permissions
 // inside an "aws" scope rule (e.g. {"aws": ["aws-s3"]}).  Only the
-// top-level "aws" schema is unambiguously a scope.
-const awsScopeSchemas: ReadonlySet<string> = new Set(['aws']);
+// top-level "aws" schema is unambiguously a scope.  Likewise, Slack
+// permission schemas pin the domain (so a path match on a foreign host
+// cannot satisfy them), which makes them look like scopes structurally.
+const explicitScopeSchemasByFile: Readonly<Record<string, ReadonlySet<string>>> = {
+  'aws.json': new Set(['aws']),
+  'slack.json': new Set(['slack-api']),
+};
 
 function shouldMarkAsScope(schemaName: string, schema: SchemaDefinition, fileName: string): boolean {
-  if (fileName === 'aws.json') {
-    return awsScopeSchemas.has(schemaName);
+  const explicitScopeSchemas = explicitScopeSchemasByFile[fileName];
+  if (explicitScopeSchemas !== undefined) {
+    return explicitScopeSchemas.has(schemaName);
   }
   return isScopeSchema(schema);
 }
