@@ -1,9 +1,12 @@
 {
   "slack-api": {
-    "$comment": "Any interaction with the Slack API.",
+    "$comment": "Any interaction with the Slack API, including downloading file content and thumbnails from Slack's file-storage host.",
     "properties": {
       "domain": {
-        "const": "slack.com"
+        "enum": [
+          "slack.com",
+          "files.slack.com"
+        ]
       }
     },
     "required": [
@@ -11,11 +14,11 @@
     ]
   },
   "slack-read-all": {
-    "$comment": "All read operations across the entire Slack API, including messages, users, files, reactions, search, pins, bookmarks, reminders, thread subscriptions, and unread counts.",
+    "$comment": "All read operations across the entire Slack API, including messages, users, files, reactions, search, pins, bookmarks, reminders, thread subscriptions, unread counts, and downloading file content and thumbnails.",
     "properties": {
       "path": {
         "type": "string",
-        "pattern": "^/api/(auth\\.(test|teams\\.list)|chat\\.(getPermalink|scheduledMessages\\.list)|conversations\\.(history|info|list|listConnectInvites|members|replies|requestSharedInvite\\.list)|users\\.(conversations|getPresence|identity|info|list|lookupByEmail|profile\\.get)|files\\.(info|list|remote\\.(info|list))|reactions\\.(get|list)|search\\.(all|files|messages|modules\\.messages)|pins\\.list|bookmarks\\.list|reminders\\.(info|list)|client\\.counts|subscriptions\\.thread\\.getView|threads\\.getView)$"
+        "pattern": "^(/api/(auth\\.(test|teams\\.list)|chat\\.(getPermalink|scheduledMessages\\.list)|conversations\\.(history|info|list|listConnectInvites|members|replies|requestSharedInvite\\.list)|users\\.(conversations|getPresence|identity|info|list|lookupByEmail|profile\\.get)|files\\.(info|list|remote\\.(info|list))|reactions\\.(get|list)|search\\.(all|files|messages|modules\\.messages)|pins\\.list|bookmarks\\.list|reminders\\.(info|list)|client\\.counts|subscriptions\\.thread\\.getView|threads\\.getView)|/files-(pri|tmb)/[^/]+/(download/)?[^/]+)$"
       }
     },
     "required": [
@@ -131,11 +134,11 @@
     ]
   },
   "slack-files-read": {
-    "$comment": "List and inspect files, including remote files.",
+    "$comment": "List and inspect files, including remote files, and download file content and thumbnails.",
     "properties": {
       "path": {
         "type": "string",
-        "pattern": "^/api/files\\.(info|list|remote\\.(info|list))$"
+        "pattern": "^(/api/files\\.(info|list|remote\\.(info|list))|/files-(pri|tmb)/[^/]+/(download/)?[^/]+)$"
       }
     },
     "required": [

@@ -1548,6 +1548,15 @@ describe('builtin schemas: slack', () => {
     expect(builtinRegistry.get('slack-api')!.match(request)).toBe(false);
   });
 
+  it('slack scope matches files.slack.com, the file-content host', () => {
+    expectSchemaExists('slack-api');
+    const request = makeRequest({
+      domain: 'files.slack.com',
+      path: '/files-pri/TEAM123-FILE456/download/image.png',
+    });
+    expect(builtinRegistry.get('slack-api')!.match(request)).toBe(true);
+  });
+
   it('slack-read-all matches known read methods across all families', () => {
     expectSchemaExists('slack-read-all');
     const readMethods = [
@@ -1586,6 +1595,9 @@ describe('builtin schemas: slack', () => {
       '/api/client.counts',
       '/api/subscriptions.thread.getView',
       '/api/threads.getView',
+      '/files-pri/TEAM123-FILE456/image.png',
+      '/files-pri/TEAM123-FILE456/download/image.png',
+      '/files-tmb/TEAM123-FILE456-abcdef1234/image_360.png',
     ];
     for (const path of readMethods) {
       expect(
@@ -1947,6 +1959,25 @@ describe('builtin schemas: slack', () => {
     expect(
       builtinRegistry.get('slack-files-read')!.match(makeRequest({ path: '/api/files.delete' }))
     ).toBe(false);
+  });
+
+  it('slack-files-read matches file content and thumbnail downloads', () => {
+    expectSchemaExists('slack-files-read');
+    expect(
+      builtinRegistry
+        .get('slack-files-read')!
+        .match(makeRequest({ path: '/files-pri/TEAM123-FILE456/image.png' }))
+    ).toBe(true);
+    expect(
+      builtinRegistry
+        .get('slack-files-read')!
+        .match(makeRequest({ path: '/files-pri/TEAM123-FILE456/download/image.png' }))
+    ).toBe(true);
+    expect(
+      builtinRegistry
+        .get('slack-files-read')!
+        .match(makeRequest({ path: '/files-tmb/TEAM123-FILE456-abcdef1234/image_360.png' }))
+    ).toBe(true);
   });
 
   it('slack-files-write matches write file methods but not read', () => {
