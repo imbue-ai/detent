@@ -169,6 +169,12 @@ In the Detent config, schemas are identified by names, like this:
 }
 ```
 
+Note how the `github-api` schema only matches the domain,
+while the `github-read-issues-detent` doesn't match the domain.
+They are supposed to be used as scopes and permissions respectively in
+[permission rules](#permission-rules),
+but they live in the same flat namespace.
+
 For a complete example config that defines custom schemas, see
 [docs/example-cloudflare.json](docs/example-cloudflare.json).
 
@@ -256,6 +262,12 @@ This is the meaning of the rules in the example above:
   - When accessing the GitHub API, the only allowed actions are reading issues and writing comments in the Detent repository.
   - When accessing the Slack API, only read actions are allowed.
   - No other requests are allowed.
+
+Note that the scopes and permissions come from the same flat namespace of
+[request schema](#request-schemas).
+A typical rule uses a schema that only matches the domain as the scope and a
+list of schemas that don't match the domain as the permissions,
+but that's purely a usage pattern.
 
 ### Rule resolution, default outcomes
 
