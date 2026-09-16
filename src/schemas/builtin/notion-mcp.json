@@ -54,7 +54,7 @@
     ]
   },
   "notion-mcp-read-all": {
-    "$comment": "Run any read-only Notion MCP tool (search, fetch, queries, list comments/teams, bot info) plus the MCP session handshake.",
+    "$comment": "Run any read-only Notion MCP tool (search, fetch, queries, page lists, skills, attachments, comments, teams, users, agent sessions) plus the MCP session handshake.",
     "properties": {
       "method": {
         "const": "POST"
@@ -104,12 +104,35 @@
                   "name": {
                     "enum": [
                       "notion-search",
+                      "notion-ai-search",
                       "notion-fetch",
                       "notion-query-data-sources",
+                      "notion-query-multiple-data-sources",
                       "notion-query-database-view",
+                      "notion-query-meeting-notes",
+                      "notion-list-recent-pages",
+                      "notion-list-private-pages",
+                      "notion-list-favorite-pages",
+                      "notion-list-shared-pages",
                       "notion-get-comments",
                       "notion-get-teams",
-                      "notion-get-self"
+                      "notion-get-users",
+                      "notion-get-user",
+                      "notion-get-self",
+                      "notion-get-async-task",
+                      "notion-search-skills",
+                      "notion-download-skill",
+                      "notion-download-attachment",
+                      "notion-list-agents",
+                      "notion-search-agents",
+                      "notion-query-sessions",
+                      "notion-search-sessions",
+                      "notion-get-session-status",
+                      "notion-wait-session",
+                      "notion-list-session-events",
+                      "notion-read-session-event",
+                      "notion-check-mcp-next-steps",
+                      "notion-show-advanced-analysis-next-steps"
                     ]
                   }
                 },
@@ -133,7 +156,7 @@
     ]
   },
   "notion-mcp-write-all": {
-    "$comment": "Run any Notion MCP tool that creates or modifies content (create/update pages, databases, views, data sources, comments; move/duplicate pages) plus the MCP session handshake.",
+    "$comment": "Run any Notion MCP tool that creates or modifies content (create/update pages, databases, views, data sources, folders, attachments, comments; move/duplicate pages; drive agent sessions) plus the MCP session handshake.",
     "properties": {
       "method": {
         "const": "POST"
@@ -186,11 +209,19 @@
                       "notion-update-page",
                       "notion-move-pages",
                       "notion-duplicate-page",
+                      "notion-convert-page-to-skill",
+                      "notion-create-file-upload",
+                      "notion-create-attachment",
                       "notion-create-database",
+                      "notion-create-folder",
+                      "notion-update-folder",
                       "notion-update-data-source",
                       "notion-create-view",
                       "notion-update-view",
-                      "notion-create-comment"
+                      "notion-create-comment",
+                      "notion-spawn-session",
+                      "notion-stop-session",
+                      "notion-send-message-to-session"
                     ]
                   }
                 },
@@ -253,8 +284,48 @@
       "parsedBody"
     ]
   },
+  "notion-mcp-ai-search": {
+    "$comment": "Ask a natural-language question across Notion and connected sources such as Slack, Mail, Calendar, Google Drive, and Jira.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/mcp/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "const": "tools/call"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "const": "notion-ai-search"
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "params"
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
   "notion-mcp-fetch": {
-    "$comment": "Retrieve the content of a Notion page, database, or data source by URL or ID.",
+    "$comment": "Retrieve the content of a Notion page, database, data source, or view by URL or ID.",
     "properties": {
       "method": {
         "const": "POST"
@@ -294,7 +365,7 @@
     ]
   },
   "notion-mcp-query-data-sources": {
-    "$comment": "Query across one or more Notion data sources with filters, grouping, and summaries.",
+    "$comment": "Query across one or more Notion data sources with filters, grouping, and summaries (the notion-query-data-sources and notion-query-multiple-data-sources tools).",
     "properties": {
       "method": {
         "const": "POST"
@@ -313,7 +384,10 @@
             "type": "object",
             "properties": {
               "name": {
-                "const": "notion-query-data-sources"
+                "enum": [
+                  "notion-query-data-sources",
+                  "notion-query-multiple-data-sources"
+                ]
               }
             },
             "required": [
@@ -354,6 +428,91 @@
             "properties": {
               "name": {
                 "const": "notion-query-database-view"
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "params"
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "notion-mcp-query-meeting-notes": {
+    "$comment": "Look through the current user's meeting notes, filtered by title, attendees, or date.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/mcp/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "const": "tools/call"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "const": "notion-query-meeting-notes"
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "params"
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "notion-mcp-list-pages": {
+    "$comment": "List the current user's pages by relationship: recently visited, private, favorited, or shared. These tools are live on Notion's hosted MCP server but absent from its published tool list.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/mcp/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "const": "tools/call"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "enum": [
+                  "notion-list-recent-pages",
+                  "notion-list-private-pages",
+                  "notion-list-favorite-pages",
+                  "notion-list-shared-pages"
+                ]
               }
             },
             "required": [
@@ -536,6 +695,221 @@
       "parsedBody"
     ]
   },
+  "notion-mcp-get-async-task": {
+    "$comment": "Check the status of a background Notion operation such as a page duplication or a large write.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/mcp/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "const": "tools/call"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "const": "notion-get-async-task"
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "params"
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "notion-mcp-read-skills": {
+    "$comment": "Find Notion Skills by name or task description and download a Skill archive.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/mcp/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "const": "tools/call"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "enum": [
+                  "notion-search-skills",
+                  "notion-download-skill"
+                ]
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "params"
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "notion-mcp-read-attachments": {
+    "$comment": "Download the text content of an attachment on a Notion page.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/mcp/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "const": "tools/call"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "const": "notion-download-attachment"
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "params"
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "notion-mcp-read-agents": {
+    "$comment": "Browse Notion Custom Agents and inspect their sessions: list and search agents and sessions, poll or wait on session status, and read session events.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/mcp/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "const": "tools/call"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "enum": [
+                  "notion-list-agents",
+                  "notion-search-agents",
+                  "notion-query-sessions",
+                  "notion-search-sessions",
+                  "notion-get-session-status",
+                  "notion-wait-session",
+                  "notion-list-session-events",
+                  "notion-read-session-event"
+                ]
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "params"
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "notion-mcp-next-steps": {
+    "$comment": "Ask the MCP server what to do next. These guidance tools are live on Notion's hosted MCP server but absent from its published tool list.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/mcp/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "const": "tools/call"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "enum": [
+                  "notion-check-mcp-next-steps",
+                  "notion-show-advanced-analysis-next-steps"
+                ]
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "params"
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
   "notion-mcp-create-pages": {
     "$comment": "Create one or more Notion pages with properties and content.",
     "properties": {
@@ -677,6 +1051,89 @@
             "properties": {
               "name": {
                 "const": "notion-duplicate-page"
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "params"
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "notion-mcp-convert-page-to-skill": {
+    "$comment": "Mark an existing Notion page as a Notion Skill.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/mcp/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "const": "tools/call"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "const": "notion-convert-page-to-skill"
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "params"
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "notion-mcp-write-attachments": {
+    "$comment": "Upload a file to Notion and attach text, a public URL, or a finished upload to a page.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/mcp/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "const": "tools/call"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "enum": [
+                  "notion-create-file-upload",
+                  "notion-create-attachment"
+                ]
               }
             },
             "required": [
@@ -856,6 +1313,49 @@
       "parsedBody"
     ]
   },
+  "notion-mcp-write-folders": {
+    "$comment": "Create a folder under a Notion page or update an existing one.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/mcp/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "const": "tools/call"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "enum": [
+                  "notion-create-folder",
+                  "notion-update-folder"
+                ]
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "params"
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
   "notion-mcp-create-comment": {
     "$comment": "Add a comment to a Notion page or specific block.",
     "properties": {
@@ -877,6 +1377,50 @@
             "properties": {
               "name": {
                 "const": "notion-create-comment"
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "params"
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "notion-mcp-write-agents": {
+    "$comment": "Drive Notion Custom Agent sessions: start a session, send it a message, or stop it.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/mcp/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "const": "tools/call"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "enum": [
+                  "notion-spawn-session",
+                  "notion-stop-session",
+                  "notion-send-message-to-session"
+                ]
               }
             },
             "required": [
