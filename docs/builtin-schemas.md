@@ -359,22 +359,34 @@ See the main [README](../README.md) for how schemas and rules work together.
 - `notion-mcp-read-all`
 - `notion-mcp-write-all`
 - `notion-mcp-search`
+- `notion-mcp-ai-search`
 - `notion-mcp-fetch`
 - `notion-mcp-query-data-sources`
 - `notion-mcp-query-database-view`
+- `notion-mcp-query-meeting-notes`
+- `notion-mcp-list-pages`
 - `notion-mcp-get-comments`
 - `notion-mcp-get-teams`
 - `notion-mcp-get-users`
 - `notion-mcp-get-self`
+- `notion-mcp-get-async-task`
+- `notion-mcp-read-skills`
+- `notion-mcp-read-attachments`
+- `notion-mcp-read-agents`
+- `notion-mcp-next-steps`
 - `notion-mcp-create-pages`
 - `notion-mcp-update-page`
 - `notion-mcp-move-pages`
 - `notion-mcp-duplicate-page`
+- `notion-mcp-convert-page-to-skill`
+- `notion-mcp-write-attachments`
 - `notion-mcp-create-database`
 - `notion-mcp-update-data-source`
 - `notion-mcp-create-view`
 - `notion-mcp-update-view`
+- `notion-mcp-write-folders`
 - `notion-mcp-create-comment`
+- `notion-mcp-write-agents`
 
 ### notion
 

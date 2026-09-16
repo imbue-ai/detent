@@ -1456,18 +1456,42 @@ describe('builtin schemas: notion-mcp', () => {
     const readAll = builtinRegistry.get('notion-mcp-read-all')!;
     for (const tool of [
       'notion-search',
+      'notion-ai-search',
       'notion-fetch',
       'notion-query-data-sources',
+      'notion-query-multiple-data-sources',
       'notion-query-database-view',
+      'notion-query-meeting-notes',
+      'notion-list-recent-pages',
+      'notion-list-private-pages',
+      'notion-list-favorite-pages',
+      'notion-list-shared-pages',
       'notion-get-comments',
       'notion-get-teams',
+      'notion-get-users',
       'notion-get-self',
+      'notion-get-async-task',
+      'notion-search-skills',
+      'notion-download-skill',
+      'notion-download-attachment',
+      'notion-list-agents',
+      'notion-search-agents',
+      'notion-query-sessions',
+      'notion-search-sessions',
+      'notion-get-session-status',
+      'notion-wait-session',
+      'notion-list-session-events',
+      'notion-read-session-event',
+      'notion-check-mcp-next-steps',
+      'notion-show-advanced-analysis-next-steps',
     ]) {
       expect(readAll.match(mcpRequest(toolCall(tool))), `read-all should allow ${tool}`).toBe(true);
     }
     expect(readAll.match(mcpRequest(rpc('initialize')))).toBe(true);
     expect(readAll.match(mcpRequest(toolCall('notion-create-pages')))).toBe(false);
     expect(readAll.match(mcpRequest(toolCall('notion-update-page')))).toBe(false);
+    expect(readAll.match(mcpRequest(toolCall('notion-spawn-session')))).toBe(false);
+    expect(readAll.match(mcpRequest(toolCall('notion-create-attachment')))).toBe(false);
   });
 
   it('notion-mcp-write-all matches write tools and the handshake but not reads', () => {
@@ -1478,11 +1502,19 @@ describe('builtin schemas: notion-mcp', () => {
       'notion-update-page',
       'notion-move-pages',
       'notion-duplicate-page',
+      'notion-convert-page-to-skill',
+      'notion-create-file-upload',
+      'notion-create-attachment',
       'notion-create-database',
+      'notion-create-folder',
+      'notion-update-folder',
       'notion-update-data-source',
       'notion-create-view',
       'notion-update-view',
       'notion-create-comment',
+      'notion-spawn-session',
+      'notion-stop-session',
+      'notion-send-message-to-session',
     ]) {
       expect(writeAll.match(mcpRequest(toolCall(tool))), `write-all should allow ${tool}`).toBe(
         true
@@ -1491,6 +1523,73 @@ describe('builtin schemas: notion-mcp', () => {
     expect(writeAll.match(mcpRequest(rpc('initialize')))).toBe(true);
     expect(writeAll.match(mcpRequest(toolCall('notion-search')))).toBe(false);
     expect(writeAll.match(mcpRequest(toolCall('notion-fetch')))).toBe(false);
+    expect(writeAll.match(mcpRequest(toolCall('notion-list-private-pages')))).toBe(false);
+  });
+
+  it('notion-mcp-list-pages matches the undocumented page-listing tools', () => {
+    expectSchemaExists('notion-mcp-list-pages');
+    const listPages = builtinRegistry.get('notion-mcp-list-pages')!;
+    for (const tool of [
+      'notion-list-recent-pages',
+      'notion-list-private-pages',
+      'notion-list-favorite-pages',
+      'notion-list-shared-pages',
+    ]) {
+      expect(listPages.match(mcpRequest(toolCall(tool))), `should allow ${tool}`).toBe(true);
+    }
+    expect(listPages.match(mcpRequest(toolCall('notion-search')))).toBe(false);
+  });
+
+  it('notion-mcp-query-data-sources covers the single and multi data source tools', () => {
+    expectSchemaExists('notion-mcp-query-data-sources');
+    const query = builtinRegistry.get('notion-mcp-query-data-sources')!;
+    expect(query.match(mcpRequest(toolCall('notion-query-data-sources')))).toBe(true);
+    expect(query.match(mcpRequest(toolCall('notion-query-multiple-data-sources')))).toBe(true);
+    expect(query.match(mcpRequest(toolCall('notion-query-database-view')))).toBe(false);
+  });
+
+  it('notion-mcp agent schemas separate reading sessions from driving them', () => {
+    expectSchemaExists('notion-mcp-read-agents');
+    expectSchemaExists('notion-mcp-write-agents');
+    const readAgents = builtinRegistry.get('notion-mcp-read-agents')!;
+    const writeAgents = builtinRegistry.get('notion-mcp-write-agents')!;
+    expect(readAgents.match(mcpRequest(toolCall('notion-list-agents')))).toBe(true);
+    expect(readAgents.match(mcpRequest(toolCall('notion-read-session-event')))).toBe(true);
+    expect(readAgents.match(mcpRequest(toolCall('notion-spawn-session')))).toBe(false);
+    expect(writeAgents.match(mcpRequest(toolCall('notion-spawn-session')))).toBe(true);
+    expect(writeAgents.match(mcpRequest(toolCall('notion-send-message-to-session')))).toBe(true);
+    expect(writeAgents.match(mcpRequest(toolCall('notion-get-session-status')))).toBe(false);
+  });
+
+  it('notion-mcp attachment schemas separate downloads from uploads', () => {
+    expectSchemaExists('notion-mcp-read-attachments');
+    expectSchemaExists('notion-mcp-write-attachments');
+    const readAttachments = builtinRegistry.get('notion-mcp-read-attachments')!;
+    const writeAttachments = builtinRegistry.get('notion-mcp-write-attachments')!;
+    expect(readAttachments.match(mcpRequest(toolCall('notion-download-attachment')))).toBe(true);
+    expect(readAttachments.match(mcpRequest(toolCall('notion-create-attachment')))).toBe(false);
+    expect(writeAttachments.match(mcpRequest(toolCall('notion-create-file-upload')))).toBe(true);
+    expect(writeAttachments.match(mcpRequest(toolCall('notion-create-attachment')))).toBe(true);
+    expect(writeAttachments.match(mcpRequest(toolCall('notion-download-attachment')))).toBe(false);
+  });
+
+  it('notion-mcp single-tool schemas do not match the session handshake', () => {
+    for (const schemaName of [
+      'notion-mcp-ai-search',
+      'notion-mcp-list-pages',
+      'notion-mcp-query-meeting-notes',
+      'notion-mcp-get-async-task',
+      'notion-mcp-read-skills',
+      'notion-mcp-next-steps',
+      'notion-mcp-convert-page-to-skill',
+      'notion-mcp-write-folders',
+    ]) {
+      expectSchemaExists(schemaName);
+      expect(
+        builtinRegistry.get(schemaName)!.match(mcpRequest(rpc('initialize'))),
+        `${schemaName} should not match the handshake`
+      ).toBe(false);
+    }
   });
 });
 
