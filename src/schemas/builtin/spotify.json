@@ -1,0 +1,29 @@
+{
+  "spotify-api": {
+    "$comment": "All requests to the Spotify web-player API (spclient.wg.spotify.com).",
+    "properties": {
+      "domain": {
+        "const": "spclient.wg.spotify.com"
+      }
+    },
+    "required": ["domain"]
+  },
+  "spotify-read-all": {
+    "$comment": "Read anything from the Spotify web-player API (profile, playlists, library, etc.).",
+    "properties": {
+      "method": {
+        "const": "GET"
+      }
+    },
+    "required": ["method"]
+  },
+  "spotify-write-all": {
+    "$comment": "Create, update, or delete through the Spotify web-player API (e.g. create/edit/delete playlists, add/remove tracks).",
+    "properties": {
+      "method": {
+        "enum": ["POST", "PUT", "PATCH", "DELETE"]
+      }
+    },
+    "required": ["method"]
+  }
+}
