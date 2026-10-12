@@ -483,6 +483,8 @@ See the main [README](../README.md) for how schemas and rules work together.
 - `slack-bookmarks-write`
 - `slack-reminders-read`
 - `slack-reminders-write`
+- `slack-later-read`
+- `slack-later-write`
 
 ### stripe
 
