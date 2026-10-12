@@ -2334,6 +2334,290 @@ describe('builtin schemas: slack', () => {
         .match(makeSlackRequest({ path: '/api/reminders.list' }))
     ).toBe(false);
   });
+
+  const slackReadPermissionsByMethod: Record<string, string> = {
+    '/api/api.test': 'slack-auth-read',
+    '/api/team.info': 'slack-auth-read',
+    '/api/team.profile.get': 'slack-auth-read',
+    '/api/bots.info': 'slack-auth-read',
+    '/api/drafts.list': 'slack-chat-read',
+    '/api/client.counts': 'slack-conversations-read',
+    '/api/client.userBoot': 'slack-conversations-read',
+    '/api/client.init': 'slack-conversations-read',
+    '/api/client.dms': 'slack-conversations-read',
+    '/api/client.shouldReload': 'slack-conversations-read',
+    '/api/conversations.view': 'slack-conversations-read',
+    '/api/conversations.genericInfo': 'slack-conversations-read',
+    '/api/conversations.listPrefs': 'slack-conversations-read',
+    '/api/threads.getView': 'slack-conversations-read',
+    '/api/subscriptions.thread.getView': 'slack-conversations-read',
+    '/api/users.prefs.get': 'slack-users-read',
+    '/api/users.counts': 'slack-users-read',
+    '/api/users.channelSections.list': 'slack-users-read',
+    '/api/users.priority.list': 'slack-users-read',
+    '/api/usergroups.list': 'slack-users-read',
+    '/api/usergroups.users.list': 'slack-users-read',
+    '/api/dnd.info': 'slack-users-read',
+    '/api/dnd.teamInfo': 'slack-users-read',
+    '/api/canvases.sections.lookup': 'slack-files-read',
+    '/api/emoji.list': 'slack-reactions-read',
+    '/api/search.modules.channels': 'slack-search',
+    '/api/search.modules.people': 'slack-search',
+    '/api/search.inline': 'slack-search',
+    '/api/search.autocomplete': 'slack-search',
+    '/api/saved.list': 'slack-later-read',
+    '/api/stars.list': 'slack-later-read',
+    '/api/reminders.list': 'slack-later-read',
+  };
+
+  const slackWritePermissionsByMethod: Record<string, string> = {
+    '/api/chat.command': 'slack-chat-write',
+    '/api/drafts.create': 'slack-chat-write',
+    '/api/drafts.update': 'slack-chat-write',
+    '/api/drafts.delete': 'slack-chat-write',
+    '/api/conversations.canvases.create': 'slack-conversations-write',
+    '/api/subscriptions.thread.mark': 'slack-conversations-write',
+    '/api/subscriptions.thread.add': 'slack-conversations-write',
+    '/api/subscriptions.thread.remove': 'slack-conversations-write',
+    '/api/users.prefs.set': 'slack-users-write',
+    '/api/users.setActive': 'slack-users-write',
+    '/api/users.setPhoto': 'slack-users-write',
+    '/api/usergroups.create': 'slack-users-write',
+    '/api/usergroups.users.update': 'slack-users-write',
+    '/api/dnd.setSnooze': 'slack-users-write',
+    '/api/dnd.endDnd': 'slack-users-write',
+    '/api/files.edit': 'slack-files-write',
+    '/api/files.share': 'slack-files-write',
+    '/api/files.upload': 'slack-files-write',
+    '/api/canvases.create': 'slack-files-write',
+    '/api/canvases.access.set': 'slack-files-write',
+    '/api/saved.add': 'slack-later-write',
+    '/api/saved.delete': 'slack-later-write',
+    '/api/saved.update': 'slack-later-write',
+    '/api/saved.clearCompleted': 'slack-later-write',
+    '/api/stars.add': 'slack-later-write',
+    '/api/reminders.add': 'slack-later-write',
+  };
+
+  it('private and newly added read methods are covered by their cluster and by slack-read-all', () => {
+    for (const [path, permission] of Object.entries(slackReadPermissionsByMethod)) {
+      expectSchemaExists(permission);
+      const request = makeSlackRequest({ path });
+      expect(
+        builtinRegistry.get(permission)!.match(request),
+        `Expected ${permission} to match "${path}"`
+      ).toBe(true);
+      expect(
+        builtinRegistry.get('slack-read-all')!.match(request),
+        `Expected slack-read-all to match "${path}"`
+      ).toBe(true);
+      expect(
+        builtinRegistry.get('slack-write-all')!.match(request),
+        `Expected slack-write-all to reject "${path}"`
+      ).toBe(false);
+    }
+  });
+
+  it('private and newly added write methods are covered by their cluster and by slack-write-all', () => {
+    for (const [path, permission] of Object.entries(slackWritePermissionsByMethod)) {
+      expectSchemaExists(permission);
+      const request = makeSlackRequest({ path });
+      expect(
+        builtinRegistry.get(permission)!.match(request),
+        `Expected ${permission} to match "${path}"`
+      ).toBe(true);
+      expect(
+        builtinRegistry.get('slack-write-all')!.match(request),
+        `Expected slack-write-all to match "${path}"`
+      ).toBe(true);
+      expect(
+        builtinRegistry.get('slack-read-all')!.match(request),
+        `Expected slack-read-all to reject "${path}"`
+      ).toBe(false);
+    }
+  });
+
+  it('slack-read-all and slack-write-all are exactly the union of the fine-grained clusters', () => {
+    const readPermissions = Object.keys(getAllBuiltinSchemas()).filter(
+      (name) =>
+        name.startsWith('slack-') &&
+        !name.endsWith('-all') &&
+        !name.endsWith('-write') &&
+        name !== 'slack-api'
+    );
+    const writePermissions = Object.keys(getAllBuiltinSchemas()).filter(
+      (name) => name.startsWith('slack-') && name.endsWith('-write') && !name.endsWith('-all')
+    );
+    expect(readPermissions.length).toBeGreaterThan(5);
+    expect(writePermissions.length).toBeGreaterThan(5);
+
+    const probes = [
+      ...Object.keys(slackReadPermissionsByMethod),
+      ...Object.keys(slackWritePermissionsByMethod),
+      '/api/chat.postMessage',
+      '/api/conversations.history',
+      '/api/users.info',
+      '/api/files.delete',
+      '/api/pins.add',
+      '/api/bookmarks.list',
+      '/api/auth.revoke',
+      '/api/channels.delete',
+      '/api/users.admin.invite',
+      '/api/unknown.method',
+      '/not-an-api-path',
+    ].map((path) => makeSlackRequest({ path }));
+    probes.push(
+      makeRequest({ domain: 'files.slack.com', path: '/files-pri/T1-F1/image.png' }),
+      makeRequest({ domain: 'edgeapi.slack.com', path: '/cache/T1/users/search' }),
+      makeRequest({ domain: 'edgeapi.slack.com', path: '/cache/T1/channels/membership' }),
+      makeRequest({ domain: 'edgeapi.slack.com', path: '/cache/T1/unknown/thing' })
+    );
+
+    for (const request of probes) {
+      const matchedByReadCluster = readPermissions.some((name) =>
+        builtinRegistry.get(name)!.match(request)
+      );
+      const matchedByWriteCluster = writePermissions.some((name) =>
+        builtinRegistry.get(name)!.match(request)
+      );
+      const label = `${request.domain}${request.path}`;
+      expect(
+        builtinRegistry.get('slack-read-all')!.match(request),
+        `slack-read-all drifted from its clusters for "${label}"`
+      ).toBe(matchedByReadCluster);
+      expect(
+        builtinRegistry.get('slack-write-all')!.match(request),
+        `slack-write-all drifted from its clusters for "${label}"`
+      ).toBe(matchedByWriteCluster);
+      expect(
+        matchedByReadCluster && matchedByWriteCluster,
+        `"${label}" is matched by both a read and a write cluster`
+      ).toBe(false);
+    }
+  });
+
+  it('destructive admin methods are not covered by any slack permission', () => {
+    const slackPermissions = Object.keys(getAllBuiltinSchemas()).filter(
+      (name) => name.startsWith('slack-') && name !== 'slack-api'
+    );
+    for (const path of [
+      '/api/channels.delete',
+      '/api/conversations.delete',
+      '/api/users.admin.invite',
+      '/api/users.admin.setInactive',
+    ]) {
+      for (const name of slackPermissions) {
+        expect(
+          builtinRegistry.get(name)!.match(makeSlackRequest({ path })),
+          `Expected ${name} to reject "${path}"`
+        ).toBe(false);
+      }
+    }
+  });
+
+  it('slack-later-read and slack-later-write are supersets of the reminders permissions', () => {
+    expectSchemaExists('slack-later-read');
+    expectSchemaExists('slack-later-write');
+    for (const path of ['/api/reminders.info', '/api/reminders.list', '/api/saved.list']) {
+      expect(builtinRegistry.get('slack-later-read')!.match(makeSlackRequest({ path }))).toBe(true);
+      expect(builtinRegistry.get('slack-later-write')!.match(makeSlackRequest({ path }))).toBe(
+        false
+      );
+    }
+    for (const path of ['/api/reminders.add', '/api/saved.add', '/api/saved.update']) {
+      expect(builtinRegistry.get('slack-later-write')!.match(makeSlackRequest({ path }))).toBe(
+        true
+      );
+      expect(builtinRegistry.get('slack-later-read')!.match(makeSlackRequest({ path }))).toBe(
+        false
+      );
+    }
+    expect(
+      builtinRegistry
+        .get('slack-reminders-read')!
+        .match(makeSlackRequest({ path: '/api/saved.list' }))
+    ).toBe(false);
+    expect(
+      builtinRegistry
+        .get('slack-reminders-write')!
+        .match(makeSlackRequest({ path: '/api/saved.add' }))
+    ).toBe(false);
+  });
+
+  it('slack permissions accept workspace subdomains as API hosts', () => {
+    for (const domain of ['slack.com', 'my-team.slack.com', 'my-team.enterprise.slack.com']) {
+      expect(builtinRegistry.get('slack-api')!.match(makeRequest({ domain }))).toBe(true);
+      expect(
+        builtinRegistry
+          .get('slack-conversations-read')!
+          .match(makeRequest({ domain, path: '/api/conversations.history' })),
+        `Expected slack-conversations-read to match on ${domain}`
+      ).toBe(true);
+      expect(
+        builtinRegistry
+          .get('slack-chat-write')!
+          .match(makeRequest({ domain, path: '/api/chat.postMessage' })),
+        `Expected slack-chat-write to match on ${domain}`
+      ).toBe(true);
+    }
+    for (const domain of ['slack.com.example.com', 'notslack.com', 'slack.company.com']) {
+      expect(builtinRegistry.get('slack-api')!.match(makeRequest({ domain }))).toBe(false);
+      expect(
+        builtinRegistry
+          .get('slack-read-all')!
+          .match(makeRequest({ domain, path: '/api/conversations.history' }))
+      ).toBe(false);
+    }
+  });
+
+  it('API methods are not accepted on the file-storage or edge hosts', () => {
+    for (const domain of ['files.slack.com', 'edgeapi.slack.com']) {
+      expect(
+        builtinRegistry
+          .get('slack-read-all')!
+          .match(makeRequest({ domain, path: '/api/conversations.history' }))
+      ).toBe(false);
+      expect(
+        builtinRegistry
+          .get('slack-write-all')!
+          .match(makeRequest({ domain, path: '/api/chat.postMessage' }))
+      ).toBe(false);
+    }
+  });
+
+  it('edge cache lookups are covered by the matching read clusters', () => {
+    const edgePermissionsByPath: Record<string, string> = {
+      '/cache/T0123/users/info': 'slack-users-read',
+      '/cache/T0123/users/list': 'slack-users-read',
+      '/cache/T0123/users/search': 'slack-users-read',
+      '/cache/T0123/users/counts': 'slack-users-read',
+      '/cache/E0123/channels/info': 'slack-conversations-read',
+      '/cache/E0123/channels/search': 'slack-conversations-read',
+      '/cache/E0123/channels/membership': 'slack-conversations-read',
+      '/cache/E0123/huddles/info': 'slack-conversations-read',
+      '/cache/E0123/emojis/info': 'slack-reactions-read',
+      '/cache/E0123/permissions/info': 'slack-auth-read',
+    };
+    for (const [path, permission] of Object.entries(edgePermissionsByPath)) {
+      const request = makeRequest({ domain: 'edgeapi.slack.com', path });
+      expect(builtinRegistry.get('slack-api')!.match(request)).toBe(true);
+      expect(
+        builtinRegistry.get(permission)!.match(request),
+        `Expected ${permission} to match "${path}" on edgeapi.slack.com`
+      ).toBe(true);
+      expect(builtinRegistry.get('slack-read-all')!.match(request)).toBe(true);
+      expect(builtinRegistry.get('slack-write-all')!.match(request)).toBe(false);
+      expect(
+        builtinRegistry.get(permission)!.match(makeSlackRequest({ path })),
+        `Expected ${permission} to reject "${path}" on slack.com`
+      ).toBe(false);
+    }
+    expect(
+      builtinRegistry
+        .get('slack-read-all')!
+        .match(makeRequest({ domain: 'edgeapi.slack.com', path: '/cache/E0123/users/delete' }))
+    ).toBe(false);
+  });
 });
 
 describe('builtin schemas: stripe', () => {
