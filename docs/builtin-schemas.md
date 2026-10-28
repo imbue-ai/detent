@@ -223,49 +223,6 @@ See the main [README](../README.md) for how schemas and rules work together.
 - `canva-mcp-write-brand-templates`
 - `canva-mcp-help`
 
-### clickup-mcp
-
-- `clickup-mcp-api` *(scope)*
-- `clickup-mcp-session`
-- `clickup-mcp-read-all`
-- `clickup-mcp-write-all`
-- `clickup-mcp-search`
-- `clickup-mcp-read-workspace`
-- `clickup-mcp-write-lists-and-folders`
-- `clickup-mcp-read-tasks`
-- `clickup-mcp-write-tasks`
-- `clickup-mcp-delete-tasks`
-- `clickup-mcp-read-time-entries`
-- `clickup-mcp-write-time-entries`
-- `clickup-mcp-read-comments`
-- `clickup-mcp-write-comments`
-- `clickup-mcp-delete-comments`
-- `clickup-mcp-read-docs`
-- `clickup-mcp-write-docs`
-- `clickup-mcp-read-chat-messages`
-- `clickup-mcp-send-chat-messages`
-- `clickup-mcp-read-reminders`
-- `clickup-mcp-write-reminders`
-- `clickup-mcp-execute-operators`
-
-### coda-mcp
-
-- `coda-mcp-api` *(scope)*
-- `coda-mcp-session`
-- `coda-mcp-read-all`
-- `coda-mcp-write-all`
-- `coda-mcp-read-workspace`
-- `coda-mcp-read-notifications`
-- `coda-mcp-write-notifications`
-- `coda-mcp-read-docs`
-- `coda-mcp-write-docs`
-- `coda-mcp-delete-docs`
-- `coda-mcp-read-tables`
-- `coda-mcp-write-tables`
-- `coda-mcp-delete-tables`
-- `coda-mcp-write-comments`
-- `coda-mcp-run-formulas`
-
 ### coolify
 
 - `coolify-api` *(scope)*
@@ -283,31 +240,6 @@ See the main [README](../README.md) for how schemas and rules work together.
 - `coolify-read-projects`
 - `coolify-write-projects`
 - `coolify-read-teams`
-
-### datadog-mcp
-
-- `datadog-mcp-api` *(scope)*
-- `datadog-mcp-session`
-- `datadog-mcp-read-all`
-- `datadog-mcp-write-all`
-- `datadog-mcp-read-telemetry`
-- `datadog-mcp-write-telemetry-configuration`
-- `datadog-mcp-read-user-experience`
-- `datadog-mcp-write-user-experience`
-- `datadog-mcp-read-monitoring-and-incidents`
-- `datadog-mcp-write-monitoring-and-incidents`
-- `datadog-mcp-read-dashboards`
-- `datadog-mcp-write-dashboards`
-- `datadog-mcp-read-security-and-governance`
-- `datadog-mcp-write-security-and-governance`
-- `datadog-mcp-read-software-delivery`
-- `datadog-mcp-write-software-delivery`
-- `datadog-mcp-read-data-and-llm-observability`
-- `datadog-mcp-write-data-and-llm-observability`
-- `datadog-mcp-read-automation`
-- `datadog-mcp-write-automation`
-- `datadog-mcp-run-actions-and-code`
-- `datadog-mcp-read-reference`
 
 ### discord
 
@@ -600,31 +532,6 @@ See the main [README](../README.md) for how schemas and rules work together.
 - `huggingface-inference`
 - `huggingface-download`
 
-### indeed-mcp
-
-- `indeed-mcp-api` *(scope)*
-- `indeed-mcp-session`
-- `indeed-mcp-read-all`
-- `indeed-mcp-write-all`
-- `indeed-mcp-read-jobs`
-
-### intercom-mcp
-
-- `intercom-mcp-api` *(scope)*
-- `intercom-mcp-session`
-- `intercom-mcp-read-all`
-- `intercom-mcp-write-all`
-- `intercom-mcp-search`
-- `intercom-mcp-read-conversations`
-- `intercom-mcp-write-conversations`
-- `intercom-mcp-read-contacts`
-- `intercom-mcp-read-companies`
-- `intercom-mcp-read-articles`
-- `intercom-mcp-write-articles`
-- `intercom-mcp-read-operator`
-- `intercom-mcp-send-operator-messages`
-- `intercom-mcp-write-operator-proposals`
-
 ### invideo-mcp
 
 - `invideo-mcp-api` *(scope)*
@@ -674,54 +581,6 @@ See the main [README](../README.md) for how schemas and rules work together.
 - `mailchimp-write-file-manager`
 - `mailchimp-read-ecommerce`
 - `mailchimp-write-ecommerce`
-
-### miro-mcp
-
-- `miro-mcp-api` *(scope)*
-- `miro-mcp-session`
-- `miro-mcp-read-all`
-- `miro-mcp-write-all`
-- `miro-mcp-read-canvas`
-- `miro-mcp-write-canvas`
-- `miro-mcp-read-boards`
-- `miro-mcp-write-boards`
-- `miro-mcp-read-sharing`
-- `miro-mcp-write-sharing`
-- `miro-mcp-read-spaces`
-- `miro-mcp-write-spaces`
-- `miro-mcp-read-tables`
-- `miro-mcp-write-tables`
-- `miro-mcp-read-comments`
-- `miro-mcp-write-comments`
-- `miro-mcp-read-images`
-- `miro-mcp-write-images`
-- `miro-mcp-read-prototypes`
-- `miro-mcp-write-prototypes`
-- `miro-mcp-read-organization`
-
-### mixpanel-mcp
-
-- `mixpanel-mcp-api` *(scope)*
-- `mixpanel-mcp-session`
-- `mixpanel-mcp-read-all`
-- `mixpanel-mcp-write-all`
-- `mixpanel-mcp-run-queries`
-- `mixpanel-mcp-read-session-replays`
-- `mixpanel-mcp-read-dashboards`
-- `mixpanel-mcp-write-dashboards`
-- `mixpanel-mcp-delete-dashboards`
-- `mixpanel-mcp-read-projects`
-- `mixpanel-mcp-read-lexicon`
-- `mixpanel-mcp-write-lexicon`
-- `mixpanel-mcp-read-cohorts`
-- `mixpanel-mcp-write-cohorts`
-- `mixpanel-mcp-delete-cohorts`
-- `mixpanel-mcp-read-metrics`
-- `mixpanel-mcp-write-metrics`
-- `mixpanel-mcp-read-experiments`
-- `mixpanel-mcp-write-experiments`
-- `mixpanel-mcp-read-feature-flags`
-- `mixpanel-mcp-write-feature-flags`
 
 ### neon-mcp
 
@@ -988,17 +847,6 @@ See the main [README](../README.md) for how schemas and rules work together.
 - `slack-later-read`
 - `slack-later-write`
 
-### strava-mcp
-
-- `strava-mcp-api` *(scope)*
-- `strava-mcp-session`
-- `strava-mcp-read-all`
-- `strava-mcp-read-activities`
-- `strava-mcp-read-profile`
-- `strava-mcp-read-clubs`
-- `strava-mcp-read-gear`
-- `strava-mcp-check-health`
-
 ### stripe
 
 - `stripe-api` *(scope)*
@@ -1022,13 +870,6 @@ See the main [README](../README.md) for how schemas and rules work together.
 - `stripe-read-payouts`
 - `stripe-write-payouts`
 - `stripe-read-events`
-
-### substack-mcp
-
-- `substack-mcp-api` *(scope)*
-- `substack-mcp-session`
-- `substack-mcp-read-all`
-- `substack-mcp-write-all`
 
 ### supabase-mcp
 
@@ -1202,29 +1043,6 @@ See the main [README](../README.md) for how schemas and rules work together.
 - `wix-mcp-write-sites`
 - `wix-mcp-write-media`
 - `wix-mcp-send-feedback`
-
-### wordpress-com-mcp
-
-- `wordpress-com-mcp-api` *(scope)*
-- `wordpress-com-mcp-session`
-- `wordpress-com-mcp-read-all`
-- `wordpress-com-mcp-write-all`
-- `wordpress-com-mcp-read-content`
-- `wordpress-com-mcp-write-content`
-- `wordpress-com-mcp-delete-content`
-- `wordpress-com-mcp-read-design`
-- `wordpress-com-mcp-write-design`
-- `wordpress-com-mcp-read-sites`
-- `wordpress-com-mcp-write-sites`
-- `wordpress-com-mcp-read-plugins`
-- `wordpress-com-mcp-write-plugins`
-- `wordpress-com-mcp-read-users`
-- `wordpress-com-mcp-write-users`
-- `wordpress-com-mcp-read-account`
-- `wordpress-com-mcp-write-account`
-- `wordpress-com-mcp-read-domains`
-- `wordpress-com-mcp-write-domains`
-- `wordpress-com-mcp-send-feedback`
 
 ### yelp
 
