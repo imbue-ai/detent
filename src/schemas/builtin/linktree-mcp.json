@@ -1,0 +1,797 @@
+{
+  "linktree-mcp-api": {
+    "$comment": "Identifies requests to the Linktree hosted MCP server (mcp.linktr.ee).",
+    "properties": {
+      "domain": {
+        "const": "mcp.linktr.ee"
+      }
+    },
+    "required": [
+      "domain"
+    ]
+  },
+  "linktree-mcp-session": {
+    "$comment": "Open and maintain an MCP session: initialize, list tools/prompts/resources, ping, and send notifications. Required for any MCP client to function; does not read or modify Linktree content.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/mcp/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "enum": [
+              "initialize",
+              "notifications/initialized",
+              "notifications/cancelled",
+              "ping",
+              "tools/list",
+              "prompts/list",
+              "prompts/get",
+              "resources/list",
+              "resources/read",
+              "resources/templates/list",
+              "resources/subscribe",
+              "resources/unsubscribe",
+              "completion/complete",
+              "logging/setLevel"
+            ]
+          }
+        },
+        "required": [
+          "method"
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "linktree-mcp-read-all": {
+    "$comment": "View everything on a Linktree account without changing it: profiles, links, social icons, appearance, analytics, recommendations, workspaces and the messages inbox.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/mcp/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "anyOf": [
+          {
+            "type": "object",
+            "properties": {
+              "method": {
+                "enum": [
+                  "initialize",
+                  "notifications/initialized",
+                  "notifications/cancelled",
+                  "ping",
+                  "tools/list",
+                  "prompts/list",
+                  "prompts/get",
+                  "resources/list",
+                  "resources/read",
+                  "resources/templates/list",
+                  "resources/subscribe",
+                  "resources/unsubscribe",
+                  "completion/complete",
+                  "logging/setLevel"
+                ]
+              }
+            },
+            "required": [
+              "method"
+            ]
+          },
+          {
+            "type": "object",
+            "properties": {
+              "method": {
+                "const": "tools/call"
+              },
+              "params": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "enum": [
+                      "get_profile_sharing_guidance",
+                      "list_accessible_profiles",
+                      "set_active_profile",
+                      "get_account",
+                      "get_suggested_bio",
+                      "get_social_integrations",
+                      "get_knowledge_base",
+                      "get_links",
+                      "get_social_links",
+                      "get_appearance",
+                      "get_account_analytics",
+                      "get_analytics_lifetime_totals",
+                      "get_top_links",
+                      "get_profile_views",
+                      "get_link_analytics",
+                      "get_workspace_profiles_analytics",
+                      "pull_recommendations",
+                      "get_workspaces_for_user",
+                      "get_workspace",
+                      "get_workspace_profiles",
+                      "get_workspace_members",
+                      "get_conversations",
+                      "get_messages"
+                    ]
+                  }
+                },
+                "required": [
+                  "name"
+                ]
+              }
+            },
+            "required": [
+              "method",
+              "params"
+            ]
+          }
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "linktree-mcp-write-all": {
+    "$comment": "Make any change to a Linktree account: create and edit profiles, add, edit, reorder and delete links and social icons, change the appearance, record recommendation feedback and send replies to followers.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/mcp/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "anyOf": [
+          {
+            "type": "object",
+            "properties": {
+              "method": {
+                "enum": [
+                  "initialize",
+                  "notifications/initialized",
+                  "notifications/cancelled",
+                  "ping",
+                  "tools/list",
+                  "prompts/list",
+                  "prompts/get",
+                  "resources/list",
+                  "resources/read",
+                  "resources/templates/list",
+                  "resources/subscribe",
+                  "resources/unsubscribe",
+                  "completion/complete",
+                  "logging/setLevel"
+                ]
+              }
+            },
+            "required": [
+              "method"
+            ]
+          },
+          {
+            "type": "object",
+            "properties": {
+              "method": {
+                "const": "tools/call"
+              },
+              "params": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "enum": [
+                      "create_profile",
+                      "update_account_profile",
+                      "add_link",
+                      "create_collection",
+                      "add_links_to_collection",
+                      "update_link",
+                      "reorder_link",
+                      "upsert_social_link",
+                      "reorder_social_links",
+                      "delete_link",
+                      "delete_social_link",
+                      "update_appearance",
+                      "submit_recommendation_feedback",
+                      "send_message"
+                    ]
+                  }
+                },
+                "required": [
+                  "name"
+                ]
+              }
+            },
+            "required": [
+              "method",
+              "params"
+            ]
+          }
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "linktree-mcp-read-profiles": {
+    "$comment": "View Linktree profiles the user can access and their details: display name, bio, suggested bio, connected social integrations, knowledge base entries and the profile sharing link. Also lets the agent pick which profile to work on.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/mcp/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "const": "tools/call"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "enum": [
+                  "get_profile_sharing_guidance",
+                  "list_accessible_profiles",
+                  "set_active_profile",
+                  "get_account",
+                  "get_suggested_bio",
+                  "get_social_integrations",
+                  "get_knowledge_base"
+                ]
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "params"
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "linktree-mcp-write-profiles": {
+    "$comment": "Create the user's first Linktree profile or change a profile's display name and bio.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/mcp/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "const": "tools/call"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "enum": [
+                  "create_profile",
+                  "update_account_profile"
+                ]
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "params"
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "linktree-mcp-read-links": {
+    "$comment": "View the links, collections, shop products and social icons on a Linktree profile.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/mcp/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "const": "tools/call"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "enum": [
+                  "get_links",
+                  "get_social_links"
+                ]
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "params"
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "linktree-mcp-write-links": {
+    "$comment": "Add, edit and reorder links, collections and social icons on a Linktree profile. Does not allow deleting them.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/mcp/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "const": "tools/call"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "enum": [
+                  "add_link",
+                  "create_collection",
+                  "add_links_to_collection",
+                  "update_link",
+                  "reorder_link",
+                  "upsert_social_link",
+                  "reorder_social_links"
+                ]
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "params"
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "linktree-mcp-delete-links": {
+    "$comment": "Delete links and social icons from a Linktree profile.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/mcp/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "const": "tools/call"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "enum": [
+                  "delete_link",
+                  "delete_social_link"
+                ]
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "params"
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "linktree-mcp-read-appearance": {
+    "$comment": "View a Linktree profile's appearance settings: colors, fonts, button styles and background.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/mcp/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "const": "tools/call"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "const": "get_appearance"
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "params"
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "linktree-mcp-write-appearance": {
+    "$comment": "Change a Linktree profile's appearance: colors, fonts, button styles and background.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/mcp/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "const": "tools/call"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "const": "update_appearance"
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "params"
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "linktree-mcp-read-analytics": {
+    "$comment": "View Linktree analytics: profile views, clicks, click-through rates, earnings, top links, per-link trends and workspace-wide profile totals.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/mcp/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "const": "tools/call"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "enum": [
+                  "get_account_analytics",
+                  "get_analytics_lifetime_totals",
+                  "get_top_links",
+                  "get_profile_views",
+                  "get_link_analytics",
+                  "get_workspace_profiles_analytics"
+                ]
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "params"
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "linktree-mcp-read-recommendations": {
+    "$comment": "Get Linktree's suggestions for improving a profile.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/mcp/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "const": "tools/call"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "const": "pull_recommendations"
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "params"
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "linktree-mcp-write-recommendations": {
+    "$comment": "Record whether the user accepted or declined a Linktree suggestion.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/mcp/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "const": "tools/call"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "const": "submit_recommendation_feedback"
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "params"
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "linktree-mcp-read-workspaces": {
+    "$comment": "View the Linktree workspaces the user belongs to, their members and roles, and the profiles in each workspace.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/mcp/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "const": "tools/call"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "enum": [
+                  "get_workspaces_for_user",
+                  "get_workspace",
+                  "get_workspace_profiles",
+                  "get_workspace_members"
+                ]
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "params"
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "linktree-mcp-read-messages": {
+    "$comment": "Read conversations and messages from followers in a Linktree profile's inbox.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/mcp/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "const": "tools/call"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "enum": [
+                  "get_conversations",
+                  "get_messages"
+                ]
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "params"
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "linktree-mcp-send-messages": {
+    "$comment": "Send replies to followers in a Linktree profile's inbox. Messages are sent immediately.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/mcp/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "const": "tools/call"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "const": "send_message"
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "params"
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  }
+}

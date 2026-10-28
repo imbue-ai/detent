@@ -1,0 +1,658 @@
+{
+  "evernote-mcp-api": {
+    "$comment": "Identifies requests to the Evernote hosted MCP server (mcp.evernote.com).",
+    "properties": {
+      "domain": {
+        "const": "mcp.evernote.com"
+      }
+    },
+    "required": [
+      "domain"
+    ]
+  },
+  "evernote-mcp-session": {
+    "$comment": "Open and maintain an MCP session: initialize, list tools/prompts/resources, ping, and send notifications. Required for any MCP client to function; does not read or modify Evernote content.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/mcp/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "enum": [
+              "initialize",
+              "notifications/initialized",
+              "notifications/cancelled",
+              "ping",
+              "tools/list",
+              "prompts/list",
+              "prompts/get",
+              "resources/list",
+              "resources/read",
+              "resources/templates/list",
+              "resources/subscribe",
+              "resources/unsubscribe",
+              "completion/complete",
+              "logging/setLevel"
+            ]
+          }
+        },
+        "required": [
+          "method"
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "evernote-mcp-read-all": {
+    "$comment": "Look up anything in Evernote without changing it: search and read notes, download attachments, and list notebooks, Spaces, tags and tasks. Also allows the MCP session handshake.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/mcp/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "anyOf": [
+          {
+            "type": "object",
+            "properties": {
+              "method": {
+                "enum": [
+                  "initialize",
+                  "notifications/initialized",
+                  "notifications/cancelled",
+                  "ping",
+                  "tools/list",
+                  "prompts/list",
+                  "prompts/get",
+                  "resources/list",
+                  "resources/read",
+                  "resources/templates/list",
+                  "resources/subscribe",
+                  "resources/unsubscribe",
+                  "completion/complete",
+                  "logging/setLevel"
+                ]
+              }
+            },
+            "required": [
+              "method"
+            ]
+          },
+          {
+            "type": "object",
+            "properties": {
+              "method": {
+                "const": "tools/call"
+              },
+              "params": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "enum": [
+                      "search_notes",
+                      "semantic_search",
+                      "get_note",
+                      "get_attachment",
+                      "search_notebooks",
+                      "search_spaces",
+                      "get_space",
+                      "search_tags",
+                      "search_tasks",
+                      "get_task"
+                    ]
+                  }
+                },
+                "required": [
+                  "name"
+                ]
+              }
+            },
+            "required": [
+              "method",
+              "params"
+            ]
+          }
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "evernote-mcp-write-all": {
+    "$comment": "Make any change in Evernote: create, edit, tag, move, trash and restore notes, upload attachments, manage notebooks, Spaces and tags, and create, update or delete tasks. Also allows the MCP session handshake.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/mcp/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "anyOf": [
+          {
+            "type": "object",
+            "properties": {
+              "method": {
+                "enum": [
+                  "initialize",
+                  "notifications/initialized",
+                  "notifications/cancelled",
+                  "ping",
+                  "tools/list",
+                  "prompts/list",
+                  "prompts/get",
+                  "resources/list",
+                  "resources/read",
+                  "resources/templates/list",
+                  "resources/subscribe",
+                  "resources/unsubscribe",
+                  "completion/complete",
+                  "logging/setLevel"
+                ]
+              }
+            },
+            "required": [
+              "method"
+            ]
+          },
+          {
+            "type": "object",
+            "properties": {
+              "method": {
+                "const": "tools/call"
+              },
+              "params": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "enum": [
+                      "create_note",
+                      "edit_note",
+                      "update_note_tags",
+                      "move_notes",
+                      "restore_note",
+                      "start_attachment_upload",
+                      "finalize_attachment",
+                      "delete_note",
+                      "create_notebook",
+                      "rename_notebook",
+                      "move_notebook",
+                      "create_space",
+                      "create_tag",
+                      "edit_tag",
+                      "create_task",
+                      "update_task",
+                      "delete_task"
+                    ]
+                  }
+                },
+                "required": [
+                  "name"
+                ]
+              }
+            },
+            "required": [
+              "method",
+              "params"
+            ]
+          }
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "evernote-mcp-read-notes": {
+    "$comment": "Search notes by keyword or by meaning, read a note's full content, and download its attachments.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/mcp/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "const": "tools/call"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "enum": [
+                  "search_notes",
+                  "semantic_search",
+                  "get_note",
+                  "get_attachment"
+                ]
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "params"
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "evernote-mcp-write-notes": {
+    "$comment": "Create notes and edit their content, add or remove tags on notes, move notes between notebooks or Spaces, restore notes from the trash, and attach files to notes. Does not allow trashing notes.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/mcp/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "const": "tools/call"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "enum": [
+                  "create_note",
+                  "edit_note",
+                  "update_note_tags",
+                  "move_notes",
+                  "restore_note",
+                  "start_attachment_upload",
+                  "finalize_attachment"
+                ]
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "params"
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "evernote-mcp-delete-notes": {
+    "$comment": "Move notes to the trash. Trashed notes can be restored from the Evernote app; permanent deletion is not possible.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/mcp/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "const": "tools/call"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "const": "delete_note"
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "params"
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "evernote-mcp-read-notebooks": {
+    "$comment": "List and search notebooks and Spaces, and view a Space's details.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/mcp/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "const": "tools/call"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "enum": [
+                  "search_notebooks",
+                  "search_spaces",
+                  "get_space"
+                ]
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "params"
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "evernote-mcp-write-notebooks": {
+    "$comment": "Create and rename notebooks, move notebooks into or out of Spaces, and create new Spaces.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/mcp/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "const": "tools/call"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "enum": [
+                  "create_notebook",
+                  "rename_notebook",
+                  "move_notebook",
+                  "create_space"
+                ]
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "params"
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "evernote-mcp-read-tags": {
+    "$comment": "List and search the account's tags.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/mcp/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "const": "tools/call"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "const": "search_tags"
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "params"
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "evernote-mcp-write-tags": {
+    "$comment": "Create tags, rename them, or rearrange them in the tag hierarchy.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/mcp/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "const": "tools/call"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "enum": [
+                  "create_tag",
+                  "edit_tag"
+                ]
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "params"
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "evernote-mcp-read-tasks": {
+    "$comment": "Search the tasks you own or are assigned to, and view a task's details.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/mcp/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "const": "tools/call"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "enum": [
+                  "search_tasks",
+                  "get_task"
+                ]
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "params"
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "evernote-mcp-write-tasks": {
+    "$comment": "Create tasks in notes and update them: mark them completed or change their label, due date, priority, flag or recurrence.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/mcp/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "const": "tools/call"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "enum": [
+                  "create_task",
+                  "update_task"
+                ]
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "params"
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "evernote-mcp-delete-tasks": {
+    "$comment": "Delete tasks from notes.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/mcp/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "const": "tools/call"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "const": "delete_task"
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "params"
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  }
+}

@@ -1,0 +1,647 @@
+{
+  "intercom-mcp-api": {
+    "$comment": "Identifies requests to the Intercom hosted MCP server (mcp.intercom.com, mcp.eu.intercom.com).",
+    "properties": {
+      "domain": {
+        "enum": [
+          "mcp.intercom.com",
+          "mcp.eu.intercom.com"
+        ]
+      }
+    },
+    "required": [
+      "domain"
+    ]
+  },
+  "intercom-mcp-session": {
+    "$comment": "Open and maintain an MCP session: initialize, list tools/prompts/resources, ping, and send notifications. Required for any MCP client to function; does not read or modify Intercom content.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/mcp/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "enum": [
+              "initialize",
+              "notifications/initialized",
+              "notifications/cancelled",
+              "ping",
+              "tools/list",
+              "prompts/list",
+              "prompts/get",
+              "resources/list",
+              "resources/read",
+              "resources/templates/list",
+              "resources/subscribe",
+              "resources/unsubscribe",
+              "completion/complete",
+              "logging/setLevel"
+            ]
+          }
+        },
+        "required": [
+          "method"
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "intercom-mcp-read-all": {
+    "$comment": "View anything in the Intercom workspace that the MCP server exposes: search and open conversations, contacts, companies and Help Center articles, and read Fin Operator replies and pending proposals. Plus the MCP session handshake.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/mcp/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "anyOf": [
+          {
+            "type": "object",
+            "properties": {
+              "method": {
+                "enum": [
+                  "initialize",
+                  "notifications/initialized",
+                  "notifications/cancelled",
+                  "ping",
+                  "tools/list",
+                  "prompts/list",
+                  "prompts/get",
+                  "resources/list",
+                  "resources/read",
+                  "resources/templates/list",
+                  "resources/subscribe",
+                  "resources/unsubscribe",
+                  "completion/complete",
+                  "logging/setLevel"
+                ]
+              }
+            },
+            "required": [
+              "method"
+            ]
+          },
+          {
+            "type": "object",
+            "properties": {
+              "method": {
+                "const": "tools/call"
+              },
+              "params": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "enum": [
+                      "search",
+                      "fetch",
+                      "search_conversations",
+                      "get_conversation",
+                      "search_contacts",
+                      "get_contact",
+                      "list_companies",
+                      "get_company",
+                      "list_articles",
+                      "search_articles",
+                      "get_article",
+                      "get_operator_response",
+                      "get_proposal_details"
+                    ]
+                  }
+                },
+                "required": [
+                  "name"
+                ]
+              }
+            },
+            "required": [
+              "method",
+              "params"
+            ]
+          }
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "intercom-mcp-write-all": {
+    "$comment": "Make changes in the Intercom workspace: create and edit Help Center articles, add internal notes to conversations, message Fin Operator (uses Operator credits) and apply or reject its proposals. Plus the MCP session handshake.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/mcp/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "anyOf": [
+          {
+            "type": "object",
+            "properties": {
+              "method": {
+                "enum": [
+                  "initialize",
+                  "notifications/initialized",
+                  "notifications/cancelled",
+                  "ping",
+                  "tools/list",
+                  "prompts/list",
+                  "prompts/get",
+                  "resources/list",
+                  "resources/read",
+                  "resources/templates/list",
+                  "resources/subscribe",
+                  "resources/unsubscribe",
+                  "completion/complete",
+                  "logging/setLevel"
+                ]
+              }
+            },
+            "required": [
+              "method"
+            ]
+          },
+          {
+            "type": "object",
+            "properties": {
+              "method": {
+                "const": "tools/call"
+              },
+              "params": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "enum": [
+                      "create_article",
+                      "update_article",
+                      "add_internal_note",
+                      "send_operator_message",
+                      "apply_proposals",
+                      "reject_proposals"
+                    ]
+                  }
+                },
+                "required": [
+                  "name"
+                ]
+              }
+            },
+            "required": [
+              "method",
+              "params"
+            ]
+          }
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "intercom-mcp-search": {
+    "$comment": "Search across conversations and contacts with a single query, and open any conversation, contact or company found that way.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/mcp/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "const": "tools/call"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "enum": [
+                  "search",
+                  "fetch"
+                ]
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "params"
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "intercom-mcp-read-conversations": {
+    "$comment": "Find conversations by state, source or assignee, and read a conversation with all its messages and details.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/mcp/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "const": "tools/call"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "enum": [
+                  "search_conversations",
+                  "get_conversation"
+                ]
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "params"
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "intercom-mcp-write-conversations": {
+    "$comment": "Add internal notes to conversations. Notes are visible only to teammates; this does not send anything to customers.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/mcp/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "const": "tools/call"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "const": "add_internal_note"
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "params"
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "intercom-mcp-read-contacts": {
+    "$comment": "Find contacts by name, email, phone or custom attributes, and view a contact's full details and activity.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/mcp/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "const": "tools/call"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "enum": [
+                  "search_contacts",
+                  "get_contact"
+                ]
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "params"
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "intercom-mcp-read-companies": {
+    "$comment": "List companies, optionally filtered by name, tag or segment, and view a company's details, segments and tags.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/mcp/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "const": "tools/call"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "enum": [
+                  "list_companies",
+                  "get_company"
+                ]
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "params"
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "intercom-mcp-read-articles": {
+    "$comment": "List and search Help Center articles and read an article's full content.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/mcp/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "const": "tools/call"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "enum": [
+                  "list_articles",
+                  "search_articles",
+                  "get_article"
+                ]
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "params"
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "intercom-mcp-write-articles": {
+    "$comment": "Create new Help Center articles (as drafts by default) and edit existing ones.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/mcp/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "const": "tools/call"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "enum": [
+                  "create_article",
+                  "update_article"
+                ]
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "params"
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "intercom-mcp-read-operator": {
+    "$comment": "Read the latest reply from a Fin Operator chat and see what each pending Operator proposal would change. Only available in workspaces with Fin Operator.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/mcp/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "const": "tools/call"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "enum": [
+                  "get_operator_response",
+                  "get_proposal_details"
+                ]
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "params"
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "intercom-mcp-send-operator-messages": {
+    "$comment": "Send messages to Fin Operator. This uses Operator credits and is only available in workspaces with Fin Operator.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/mcp/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "const": "tools/call"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "const": "send_operator_message"
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "params"
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "intercom-mcp-write-operator-proposals": {
+    "$comment": "Apply Fin Operator proposals to the live workspace configuration, or discard them. Only available in workspaces with Fin Operator.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/mcp/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "const": "tools/call"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "enum": [
+                  "apply_proposals",
+                  "reject_proposals"
+                ]
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "params"
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  }
+}

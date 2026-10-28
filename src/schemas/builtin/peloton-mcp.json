@@ -1,0 +1,327 @@
+{
+  "peloton-mcp-api": {
+    "$comment": "Identifies requests to the Peloton hosted MCP server (mcp.onepeloton.com).",
+    "properties": {
+      "domain": {
+        "const": "mcp.onepeloton.com"
+      }
+    },
+    "required": [
+      "domain"
+    ]
+  },
+  "peloton-mcp-session": {
+    "$comment": "Open and maintain an MCP session: initialize, list tools/prompts/resources, ping, and send notifications. Required for any MCP client to function; does not read or modify Peloton content.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/mcp/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "enum": [
+              "initialize",
+              "notifications/initialized",
+              "notifications/cancelled",
+              "ping",
+              "tools/list",
+              "prompts/list",
+              "prompts/get",
+              "resources/list",
+              "resources/read",
+              "resources/templates/list",
+              "resources/subscribe",
+              "resources/unsubscribe",
+              "completion/complete",
+              "logging/setLevel"
+            ]
+          }
+        },
+        "required": [
+          "method"
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "peloton-mcp-read-all": {
+    "$comment": "Search the Peloton class library, view class details and draft weekly training plans, plus the MCP session handshake. Nothing is added to the member's Peloton account.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/mcp/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "anyOf": [
+          {
+            "type": "object",
+            "properties": {
+              "method": {
+                "enum": [
+                  "initialize",
+                  "notifications/initialized",
+                  "notifications/cancelled",
+                  "ping",
+                  "tools/list",
+                  "prompts/list",
+                  "prompts/get",
+                  "resources/list",
+                  "resources/read",
+                  "resources/templates/list",
+                  "resources/subscribe",
+                  "resources/unsubscribe",
+                  "completion/complete",
+                  "logging/setLevel"
+                ]
+              }
+            },
+            "required": [
+              "method"
+            ]
+          },
+          {
+            "type": "object",
+            "properties": {
+              "method": {
+                "const": "tools/call"
+              },
+              "params": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "enum": [
+                      "search",
+                      "fetch",
+                      "create-training-plan"
+                    ]
+                  }
+                },
+                "required": [
+                  "name"
+                ]
+              }
+            },
+            "required": [
+              "method",
+              "params"
+            ]
+          }
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "peloton-mcp-write-all": {
+    "$comment": "Add classes to the member's Peloton calendar, plus the MCP session handshake.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/mcp/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "anyOf": [
+          {
+            "type": "object",
+            "properties": {
+              "method": {
+                "enum": [
+                  "initialize",
+                  "notifications/initialized",
+                  "notifications/cancelled",
+                  "ping",
+                  "tools/list",
+                  "prompts/list",
+                  "prompts/get",
+                  "resources/list",
+                  "resources/read",
+                  "resources/templates/list",
+                  "resources/subscribe",
+                  "resources/unsubscribe",
+                  "completion/complete",
+                  "logging/setLevel"
+                ]
+              }
+            },
+            "required": [
+              "method"
+            ]
+          },
+          {
+            "type": "object",
+            "properties": {
+              "method": {
+                "const": "tools/call"
+              },
+              "params": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "enum": [
+                      "schedule"
+                    ]
+                  }
+                },
+                "required": [
+                  "name"
+                ]
+              }
+            },
+            "required": [
+              "method",
+              "params"
+            ]
+          }
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "peloton-mcp-read-classes": {
+    "$comment": "Search Peloton classes by natural language (instructor, duration, discipline, music, difficulty) and view the details of a class.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/mcp/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "const": "tools/call"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "enum": [
+                  "search",
+                  "fetch"
+                ]
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "params"
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "peloton-mcp-create-training-plans": {
+    "$comment": "Draft an interactive weekly training plan (up to 14 days) from Peloton classes and rest days. The plan is only displayed; it does not change the member's Peloton schedule.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/mcp/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "const": "tools/call"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "const": "create-training-plan"
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "params"
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "peloton-mcp-schedule-classes": {
+    "$comment": "Add Peloton classes at chosen dates and times to the member's Peloton calendar.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/mcp/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "const": "tools/call"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "const": "schedule"
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "params"
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  }
+}

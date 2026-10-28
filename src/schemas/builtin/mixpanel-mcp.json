@@ -1,0 +1,1025 @@
+{
+  "mixpanel-mcp-api": {
+    "$comment": "Identifies requests to the Mixpanel hosted MCP server (mcp.mixpanel.com, plus the EU and India hosts mcp-eu.mixpanel.com and mcp-in.mixpanel.com).",
+    "properties": {
+      "domain": {
+        "enum": [
+          "mcp.mixpanel.com",
+          "mcp-eu.mixpanel.com",
+          "mcp-in.mixpanel.com"
+        ]
+      }
+    },
+    "required": [
+      "domain"
+    ]
+  },
+  "mixpanel-mcp-session": {
+    "$comment": "Open and maintain an MCP session: initialize, list tools/prompts/resources, ping, and send notifications. Required for any MCP client to function; does not read or modify Mixpanel content.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/mcp/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "enum": [
+              "initialize",
+              "notifications/initialized",
+              "notifications/cancelled",
+              "ping",
+              "tools/list",
+              "prompts/list",
+              "prompts/get",
+              "resources/list",
+              "resources/read",
+              "resources/templates/list",
+              "resources/subscribe",
+              "resources/unsubscribe",
+              "completion/complete",
+              "logging/setLevel"
+            ]
+          }
+        },
+        "required": [
+          "method"
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "mixpanel-mcp-read-all": {
+    "$comment": "Run any read-only Mixpanel MCP tool: run and display Insights/Funnels/Flows/Retention queries, read saved reports, dashboards, metrics, cohorts, experiments, feature flags, Lexicon event and property definitions, data-quality issues, business context, projects, organizations, session replays and the audit log. Includes the MCP session handshake.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/mcp/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "anyOf": [
+          {
+            "type": "object",
+            "properties": {
+              "method": {
+                "enum": [
+                  "initialize",
+                  "notifications/initialized",
+                  "notifications/cancelled",
+                  "ping",
+                  "tools/list",
+                  "prompts/list",
+                  "prompts/get",
+                  "resources/list",
+                  "resources/read",
+                  "resources/templates/list",
+                  "resources/subscribe",
+                  "resources/unsubscribe",
+                  "completion/complete",
+                  "logging/setLevel"
+                ]
+              }
+            },
+            "required": [
+              "method"
+            ]
+          },
+          {
+            "type": "object",
+            "properties": {
+              "method": {
+                "const": "tools/call"
+              },
+              "params": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "enum": [
+                      "Run-Query",
+                      "Get-Query-Schema",
+                      "Get-Report",
+                      "Display-Query",
+                      "Get-User-Replays-Data",
+                      "List-Dashboards",
+                      "Get-Dashboard",
+                      "Get-Projects",
+                      "List-Organizations",
+                      "Get-Business-Context",
+                      "Search-Entities",
+                      "Get-Audit-Log",
+                      "Get-Events",
+                      "List-Properties",
+                      "Get-Property-Values",
+                      "Get-Issues",
+                      "Get-Lexicon-URL",
+                      "Find-Duplicate-Groups",
+                      "Get-Custom-Property",
+                      "Get-Lookup-Table",
+                      "List-Cohorts",
+                      "Get-Cohort",
+                      "Describe-Cohort-Schema",
+                      "List-Metrics",
+                      "Get-Metric",
+                      "List-Experiments",
+                      "Get-Experiment",
+                      "Search-Prior-Experiments",
+                      "Get-Experiment-Setup-Guidance",
+                      "Get-Experiment-Results-Interpretation-Guidance",
+                      "Explain-Experiment-Health-Check",
+                      "Run-Experiment-Pre-Launch-Checks",
+                      "List-Feature-Flags",
+                      "Get-Feature-Flag",
+                      "Get-Feature-Flag-Setup-Guidance",
+                      "Get-Feature-Flag-Lifecycle-Guidance"
+                    ]
+                  }
+                },
+                "required": [
+                  "name"
+                ]
+              }
+            },
+            "required": [
+              "method",
+              "params"
+            ]
+          }
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "mixpanel-mcp-write-all": {
+    "$comment": "Run any Mixpanel MCP tool that creates, edits or deletes something: dashboards, Lexicon metadata (events, properties, tags, custom properties, lookup tables, business context, data-quality issue and duplicate dismissals), cohorts, saved metrics, experiments and feature flags. Includes the MCP session handshake.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/mcp/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "anyOf": [
+          {
+            "type": "object",
+            "properties": {
+              "method": {
+                "enum": [
+                  "initialize",
+                  "notifications/initialized",
+                  "notifications/cancelled",
+                  "ping",
+                  "tools/list",
+                  "prompts/list",
+                  "prompts/get",
+                  "resources/list",
+                  "resources/read",
+                  "resources/templates/list",
+                  "resources/subscribe",
+                  "resources/unsubscribe",
+                  "completion/complete",
+                  "logging/setLevel"
+                ]
+              }
+            },
+            "required": [
+              "method"
+            ]
+          },
+          {
+            "type": "object",
+            "properties": {
+              "method": {
+                "const": "tools/call"
+              },
+              "params": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "enum": [
+                      "Create-Dashboard",
+                      "Update-Dashboard",
+                      "Duplicate-Dashboard",
+                      "Delete-Dashboard",
+                      "Edit-Event",
+                      "Edit-Property",
+                      "Bulk-Edit-Events",
+                      "Bulk-Edit-Properties",
+                      "Fill-Event-Metadata",
+                      "Create-Tag",
+                      "Rename-Tag",
+                      "Delete-Tag",
+                      "Dismiss-Issues",
+                      "Dismiss-Duplicate-Group",
+                      "Merge-Group",
+                      "Update-Business-Context",
+                      "Create-Custom-Property",
+                      "Update-Custom-Property",
+                      "Create-Lookup-Table",
+                      "Update-Lookup-Table",
+                      "Create-Cohort",
+                      "Update-Cohort",
+                      "Delete-Cohort",
+                      "Create-Metric",
+                      "Update-Metric",
+                      "Create-Experiment",
+                      "Update-Experiment",
+                      "Create-Feature-Flag",
+                      "Update-Feature-Flag"
+                    ]
+                  }
+                },
+                "required": [
+                  "name"
+                ]
+              }
+            },
+            "required": [
+              "method",
+              "params"
+            ]
+          }
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "mixpanel-mcp-run-queries": {
+    "$comment": "Run Insights, Funnels, Flows and Retention queries, fetch the query schema, read saved reports and display charts for query results (Run-Query, Get-Query-Schema, Get-Report, Display-Query). Does not expose individual users' session replays.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/mcp/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "const": "tools/call"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "enum": [
+                  "Run-Query",
+                  "Get-Query-Schema",
+                  "Get-Report",
+                  "Display-Query"
+                ]
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "params"
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "mixpanel-mcp-read-session-replays": {
+    "$comment": "Analyze an individual user's session replays alongside their events (Get-User-Replays-Data). This exposes user-level behavioral data.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/mcp/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "const": "tools/call"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "const": "Get-User-Replays-Data"
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "params"
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "mixpanel-mcp-read-dashboards": {
+    "$comment": "List dashboards in a project and read their metadata, text cards and reports (List-Dashboards, Get-Dashboard).",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/mcp/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "const": "tools/call"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "enum": [
+                  "List-Dashboards",
+                  "Get-Dashboard"
+                ]
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "params"
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "mixpanel-mcp-write-dashboards": {
+    "$comment": "Create, update and duplicate dashboards, including their rows, layout and reports (Create-Dashboard, Update-Dashboard, Duplicate-Dashboard). Does not allow deleting dashboards.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/mcp/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "const": "tools/call"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "enum": [
+                  "Create-Dashboard",
+                  "Update-Dashboard",
+                  "Duplicate-Dashboard"
+                ]
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "params"
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "mixpanel-mcp-delete-dashboards": {
+    "$comment": "Delete dashboards (Delete-Dashboard).",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/mcp/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "const": "tools/call"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "const": "Delete-Dashboard"
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "params"
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "mixpanel-mcp-read-projects": {
+    "$comment": "List organizations, projects and workspaces, read org- and project-level business context, search dashboards, reports, experiments and flags by name, and query the organization audit log (Get-Projects, List-Organizations, Get-Business-Context, Search-Entities, Get-Audit-Log).",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/mcp/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "const": "tools/call"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "enum": [
+                  "Get-Projects",
+                  "List-Organizations",
+                  "Get-Business-Context",
+                  "Search-Entities",
+                  "Get-Audit-Log"
+                ]
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "params"
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "mixpanel-mcp-read-lexicon": {
+    "$comment": "Browse Lexicon data definitions: events, properties and their values, custom properties, lookup tables, data-quality issues, duplicate-name suggestions and Lexicon links (Get-Events, List-Properties, Get-Property-Values, Get-Issues, Get-Lexicon-URL, Find-Duplicate-Groups, Get-Custom-Property, Get-Lookup-Table).",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/mcp/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "const": "tools/call"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "enum": [
+                  "Get-Events",
+                  "List-Properties",
+                  "Get-Property-Values",
+                  "Get-Issues",
+                  "Get-Lexicon-URL",
+                  "Find-Duplicate-Groups",
+                  "Get-Custom-Property",
+                  "Get-Lookup-Table"
+                ]
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "params"
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "mixpanel-mcp-write-lexicon": {
+    "$comment": "Edit Lexicon data definitions: event and property descriptions, display names, tags, visibility and PII flags (singly, in bulk or via automated metadata fill), create/rename/delete tags, dismiss data-quality issues and duplicate suggestions, merge duplicate names, update business context, and create or update custom properties and lookup tables.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/mcp/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "const": "tools/call"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "enum": [
+                  "Edit-Event",
+                  "Edit-Property",
+                  "Bulk-Edit-Events",
+                  "Bulk-Edit-Properties",
+                  "Fill-Event-Metadata",
+                  "Create-Tag",
+                  "Rename-Tag",
+                  "Delete-Tag",
+                  "Dismiss-Issues",
+                  "Dismiss-Duplicate-Group",
+                  "Merge-Group",
+                  "Update-Business-Context",
+                  "Create-Custom-Property",
+                  "Update-Custom-Property",
+                  "Create-Lookup-Table",
+                  "Update-Lookup-Table"
+                ]
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "params"
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "mixpanel-mcp-read-cohorts": {
+    "$comment": "List cohorts and read their definitions and the cohort definition schema (List-Cohorts, Get-Cohort, Describe-Cohort-Schema).",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/mcp/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "const": "tools/call"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "enum": [
+                  "List-Cohorts",
+                  "Get-Cohort",
+                  "Describe-Cohort-Schema"
+                ]
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "params"
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "mixpanel-mcp-write-cohorts": {
+    "$comment": "Create and update cohorts (Create-Cohort, Update-Cohort). Does not allow deleting cohorts.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/mcp/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "const": "tools/call"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "enum": [
+                  "Create-Cohort",
+                  "Update-Cohort"
+                ]
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "params"
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "mixpanel-mcp-delete-cohorts": {
+    "$comment": "Delete cohorts (Delete-Cohort).",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/mcp/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "const": "tools/call"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "const": "Delete-Cohort"
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "params"
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "mixpanel-mcp-read-metrics": {
+    "$comment": "List saved behavior and formula metrics and read their full definitions (List-Metrics, Get-Metric).",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/mcp/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "const": "tools/call"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "enum": [
+                  "List-Metrics",
+                  "Get-Metric"
+                ]
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "params"
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "mixpanel-mcp-write-metrics": {
+    "$comment": "Create saved metrics and update a metric's name, definition or description (Create-Metric, Update-Metric).",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/mcp/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "const": "tools/call"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "enum": [
+                  "Create-Metric",
+                  "Update-Metric"
+                ]
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "params"
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "mixpanel-mcp-read-experiments": {
+    "$comment": "List and search experiments, read their configuration and results, and get read-only guidance: setup and results-interpretation best practices, health-check explanations and pre-launch checks of a draft (List-Experiments, Get-Experiment, Search-Prior-Experiments, Get-Experiment-Setup-Guidance, Get-Experiment-Results-Interpretation-Guidance, Explain-Experiment-Health-Check, Run-Experiment-Pre-Launch-Checks).",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/mcp/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "const": "tools/call"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "enum": [
+                  "List-Experiments",
+                  "Get-Experiment",
+                  "Search-Prior-Experiments",
+                  "Get-Experiment-Setup-Guidance",
+                  "Get-Experiment-Results-Interpretation-Guidance",
+                  "Explain-Experiment-Health-Check",
+                  "Run-Experiment-Pre-Launch-Checks"
+                ]
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "params"
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "mixpanel-mcp-write-experiments": {
+    "$comment": "Create experiments and change an experiment's configuration or lifecycle, including launching and stopping it (Create-Experiment, Update-Experiment).",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/mcp/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "const": "tools/call"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "enum": [
+                  "Create-Experiment",
+                  "Update-Experiment"
+                ]
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "params"
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "mixpanel-mcp-read-feature-flags": {
+    "$comment": "List and search feature flags, read their targeting rules, and get setup and lifecycle best-practice guidance (List-Feature-Flags, Get-Feature-Flag, Get-Feature-Flag-Setup-Guidance, Get-Feature-Flag-Lifecycle-Guidance).",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/mcp/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "const": "tools/call"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "enum": [
+                  "List-Feature-Flags",
+                  "Get-Feature-Flag",
+                  "Get-Feature-Flag-Setup-Guidance",
+                  "Get-Feature-Flag-Lifecycle-Guidance"
+                ]
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "params"
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "mixpanel-mcp-write-feature-flags": {
+    "$comment": "Create feature flags and change a flag's configuration, rollout or targeting (Create-Feature-Flag, Update-Feature-Flag).",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/mcp/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "const": "tools/call"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "enum": [
+                  "Create-Feature-Flag",
+                  "Update-Feature-Flag"
+                ]
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "params"
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  }
+}

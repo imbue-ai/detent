@@ -1,0 +1,3133 @@
+{
+  "datadog-mcp-api": {
+    "$comment": "Identifies requests to the Datadog hosted MCP server (mcp.datadoghq.com and the regional hosts mcp.us3/us5/ap1/ap2/uk1.datadoghq.com and mcp.datadoghq.eu).",
+    "properties": {
+      "domain": {
+        "enum": [
+          "mcp.datadoghq.com",
+          "mcp.us3.datadoghq.com",
+          "mcp.us5.datadoghq.com",
+          "mcp.ap1.datadoghq.com",
+          "mcp.ap2.datadoghq.com",
+          "mcp.uk1.datadoghq.com",
+          "mcp.datadoghq.eu"
+        ]
+      }
+    },
+    "required": [
+      "domain"
+    ]
+  },
+  "datadog-mcp-session": {
+    "$comment": "Open and maintain an MCP session: initialize, list tools/prompts/resources, ping, and send notifications. Required for any MCP client to function; does not read or modify Datadog content.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/(v1/mcp|api/unstable/mcp-server/mcp)/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "enum": [
+              "initialize",
+              "notifications/initialized",
+              "notifications/cancelled",
+              "ping",
+              "tools/list",
+              "prompts/list",
+              "prompts/get",
+              "resources/list",
+              "resources/read",
+              "resources/templates/list",
+              "resources/subscribe",
+              "resources/unsubscribe",
+              "completion/complete",
+              "logging/setLevel"
+            ]
+          }
+        },
+        "required": [
+          "method"
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "datadog-mcp-read-all": {
+    "$comment": "Run any read-only Datadog MCP tool (logs, metrics, traces, infrastructure, monitors, incidents, dashboards, security, RUM, CI, feature flags, LLM observability, DDSQL queries, documentation and other lookups) plus the MCP session handshake. Covers all toolsets, including the preview ones.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/(v1/mcp|api/unstable/mcp-server/mcp)/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "anyOf": [
+          {
+            "type": "object",
+            "properties": {
+              "method": {
+                "enum": [
+                  "initialize",
+                  "notifications/initialized",
+                  "notifications/cancelled",
+                  "ping",
+                  "tools/list",
+                  "prompts/list",
+                  "prompts/get",
+                  "resources/list",
+                  "resources/read",
+                  "resources/templates/list",
+                  "resources/subscribe",
+                  "resources/unsubscribe",
+                  "completion/complete",
+                  "logging/setLevel"
+                ]
+              }
+            },
+            "required": [
+              "method"
+            ]
+          },
+          {
+            "type": "object",
+            "properties": {
+              "method": {
+                "const": "tools/call"
+              },
+              "params": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "enum": [
+                      "search_datadog_logs",
+                      "analyze_datadog_logs",
+                      "get_logs",
+                      "get_datadog_metric",
+                      "get_datadog_metric_context",
+                      "search_datadog_metrics",
+                      "estimate_datadog_metric_cardinality",
+                      "get_metric_cardinality_profile",
+                      "get_metric_governance_status",
+                      "get_metric_tag_configuration",
+                      "get_metric_tags",
+                      "get_metric_volume",
+                      "get_tag_indexing_rules",
+                      "get_datadog_trace",
+                      "search_datadog_spans",
+                      "aggregate_spans",
+                      "apm_query_trace",
+                      "apm_discover_span_tags",
+                      "apm_get_primary_tag_keys",
+                      "apm_get_service_health",
+                      "apm_latency_bottleneck_summary",
+                      "apm_search_recommendations",
+                      "apm_get_recommendation",
+                      "search_apm_sampling_rules",
+                      "search_apm_service_remapping_rules",
+                      "search_datadog_entities",
+                      "search_datadog_services",
+                      "search_datadog_service_dependencies",
+                      "search_datadog_hosts",
+                      "search_datadog_live_processes",
+                      "search_datadog_k8s_resources",
+                      "analyse_datadog_k8s_rollout",
+                      "describe_datadog_k8s_resource",
+                      "get_datadog_k8s_manifest",
+                      "get_cloud_resource_details",
+                      "analyze_cloud_network_monitoring",
+                      "search_ndm_devices",
+                      "get_ndm_device",
+                      "search_ndm_interfaces",
+                      "get_network_path_test_runs",
+                      "get_autonomous_system_status",
+                      "list_autonomous_system_statuses",
+                      "cost_recommendations",
+                      "discover_datadog_logpoint",
+                      "list_datadog_session_logpoints",
+                      "get_datadog_debugger_snapshot",
+                      "search_datadog_events",
+                      "search_audit_events",
+                      "list_audit_events",
+                      "build_audit_trail_query",
+                      "find_datadog_database_instances",
+                      "get_datadog_database_calling_services",
+                      "get_datadog_database_explain_plans",
+                      "get_datadog_database_health_signals",
+                      "get_datadog_database_instance_settings",
+                      "get_datadog_database_query_performance",
+                      "get_datadog_database_query_statement",
+                      "get_datadog_database_recommendations",
+                      "get_datadog_database_schemas",
+                      "optimize_datadog_database_query",
+                      "search_datadog_database_plans",
+                      "search_datadog_database_samples",
+                      "get_profiling_profile_types",
+                      "get_profiling_services",
+                      "get_profiling_runtime_ids",
+                      "get_profiling_service_insights",
+                      "explore_profiling_flame_graph",
+                      "explore_profiling_call_graph",
+                      "explore_profiling_timeline",
+                      "get_profiling_timeseries",
+                      "get_profiling_tag_names",
+                      "get_profiling_tag_values",
+                      "get_profiling_fields",
+                      "get_profiling_field_values",
+                      "search_datadog_rum_events",
+                      "aggregate_rum_events",
+                      "search_rum_applications",
+                      "get_rum_summary",
+                      "get_rum_insight",
+                      "get_rum_view_waterfall",
+                      "search_rum_operations",
+                      "get_rum_operation_summary",
+                      "get_rum_operation_insights",
+                      "search_rum_metrics",
+                      "search_rum_retention_filters",
+                      "search_replays",
+                      "get_replay_summary",
+                      "search_product_analytics_events",
+                      "search_product_analytics_org_entities",
+                      "get_product_analytics_saved_chart",
+                      "aggregate_product_analytics_events",
+                      "run_product_analytics_journey",
+                      "run_product_analytics_pathway",
+                      "run_product_analytics_retention",
+                      "search_datadog_monitors",
+                      "validate_datadog_monitor",
+                      "get_datadog_monitor_templates",
+                      "search_datadog_monitor_groups",
+                      "search_datadog_slos",
+                      "get_monitor_coverage",
+                      "get_datadog_incident",
+                      "search_datadog_incidents",
+                      "search_investigations",
+                      "get_investigations_from_incident_id",
+                      "get_bits_ai_investigation",
+                      "search_watchdog_stories",
+                      "get_watchdog_story",
+                      "search_watchdog_insights",
+                      "get_influential_tags",
+                      "get_external_provider_status",
+                      "find_new_jumps",
+                      "update_jump_state",
+                      "forecast_timeseries",
+                      "search_datadog_cases",
+                      "get_datadog_case",
+                      "get_datadog_case_attachment",
+                      "get_datadog_case_links",
+                      "list_datadog_case_projects",
+                      "get_datadog_case_project",
+                      "search_datadog_users",
+                      "search_datadog_error_tracking_issues",
+                      "get_datadog_error_tracking_issue",
+                      "analyze_datadog_error_tracking_errors",
+                      "get_datadog_error_tracking_analytics",
+                      "search_datadog_dashboards",
+                      "get_datadog_dashboard",
+                      "get_widget_reference",
+                      "validate_dashboard_widget",
+                      "ask_widget_expert",
+                      "get_widget",
+                      "search_datadog_widgets",
+                      "swap_widget_type",
+                      "validate_notebook_cell",
+                      "validate_notebook_cells",
+                      "verify_widget_data",
+                      "visualize_tabular_data",
+                      "get_datadog_notebook",
+                      "search_datadog_notebooks",
+                      "get_datadog_spreadsheet_reference",
+                      "search_datadog_spreadsheets",
+                      "get_datadog_spreadsheet",
+                      "get_datadog_spreadsheet_tab_data",
+                      "list_datadog_log_pipelines",
+                      "get_datadog_log_pipeline",
+                      "list_datadog_log_indexes",
+                      "get_datadog_log_index",
+                      "list_datadog_log_archives",
+                      "get_datadog_log_archive",
+                      "list_observability_pipelines",
+                      "describe_observability_pipeline",
+                      "get_observability_pipeline_component_schema",
+                      "validate_observability_pipeline",
+                      "datadog_secrets_scan",
+                      "get_datadog_security_signals_schema",
+                      "search_datadog_security_signals",
+                      "analyze_datadog_security_signals",
+                      "get_datadog_security_signal",
+                      "search_datadog_security_ioc_indicators",
+                      "get_datadog_security_ioc_indicator",
+                      "get_datadog_security_ioc_schema",
+                      "get_datadog_security_detection_rules_schema",
+                      "get_datadog_security_detection_rules",
+                      "get_datadog_security_suppressions",
+                      "get_datadog_security_findings_schema",
+                      "analyze_datadog_security_findings",
+                      "search_datadog_security_findings",
+                      "get_datadog_security_findings_ticket_suggestions",
+                      "list_datadog_security_findings_automation_rules",
+                      "get_datadog_security_trace_passlist",
+                      "get_datadog_security_aap_denylist",
+                      "get_datadog_security_aap_custom_rules",
+                      "get_datadog_security_aap_blocking_config",
+                      "get_datadog_security_iac_custom_rules",
+                      "get_datadog_security_iac_custom_rules_schema",
+                      "generate_datadog_security_iac_custom_rule",
+                      "validate_datadog_security_iac_custom_rule",
+                      "list_governance_insights",
+                      "list_governance_controls",
+                      "get_governance_control",
+                      "list_governance_detections",
+                      "get_governance_detection",
+                      "list_governance_limits",
+                      "list_governance_best_practices",
+                      "list_tag_rules",
+                      "get_tag_rule",
+                      "search_datadog_ci_pipeline_events",
+                      "aggregate_datadog_ci_pipeline_events",
+                      "get_datadog_flaky_tests",
+                      "aggregate_datadog_test_events",
+                      "search_datadog_test_events",
+                      "get_datadog_code_coverage_branch_summary",
+                      "get_datadog_code_coverage_commit_summary",
+                      "get_datadog_code_coverage_pr_summary",
+                      "get_datadog_code_coverage_files",
+                      "get_datadog_test_optimization_settings",
+                      "get_datadog_flaky_tests_management_policies",
+                      "search_dora_deployments",
+                      "aggregate_dora_deployments",
+                      "search_datadog_deployment_gates",
+                      "get_datadog_deployment_gate",
+                      "search_datadog_deployment_gate_evaluations",
+                      "get_datadog_deployment_gate_evaluation",
+                      "search_datadog_deployment_gate_rule_evaluations",
+                      "get_synthetics_tests",
+                      "list_datadog_feature_flags",
+                      "get_datadog_feature_flag",
+                      "list_datadog_feature_flag_environments",
+                      "list_datadog_feature_flag_allocations",
+                      "check_datadog_flag_implementation",
+                      "list_experiments",
+                      "get_experiment",
+                      "get_experiment_diagnostics",
+                      "get_experiment_results",
+                      "explore_experiment_results",
+                      "list_experiment_segmentation_properties",
+                      "get_experiment_segmentation_property_values",
+                      "get_metric_definition",
+                      "diagnose_experiment_run_failure",
+                      "search_data_entities",
+                      "get_data_catalog_schema",
+                      "get_data_entity_details",
+                      "get_data_entity_hierarchy",
+                      "get_data_entity_lineage",
+                      "summarize_data_entity_lineage",
+                      "rank_data_entities_by_lineage_degree",
+                      "get_warehouse_query_history",
+                      "get_popular_warehouse_tables_by_query_frequency",
+                      "suggest_data_observability_monitor_filters",
+                      "rank_data_observability_monitor_candidates",
+                      "get_data_observability_monitor",
+                      "get_data_observability_monitor_coverage",
+                      "get_data_observability_monitor_group_statuses",
+                      "get_entity_tags",
+                      "get_entity_descriptions",
+                      "get_spark_job_health",
+                      "get_spark_sql_plan",
+                      "list_data_observability_recommendations",
+                      "get_data_observability_recommendation",
+                      "search_llmobs_spans",
+                      "get_llmobs_trace",
+                      "get_llmobs_span_details",
+                      "get_llmobs_span_content",
+                      "find_llmobs_error_spans",
+                      "expand_llmobs_spans",
+                      "get_llmobs_agent_loop",
+                      "list_llmobs_agent_insights",
+                      "get_llmobs_agent_insight",
+                      "get_llmobs_experiment_summary",
+                      "list_llmobs_experiment_events",
+                      "get_llmobs_experiment_event",
+                      "get_llmobs_experiment_metric_values",
+                      "get_llmobs_experiment_dimension_values",
+                      "list_llmobs_evals",
+                      "list_llmobs_evals_by_ml_app",
+                      "list_llmobs_feedback_labels",
+                      "list_llmobs_feedback_events",
+                      "get_llmobs_evaluator",
+                      "list_llmobs_projects",
+                      "get_llmobs_project",
+                      "list_llmobs_datasets",
+                      "get_llmobs_dataset_records",
+                      "get_llmobs_full_dataset_records",
+                      "estimate_llmobs_topic_discovery_cost",
+                      "list_llmobs_pattern_configs",
+                      "get_llmobs_pattern_config",
+                      "get_llmobs_pattern_run_status",
+                      "list_llmobs_pattern_runs",
+                      "get_llmobs_patterns",
+                      "get_llmobs_patterns_with_points",
+                      "get_llmobs_pattern_points",
+                      "list_llmobs_annotation_queues",
+                      "get_llmobs_annotation_label_schema",
+                      "get_llmobs_annotated_interactions",
+                      "get_llmobs_annotations_by_content_ids",
+                      "ddsql_get_spec",
+                      "ddsql_schema_search_tables",
+                      "ddsql_schema_get_table_columns",
+                      "ddsql_schema_search_unstructured_fields",
+                      "ddsql_run_query",
+                      "ddsql_create_link",
+                      "ddsql_search_saved_queries",
+                      "ddsql_read_saved_query",
+                      "list_reference_tables",
+                      "list_reference_table_rows",
+                      "get_reference_table_rows",
+                      "list_datadog_workflows",
+                      "get_datadog_workflow",
+                      "search_datadog_workflow_actions",
+                      "get_datadog_workflow_action",
+                      "get_datadog_workflow_spec_schema",
+                      "validate_datadog_workflow",
+                      "list_datadog_workflow_instances",
+                      "get_datadog_workflow_instance",
+                      "get_datadog_workflow_step_data",
+                      "list_datadog_bits_agents",
+                      "get_datadog_bits_agent",
+                      "list_datadog_bits_agent_models",
+                      "list_datadog_bits_agent_mcp_tools",
+                      "list_datadog_bits_agent_conversations",
+                      "get_datadog_bits_agent_conversation_events",
+                      "search_datadog_forms",
+                      "get_datadog_form",
+                      "get_form_definition_schema",
+                      "get_form_responses",
+                      "get_assistant_conversation_history",
+                      "list_assistant_conversations",
+                      "search_datadog_documentation",
+                      "read_datadog_documentation",
+                      "search_datadog_sdk",
+                      "browser_onboarding",
+                      "devices_onboarding",
+                      "kubernetes_onboarding",
+                      "llm_observability_onboarding",
+                      "test_optimization_onboarding",
+                      "test_parallelization_onboarding",
+                      "serverless_onboarding",
+                      "source_map_uploads"
+                    ]
+                  }
+                },
+                "required": [
+                  "name"
+                ]
+              }
+            },
+            "required": [
+              "method",
+              "params"
+            ]
+          }
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "datadog-mcp-write-all": {
+    "$comment": "Run any Datadog MCP tool that creates, modifies, deletes, triggers or executes something (monitors, dashboards, notebooks, cases, security rules, log configuration, workflows, agents, feature flags, experiments, sandboxed code, remote actions and more) plus the MCP session handshake. Covers all toolsets, including the preview ones.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/(v1/mcp|api/unstable/mcp-server/mcp)/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "anyOf": [
+          {
+            "type": "object",
+            "properties": {
+              "method": {
+                "enum": [
+                  "initialize",
+                  "notifications/initialized",
+                  "notifications/cancelled",
+                  "ping",
+                  "tools/list",
+                  "prompts/list",
+                  "prompts/get",
+                  "resources/list",
+                  "resources/read",
+                  "resources/templates/list",
+                  "resources/subscribe",
+                  "resources/unsubscribe",
+                  "completion/complete",
+                  "logging/setLevel"
+                ]
+              }
+            },
+            "required": [
+              "method"
+            ]
+          },
+          {
+            "type": "object",
+            "properties": {
+              "method": {
+                "const": "tools/call"
+              },
+              "params": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "enum": [
+                      "create_derived_metric",
+                      "update_derived_metric",
+                      "delete_derived_metric",
+                      "manage_metric_tag_configuration",
+                      "manage_tag_indexing_rule",
+                      "create_apm_sampling_rule",
+                      "update_apm_sampling_rule",
+                      "delete_apm_sampling_rule",
+                      "create_apm_service_remapping_rule",
+                      "update_apm_service_remapping_rule",
+                      "reorder_apm_service_remapping_rules",
+                      "delete_apm_service_remapping_rule",
+                      "run_network_path",
+                      "datadog_remote_action_restricted_shell_run_command",
+                      "enable_live_debugger",
+                      "create_debugger_session",
+                      "create_datadog_logpoint",
+                      "disable_datadog_logpoints",
+                      "create_rum_operation",
+                      "update_rum_operation",
+                      "delete_rum_operation",
+                      "upsert_rum_metric",
+                      "delete_rum_metric",
+                      "append_new_rum_retention_filter",
+                      "update_rum_retention_filter",
+                      "reorder_rum_retention_filters",
+                      "delete_rum_retention_filter",
+                      "create_datadog_monitor",
+                      "trigger_bits_ai_investigation",
+                      "trigger_general_investigation",
+                      "trigger_incident_investigation",
+                      "steer_bits_ai_investigation",
+                      "create_datadog_case",
+                      "update_datadog_case",
+                      "add_comment_to_datadog_case",
+                      "attach_file_to_datadog_case",
+                      "link_jira_issue_to_datadog_case",
+                      "link_datadog_cases",
+                      "unlink_datadog_cases",
+                      "create_datadog_case_project",
+                      "update_datadog_error_tracking_issue",
+                      "manage_datadog_error_tracking_issue_comments",
+                      "manage_datadog_error_tracking_issue_links",
+                      "upsert_datadog_dashboard",
+                      "create_datadog_notebook",
+                      "edit_datadog_notebook",
+                      "recover_datadog_notebook",
+                      "upsert_datadog_spreadsheet",
+                      "delete_datadog_dashboard",
+                      "delete_datadog_notebook",
+                      "delete_datadog_spreadsheet",
+                      "upsert_datadog_log_pipeline",
+                      "delete_datadog_log_pipeline",
+                      "move_datadog_log_pipeline",
+                      "upsert_datadog_log_index",
+                      "delete_datadog_log_index",
+                      "move_datadog_log_index",
+                      "upsert_datadog_log_archive",
+                      "delete_datadog_log_archive",
+                      "move_datadog_log_archive",
+                      "create_observability_pipeline",
+                      "update_datadog_security_signals_triage",
+                      "update_datadog_security_ioc_indicator_triage",
+                      "create_datadog_security_detection_rule",
+                      "update_datadog_security_detection_rule",
+                      "delete_datadog_security_detection_rules",
+                      "create_datadog_security_suppression",
+                      "update_datadog_security_suppression",
+                      "delete_datadog_security_suppression",
+                      "create_datadog_security_findings_ticket",
+                      "detach_datadog_security_findings_ticket",
+                      "mute_datadog_security_findings",
+                      "assign_datadog_security_findings",
+                      "override_datadog_security_findings_severity",
+                      "create_datadog_security_findings_automation_rule",
+                      "update_datadog_security_findings_automation_rule",
+                      "delete_datadog_security_findings_automation_rule",
+                      "reorder_datadog_security_findings_automation_rules",
+                      "upsert_datadog_security_trace_passlist",
+                      "delete_datadog_security_trace_passlist",
+                      "upsert_datadog_security_aap_denylist",
+                      "unblock_datadog_security_aap_denylist",
+                      "upsert_datadog_security_aap_custom_rule",
+                      "delete_datadog_security_aap_custom_rule",
+                      "create_datadog_security_iac_custom_rule",
+                      "update_datadog_security_iac_custom_rule",
+                      "publish_datadog_security_iac_custom_rule",
+                      "delete_datadog_security_iac_custom_rule",
+                      "mitigate_governance_detections",
+                      "update_governance_detection",
+                      "create_tag_rule",
+                      "update_tag_rule",
+                      "delete_tag_rule",
+                      "update_datadog_flaky_test_states",
+                      "edit_synthetics_tests",
+                      "synthetics_test_wizard",
+                      "create_datadog_feature_flag",
+                      "update_datadog_feature_flag_environment",
+                      "sync_datadog_feature_flag_allocations",
+                      "create_experiment",
+                      "link_feature_flag_to_experiment",
+                      "start_experiment",
+                      "conclude_experiment",
+                      "cancel_experiment",
+                      "update_entity_tags",
+                      "update_entity_description",
+                      "create_llmobs_experiment",
+                      "update_llmobs_agent_insight_status",
+                      "submit_llmobs_agent_insight_feedback",
+                      "create_or_update_llmobs_evaluator",
+                      "delete_llmobs_evaluator",
+                      "add_llmobs_dataset_records",
+                      "create_llmobs_pattern_config",
+                      "update_llmobs_pattern_config",
+                      "trigger_llmobs_pattern_run",
+                      "create_llmobs_annotation_queue",
+                      "update_llmobs_annotation_queue",
+                      "delete_llmobs_annotation_queue",
+                      "update_llmobs_annotation_label_schema",
+                      "add_llmobs_annotation_queue_interactions",
+                      "delete_llmobs_annotation_queue_interactions",
+                      "upsert_llmobs_annotations",
+                      "delete_llmobs_annotations",
+                      "ddsql_upsert_saved_query",
+                      "append_reference_table_rows",
+                      "upsert_reference_table_rows",
+                      "create_reference_table",
+                      "create_datadog_workflow",
+                      "update_datadog_workflow",
+                      "publish_datadog_workflow",
+                      "unpublish_datadog_workflow",
+                      "create_datadog_bits_agent",
+                      "update_datadog_bits_agent",
+                      "add_datadog_managed_mcp_server_to_bits_agent",
+                      "remove_datadog_managed_mcp_server_from_bits_agent",
+                      "create_datadog_form",
+                      "update_datadog_form",
+                      "publish_datadog_form",
+                      "clone_datadog_form",
+                      "delete_datadog_workflow",
+                      "execute_datadog_workflow",
+                      "cancel_datadog_workflow_instance",
+                      "run_datadog_bits_agent",
+                      "send_message_to_assistant",
+                      "execute_code"
+                    ]
+                  }
+                },
+                "required": [
+                  "name"
+                ]
+              }
+            },
+            "required": [
+              "method",
+              "params"
+            ]
+          }
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "datadog-mcp-read-logs": {
+    "$comment": "Search logs and run SQL-style aggregations over them (search_datadog_logs, analyze_datadog_logs; also the legacy get_logs name).",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/(v1/mcp|api/unstable/mcp-server/mcp)/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "const": "tools/call"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "enum": [
+                  "search_datadog_logs",
+                  "analyze_datadog_logs",
+                  "get_logs"
+                ]
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "params"
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "datadog-mcp-read-metrics": {
+    "$comment": "Query metric timeseries, browse metric metadata and tags, and inspect Metrics without Limits cardinality, volume and tag-indexing configuration.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/(v1/mcp|api/unstable/mcp-server/mcp)/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "const": "tools/call"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "enum": [
+                  "get_datadog_metric",
+                  "get_datadog_metric_context",
+                  "search_datadog_metrics",
+                  "estimate_datadog_metric_cardinality",
+                  "get_metric_cardinality_profile",
+                  "get_metric_governance_status",
+                  "get_metric_tag_configuration",
+                  "get_metric_tags",
+                  "get_metric_volume",
+                  "get_tag_indexing_rules"
+                ]
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "params"
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "datadog-mcp-write-metrics": {
+    "$comment": "Create, update or delete derived metrics and change Metrics without Limits tag configurations and tag-indexing rules.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/(v1/mcp|api/unstable/mcp-server/mcp)/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "const": "tools/call"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "enum": [
+                  "create_derived_metric",
+                  "update_derived_metric",
+                  "delete_derived_metric",
+                  "manage_metric_tag_configuration",
+                  "manage_tag_indexing_rule"
+                ]
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "params"
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "datadog-mcp-read-traces": {
+    "$comment": "Read APM data: fetch traces, search and aggregate spans, run read-only SQL over a trace, check service health, latency bottlenecks and APM recommendations, list sampling and service-remapping rules, and look up services in the Software Catalog (including the deprecated search_datadog_services names).",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/(v1/mcp|api/unstable/mcp-server/mcp)/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "const": "tools/call"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "enum": [
+                  "get_datadog_trace",
+                  "search_datadog_spans",
+                  "aggregate_spans",
+                  "apm_query_trace",
+                  "apm_discover_span_tags",
+                  "apm_get_primary_tag_keys",
+                  "apm_get_service_health",
+                  "apm_latency_bottleneck_summary",
+                  "apm_search_recommendations",
+                  "apm_get_recommendation",
+                  "search_apm_sampling_rules",
+                  "search_apm_service_remapping_rules",
+                  "search_datadog_entities",
+                  "search_datadog_services",
+                  "search_datadog_service_dependencies"
+                ]
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "params"
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "datadog-mcp-write-apm-configuration": {
+    "$comment": "Create, update, reorder or delete APM remote sampling rules and service remapping rules.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/(v1/mcp|api/unstable/mcp-server/mcp)/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "const": "tools/call"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "enum": [
+                  "create_apm_sampling_rule",
+                  "update_apm_sampling_rule",
+                  "delete_apm_sampling_rule",
+                  "create_apm_service_remapping_rule",
+                  "update_apm_service_remapping_rule",
+                  "reorder_apm_service_remapping_rules",
+                  "delete_apm_service_remapping_rule"
+                ]
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "params"
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "datadog-mcp-read-infrastructure": {
+    "$comment": "Inspect hosts, live processes, Kubernetes resources and rollouts, cloud resources, network monitoring (Cloud Network Monitoring, network devices, Network Path runs, AS status) and Cloud Cost recommendations.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/(v1/mcp|api/unstable/mcp-server/mcp)/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "const": "tools/call"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "enum": [
+                  "search_datadog_hosts",
+                  "search_datadog_live_processes",
+                  "search_datadog_k8s_resources",
+                  "analyse_datadog_k8s_rollout",
+                  "describe_datadog_k8s_resource",
+                  "get_datadog_k8s_manifest",
+                  "get_cloud_resource_details",
+                  "analyze_cloud_network_monitoring",
+                  "search_ndm_devices",
+                  "get_ndm_device",
+                  "search_ndm_interfaces",
+                  "get_network_path_test_runs",
+                  "get_autonomous_system_status",
+                  "list_autonomous_system_statuses",
+                  "cost_recommendations"
+                ]
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "params"
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "datadog-mcp-run-remote-actions": {
+    "$comment": "Run actions on monitored hosts through a Private Action Runner: live Network Path traceroutes (run_network_path) and restricted read-only shell commands (datadog_remote_action_restricted_shell_run_command).",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/(v1/mcp|api/unstable/mcp-server/mcp)/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "const": "tools/call"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "enum": [
+                  "run_network_path",
+                  "datadog_remote_action_restricted_shell_run_command"
+                ]
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "params"
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "datadog-mcp-read-live-debugger": {
+    "$comment": "Discover where Live Debugger logpoints can run, list the logpoints of a debugger session and read captured snapshots.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/(v1/mcp|api/unstable/mcp-server/mcp)/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "const": "tools/call"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "enum": [
+                  "discover_datadog_logpoint",
+                  "list_datadog_session_logpoints",
+                  "get_datadog_debugger_snapshot"
+                ]
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "params"
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "datadog-mcp-write-live-debugger": {
+    "$comment": "Enable Live Debugger for a service, create debugger sessions and logpoints, and disable logpoints.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/(v1/mcp|api/unstable/mcp-server/mcp)/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "const": "tools/call"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "enum": [
+                  "enable_live_debugger",
+                  "create_debugger_session",
+                  "create_datadog_logpoint",
+                  "disable_datadog_logpoints"
+                ]
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "params"
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "datadog-mcp-read-events": {
+    "$comment": "Search Datadog events (alerts, deployments, infrastructure changes) and Audit Trail events, and build Audit Trail queries.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/(v1/mcp|api/unstable/mcp-server/mcp)/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "const": "tools/call"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "enum": [
+                  "search_datadog_events",
+                  "search_audit_events",
+                  "list_audit_events",
+                  "build_audit_trail_query"
+                ]
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "params"
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "datadog-mcp-read-databases": {
+    "$comment": "Read Database Monitoring data: find database instances, query performance, explain plans, query samples, schemas, settings, health signals, calling services and optimization recommendations.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/(v1/mcp|api/unstable/mcp-server/mcp)/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "const": "tools/call"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "enum": [
+                  "find_datadog_database_instances",
+                  "get_datadog_database_calling_services",
+                  "get_datadog_database_explain_plans",
+                  "get_datadog_database_health_signals",
+                  "get_datadog_database_instance_settings",
+                  "get_datadog_database_query_performance",
+                  "get_datadog_database_query_statement",
+                  "get_datadog_database_recommendations",
+                  "get_datadog_database_schemas",
+                  "optimize_datadog_database_query",
+                  "search_datadog_database_plans",
+                  "search_datadog_database_samples"
+                ]
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "params"
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "datadog-mcp-read-profiling": {
+    "$comment": "Read Continuous Profiler data: profiled services, runtimes, profile types, flame graphs, call graphs, timelines, timeseries, service insights and profiling tags and fields.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/(v1/mcp|api/unstable/mcp-server/mcp)/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "const": "tools/call"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "enum": [
+                  "get_profiling_profile_types",
+                  "get_profiling_services",
+                  "get_profiling_runtime_ids",
+                  "get_profiling_service_insights",
+                  "explore_profiling_flame_graph",
+                  "explore_profiling_call_graph",
+                  "explore_profiling_timeline",
+                  "get_profiling_timeseries",
+                  "get_profiling_tag_names",
+                  "get_profiling_tag_values",
+                  "get_profiling_fields",
+                  "get_profiling_field_values"
+                ]
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "params"
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "datadog-mcp-read-rum": {
+    "$comment": "Read Real User Monitoring, Session Replay and Product Analytics data: search and aggregate RUM events, inspect applications, views, operations, RUM metrics and retention filters, search and summarize replays, and run funnel, pathway and retention analyses.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/(v1/mcp|api/unstable/mcp-server/mcp)/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "const": "tools/call"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "enum": [
+                  "search_datadog_rum_events",
+                  "aggregate_rum_events",
+                  "search_rum_applications",
+                  "get_rum_summary",
+                  "get_rum_insight",
+                  "get_rum_view_waterfall",
+                  "search_rum_operations",
+                  "get_rum_operation_summary",
+                  "get_rum_operation_insights",
+                  "search_rum_metrics",
+                  "search_rum_retention_filters",
+                  "search_replays",
+                  "get_replay_summary",
+                  "search_product_analytics_events",
+                  "search_product_analytics_org_entities",
+                  "get_product_analytics_saved_chart",
+                  "aggregate_product_analytics_events",
+                  "run_product_analytics_journey",
+                  "run_product_analytics_pathway",
+                  "run_product_analytics_retention"
+                ]
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "params"
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "datadog-mcp-write-rum": {
+    "$comment": "Create, update or delete RUM operations, custom RUM metrics and RUM retention/exclusion filters (including reordering filters).",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/(v1/mcp|api/unstable/mcp-server/mcp)/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "const": "tools/call"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "enum": [
+                  "create_rum_operation",
+                  "update_rum_operation",
+                  "delete_rum_operation",
+                  "upsert_rum_metric",
+                  "delete_rum_metric",
+                  "append_new_rum_retention_filter",
+                  "update_rum_retention_filter",
+                  "reorder_rum_retention_filters",
+                  "delete_rum_retention_filter"
+                ]
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "params"
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "datadog-mcp-read-monitors": {
+    "$comment": "Search monitors, monitor groups and SLOs, validate monitor definitions, browse monitor templates and find monitoring coverage gaps.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/(v1/mcp|api/unstable/mcp-server/mcp)/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "const": "tools/call"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "enum": [
+                  "search_datadog_monitors",
+                  "validate_datadog_monitor",
+                  "get_datadog_monitor_templates",
+                  "search_datadog_monitor_groups",
+                  "search_datadog_slos",
+                  "get_monitor_coverage"
+                ]
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "params"
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "datadog-mcp-write-monitors": {
+    "$comment": "Create monitors (created in draft mode, create_datadog_monitor).",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/(v1/mcp|api/unstable/mcp-server/mcp)/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "const": "tools/call"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "const": "create_datadog_monitor"
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "params"
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "datadog-mcp-read-investigations": {
+    "$comment": "Read incidents, Bits AI investigations and Watchdog anomaly data: incident details, investigation findings, Watchdog stories and insights, influential tags, external provider outages, timeseries jump detection and forecasts.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/(v1/mcp|api/unstable/mcp-server/mcp)/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "const": "tools/call"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "enum": [
+                  "get_datadog_incident",
+                  "search_datadog_incidents",
+                  "search_investigations",
+                  "get_investigations_from_incident_id",
+                  "get_bits_ai_investigation",
+                  "search_watchdog_stories",
+                  "get_watchdog_story",
+                  "search_watchdog_insights",
+                  "get_influential_tags",
+                  "get_external_provider_status",
+                  "find_new_jumps",
+                  "update_jump_state",
+                  "forecast_timeseries"
+                ]
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "params"
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "datadog-mcp-write-investigations": {
+    "$comment": "Trigger Bits AI investigations for alerts, incidents or free-text descriptions, and steer running investigations.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/(v1/mcp|api/unstable/mcp-server/mcp)/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "const": "tools/call"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "enum": [
+                  "trigger_bits_ai_investigation",
+                  "trigger_general_investigation",
+                  "trigger_incident_investigation",
+                  "steer_bits_ai_investigation"
+                ]
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "params"
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "datadog-mcp-read-cases": {
+    "$comment": "Read Work Management cases: search cases, view details, attachments, links and projects, and look up Datadog users.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/(v1/mcp|api/unstable/mcp-server/mcp)/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "const": "tools/call"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "enum": [
+                  "search_datadog_cases",
+                  "get_datadog_case",
+                  "get_datadog_case_attachment",
+                  "get_datadog_case_links",
+                  "list_datadog_case_projects",
+                  "get_datadog_case_project",
+                  "search_datadog_users"
+                ]
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "params"
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "datadog-mcp-write-cases": {
+    "$comment": "Create and update Work Management cases, add comments and attachments, link cases to each other or to Jira issues, and create projects.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/(v1/mcp|api/unstable/mcp-server/mcp)/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "const": "tools/call"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "enum": [
+                  "create_datadog_case",
+                  "update_datadog_case",
+                  "add_comment_to_datadog_case",
+                  "attach_file_to_datadog_case",
+                  "link_jira_issue_to_datadog_case",
+                  "link_datadog_cases",
+                  "unlink_datadog_cases",
+                  "create_datadog_case_project"
+                ]
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "params"
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "datadog-mcp-read-error-tracking": {
+    "$comment": "Search and inspect Error Tracking issues, run SQL-style analysis over error samples and read issue analytics.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/(v1/mcp|api/unstable/mcp-server/mcp)/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "const": "tools/call"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "enum": [
+                  "search_datadog_error_tracking_issues",
+                  "get_datadog_error_tracking_issue",
+                  "analyze_datadog_error_tracking_errors",
+                  "get_datadog_error_tracking_analytics"
+                ]
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "params"
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "datadog-mcp-write-error-tracking": {
+    "$comment": "Change the state or assignee of Error Tracking issues and manage their comments and Jira/Linear/case links.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/(v1/mcp|api/unstable/mcp-server/mcp)/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "const": "tools/call"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "enum": [
+                  "update_datadog_error_tracking_issue",
+                  "manage_datadog_error_tracking_issue_comments",
+                  "manage_datadog_error_tracking_issue_links"
+                ]
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "params"
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "datadog-mcp-read-dashboards": {
+    "$comment": "Read dashboards, notebooks, widgets and Datadog spreadsheets: search and fetch them, render and verify widgets, validate widget and notebook cell definitions, and consult widget-building reference material.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/(v1/mcp|api/unstable/mcp-server/mcp)/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "const": "tools/call"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "enum": [
+                  "search_datadog_dashboards",
+                  "get_datadog_dashboard",
+                  "get_widget_reference",
+                  "validate_dashboard_widget",
+                  "ask_widget_expert",
+                  "get_widget",
+                  "search_datadog_widgets",
+                  "swap_widget_type",
+                  "validate_notebook_cell",
+                  "validate_notebook_cells",
+                  "verify_widget_data",
+                  "visualize_tabular_data",
+                  "get_datadog_notebook",
+                  "search_datadog_notebooks",
+                  "get_datadog_spreadsheet_reference",
+                  "search_datadog_spreadsheets",
+                  "get_datadog_spreadsheet",
+                  "get_datadog_spreadsheet_tab_data"
+                ]
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "params"
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "datadog-mcp-write-dashboards": {
+    "$comment": "Create or update dashboards, notebooks and Datadog spreadsheets, and restore soft-deleted notebooks.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/(v1/mcp|api/unstable/mcp-server/mcp)/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "const": "tools/call"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "enum": [
+                  "upsert_datadog_dashboard",
+                  "create_datadog_notebook",
+                  "edit_datadog_notebook",
+                  "recover_datadog_notebook",
+                  "upsert_datadog_spreadsheet"
+                ]
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "params"
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "datadog-mcp-delete-dashboards": {
+    "$comment": "Delete dashboards, notebooks and Datadog spreadsheets.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/(v1/mcp|api/unstable/mcp-server/mcp)/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "const": "tools/call"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "enum": [
+                  "delete_datadog_dashboard",
+                  "delete_datadog_notebook",
+                  "delete_datadog_spreadsheet"
+                ]
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "params"
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "datadog-mcp-read-logs-configuration": {
+    "$comment": "Read log pipelines, indexes and archives, and list, describe and validate Observability Pipelines configurations.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/(v1/mcp|api/unstable/mcp-server/mcp)/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "const": "tools/call"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "enum": [
+                  "list_datadog_log_pipelines",
+                  "get_datadog_log_pipeline",
+                  "list_datadog_log_indexes",
+                  "get_datadog_log_index",
+                  "list_datadog_log_archives",
+                  "get_datadog_log_archive",
+                  "list_observability_pipelines",
+                  "describe_observability_pipeline",
+                  "get_observability_pipeline_component_schema",
+                  "validate_observability_pipeline"
+                ]
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "params"
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "datadog-mcp-write-logs-configuration": {
+    "$comment": "Create, update, reorder or delete log pipelines, indexes and archives, and create Observability Pipelines.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/(v1/mcp|api/unstable/mcp-server/mcp)/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "const": "tools/call"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "enum": [
+                  "upsert_datadog_log_pipeline",
+                  "delete_datadog_log_pipeline",
+                  "move_datadog_log_pipeline",
+                  "upsert_datadog_log_index",
+                  "delete_datadog_log_index",
+                  "move_datadog_log_index",
+                  "upsert_datadog_log_archive",
+                  "delete_datadog_log_archive",
+                  "move_datadog_log_archive",
+                  "create_observability_pipeline"
+                ]
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "params"
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "datadog-mcp-read-security": {
+    "$comment": "Read security data: search and analyze security signals, findings and IoC indicators, read detection rules, suppressions, findings automation rules, App & API Protection passlists, denylists, custom WAF rules and blocking config, read IaC custom rules, generate and validate IaC rule Rego without saving it, and scan code for hardcoded secrets.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/(v1/mcp|api/unstable/mcp-server/mcp)/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "const": "tools/call"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "enum": [
+                  "datadog_secrets_scan",
+                  "get_datadog_security_signals_schema",
+                  "search_datadog_security_signals",
+                  "analyze_datadog_security_signals",
+                  "get_datadog_security_signal",
+                  "search_datadog_security_ioc_indicators",
+                  "get_datadog_security_ioc_indicator",
+                  "get_datadog_security_ioc_schema",
+                  "get_datadog_security_detection_rules_schema",
+                  "get_datadog_security_detection_rules",
+                  "get_datadog_security_suppressions",
+                  "get_datadog_security_findings_schema",
+                  "analyze_datadog_security_findings",
+                  "search_datadog_security_findings",
+                  "get_datadog_security_findings_ticket_suggestions",
+                  "list_datadog_security_findings_automation_rules",
+                  "get_datadog_security_trace_passlist",
+                  "get_datadog_security_aap_denylist",
+                  "get_datadog_security_aap_custom_rules",
+                  "get_datadog_security_aap_blocking_config",
+                  "get_datadog_security_iac_custom_rules",
+                  "get_datadog_security_iac_custom_rules_schema",
+                  "generate_datadog_security_iac_custom_rule",
+                  "validate_datadog_security_iac_custom_rule"
+                ]
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "params"
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "datadog-mcp-write-security": {
+    "$comment": "Change security configuration and triage: triage signals and IoC indicators, create/update/delete detection rules, suppressions and findings automation rules, mute, assign, re-prioritize or ticket findings, manage App & API Protection passlists, denylists and custom WAF rules, and create, update, publish or delete IaC custom rules.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/(v1/mcp|api/unstable/mcp-server/mcp)/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "const": "tools/call"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "enum": [
+                  "update_datadog_security_signals_triage",
+                  "update_datadog_security_ioc_indicator_triage",
+                  "create_datadog_security_detection_rule",
+                  "update_datadog_security_detection_rule",
+                  "delete_datadog_security_detection_rules",
+                  "create_datadog_security_suppression",
+                  "update_datadog_security_suppression",
+                  "delete_datadog_security_suppression",
+                  "create_datadog_security_findings_ticket",
+                  "detach_datadog_security_findings_ticket",
+                  "mute_datadog_security_findings",
+                  "assign_datadog_security_findings",
+                  "override_datadog_security_findings_severity",
+                  "create_datadog_security_findings_automation_rule",
+                  "update_datadog_security_findings_automation_rule",
+                  "delete_datadog_security_findings_automation_rule",
+                  "reorder_datadog_security_findings_automation_rules",
+                  "upsert_datadog_security_trace_passlist",
+                  "delete_datadog_security_trace_passlist",
+                  "upsert_datadog_security_aap_denylist",
+                  "unblock_datadog_security_aap_denylist",
+                  "upsert_datadog_security_aap_custom_rule",
+                  "delete_datadog_security_aap_custom_rule",
+                  "create_datadog_security_iac_custom_rule",
+                  "update_datadog_security_iac_custom_rule",
+                  "publish_datadog_security_iac_custom_rule",
+                  "delete_datadog_security_iac_custom_rule"
+                ]
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "params"
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "datadog-mcp-read-governance": {
+    "$comment": "Read organization governance data: insights, controls, detections, rate and resource limits, best practices and tag rules.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/(v1/mcp|api/unstable/mcp-server/mcp)/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "const": "tools/call"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "enum": [
+                  "list_governance_insights",
+                  "list_governance_controls",
+                  "get_governance_control",
+                  "list_governance_detections",
+                  "get_governance_detection",
+                  "list_governance_limits",
+                  "list_governance_best_practices",
+                  "list_tag_rules",
+                  "get_tag_rule"
+                ]
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "params"
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "datadog-mcp-write-governance": {
+    "$comment": "Mitigate or update governance detections and create, update or delete tag rules.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/(v1/mcp|api/unstable/mcp-server/mcp)/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "const": "tools/call"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "enum": [
+                  "mitigate_governance_detections",
+                  "update_governance_detection",
+                  "create_tag_rule",
+                  "update_tag_rule",
+                  "delete_tag_rule"
+                ]
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "params"
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "datadog-mcp-read-software-delivery": {
+    "$comment": "Read CI Visibility, Test Optimization, code coverage, DORA deployment metrics, Deployment Gates and Synthetic tests.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/(v1/mcp|api/unstable/mcp-server/mcp)/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "const": "tools/call"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "enum": [
+                  "search_datadog_ci_pipeline_events",
+                  "aggregate_datadog_ci_pipeline_events",
+                  "get_datadog_flaky_tests",
+                  "aggregate_datadog_test_events",
+                  "search_datadog_test_events",
+                  "get_datadog_code_coverage_branch_summary",
+                  "get_datadog_code_coverage_commit_summary",
+                  "get_datadog_code_coverage_pr_summary",
+                  "get_datadog_code_coverage_files",
+                  "get_datadog_test_optimization_settings",
+                  "get_datadog_flaky_tests_management_policies",
+                  "search_dora_deployments",
+                  "aggregate_dora_deployments",
+                  "search_datadog_deployment_gates",
+                  "get_datadog_deployment_gate",
+                  "search_datadog_deployment_gate_evaluations",
+                  "get_datadog_deployment_gate_evaluation",
+                  "search_datadog_deployment_gate_rule_evaluations",
+                  "get_synthetics_tests"
+                ]
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "params"
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "datadog-mcp-write-software-delivery": {
+    "$comment": "Quarantine or disable flaky tests and create or edit Synthetic HTTP API tests.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/(v1/mcp|api/unstable/mcp-server/mcp)/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "const": "tools/call"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "enum": [
+                  "update_datadog_flaky_test_states",
+                  "edit_synthetics_tests",
+                  "synthetics_test_wizard"
+                ]
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "params"
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "datadog-mcp-read-feature-flags": {
+    "$comment": "Read feature flags, their environments and allocations, check flag implementation in code, and read experiments, their results, diagnostics and metric definitions.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/(v1/mcp|api/unstable/mcp-server/mcp)/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "const": "tools/call"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "enum": [
+                  "list_datadog_feature_flags",
+                  "get_datadog_feature_flag",
+                  "list_datadog_feature_flag_environments",
+                  "list_datadog_feature_flag_allocations",
+                  "check_datadog_flag_implementation",
+                  "list_experiments",
+                  "get_experiment",
+                  "get_experiment_diagnostics",
+                  "get_experiment_results",
+                  "explore_experiment_results",
+                  "list_experiment_segmentation_properties",
+                  "get_experiment_segmentation_property_values",
+                  "get_metric_definition",
+                  "diagnose_experiment_run_failure"
+                ]
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "params"
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "datadog-mcp-write-feature-flags": {
+    "$comment": "Create feature flags, change flag configuration and allocations per environment, and create, start, conclude or cancel experiments.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/(v1/mcp|api/unstable/mcp-server/mcp)/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "const": "tools/call"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "enum": [
+                  "create_datadog_feature_flag",
+                  "update_datadog_feature_flag_environment",
+                  "sync_datadog_feature_flag_allocations",
+                  "create_experiment",
+                  "link_feature_flag_to_experiment",
+                  "start_experiment",
+                  "conclude_experiment",
+                  "cancel_experiment"
+                ]
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "params"
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "datadog-mcp-read-data-observability": {
+    "$comment": "Read the data catalog and Data Observability: search data entities, lineage and hierarchy, warehouse query history, data quality monitors and coverage, entity tags and descriptions, Spark job health and recommendations.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/(v1/mcp|api/unstable/mcp-server/mcp)/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "const": "tools/call"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "enum": [
+                  "search_data_entities",
+                  "get_data_catalog_schema",
+                  "get_data_entity_details",
+                  "get_data_entity_hierarchy",
+                  "get_data_entity_lineage",
+                  "summarize_data_entity_lineage",
+                  "rank_data_entities_by_lineage_degree",
+                  "get_warehouse_query_history",
+                  "get_popular_warehouse_tables_by_query_frequency",
+                  "suggest_data_observability_monitor_filters",
+                  "rank_data_observability_monitor_candidates",
+                  "get_data_observability_monitor",
+                  "get_data_observability_monitor_coverage",
+                  "get_data_observability_monitor_group_statuses",
+                  "get_entity_tags",
+                  "get_entity_descriptions",
+                  "get_spark_job_health",
+                  "get_spark_sql_plan",
+                  "list_data_observability_recommendations",
+                  "get_data_observability_recommendation"
+                ]
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "params"
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "datadog-mcp-write-data-observability": {
+    "$comment": "Set custom tags and descriptions on data catalog entities.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/(v1/mcp|api/unstable/mcp-server/mcp)/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "const": "tools/call"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "enum": [
+                  "update_entity_tags",
+                  "update_entity_description"
+                ]
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "params"
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "datadog-mcp-read-llm-observability": {
+    "$comment": "Read LLM / Agent Observability data: search traces and spans, agent loops and insights, experiments and their results, evaluators and evaluations, projects, datasets, Patterns configs and results, and annotation queues.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/(v1/mcp|api/unstable/mcp-server/mcp)/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "const": "tools/call"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "enum": [
+                  "search_llmobs_spans",
+                  "get_llmobs_trace",
+                  "get_llmobs_span_details",
+                  "get_llmobs_span_content",
+                  "find_llmobs_error_spans",
+                  "expand_llmobs_spans",
+                  "get_llmobs_agent_loop",
+                  "list_llmobs_agent_insights",
+                  "get_llmobs_agent_insight",
+                  "get_llmobs_experiment_summary",
+                  "list_llmobs_experiment_events",
+                  "get_llmobs_experiment_event",
+                  "get_llmobs_experiment_metric_values",
+                  "get_llmobs_experiment_dimension_values",
+                  "list_llmobs_evals",
+                  "list_llmobs_evals_by_ml_app",
+                  "list_llmobs_feedback_labels",
+                  "list_llmobs_feedback_events",
+                  "get_llmobs_evaluator",
+                  "list_llmobs_projects",
+                  "get_llmobs_project",
+                  "list_llmobs_datasets",
+                  "get_llmobs_dataset_records",
+                  "get_llmobs_full_dataset_records",
+                  "estimate_llmobs_topic_discovery_cost",
+                  "list_llmobs_pattern_configs",
+                  "get_llmobs_pattern_config",
+                  "get_llmobs_pattern_run_status",
+                  "list_llmobs_pattern_runs",
+                  "get_llmobs_patterns",
+                  "get_llmobs_patterns_with_points",
+                  "get_llmobs_pattern_points",
+                  "list_llmobs_annotation_queues",
+                  "get_llmobs_annotation_label_schema",
+                  "get_llmobs_annotated_interactions",
+                  "get_llmobs_annotations_by_content_ids"
+                ]
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "params"
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "datadog-mcp-write-llm-observability": {
+    "$comment": "Change LLM / Agent Observability data: create experiments, update insight status and submit feedback, create, update or delete evaluators, add dataset records, create or update Patterns configs and trigger Patterns runs, and manage annotation queues, label schemas, interactions and annotations.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/(v1/mcp|api/unstable/mcp-server/mcp)/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "const": "tools/call"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "enum": [
+                  "create_llmobs_experiment",
+                  "update_llmobs_agent_insight_status",
+                  "submit_llmobs_agent_insight_feedback",
+                  "create_or_update_llmobs_evaluator",
+                  "delete_llmobs_evaluator",
+                  "add_llmobs_dataset_records",
+                  "create_llmobs_pattern_config",
+                  "update_llmobs_pattern_config",
+                  "trigger_llmobs_pattern_run",
+                  "create_llmobs_annotation_queue",
+                  "update_llmobs_annotation_queue",
+                  "delete_llmobs_annotation_queue",
+                  "update_llmobs_annotation_label_schema",
+                  "add_llmobs_annotation_queue_interactions",
+                  "delete_llmobs_annotation_queue_interactions",
+                  "upsert_llmobs_annotations",
+                  "delete_llmobs_annotations"
+                ]
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "params"
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "datadog-mcp-run-ddsql-queries": {
+    "$comment": "Run read-only DDSQL queries over Datadog data, browse DDSQL tables, columns and fields, read saved queries and generate DDSQL Editor links.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/(v1/mcp|api/unstable/mcp-server/mcp)/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "const": "tools/call"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "enum": [
+                  "ddsql_get_spec",
+                  "ddsql_schema_search_tables",
+                  "ddsql_schema_get_table_columns",
+                  "ddsql_schema_search_unstructured_fields",
+                  "ddsql_run_query",
+                  "ddsql_create_link",
+                  "ddsql_search_saved_queries",
+                  "ddsql_read_saved_query"
+                ]
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "params"
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "datadog-mcp-write-ddsql-saved-queries": {
+    "$comment": "Create or update saved DDSQL queries.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/(v1/mcp|api/unstable/mcp-server/mcp)/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "const": "tools/call"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "const": "ddsql_upsert_saved_query"
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "params"
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "datadog-mcp-read-reference-tables": {
+    "$comment": "List Reference Tables and read their rows.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/(v1/mcp|api/unstable/mcp-server/mcp)/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "const": "tools/call"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "enum": [
+                  "list_reference_tables",
+                  "list_reference_table_rows",
+                  "get_reference_table_rows"
+                ]
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "params"
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "datadog-mcp-write-reference-tables": {
+    "$comment": "Create Reference Tables and append or upsert rows in them.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/(v1/mcp|api/unstable/mcp-server/mcp)/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "const": "tools/call"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "enum": [
+                  "append_reference_table_rows",
+                  "upsert_reference_table_rows",
+                  "create_reference_table"
+                ]
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "params"
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "datadog-mcp-read-automation": {
+    "$comment": "Read Workflow Automation workflows, actions and execution history, Bits AI agents and their conversations, Forms and their responses, and Datadog Assistant conversation history.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/(v1/mcp|api/unstable/mcp-server/mcp)/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "const": "tools/call"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "enum": [
+                  "list_datadog_workflows",
+                  "get_datadog_workflow",
+                  "search_datadog_workflow_actions",
+                  "get_datadog_workflow_action",
+                  "get_datadog_workflow_spec_schema",
+                  "validate_datadog_workflow",
+                  "list_datadog_workflow_instances",
+                  "get_datadog_workflow_instance",
+                  "get_datadog_workflow_step_data",
+                  "list_datadog_bits_agents",
+                  "get_datadog_bits_agent",
+                  "list_datadog_bits_agent_models",
+                  "list_datadog_bits_agent_mcp_tools",
+                  "list_datadog_bits_agent_conversations",
+                  "get_datadog_bits_agent_conversation_events",
+                  "search_datadog_forms",
+                  "get_datadog_form",
+                  "get_form_definition_schema",
+                  "get_form_responses",
+                  "get_assistant_conversation_history",
+                  "list_assistant_conversations"
+                ]
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "params"
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "datadog-mcp-write-automation": {
+    "$comment": "Create, update, publish or unpublish workflows, create and configure Bits AI agents (including their managed MCP servers), and create, update, publish or clone Forms.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/(v1/mcp|api/unstable/mcp-server/mcp)/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "const": "tools/call"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "enum": [
+                  "create_datadog_workflow",
+                  "update_datadog_workflow",
+                  "publish_datadog_workflow",
+                  "unpublish_datadog_workflow",
+                  "create_datadog_bits_agent",
+                  "update_datadog_bits_agent",
+                  "add_datadog_managed_mcp_server_to_bits_agent",
+                  "remove_datadog_managed_mcp_server_from_bits_agent",
+                  "create_datadog_form",
+                  "update_datadog_form",
+                  "publish_datadog_form",
+                  "clone_datadog_form"
+                ]
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "params"
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "datadog-mcp-delete-automation": {
+    "$comment": "Permanently delete workflows (delete_datadog_workflow).",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/(v1/mcp|api/unstable/mcp-server/mcp)/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "const": "tools/call"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "const": "delete_datadog_workflow"
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "params"
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "datadog-mcp-run-automation": {
+    "$comment": "Execute or cancel workflow runs, run Bits AI agents, and send messages to the Datadog Assistant (Bits Chat).",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/(v1/mcp|api/unstable/mcp-server/mcp)/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "const": "tools/call"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "enum": [
+                  "execute_datadog_workflow",
+                  "cancel_datadog_workflow_instance",
+                  "run_datadog_bits_agent",
+                  "send_message_to_assistant"
+                ]
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "params"
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "datadog-mcp-execute-code": {
+    "$comment": "Run agent-written JavaScript in a Datadog-managed sandbox with access to Datadog APIs (execute_code); the code can read or write any Datadog resource the user has access to.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/(v1/mcp|api/unstable/mcp-server/mcp)/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "const": "tools/call"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "const": "execute_code"
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "params"
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "datadog-mcp-read-documentation": {
+    "$comment": "Search and read Datadog documentation, look up the code-execution SDK reference, and follow product onboarding guides (RUM, devices, Kubernetes, Agent Observability, Test Optimization, serverless, source maps).",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/(v1/mcp|api/unstable/mcp-server/mcp)/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "const": "tools/call"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "enum": [
+                  "search_datadog_documentation",
+                  "read_datadog_documentation",
+                  "search_datadog_sdk",
+                  "browser_onboarding",
+                  "devices_onboarding",
+                  "kubernetes_onboarding",
+                  "llm_observability_onboarding",
+                  "test_optimization_onboarding",
+                  "test_parallelization_onboarding",
+                  "serverless_onboarding",
+                  "source_map_uploads"
+                ]
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "params"
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  }
+}

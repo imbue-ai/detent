@@ -1,0 +1,1779 @@
+{
+  "neon-mcp-api": {
+    "$comment": "Identifies requests to the Neon hosted MCP server (mcp.neon.tech).",
+    "properties": {
+      "domain": {
+        "const": "mcp.neon.tech"
+      }
+    },
+    "required": [
+      "domain"
+    ]
+  },
+  "neon-mcp-session": {
+    "$comment": "Open and maintain an MCP session: initialize, list tools/prompts/resources, ping, and send notifications. Required for any MCP client to function; does not read or modify Neon data.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/mcp/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "enum": [
+              "initialize",
+              "notifications/initialized",
+              "notifications/cancelled",
+              "ping",
+              "tools/list",
+              "prompts/list",
+              "prompts/get",
+              "resources/list",
+              "resources/read",
+              "resources/templates/list",
+              "resources/subscribe",
+              "resources/unsubscribe",
+              "completion/complete",
+              "logging/setLevel"
+            ]
+          }
+        },
+        "required": [
+          "method"
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "neon-mcp-read-all": {
+    "$comment": "Run any read-only Neon MCP tool (list and describe projects, branches, databases, roles, schemas, computes, snapshots, functions, storage, logs; explain queries and run database health checks; search Neon docs) plus the MCP session handshake. Does not execute arbitrary SQL and does not reveal connection strings or secrets.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/mcp/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "anyOf": [
+          {
+            "type": "object",
+            "properties": {
+              "method": {
+                "enum": [
+                  "initialize",
+                  "notifications/initialized",
+                  "notifications/cancelled",
+                  "ping",
+                  "tools/list",
+                  "prompts/list",
+                  "prompts/get",
+                  "resources/list",
+                  "resources/read",
+                  "resources/templates/list",
+                  "resources/subscribe",
+                  "resources/unsubscribe",
+                  "completion/complete",
+                  "logging/setLevel"
+                ]
+              }
+            },
+            "required": [
+              "method"
+            ]
+          },
+          {
+            "type": "object",
+            "properties": {
+              "method": {
+                "const": "tools/call"
+              },
+              "params": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "enum": [
+                      "list_organizations",
+                      "list_projects",
+                      "describe_project",
+                      "list_project_permissions",
+                      "list_project_members",
+                      "list_regions",
+                      "list_operations",
+                      "get_operation",
+                      "search",
+                      "fetch",
+                      "list_branches",
+                      "get_branch",
+                      "get_default_branch",
+                      "describe_branch",
+                      "get_database_tables",
+                      "describe_table_schema",
+                      "compare_database_schema",
+                      "explain_sql_statement",
+                      "list_slow_queries",
+                      "inspect_database",
+                      "list_postgres_databases",
+                      "get_postgres_database",
+                      "list_postgres_roles",
+                      "get_postgres_role",
+                      "list_credentials",
+                      "list_postgres_endpoints",
+                      "list_branch_computes",
+                      "get_postgres_endpoint",
+                      "list_snapshots",
+                      "get_snapshot_schedule",
+                      "get_auth",
+                      "get_neon_auth_config",
+                      "list_auth_trusted_domains",
+                      "get_data_api",
+                      "query_logs",
+                      "list_log_fields",
+                      "list_log_field_values",
+                      "get_ai_gateway",
+                      "search_docs",
+                      "get_doc",
+                      "list_functions",
+                      "get_function",
+                      "list_functions_custom_domains",
+                      "list_triggers",
+                      "get_trigger",
+                      "get_storage",
+                      "list_storage_buckets",
+                      "list_storage_objects",
+                      "get_realtime"
+                    ]
+                  }
+                },
+                "required": [
+                  "name"
+                ]
+              }
+            },
+            "required": [
+              "method",
+              "params"
+            ]
+          }
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "neon-mcp-write-all": {
+    "$comment": "Run any Neon MCP tool that creates, modifies or deletes something or exposes secrets (execute SQL and migrations; create, update, reset and delete projects, branches, databases, roles, computes, snapshots, functions, storage, Neon Auth, Data API and Realtime; obtain connection strings and secrets; send feedback) plus the MCP session handshake.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/mcp/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "anyOf": [
+          {
+            "type": "object",
+            "properties": {
+              "method": {
+                "enum": [
+                  "initialize",
+                  "notifications/initialized",
+                  "notifications/cancelled",
+                  "ping",
+                  "tools/list",
+                  "prompts/list",
+                  "prompts/get",
+                  "resources/list",
+                  "resources/read",
+                  "resources/templates/list",
+                  "resources/subscribe",
+                  "resources/unsubscribe",
+                  "completion/complete",
+                  "logging/setLevel"
+                ]
+              }
+            },
+            "required": [
+              "method"
+            ]
+          },
+          {
+            "type": "object",
+            "properties": {
+              "method": {
+                "const": "tools/call"
+              },
+              "params": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "enum": [
+                      "create_project",
+                      "update_project",
+                      "recover_project",
+                      "delete_project",
+                      "create_branch",
+                      "update_branch",
+                      "set_default_branch",
+                      "finalize_branch_restore",
+                      "delete_branch",
+                      "reset_from_parent",
+                      "run_sql",
+                      "run_sql_transaction",
+                      "prepare_database_migration",
+                      "complete_database_migration",
+                      "prepare_query_tuning",
+                      "complete_query_tuning",
+                      "create_postgres_database",
+                      "update_postgres_database",
+                      "create_postgres_role",
+                      "reset_postgres_role_password",
+                      "delete_postgres_database",
+                      "delete_postgres_role",
+                      "get_connection_string",
+                      "create_credential",
+                      "rotate_credential",
+                      "revoke_credential",
+                      "create_postgres_endpoint",
+                      "update_postgres_endpoint",
+                      "delete_postgres_endpoint",
+                      "start_postgres_endpoint",
+                      "suspend_postgres_endpoint",
+                      "restart_postgres_endpoint",
+                      "create_snapshot",
+                      "update_snapshot",
+                      "delete_snapshot",
+                      "set_snapshot_schedule",
+                      "restore_snapshot",
+                      "provision_neon_auth",
+                      "update_auth_config",
+                      "disable_auth",
+                      "list_auth_oauth_providers",
+                      "add_auth_oauth_provider",
+                      "update_auth_oauth_provider",
+                      "delete_auth_oauth_provider",
+                      "add_auth_trusted_domain",
+                      "delete_auth_trusted_domain",
+                      "create_auth_user",
+                      "update_auth_user_role",
+                      "delete_auth_user",
+                      "provision_neon_data_api",
+                      "update_data_api",
+                      "delete_data_api",
+                      "deploy_function",
+                      "update_function",
+                      "delete_function",
+                      "register_functions_custom_domain",
+                      "delete_functions_custom_domain",
+                      "create_trigger",
+                      "update_trigger",
+                      "delete_trigger",
+                      "create_storage_bucket",
+                      "delete_storage_bucket",
+                      "delete_storage_object",
+                      "delete_storage_objects_by_prefix",
+                      "presign_storage_object",
+                      "enable_realtime",
+                      "disable_realtime",
+                      "get_realtime_secret",
+                      "rotate_realtime_secret",
+                      "send_feedback"
+                    ]
+                  }
+                },
+                "required": [
+                  "name"
+                ]
+              }
+            },
+            "required": [
+              "method",
+              "params"
+            ]
+          }
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "neon-mcp-read-projects": {
+    "$comment": "View Neon organizations, projects, regions and project settings, members, permissions and operations, and search across organizations, projects and branches (search, fetch).",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/mcp/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "const": "tools/call"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "enum": [
+                  "list_organizations",
+                  "list_projects",
+                  "describe_project",
+                  "list_project_permissions",
+                  "list_project_members",
+                  "list_regions",
+                  "list_operations",
+                  "get_operation",
+                  "search",
+                  "fetch"
+                ]
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "params"
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "neon-mcp-read-branches": {
+    "$comment": "List branches and view branch details, including the project's default branch.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/mcp/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "const": "tools/call"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "enum": [
+                  "list_branches",
+                  "get_branch",
+                  "get_default_branch"
+                ]
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "params"
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "neon-mcp-read-schema": {
+    "$comment": "Inspect database schemas: list tables, describe table columns and constraints, view all objects on a branch and diff a database schema between branches. Does not read table data.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/mcp/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "const": "tools/call"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "enum": [
+                  "describe_branch",
+                  "get_database_tables",
+                  "describe_table_schema",
+                  "compare_database_schema"
+                ]
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "params"
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "neon-mcp-read-performance": {
+    "$comment": "Analyze query performance: view execution plans (explain_sql_statement), list slow queries and run Neon's read-only database health checks (inspect_database).",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/mcp/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "const": "tools/call"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "enum": [
+                  "explain_sql_statement",
+                  "list_slow_queries",
+                  "inspect_database"
+                ]
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "params"
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "neon-mcp-read-databases": {
+    "$comment": "List and view Postgres databases and roles on a branch.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/mcp/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "const": "tools/call"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "enum": [
+                  "list_postgres_databases",
+                  "get_postgres_database",
+                  "list_postgres_roles",
+                  "get_postgres_role"
+                ]
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "params"
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "neon-mcp-read-credentials": {
+    "$comment": "List metadata about scoped service credentials issued on a branch (for Object Storage and the AI Gateway). Does not reveal secrets.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/mcp/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "const": "tools/call"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "const": "list_credentials"
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "params"
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "neon-mcp-read-computes": {
+    "$comment": "List and view compute endpoints for projects and branches.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/mcp/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "const": "tools/call"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "enum": [
+                  "list_postgres_endpoints",
+                  "list_branch_computes",
+                  "get_postgres_endpoint"
+                ]
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "params"
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "neon-mcp-read-snapshots": {
+    "$comment": "List snapshots and view a branch's automatic snapshot schedule.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/mcp/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "const": "tools/call"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "enum": [
+                  "list_snapshots",
+                  "get_snapshot_schedule"
+                ]
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "params"
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "neon-mcp-read-auth": {
+    "$comment": "View Neon Auth status and configuration for a branch (with secrets redacted) and its trusted redirect domains.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/mcp/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "const": "tools/call"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "enum": [
+                  "get_auth",
+                  "get_neon_auth_config",
+                  "list_auth_trusted_domains"
+                ]
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "params"
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "neon-mcp-read-data-api": {
+    "$comment": "View the Neon Data API configuration for a branch.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/mcp/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "const": "tools/call"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "const": "get_data_api"
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "params"
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "neon-mcp-read-observability": {
+    "$comment": "Query branch logs and their fields and values, and look up the AI Gateway endpoint host.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/mcp/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "const": "tools/call"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "enum": [
+                  "query_logs",
+                  "list_log_fields",
+                  "list_log_field_values",
+                  "get_ai_gateway"
+                ]
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "params"
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "neon-mcp-read-docs": {
+    "$comment": "Search and read Neon documentation, guides and blog posts on neon.com.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/mcp/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "const": "tools/call"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "enum": [
+                  "search_docs",
+                  "get_doc"
+                ]
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "params"
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "neon-mcp-read-functions": {
+    "$comment": "List and view Neon Functions, their custom domains and their triggers.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/mcp/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "const": "tools/call"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "enum": [
+                  "list_functions",
+                  "get_function",
+                  "list_functions_custom_domains",
+                  "list_triggers",
+                  "get_trigger"
+                ]
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "params"
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "neon-mcp-read-storage": {
+    "$comment": "View branchable object storage status and list its buckets and objects.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/mcp/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "const": "tools/call"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "enum": [
+                  "get_storage",
+                  "list_storage_buckets",
+                  "list_storage_objects"
+                ]
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "params"
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "neon-mcp-read-realtime": {
+    "$comment": "View whether Realtime is enabled for a branch and its invocation URL and allowed origins. Does not reveal the Realtime secret.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/mcp/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "const": "tools/call"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "const": "get_realtime"
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "params"
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "neon-mcp-write-projects": {
+    "$comment": "Create and update Neon projects, or recover a recently deleted project.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/mcp/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "const": "tools/call"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "enum": [
+                  "create_project",
+                  "update_project",
+                  "recover_project"
+                ]
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "params"
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "neon-mcp-delete-projects": {
+    "$comment": "Delete a Neon project and all of its branches and data (delete_project).",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/mcp/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "const": "tools/call"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "const": "delete_project"
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "params"
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "neon-mcp-write-branches": {
+    "$comment": "Create and update branches, set the project's default branch and finalize a branch restored from a snapshot.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/mcp/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "const": "tools/call"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "enum": [
+                  "create_branch",
+                  "update_branch",
+                  "set_default_branch",
+                  "finalize_branch_restore"
+                ]
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "params"
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "neon-mcp-delete-branches": {
+    "$comment": "Delete a branch and all of its data (delete_branch), or reset a branch to its parent and discard its changes (reset_from_parent).",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/mcp/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "const": "tools/call"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "enum": [
+                  "delete_branch",
+                  "reset_from_parent"
+                ]
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "params"
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "neon-mcp-run-sql": {
+    "$comment": "Execute arbitrary SQL statements and transactions on a Neon database (run_sql, run_sql_transaction). This can read, modify or delete any data or schema the connected role has access to.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/mcp/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "const": "tools/call"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "enum": [
+                  "run_sql",
+                  "run_sql_transaction"
+                ]
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "params"
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "neon-mcp-run-migrations": {
+    "$comment": "Prepare schema migrations and query-tuning changes on a temporary branch and then apply or discard them on the target branch.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/mcp/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "const": "tools/call"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "enum": [
+                  "prepare_database_migration",
+                  "complete_database_migration",
+                  "prepare_query_tuning",
+                  "complete_query_tuning"
+                ]
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "params"
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "neon-mcp-write-databases": {
+    "$comment": "Create and update Postgres databases on a branch, and create Postgres roles or reset their passwords.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/mcp/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "const": "tools/call"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "enum": [
+                  "create_postgres_database",
+                  "update_postgres_database",
+                  "create_postgres_role",
+                  "reset_postgres_role_password"
+                ]
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "params"
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "neon-mcp-delete-databases": {
+    "$comment": "Delete Postgres databases (and their data) or Postgres roles from a branch.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/mcp/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "const": "tools/call"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "enum": [
+                  "delete_postgres_database",
+                  "delete_postgres_role"
+                ]
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "params"
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "neon-mcp-get-connection-strings": {
+    "$comment": "Obtain Postgres connection strings, including the role password, for Neon databases (get_connection_string). These allow direct database access outside the MCP server.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/mcp/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "const": "tools/call"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "const": "get_connection_string"
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "params"
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "neon-mcp-write-credentials": {
+    "$comment": "Issue, rotate and revoke scoped service credentials on a branch (for Object Storage and the AI Gateway).",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/mcp/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "const": "tools/call"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "enum": [
+                  "create_credential",
+                  "rotate_credential",
+                  "revoke_credential"
+                ]
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "params"
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "neon-mcp-write-computes": {
+    "$comment": "Create, update and delete compute endpoints, and start, suspend or restart them.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/mcp/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "const": "tools/call"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "enum": [
+                  "create_postgres_endpoint",
+                  "update_postgres_endpoint",
+                  "delete_postgres_endpoint",
+                  "start_postgres_endpoint",
+                  "suspend_postgres_endpoint",
+                  "restart_postgres_endpoint"
+                ]
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "params"
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "neon-mcp-write-snapshots": {
+    "$comment": "Create, update and delete snapshots, change a branch's snapshot schedule and restore a snapshot onto a new or existing branch.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/mcp/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "const": "tools/call"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "enum": [
+                  "create_snapshot",
+                  "update_snapshot",
+                  "delete_snapshot",
+                  "set_snapshot_schedule",
+                  "restore_snapshot"
+                ]
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "params"
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "neon-mcp-write-auth": {
+    "$comment": "Enable, configure or disable Neon Auth on a branch; manage its OAuth providers (including viewing their secrets), trusted domains and users.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/mcp/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "const": "tools/call"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "enum": [
+                  "provision_neon_auth",
+                  "update_auth_config",
+                  "disable_auth",
+                  "list_auth_oauth_providers",
+                  "add_auth_oauth_provider",
+                  "update_auth_oauth_provider",
+                  "delete_auth_oauth_provider",
+                  "add_auth_trusted_domain",
+                  "delete_auth_trusted_domain",
+                  "create_auth_user",
+                  "update_auth_user_role",
+                  "delete_auth_user"
+                ]
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "params"
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "neon-mcp-write-data-api": {
+    "$comment": "Enable, configure or delete the Neon Data API for a branch.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/mcp/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "const": "tools/call"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "enum": [
+                  "provision_neon_data_api",
+                  "update_data_api",
+                  "delete_data_api"
+                ]
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "params"
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "neon-mcp-write-functions": {
+    "$comment": "Deploy, update and delete Neon Functions, register or remove their custom domains, and create, update or delete their triggers.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/mcp/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "const": "tools/call"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "enum": [
+                  "deploy_function",
+                  "update_function",
+                  "delete_function",
+                  "register_functions_custom_domain",
+                  "delete_functions_custom_domain",
+                  "create_trigger",
+                  "update_trigger",
+                  "delete_trigger"
+                ]
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "params"
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "neon-mcp-write-storage": {
+    "$comment": "Create and delete object storage buckets, delete objects (individually or by prefix) and create presigned URLs for uploading or downloading objects.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/mcp/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "const": "tools/call"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "enum": [
+                  "create_storage_bucket",
+                  "delete_storage_bucket",
+                  "delete_storage_object",
+                  "delete_storage_objects_by_prefix",
+                  "presign_storage_object"
+                ]
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "params"
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "neon-mcp-write-realtime": {
+    "$comment": "Enable or disable Realtime for a branch, and view or rotate its shared secret (get_realtime_secret, rotate_realtime_secret).",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/mcp/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "const": "tools/call"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "enum": [
+                  "enable_realtime",
+                  "disable_realtime",
+                  "get_realtime_secret",
+                  "rotate_realtime_secret"
+                ]
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "params"
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "neon-mcp-send-feedback": {
+    "$comment": "Send anonymous feedback about Neon or its MCP server to the Neon team (send_feedback).",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/mcp/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "const": "tools/call"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "const": "send_feedback"
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "params"
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  }
+}

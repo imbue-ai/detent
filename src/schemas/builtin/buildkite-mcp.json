@@ -1,0 +1,887 @@
+{
+  "buildkite-mcp-api": {
+    "$comment": "Identifies requests to the Buildkite hosted MCP server (mcp.buildkite.com).",
+    "properties": {
+      "domain": {
+        "const": "mcp.buildkite.com"
+      }
+    },
+    "required": [
+      "domain"
+    ]
+  },
+  "buildkite-mcp-session": {
+    "$comment": "Open and maintain an MCP session: initialize, list tools/prompts/resources, ping, and send notifications. Required for any MCP client to function; does not read or modify Buildkite data.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/mcp(/readonly|/x/[a-z_]+(/readonly)?)?/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "enum": [
+              "initialize",
+              "notifications/initialized",
+              "notifications/cancelled",
+              "ping",
+              "tools/list",
+              "prompts/list",
+              "prompts/get",
+              "resources/list",
+              "resources/read",
+              "resources/templates/list",
+              "resources/subscribe",
+              "resources/unsubscribe",
+              "completion/complete",
+              "logging/setLevel"
+            ]
+          }
+        },
+        "required": [
+          "method"
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "buildkite-mcp-read-all": {
+    "$comment": "Run any read-only Buildkite MCP tool (account and token info, clusters, queues, secret metadata, cache registries, agents, pipelines, schedules, builds, jobs, logs, artifacts, annotations, Test Engine data, failure summaries, skill guides) plus the MCP session handshake. Also covers the read-only and single-toolset endpoint variants (/mcp/readonly, /mcp/x/<toolset>).",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/mcp(/readonly|/x/[a-z_]+(/readonly)?)?/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "anyOf": [
+          {
+            "type": "object",
+            "properties": {
+              "method": {
+                "enum": [
+                  "initialize",
+                  "notifications/initialized",
+                  "notifications/cancelled",
+                  "ping",
+                  "tools/list",
+                  "prompts/list",
+                  "prompts/get",
+                  "resources/list",
+                  "resources/read",
+                  "resources/templates/list",
+                  "resources/subscribe",
+                  "resources/unsubscribe",
+                  "completion/complete",
+                  "logging/setLevel"
+                ]
+              }
+            },
+            "required": [
+              "method"
+            ]
+          },
+          {
+            "type": "object",
+            "properties": {
+              "method": {
+                "const": "tools/call"
+              },
+              "params": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "enum": [
+                      "current_user",
+                      "user_token_organization",
+                      "access_token",
+                      "list_clusters",
+                      "get_cluster",
+                      "list_cluster_queues",
+                      "get_cluster_queue",
+                      "list_cluster_secrets",
+                      "get_cluster_secret",
+                      "list_cache_registries",
+                      "get_cache_registry",
+                      "list_agents",
+                      "get_agent",
+                      "list_pipelines",
+                      "get_pipeline",
+                      "validate_pipeline",
+                      "get_pipeline_github_webhook_processing",
+                      "list_pipeline_schedules",
+                      "get_pipeline_schedule",
+                      "list_repository_connections",
+                      "get_repository_connection",
+                      "list_builds",
+                      "get_build",
+                      "get_build_test_engine_runs",
+                      "wait_for_build",
+                      "list_step_uploads",
+                      "get_step_upload",
+                      "list_jobs",
+                      "get_job",
+                      "get_job_env",
+                      "get_build_failure_summary",
+                      "compare_builds",
+                      "list_annotations",
+                      "search_logs",
+                      "tail_logs",
+                      "read_logs",
+                      "list_artifacts_for_build",
+                      "list_artifacts_for_job",
+                      "get_artifact",
+                      "list_tests",
+                      "list_tests_for_build",
+                      "get_test",
+                      "list_test_runs",
+                      "get_test_run",
+                      "get_failed_executions",
+                      "slowest_executions_for_build",
+                      "read_execution_trace",
+                      "list_test_suites_for_pipeline",
+                      "list_test_workflows",
+                      "get_test_workflow",
+                      "list_skills",
+                      "load_skill"
+                    ]
+                  }
+                },
+                "required": [
+                  "name"
+                ]
+              }
+            },
+            "required": [
+              "method",
+              "params"
+            ]
+          }
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "buildkite-mcp-write-all": {
+    "$comment": "Run any Buildkite MCP tool that changes something: create or update clusters, queues, secrets, cache registries, pipelines, webhooks and schedules; pause or resume queue dispatch; trigger, cancel, rebuild or retry builds and jobs; unblock jobs; create annotations. Includes the MCP session handshake.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/mcp(/readonly|/x/[a-z_]+(/readonly)?)?/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "anyOf": [
+          {
+            "type": "object",
+            "properties": {
+              "method": {
+                "enum": [
+                  "initialize",
+                  "notifications/initialized",
+                  "notifications/cancelled",
+                  "ping",
+                  "tools/list",
+                  "prompts/list",
+                  "prompts/get",
+                  "resources/list",
+                  "resources/read",
+                  "resources/templates/list",
+                  "resources/subscribe",
+                  "resources/unsubscribe",
+                  "completion/complete",
+                  "logging/setLevel"
+                ]
+              }
+            },
+            "required": [
+              "method"
+            ]
+          },
+          {
+            "type": "object",
+            "properties": {
+              "method": {
+                "const": "tools/call"
+              },
+              "params": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "enum": [
+                      "create_cluster",
+                      "update_cluster",
+                      "create_cluster_queue",
+                      "update_cluster_queue",
+                      "pause_cluster_queue_dispatch",
+                      "resume_cluster_queue_dispatch",
+                      "create_cluster_secret",
+                      "create_cache_registry",
+                      "update_cache_registry",
+                      "set_default_cache_registry",
+                      "delete_cache_registry",
+                      "create_pipeline",
+                      "update_pipeline",
+                      "create_pipeline_webhook",
+                      "enable_pipeline_github_webhook_processing",
+                      "disable_pipeline_github_webhook_processing",
+                      "create_pipeline_schedule",
+                      "update_pipeline_schedule",
+                      "create_build",
+                      "cancel_build",
+                      "rebuild_build",
+                      "retry_job",
+                      "retry_failed_jobs",
+                      "cancel_job",
+                      "unblock_job",
+                      "create_annotation"
+                    ]
+                  }
+                },
+                "required": [
+                  "name"
+                ]
+              }
+            },
+            "required": [
+              "method",
+              "params"
+            ]
+          }
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "buildkite-mcp-read-account": {
+    "$comment": "Look up the authenticated user, their organization and the access token's scopes (current_user, user_token_organization, access_token).",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/mcp(/readonly|/x/[a-z_]+(/readonly)?)?/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "const": "tools/call"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "enum": [
+                  "current_user",
+                  "user_token_organization",
+                  "access_token"
+                ]
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "params"
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "buildkite-mcp-read-clusters": {
+    "$comment": "View clusters, cluster queues, secret metadata and cache registries (the list/get tools for clusters, cluster queues, cluster secrets and cache registries).",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/mcp(/readonly|/x/[a-z_]+(/readonly)?)?/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "const": "tools/call"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "enum": [
+                  "list_clusters",
+                  "get_cluster",
+                  "list_cluster_queues",
+                  "get_cluster_queue",
+                  "list_cluster_secrets",
+                  "get_cluster_secret",
+                  "list_cache_registries",
+                  "get_cache_registry"
+                ]
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "params"
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "buildkite-mcp-read-agents": {
+    "$comment": "List Buildkite agents and inspect their connection state and details (list_agents, get_agent).",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/mcp(/readonly|/x/[a-z_]+(/readonly)?)?/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "const": "tools/call"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "enum": [
+                  "list_agents",
+                  "get_agent"
+                ]
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "params"
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "buildkite-mcp-read-pipelines": {
+    "$comment": "View pipelines and pipeline schedules, validate pipeline YAML, and inspect GitHub webhook processing status and repository connections.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/mcp(/readonly|/x/[a-z_]+(/readonly)?)?/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "const": "tools/call"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "enum": [
+                  "list_pipelines",
+                  "get_pipeline",
+                  "validate_pipeline",
+                  "get_pipeline_github_webhook_processing",
+                  "list_pipeline_schedules",
+                  "get_pipeline_schedule",
+                  "list_repository_connections",
+                  "get_repository_connection"
+                ]
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "params"
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "buildkite-mcp-read-builds": {
+    "$comment": "View builds, jobs, job environment variables, step uploads and annotations, get build failure summaries, compare builds, or wait for a build to finish.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/mcp(/readonly|/x/[a-z_]+(/readonly)?)?/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "const": "tools/call"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "enum": [
+                  "list_builds",
+                  "get_build",
+                  "get_build_test_engine_runs",
+                  "wait_for_build",
+                  "list_step_uploads",
+                  "get_step_upload",
+                  "list_jobs",
+                  "get_job",
+                  "get_job_env",
+                  "get_build_failure_summary",
+                  "compare_builds",
+                  "list_annotations"
+                ]
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "params"
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "buildkite-mcp-read-logs": {
+    "$comment": "Search, tail and read job logs (search_logs, tail_logs, read_logs).",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/mcp(/readonly|/x/[a-z_]+(/readonly)?)?/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "const": "tools/call"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "enum": [
+                  "search_logs",
+                  "tail_logs",
+                  "read_logs"
+                ]
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "params"
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "buildkite-mcp-read-artifacts": {
+    "$comment": "List and download build and job artifacts (list_artifacts_for_build, list_artifacts_for_job, get_artifact).",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/mcp(/readonly|/x/[a-z_]+(/readonly)?)?/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "const": "tools/call"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "enum": [
+                  "list_artifacts_for_build",
+                  "list_artifacts_for_job",
+                  "get_artifact"
+                ]
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "params"
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "buildkite-mcp-read-tests": {
+    "$comment": "View Test Engine suites, tests, test runs, failed and slowest executions, execution traces and test workflows.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/mcp(/readonly|/x/[a-z_]+(/readonly)?)?/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "const": "tools/call"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "enum": [
+                  "list_tests",
+                  "list_tests_for_build",
+                  "get_test",
+                  "list_test_runs",
+                  "get_test_run",
+                  "get_failed_executions",
+                  "slowest_executions_for_build",
+                  "read_execution_trace",
+                  "list_test_suites_for_pipeline",
+                  "list_test_workflows",
+                  "get_test_workflow"
+                ]
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "params"
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "buildkite-mcp-read-skills": {
+    "$comment": "Discover and load the server's built-in usage guides for Buildkite MCP tools (list_skills, load_skill).",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/mcp(/readonly|/x/[a-z_]+(/readonly)?)?/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "const": "tools/call"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "enum": [
+                  "list_skills",
+                  "load_skill"
+                ]
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "params"
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "buildkite-mcp-write-clusters": {
+    "$comment": "Create and update clusters, cluster queues, cluster secrets and cache registries, pause or resume queue dispatch, and set or delete the default cache registry.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/mcp(/readonly|/x/[a-z_]+(/readonly)?)?/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "const": "tools/call"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "enum": [
+                  "create_cluster",
+                  "update_cluster",
+                  "create_cluster_queue",
+                  "update_cluster_queue",
+                  "pause_cluster_queue_dispatch",
+                  "resume_cluster_queue_dispatch",
+                  "create_cluster_secret",
+                  "create_cache_registry",
+                  "update_cache_registry",
+                  "set_default_cache_registry",
+                  "delete_cache_registry"
+                ]
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "params"
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "buildkite-mcp-write-pipelines": {
+    "$comment": "Create and update pipelines and pipeline schedules, create repository webhooks, and enable or disable GitHub webhook processing.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/mcp(/readonly|/x/[a-z_]+(/readonly)?)?/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "const": "tools/call"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "enum": [
+                  "create_pipeline",
+                  "update_pipeline",
+                  "create_pipeline_webhook",
+                  "enable_pipeline_github_webhook_processing",
+                  "disable_pipeline_github_webhook_processing",
+                  "create_pipeline_schedule",
+                  "update_pipeline_schedule"
+                ]
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "params"
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "buildkite-mcp-write-builds": {
+    "$comment": "Trigger, cancel and rebuild builds, and retry, cancel or unblock jobs (create_build, cancel_build, rebuild_build, retry_job, retry_failed_jobs, cancel_job, unblock_job).",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/mcp(/readonly|/x/[a-z_]+(/readonly)?)?/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "const": "tools/call"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "enum": [
+                  "create_build",
+                  "cancel_build",
+                  "rebuild_build",
+                  "retry_job",
+                  "retry_failed_jobs",
+                  "cancel_job",
+                  "unblock_job"
+                ]
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "params"
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "buildkite-mcp-write-annotations": {
+    "$comment": "Create annotations on builds and jobs (create_annotation).",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/mcp(/readonly|/x/[a-z_]+(/readonly)?)?/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "const": "tools/call"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "const": "create_annotation"
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "params"
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  }
+}

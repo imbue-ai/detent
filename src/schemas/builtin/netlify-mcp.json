@@ -1,0 +1,772 @@
+{
+  "netlify-mcp-api": {
+    "$comment": "Identifies requests to the Netlify hosted MCP server (netlify-mcp.netlify.app, also served as mcp.netlify.com).",
+    "properties": {
+      "domain": {
+        "enum": [
+          "netlify-mcp.netlify.app",
+          "mcp.netlify.com"
+        ]
+      }
+    },
+    "required": [
+      "domain"
+    ]
+  },
+  "netlify-mcp-session": {
+    "$comment": "Open and maintain an MCP session: initialize, list tools/prompts/resources, ping, and send notifications. Required for any MCP client to function; does not read or modify Netlify content.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/mcp/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "enum": [
+              "initialize",
+              "notifications/initialized",
+              "notifications/cancelled",
+              "ping",
+              "tools/list",
+              "prompts/list",
+              "prompts/get",
+              "resources/list",
+              "resources/read",
+              "resources/templates/list",
+              "resources/subscribe",
+              "resources/unsubscribe",
+              "completion/complete",
+              "logging/setLevel"
+            ]
+          }
+        },
+        "required": [
+          "method"
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "netlify-mcp-read-all": {
+    "$comment": "Run any read-only Netlify MCP tool (coding guidance, user and team info, projects and forms, deploys, extensions, database setup steps, observability queries and request logs, design-import status) on either tool surface (the netlify-*-services-reader selectors or the per-operation netlify-<domain>-<operation> tools), plus the MCP session handshake.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/mcp/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "anyOf": [
+          {
+            "type": "object",
+            "properties": {
+              "method": {
+                "enum": [
+                  "initialize",
+                  "notifications/initialized",
+                  "notifications/cancelled",
+                  "ping",
+                  "tools/list",
+                  "prompts/list",
+                  "prompts/get",
+                  "resources/list",
+                  "resources/read",
+                  "resources/templates/list",
+                  "resources/subscribe",
+                  "resources/unsubscribe",
+                  "completion/complete",
+                  "logging/setLevel"
+                ]
+              }
+            },
+            "required": [
+              "method"
+            ]
+          },
+          {
+            "type": "object",
+            "properties": {
+              "method": {
+                "const": "tools/call"
+              },
+              "params": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "enum": [
+                      "get-netlify-coding-context",
+                      "netlify-coding-rules",
+                      "netlify-user-services-reader",
+                      "netlify-team-services-reader",
+                      "netlify-user-get-user",
+                      "netlify-team-get-teams",
+                      "netlify-team-get-team",
+                      "netlify-team-get-team-env-vars",
+                      "netlify-project-services-reader",
+                      "netlify-project-get-project",
+                      "netlify-project-get-projects",
+                      "netlify-project-get-forms-for-project",
+                      "netlify-deploy-services-reader",
+                      "netlify-deploy-get-deploy",
+                      "netlify-deploy-get-deploy-for-site",
+                      "netlify-extension-services-reader",
+                      "netlify-extension-get-extensions",
+                      "netlify-extension-get-full-extension-details",
+                      "netlify-get-database-setup-steps",
+                      "netlify-observability-services-reader",
+                      "netlify-observability-get-counts",
+                      "netlify-observability-get-topk",
+                      "netlify-observability-get-timeseries",
+                      "netlify-observability-get-request-logs",
+                      "netlify-observability-get-request-detail",
+                      "get-design-import-job-status"
+                    ]
+                  }
+                },
+                "required": [
+                  "name"
+                ]
+              }
+            },
+            "required": [
+              "method",
+              "params"
+            ]
+          }
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "netlify-mcp-write-all": {
+    "$comment": "Run any Netlify MCP tool that changes something (create or rename projects, visitor access controls, forms and form submissions, environment variables, deploys, extension installs, Claude Design imports) on either tool surface (the netlify-*-services-updater selectors or the per-operation netlify-<domain>-<operation> tools), plus the MCP session handshake.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/mcp/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "anyOf": [
+          {
+            "type": "object",
+            "properties": {
+              "method": {
+                "enum": [
+                  "initialize",
+                  "notifications/initialized",
+                  "notifications/cancelled",
+                  "ping",
+                  "tools/list",
+                  "prompts/list",
+                  "prompts/get",
+                  "resources/list",
+                  "resources/read",
+                  "resources/templates/list",
+                  "resources/subscribe",
+                  "resources/unsubscribe",
+                  "completion/complete",
+                  "logging/setLevel"
+                ]
+              }
+            },
+            "required": [
+              "method"
+            ]
+          },
+          {
+            "type": "object",
+            "properties": {
+              "method": {
+                "const": "tools/call"
+              },
+              "params": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "enum": [
+                      "netlify-project-services-updater",
+                      "netlify-project-create-new-project",
+                      "netlify-project-update-project-name",
+                      "netlify-project-update-visitor-access-controls",
+                      "netlify-project-update-forms",
+                      "netlify-project-manage-form-submissions",
+                      "netlify-project-manage-env-vars",
+                      "netlify-deploy-services-updater",
+                      "netlify-deploy-site",
+                      "netlify-extension-services-updater",
+                      "netlify-extension-change-extension-installation",
+                      "import-claude-design-from-url"
+                    ]
+                  }
+                },
+                "required": [
+                  "name"
+                ]
+              }
+            },
+            "required": [
+              "method",
+              "params"
+            ]
+          }
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "netlify-mcp-read-coding-guidance": {
+    "$comment": "Fetch Netlify's coding guidance and agent skills for functions, edge functions, blobs, database, forms, configuration and deploys (get-netlify-coding-context; netlify-coding-rules is the same tool's name on the local server).",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/mcp/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "const": "tools/call"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "enum": [
+                  "get-netlify-coding-context",
+                  "netlify-coding-rules"
+                ]
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "params"
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "netlify-mcp-read-account": {
+    "$comment": "Look up the signed-in user's profile, their teams and team-level environment variables (netlify-user-services-reader, netlify-team-services-reader and the per-operation get-user, get-teams, get-team, get-team-env-vars tools).",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/mcp/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "const": "tools/call"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "enum": [
+                  "netlify-user-services-reader",
+                  "netlify-team-services-reader",
+                  "netlify-user-get-user",
+                  "netlify-team-get-teams",
+                  "netlify-team-get-team",
+                  "netlify-team-get-team-env-vars"
+                ]
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "params"
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "netlify-mcp-read-projects": {
+    "$comment": "List projects (sites), inspect a project's settings and list its forms (netlify-project-services-reader and the per-operation get-projects, get-project, get-forms-for-project tools).",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/mcp/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "const": "tools/call"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "enum": [
+                  "netlify-project-services-reader",
+                  "netlify-project-get-project",
+                  "netlify-project-get-projects",
+                  "netlify-project-get-forms-for-project"
+                ]
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "params"
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "netlify-mcp-read-deploys": {
+    "$comment": "Inspect deploys and build status by deploy ID or for a site (netlify-deploy-services-reader and the per-operation get-deploy, get-deploy-for-site tools).",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/mcp/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "const": "tools/call"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "enum": [
+                  "netlify-deploy-services-reader",
+                  "netlify-deploy-get-deploy",
+                  "netlify-deploy-get-deploy-for-site"
+                ]
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "params"
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "netlify-mcp-read-extensions": {
+    "$comment": "Browse available Netlify extensions, read an extension's details and fetch the written setup steps for adding a Netlify Database (netlify-extension-services-reader and the per-operation get-extensions, get-full-extension-details, netlify-get-database-setup-steps tools). Does not install or provision anything.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/mcp/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "const": "tools/call"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "enum": [
+                  "netlify-extension-services-reader",
+                  "netlify-extension-get-extensions",
+                  "netlify-extension-get-full-extension-details",
+                  "netlify-get-database-setup-steps"
+                ]
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "params"
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "netlify-mcp-read-observability": {
+    "$comment": "Query a site's edge traffic analytics: request counts, top-k rankings, time series, request logs and single request details (netlify-observability-services-reader and the per-operation get-counts, get-topk, get-timeseries, get-request-logs, get-request-detail tools).",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/mcp/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "const": "tools/call"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "enum": [
+                  "netlify-observability-services-reader",
+                  "netlify-observability-get-counts",
+                  "netlify-observability-get-topk",
+                  "netlify-observability-get-timeseries",
+                  "netlify-observability-get-request-logs",
+                  "netlify-observability-get-request-detail"
+                ]
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "params"
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "netlify-mcp-write-projects": {
+    "$comment": "Create and rename projects, change visitor access controls (password or SSO protection), toggle Netlify Forms and delete form submissions, and manage a project's environment variables (netlify-project-services-updater and all per-operation project write tools).",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/mcp/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "const": "tools/call"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "enum": [
+                  "netlify-project-services-updater",
+                  "netlify-project-create-new-project",
+                  "netlify-project-update-project-name",
+                  "netlify-project-update-visitor-access-controls",
+                  "netlify-project-update-forms",
+                  "netlify-project-manage-form-submissions",
+                  "netlify-project-manage-env-vars"
+                ]
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "params"
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "netlify-mcp-write-env-vars": {
+    "$comment": "Read, create, update or delete a project's environment variables via the per-operation tool only (netlify-project-manage-env-vars). On the default selector surface the same operation runs through netlify-project-services-updater, covered by netlify-mcp-write-projects.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/mcp/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "const": "tools/call"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "const": "netlify-project-manage-env-vars"
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "params"
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "netlify-mcp-write-forms": {
+    "$comment": "Enable or disable Netlify Forms processing and read or permanently delete form submissions via the per-operation tools only (netlify-project-update-forms, netlify-project-manage-form-submissions). On the default selector surface these run through netlify-project-services-updater, covered by netlify-mcp-write-projects.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/mcp/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "const": "tools/call"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "enum": [
+                  "netlify-project-update-forms",
+                  "netlify-project-manage-form-submissions"
+                ]
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "params"
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "netlify-mcp-deploy-sites": {
+    "$comment": "Publish a new deploy of a project to an existing Netlify site, making it live (netlify-deploy-services-updater and the per-operation netlify-deploy-site tool).",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/mcp/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "const": "tools/call"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "enum": [
+                  "netlify-deploy-services-updater",
+                  "netlify-deploy-site"
+                ]
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "params"
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "netlify-mcp-write-extensions": {
+    "$comment": "Install or uninstall Netlify extensions for a team (netlify-extension-services-updater and the per-operation netlify-extension-change-extension-installation tool).",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/mcp/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "const": "tools/call"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "enum": [
+                  "netlify-extension-services-updater",
+                  "netlify-extension-change-extension-installation"
+                ]
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "params"
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "netlify-mcp-import-designs": {
+    "$comment": "Deploy a Claude Design export to a new Netlify site and check the status of that import (import-claude-design-from-url, get-design-import-job-status). These tools are only offered to Claude clients.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/mcp/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "const": "tools/call"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "enum": [
+                  "import-claude-design-from-url",
+                  "get-design-import-job-status"
+                ]
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "params"
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  }
+}

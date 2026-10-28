@@ -1,0 +1,512 @@
+{
+  "wix-mcp-api": {
+    "$comment": "Identifies requests to the Wix hosted MCP server (mcp.wix.com).",
+    "properties": {
+      "domain": {
+        "const": "mcp.wix.com"
+      }
+    },
+    "required": [
+      "domain"
+    ]
+  },
+  "wix-mcp-session": {
+    "$comment": "Open and maintain an MCP session: initialize, list tools/prompts/resources, ping, and send notifications. Required for any MCP client to function; does not read or modify Wix content.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/mcp/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "enum": [
+              "initialize",
+              "notifications/initialized",
+              "notifications/cancelled",
+              "ping",
+              "tools/list",
+              "prompts/list",
+              "prompts/get",
+              "resources/list",
+              "resources/read",
+              "resources/templates/list",
+              "resources/subscribe",
+              "resources/unsubscribe",
+              "completion/complete",
+              "logging/setLevel"
+            ]
+          }
+        },
+        "required": [
+          "method"
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "wix-mcp-read-all": {
+    "$comment": "Run any read-only Wix MCP tool (search and read the Wix REST, SDK, Headless, CLI, Build Apps, Design System and Help Center documentation, inspect API schemas, list the account's sites and their context, check site-creation job status, search site templates, get domain suggestions) plus the MCP session handshake.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/mcp/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "anyOf": [
+          {
+            "type": "object",
+            "properties": {
+              "method": {
+                "enum": [
+                  "initialize",
+                  "notifications/initialized",
+                  "notifications/cancelled",
+                  "ping",
+                  "tools/list",
+                  "prompts/list",
+                  "prompts/get",
+                  "resources/list",
+                  "resources/read",
+                  "resources/templates/list",
+                  "resources/subscribe",
+                  "resources/unsubscribe",
+                  "completion/complete",
+                  "logging/setLevel"
+                ]
+              }
+            },
+            "required": [
+              "method"
+            ]
+          },
+          {
+            "type": "object",
+            "properties": {
+              "method": {
+                "const": "tools/call"
+              },
+              "params": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "enum": [
+                      "WixREADME",
+                      "SearchWixRESTDocumentation",
+                      "SearchWixSDKDocumentation",
+                      "SearchBuildAppsDocumentation",
+                      "SearchWixHeadlessDocumentation",
+                      "SearchWixWDSDocumentation",
+                      "SearchWixCLIDocumentation",
+                      "SearchDevelopmentDocumentation",
+                      "SearchWixHelpCenter",
+                      "WixBusinessFlowsDocumentation",
+                      "BrowseWixRESTDocsMenu",
+                      "ReadFullDocsArticle",
+                      "ReadFullDocsMethodSchema",
+                      "SearchWixAPISpec",
+                      "CreateWixBusinessGuide",
+                      "ListWixSites",
+                      "GetSiteContext",
+                      "PullSiteCreationJob",
+                      "pullSiteCreationJob",
+                      "GetSuggestedDomains",
+                      "SearchSiteTemplates"
+                    ]
+                  }
+                },
+                "required": [
+                  "name"
+                ]
+              }
+            },
+            "required": [
+              "method",
+              "params"
+            ]
+          }
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "wix-mcp-write-all": {
+    "$comment": "Run any Wix MCP tool that can change things: call REST APIs on a site or run API scripts (CallWixSiteAPI, ExecuteWixAPI), create, update, publish or deploy sites (ManageWixSite, WixSiteBuilder, CreateSiteFromTemplate, UploadHeadlessWebsiteFiles, ...), upload images, and send feedback or issue reports to Wix; plus the MCP session handshake.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/mcp/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "anyOf": [
+          {
+            "type": "object",
+            "properties": {
+              "method": {
+                "enum": [
+                  "initialize",
+                  "notifications/initialized",
+                  "notifications/cancelled",
+                  "ping",
+                  "tools/list",
+                  "prompts/list",
+                  "prompts/get",
+                  "resources/list",
+                  "resources/read",
+                  "resources/templates/list",
+                  "resources/subscribe",
+                  "resources/unsubscribe",
+                  "completion/complete",
+                  "logging/setLevel"
+                ]
+              }
+            },
+            "required": [
+              "method"
+            ]
+          },
+          {
+            "type": "object",
+            "properties": {
+              "method": {
+                "const": "tools/call"
+              },
+              "params": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "enum": [
+                      "CallWixSiteAPI",
+                      "ExecuteWixAPI",
+                      "ManageWixSite",
+                      "WixSiteBuilder",
+                      "CreateSiteFromTemplate",
+                      "ClaimAnonymousSite",
+                      "import-claude-design-from-url",
+                      "StartDeployWebsite",
+                      "StartHeadlessBuild",
+                      "UploadHeadlessWebsiteFiles",
+                      "UploadImageToWixSite",
+                      "SupportAndFeedback",
+                      "ReportIssueToWix"
+                    ]
+                  }
+                },
+                "required": [
+                  "name"
+                ]
+              }
+            },
+            "required": [
+              "method",
+              "params"
+            ]
+          }
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "wix-mcp-read-docs": {
+    "$comment": "Search and read the Wix developer documentation (REST, SDK, Headless, CLI, Build Apps, Design System, Help Center), browse the REST docs menu, fetch full articles and API method schemas, inspect the REST API spec, and get step-by-step guides for building with Wix. Does not touch any site or account data.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/mcp/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "const": "tools/call"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "enum": [
+                  "WixREADME",
+                  "SearchWixRESTDocumentation",
+                  "SearchWixSDKDocumentation",
+                  "SearchBuildAppsDocumentation",
+                  "SearchWixHeadlessDocumentation",
+                  "SearchWixWDSDocumentation",
+                  "SearchWixCLIDocumentation",
+                  "SearchDevelopmentDocumentation",
+                  "SearchWixHelpCenter",
+                  "WixBusinessFlowsDocumentation",
+                  "BrowseWixRESTDocsMenu",
+                  "ReadFullDocsArticle",
+                  "ReadFullDocsMethodSchema",
+                  "SearchWixAPISpec",
+                  "CreateWixBusinessGuide"
+                ]
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "params"
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "wix-mcp-read-sites": {
+    "$comment": "List the sites in the Wix account and look up a site's ID, properties and installed apps (ListWixSites, GetSiteContext), check the status of a site-creation job, search the site template gallery, and get domain name suggestions.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/mcp/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "const": "tools/call"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "enum": [
+                  "ListWixSites",
+                  "GetSiteContext",
+                  "PullSiteCreationJob",
+                  "pullSiteCreationJob",
+                  "GetSuggestedDomains",
+                  "SearchSiteTemplates"
+                ]
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "params"
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "wix-mcp-call-site-apis": {
+    "$comment": "Call Wix REST APIs on a specific site, either as a single request (CallWixSiteAPI) or as a sandboxed script that chains and paginates calls (ExecuteWixAPI). This reaches all of a site's business data (CMS collections, Stores, Bookings, Blog, contacts, members, ...) and can read, create, update or delete it.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/mcp/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "const": "tools/call"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "enum": [
+                  "CallWixSiteAPI",
+                  "ExecuteWixAPI"
+                ]
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "params"
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "wix-mcp-write-sites": {
+    "$comment": "Create, update, publish and deploy Wix sites at the account level: account-level site management (ManageWixSite), AI site generation (WixSiteBuilder), creating a site from a template, claiming an anonymously created site, importing a design from a URL, and deploying or uploading headless/static website files (StartDeployWebsite, StartHeadlessBuild, UploadHeadlessWebsiteFiles).",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/mcp/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "const": "tools/call"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "enum": [
+                  "ManageWixSite",
+                  "WixSiteBuilder",
+                  "CreateSiteFromTemplate",
+                  "ClaimAnonymousSite",
+                  "import-claude-design-from-url",
+                  "StartDeployWebsite",
+                  "StartHeadlessBuild",
+                  "UploadHeadlessWebsiteFiles"
+                ]
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "params"
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "wix-mcp-write-media": {
+    "$comment": "Upload images to a Wix site's Media Manager (UploadImageToWixSite).",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/mcp/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "const": "tools/call"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "const": "UploadImageToWixSite"
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "params"
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "wix-mcp-send-feedback": {
+    "$comment": "Send feedback, support requests or issue reports about the Wix MCP and APIs to the Wix team (SupportAndFeedback, ReportIssueToWix).",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/mcp/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "const": "tools/call"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "enum": [
+                  "SupportAndFeedback",
+                  "ReportIssueToWix"
+                ]
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "params"
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  }
+}
