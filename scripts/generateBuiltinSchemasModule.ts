@@ -2,8 +2,8 @@
  * Generates src/schemas/generatedBuiltinSchemas.ts from the JSON files in
  * src/schemas/builtin/.
  *
- * The generated module statically embeds every built-in schema as a literal
- * object so that bundlers (bun compile, esbuild, webpack, ...) include the
+ * The generated module statically embeds every built-in schema as a JSON string
+ * literal so that bundlers (bun compile, esbuild, webpack, ...) include the
  * schemas in their output without having to follow runtime readFileSync calls.
  *
  * Run with: npx tsx scripts/generateBuiltinSchemasModule.ts
@@ -40,12 +40,18 @@ const header = `// AUTO-GENERATED FILE. DO NOT EDIT.
 // Regenerate with: npm run generate:builtin-schemas
 //
 // Sourced from src/schemas/builtin/*.json.
+//
+// The schemas are embedded as a JSON string rather than an object literal because
+// V8 parses JSON considerably faster than equivalent JavaScript source, which
+// matters for CLI startup time.
 
 export const generatedBuiltinSchemas: Readonly<Record<string, Record<string, unknown>>> =
+  JSON.parse(
 `;
 
-const body = JSON.stringify(merged, null, 2);
-writeFileSync(outputPath, `${header}${body} as const;\n`);
+// JSON.stringify of a string produces a valid JavaScript string literal.
+const body = JSON.stringify(JSON.stringify(merged));
+writeFileSync(outputPath, `${header}    ${body}\n  ) as Readonly<Record<string, Record<string, unknown>>>;\n`);
 
 console.log(
   `Wrote ${Object.keys(merged).length} built-in schemas from ${entries.length} file(s) to ${outputPath}`
