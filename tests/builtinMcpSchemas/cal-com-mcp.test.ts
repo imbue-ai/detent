@@ -85,7 +85,10 @@ const writeTools = [
 ];
 
 const fineGrained: Record<string, { yes: string[]; no: string[] }> = {
-  'cal-com-mcp-read-docs': { yes: ['search_docs', 'get_app_link'], no: ['get_me'] },
+  'cal-com-mcp-read-docs': {
+    yes: ['search_docs', 'get_app_link', 'find_api_operation', 'describe_api_operation'],
+    no: ['get_me', 'call_api_operation'],
+  },
   'cal-com-mcp-read-profile': { yes: ['get_me'], no: ['update_me'] },
   'cal-com-mcp-write-profile': { yes: ['update_me'], no: ['get_me'] },
   'cal-com-mcp-read-event-types': {
@@ -93,47 +96,42 @@ const fineGrained: Record<string, { yes: string[]; no: string[] }> = {
     no: ['create_event_type', 'get_events'],
   },
   'cal-com-mcp-write-event-types': {
-    yes: ['create_event_type', 'duplicate_event_type'],
-    no: ['delete_event_type', 'get_event_type'],
+    yes: ['create_event_type', 'duplicate_event_type', 'delete_event_type'],
+    no: ['get_event_type', 'delete_schedule'],
   },
-  'cal-com-mcp-delete-event-types': { yes: ['delete_event_type'], no: ['update_event_type'] },
-  'cal-com-mcp-read-events': { yes: ['get_events', 'get_event'], no: ['get_event_type'] },
   'cal-com-mcp-read-bookings': {
-    yes: ['get_bookings', 'get_booking_routing_trace'],
-    no: ['create_booking', 'cancel_booking'],
+    yes: ['get_bookings', 'get_booking_routing_trace', 'get_events', 'get_event'],
+    no: ['create_booking', 'cancel_booking', 'get_event_type'],
   },
   'cal-com-mcp-write-bookings': {
     yes: ['create_booking', 'mark_booking_absent'],
     no: ['get_booking', 'create_schedule'],
   },
   'cal-com-mcp-read-schedules': {
-    yes: ['get_schedules', 'get_default_schedule'],
-    no: ['update_schedule'],
+    yes: ['get_schedules', 'get_default_schedule', 'get_availability', 'get_connected_calendars'],
+    no: ['update_schedule', 'get_bookings'],
   },
   'cal-com-mcp-write-schedules': {
-    yes: ['create_schedule', 'update_schedule'],
-    no: ['delete_schedule'],
+    yes: ['create_schedule', 'update_schedule', 'delete_schedule'],
+    no: ['get_schedules', 'delete_event_type'],
   },
-  'cal-com-mcp-delete-schedules': { yes: ['delete_schedule'], no: ['delete_event_type'] },
-  'cal-com-mcp-read-availability': {
-    yes: ['get_availability', 'get_connected_calendars'],
-    no: ['get_schedules'],
+  'cal-com-mcp-read-teams-and-organizations': {
+    yes: [
+      'get_my_teams',
+      'get_team_membership',
+      'get_org_memberships',
+      'get_user_attribute_history',
+    ],
+    no: ['create_team_invite', 'assign_attribute_to_user'],
   },
-  'cal-com-mcp-read-teams': {
-    yes: ['get_my_teams', 'get_team_membership'],
-    no: ['create_team_invite'],
-  },
-  'cal-com-mcp-write-teams': {
-    yes: ['create_team_invite', 'delete_team_membership'],
-    no: ['get_org_teams', 'create_org_membership'],
-  },
-  'cal-com-mcp-read-organizations': {
-    yes: ['get_org_memberships', 'get_user_attribute_history'],
-    no: ['assign_attribute_to_user'],
-  },
-  'cal-com-mcp-write-organizations': {
-    yes: ['create_org_membership', 'unassign_attribute_from_user'],
-    no: ['get_org_attribute', 'update_team_membership'],
+  'cal-com-mcp-write-teams-and-organizations': {
+    yes: [
+      'create_team_invite',
+      'delete_team_membership',
+      'create_org_membership',
+      'unassign_attribute_from_user',
+    ],
+    no: ['get_org_teams', 'get_org_attribute'],
   },
   'cal-com-mcp-read-routing-forms': {
     yes: ['get_routing_form', 'calculate_routing_form_slots'],
@@ -142,10 +140,6 @@ const fineGrained: Record<string, { yes: string[]; no: string[] }> = {
   'cal-com-mcp-write-routing-forms': {
     yes: ['create_routing_form', 'edit_routing_form_fields'],
     no: ['get_routing_form_history'],
-  },
-  'cal-com-mcp-read-api-catalog': {
-    yes: ['find_api_operation', 'describe_api_operation'],
-    no: ['call_api_operation'],
   },
   'cal-com-mcp-call-api-operations': { yes: ['call_api_operation'], no: ['find_api_operation'] },
 };

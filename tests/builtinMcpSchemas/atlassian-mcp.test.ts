@@ -9,40 +9,72 @@ const rpcRequest = (method: string) => mcpRequest(DOMAIN, PATH, mcpRpc(method));
 
 // Representative tools for every fine-grained schema, keyed by schema name.
 const READ_GROUPS: Record<string, string[]> = {
-  'atlassian-mcp-read-account': ['atlassianUserInfo', 'getAccessibleAtlassianResources'],
-  'atlassian-mcp-read-tool-catalog': ['discover', 'executeRead'],
+  'atlassian-mcp-read-account-and-tool-catalog': [
+    'atlassianUserInfo',
+    'getAccessibleAtlassianResources',
+    'discover',
+    'executeRead',
+  ],
   'atlassian-mcp-read-jira': ['getJiraIssue', 'searchJiraIssuesUsingJql', 'getJiraWorkflows'],
-  'atlassian-mcp-read-confluence': ['getConfluenceContent', 'searchConfluence'],
-  'atlassian-mcp-read-jsm': ['searchJsmRequests', 'getJsmOpsAlerts'],
-  'atlassian-mcp-read-bitbucket': ['getBitbucketRepoPullRequestDiff', 'listBitbucketRepositories'],
-  'atlassian-mcp-read-teamwork-graph': ['search', 'getTeamworkGraphContext', 'getCollaborators'],
-  'atlassian-mcp-read-code': ['searchCode', 'getCodeFile'],
-  'atlassian-mcp-read-assets': ['queryAssetsObjectsUsingAql', 'getAssetsObject'],
-  'atlassian-mcp-read-loom': ['getLoomObjectsContent', 'getLoomVideoDownloadUrl'],
-  'atlassian-mcp-read-goals': ['searchGoals', 'getGoal'],
-  'atlassian-mcp-read-projects': ['searchProjects', 'getProjectUpdate'],
-  'atlassian-mcp-read-teams': ['searchTeams', 'getTeam'],
-  'atlassian-mcp-read-focus-areas': ['searchFocusAreas', 'getFocusAreaTypes'],
-  'atlassian-mcp-read-talent': ['searchTalentPositions', 'getTalentGroupMetrics'],
-  'atlassian-mcp-read-capacity-planning': ['getCapacityPlanAllocations'],
+  'atlassian-mcp-read-confluence-and-loom': [
+    'getConfluenceContent',
+    'searchConfluence',
+    'getLoomObjectsContent',
+    'getLoomVideoDownloadUrl',
+  ],
+  'atlassian-mcp-read-jsm': ['searchJsmRequests', 'getJsmOpsAlerts', 'queryAssetsObjectsUsingAql'],
+  'atlassian-mcp-read-bitbucket-and-code': [
+    'getBitbucketRepoPullRequestDiff',
+    'listBitbucketRepositories',
+    'searchCode',
+    'getCodeFile',
+  ],
+  'atlassian-mcp-read-teamwork': [
+    'search',
+    'getTeamworkGraphContext',
+    'getCollaborators',
+    'searchGoals',
+    'getProjectUpdate',
+    'getTeam',
+    'getFocusAreaTypes',
+  ],
+  'atlassian-mcp-read-workforce-planning': [
+    'searchTalentPositions',
+    'getTalentGroupMetrics',
+    'getCapacityPlanAllocations',
+  ],
 };
 
 const WRITE_GROUPS: Record<string, string[]> = {
   'atlassian-mcp-write-tool-catalog': ['executeWrite', 'executeDestructive'],
-  'atlassian-mcp-write-jira': ['createJiraIssue', 'transitionJiraIssue', 'manageJiraSprint'],
+  'atlassian-mcp-write-jira': [
+    'createJiraIssue',
+    'transitionJiraIssue',
+    'manageJiraSprint',
+    'createJiraProject',
+    'updateJiraScreen',
+  ],
   'atlassian-mcp-delete-jira': ['deleteJiraIssue', 'deleteJiraComment'],
-  'atlassian-mcp-manage-jira': ['createJiraProject', 'updateJiraScreen'],
-  'atlassian-mcp-write-confluence': ['createConfluenceContent', 'enableConfluencePublicLink'],
+  'atlassian-mcp-write-confluence-and-loom': [
+    'createConfluenceContent',
+    'enableConfluencePublicLink',
+    'publishLoomObject',
+    'shareLoomObject',
+  ],
   'atlassian-mcp-write-jsm': ['createJsmRequest', 'updateJsmOpsAlert'],
   'atlassian-mcp-write-bitbucket': ['mergeBitbucketRepoPullRequest', 'runBitbucketRepoPipeline'],
-  'atlassian-mcp-write-teamwork-graph': ['addTeamworkGraphContext'],
-  'atlassian-mcp-write-loom': ['publishLoomObject', 'shareLoomObject'],
-  'atlassian-mcp-write-goals': ['createGoal', 'createGoalUpdate'],
-  'atlassian-mcp-write-projects': ['createProject', 'addConnectionsToProjects'],
-  'atlassian-mcp-write-teams': ['createTeam', 'updateTeam'],
-  'atlassian-mcp-write-focus-areas': ['createFocusArea', 'linkToFocusArea'],
-  'atlassian-mcp-write-talent': ['createTalentSkill', 'updateTalentWorkerSkillMappings'],
-  'atlassian-mcp-write-capacity-planning': ['updateCapacityPlanAllocation'],
+  'atlassian-mcp-write-teamwork': [
+    'addTeamworkGraphContext',
+    'createGoal',
+    'addConnectionsToProjects',
+    'updateTeam',
+    'linkToFocusArea',
+  ],
+  'atlassian-mcp-write-workforce-planning': [
+    'createTalentSkill',
+    'updateTalentWorkerSkillMappings',
+    'updateCapacityPlanAllocation',
+  ],
 };
 
 const FINE_GRAINED = { ...READ_GROUPS, ...WRITE_GROUPS };
@@ -136,13 +168,20 @@ describe('builtin schemas: atlassian-mcp', () => {
     }
     expect(matches('atlassian-mcp-read-jira', toolRequest('createJiraIssue'))).toBe(false);
     expect(matches('atlassian-mcp-write-jira', toolRequest('deleteJiraIssue'))).toBe(false);
-    expect(matches('atlassian-mcp-write-jira', toolRequest('createJiraProject'))).toBe(false);
-    expect(matches('atlassian-mcp-read-confluence', toolRequest('getJiraIssue'))).toBe(false);
-    expect(matches('atlassian-mcp-write-confluence', toolRequest('getConfluenceContent'))).toBe(
+    expect(matches('atlassian-mcp-delete-jira', toolRequest('createJiraProject'))).toBe(false);
+    expect(matches('atlassian-mcp-read-confluence-and-loom', toolRequest('getJiraIssue'))).toBe(
       false
     );
-    expect(matches('atlassian-mcp-read-tool-catalog', toolRequest('executeWrite'))).toBe(false);
-    expect(matches('atlassian-mcp-read-projects', toolRequest('listJiraProjects'))).toBe(false);
+    expect(
+      matches('atlassian-mcp-write-confluence-and-loom', toolRequest('getConfluenceContent'))
+    ).toBe(false);
+    expect(
+      matches('atlassian-mcp-read-account-and-tool-catalog', toolRequest('executeWrite'))
+    ).toBe(false);
+    expect(matches('atlassian-mcp-read-teamwork', toolRequest('listJiraProjects'))).toBe(false);
+    expect(matches('atlassian-mcp-read-teamwork', toolRequest('searchTalentPositions'))).toBe(
+      false
+    );
   });
 
   it('schemas reject requests without a parsed JSON body', () => {

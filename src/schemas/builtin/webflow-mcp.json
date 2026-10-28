@@ -488,8 +488,48 @@
       "parsedBody"
     ]
   },
-  "webflow-mcp-write-elements": {
-    "$comment": "Inspect and edit the elements on a page: add new elements (including from HTML and CSS), move or remove them, and change their text, links, images, styling, settings and attributes.",
+  "webflow-mcp-write-localization": {
+    "$comment": "Read the text of pages and components and translate it into a site's secondary languages.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/mcp/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "const": "tools/call"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "const": "data_localization_tool"
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "params"
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "webflow-mcp-write-design": {
+    "$comment": "Design pages in the Designer: inspect, add, move, remove and edit the elements on a page (including from HTML and CSS); create and edit reusable components, their properties and variants, and place component instances; create and edit styles (classes), design variables such as colors and spacing, and animations and interactions; and work with a live Designer session (see the current page, branch and selection, select elements, move around the canvas, create page folders). The live-session actions require the Designer to be open.",
     "properties": {
       "method": {
         "const": "POST"
@@ -512,96 +552,15 @@
                   "data_element_tool",
                   "data_element_settings_tool",
                   "data_element_builder",
-                  "data_whtml_builder"
-                ]
-              }
-            },
-            "required": [
-              "name"
-            ]
-          }
-        },
-        "required": [
-          "method",
-          "params"
-        ]
-      }
-    },
-    "required": [
-      "method",
-      "path",
-      "parsedBody"
-    ]
-  },
-  "webflow-mcp-write-components": {
-    "$comment": "View, create and edit reusable components, their properties and variants, and place or unlink component instances on pages.",
-    "properties": {
-      "method": {
-        "const": "POST"
-      },
-      "path": {
-        "type": "string",
-        "pattern": "^/mcp/?$"
-      },
-      "parsedBody": {
-        "type": "object",
-        "properties": {
-          "method": {
-            "const": "tools/call"
-          },
-          "params": {
-            "type": "object",
-            "properties": {
-              "name": {
-                "enum": [
+                  "data_whtml_builder",
                   "data_component_tool",
                   "data_component_props_tool",
                   "data_component_variants_tool",
-                  "data_component_builder"
-                ]
-              }
-            },
-            "required": [
-              "name"
-            ]
-          }
-        },
-        "required": [
-          "method",
-          "params"
-        ]
-      }
-    },
-    "required": [
-      "method",
-      "path",
-      "parsedBody"
-    ]
-  },
-  "webflow-mcp-write-styles": {
-    "$comment": "View, create, edit and remove styles (classes), design variables such as colors and spacing, and the animations and interactions attached to a page.",
-    "properties": {
-      "method": {
-        "const": "POST"
-      },
-      "path": {
-        "type": "string",
-        "pattern": "^/mcp/?$"
-      },
-      "parsedBody": {
-        "type": "object",
-        "properties": {
-          "method": {
-            "const": "tools/call"
-          },
-          "params": {
-            "type": "object",
-            "properties": {
-              "name": {
-                "enum": [
+                  "data_component_builder",
                   "data_style_tool",
                   "data_variable_tool",
-                  "data_interactions_tool"
+                  "data_interactions_tool",
+                  "designer_tool"
                 ]
               }
             },
@@ -666,46 +625,6 @@
       "parsedBody"
     ]
   },
-  "webflow-mcp-write-forms": {
-    "$comment": "View a site's forms and their fields, and view, update or delete the submissions people have sent through them.",
-    "properties": {
-      "method": {
-        "const": "POST"
-      },
-      "path": {
-        "type": "string",
-        "pattern": "^/mcp/?$"
-      },
-      "parsedBody": {
-        "type": "object",
-        "properties": {
-          "method": {
-            "const": "tools/call"
-          },
-          "params": {
-            "type": "object",
-            "properties": {
-              "name": {
-                "const": "data_forms_tool"
-              }
-            },
-            "required": [
-              "name"
-            ]
-          }
-        },
-        "required": [
-          "method",
-          "params"
-        ]
-      }
-    },
-    "required": [
-      "method",
-      "path",
-      "parsedBody"
-    ]
-  },
   "webflow-mcp-write-comments": {
     "$comment": "Read comment threads left on a site in the Designer, look up who took part in them, and post replies.",
     "properties": {
@@ -746,8 +665,8 @@
       "parsedBody"
     ]
   },
-  "webflow-mcp-write-localization": {
-    "$comment": "Read the text of pages and components and translate it into a site's secondary languages.",
+  "webflow-mcp-write-campaigns-and-forms": {
+    "$comment": "Manage marketing campaigns and forms: generate campaign landing pages, create and edit page variations and personalized content, and read campaign performance; view a site's forms and their fields, and view, update or delete the submissions people have sent through them.",
     "properties": {
       "method": {
         "const": "POST"
@@ -766,7 +685,10 @@
             "type": "object",
             "properties": {
               "name": {
-                "const": "data_localization_tool"
+                "enum": [
+                  "data_campaigns_tool",
+                  "data_forms_tool"
+                ]
               }
             },
             "required": [
@@ -826,8 +748,8 @@
       "parsedBody"
     ]
   },
-  "webflow-mcp-write-admin": {
-    "$comment": "Administer a site and workspace: manage who has access and their roles, send invitations, set up redirects, robots.txt and well-known files, manage webhooks that notify other services about site events, and review the site activity log.",
+  "webflow-mcp-write-site-settings": {
+    "$comment": "Administer a site and workspace: manage who has access and their roles, send invitations, set up redirects, robots.txt and well-known files, manage webhooks that notify other services about site events, review the site activity log, and view, create, edit and delete the rules and skills the site stores to guide AI agents working on it.",
     "properties": {
       "method": {
         "const": "POST"
@@ -849,7 +771,8 @@
                 "enum": [
                   "data_enterprise_tool",
                   "data_members_tool",
-                  "data_webhook_tool"
+                  "data_webhook_tool",
+                  "data_agent_instructions_tool"
                 ]
               }
             },
@@ -891,126 +814,6 @@
             "properties": {
               "name": {
                 "const": "data_apps_tool"
-              }
-            },
-            "required": [
-              "name"
-            ]
-          }
-        },
-        "required": [
-          "method",
-          "params"
-        ]
-      }
-    },
-    "required": [
-      "method",
-      "path",
-      "parsedBody"
-    ]
-  },
-  "webflow-mcp-write-campaigns": {
-    "$comment": "View and manage marketing campaigns: generate campaign landing pages, create and edit page variations and personalized content, and read campaign performance.",
-    "properties": {
-      "method": {
-        "const": "POST"
-      },
-      "path": {
-        "type": "string",
-        "pattern": "^/mcp/?$"
-      },
-      "parsedBody": {
-        "type": "object",
-        "properties": {
-          "method": {
-            "const": "tools/call"
-          },
-          "params": {
-            "type": "object",
-            "properties": {
-              "name": {
-                "const": "data_campaigns_tool"
-              }
-            },
-            "required": [
-              "name"
-            ]
-          }
-        },
-        "required": [
-          "method",
-          "params"
-        ]
-      }
-    },
-    "required": [
-      "method",
-      "path",
-      "parsedBody"
-    ]
-  },
-  "webflow-mcp-write-agent-instructions": {
-    "$comment": "View, create, edit and delete the rules and skills a site stores to guide AI agents working on it, and generate drafts of them.",
-    "properties": {
-      "method": {
-        "const": "POST"
-      },
-      "path": {
-        "type": "string",
-        "pattern": "^/mcp/?$"
-      },
-      "parsedBody": {
-        "type": "object",
-        "properties": {
-          "method": {
-            "const": "tools/call"
-          },
-          "params": {
-            "type": "object",
-            "properties": {
-              "name": {
-                "const": "data_agent_instructions_tool"
-              }
-            },
-            "required": [
-              "name"
-            ]
-          }
-        },
-        "required": [
-          "method",
-          "params"
-        ]
-      }
-    },
-    "required": [
-      "method",
-      "path",
-      "parsedBody"
-    ]
-  },
-  "webflow-mcp-write-designer-session": {
-    "$comment": "Work with a live Designer session: see the current page, mode, branch and selected element, select elements, move around the canvas between pages and components, and create page folders. Requires the Designer to be open.",
-    "properties": {
-      "method": {
-        "const": "POST"
-      },
-      "path": {
-        "type": "string",
-        "pattern": "^/mcp/?$"
-      },
-      "parsedBody": {
-        "type": "object",
-        "properties": {
-          "method": {
-            "const": "tools/call"
-          },
-          "params": {
-            "type": "object",
-            "properties": {
-              "name": {
-                "const": "designer_tool"
               }
             },
             "required": [

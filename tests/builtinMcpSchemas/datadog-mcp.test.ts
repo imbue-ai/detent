@@ -94,70 +94,124 @@ const WRITE_TOOLS = [
   'execute_code',
 ];
 
-// [schema suffix, a tool it matches, a tool it does not match]
-const FINE_GRAINED: [string, string, string][] = [
-  ['read-logs', 'search_datadog_logs', 'search_datadog_spans'],
-  ['read-metrics', 'get_metric_cardinality_profile', 'create_derived_metric'],
-  ['write-metrics', 'manage_metric_tag_configuration', 'get_metric_tags'],
-  ['read-traces', 'aggregate_spans', 'create_apm_sampling_rule'],
-  ['write-apm-configuration', 'update_apm_sampling_rule', 'search_apm_sampling_rules'],
-  ['read-infrastructure', 'get_datadog_k8s_manifest', 'run_network_path'],
-  [
-    'run-remote-actions',
-    'datadog_remote_action_restricted_shell_run_command',
-    'search_datadog_hosts',
+// Each fine-grained schema with representative tools from every product area it covers.
+const FINE_GRAINED: Record<string, string[]> = {
+  'datadog-mcp-read-telemetry': [
+    'search_datadog_logs',
+    'get_logs',
+    'build_audit_trail_query',
+    'get_datadog_log_archive',
+    'validate_observability_pipeline',
+    'get_metric_cardinality_profile',
+    'aggregate_spans',
+    'search_datadog_services',
+    'get_profiling_services',
+    'get_datadog_debugger_snapshot',
+    'get_datadog_k8s_manifest',
+    'search_datadog_database_samples',
+    'cost_recommendations',
+    'ddsql_run_query',
+    'ddsql_read_saved_query',
   ],
-  ['read-live-debugger', 'get_datadog_debugger_snapshot', 'create_datadog_logpoint'],
-  ['write-live-debugger', 'create_debugger_session', 'list_datadog_session_logpoints'],
-  ['read-events', 'build_audit_trail_query', 'search_datadog_logs'],
-  ['read-databases', 'search_datadog_database_samples', 'ddsql_run_query'],
-  ['read-profiling', 'get_profiling_services', 'get_datadog_trace'],
-  ['read-rum', 'search_replays', 'create_rum_operation'],
-  ['write-rum', 'upsert_rum_metric', 'search_rum_metrics'],
-  ['read-monitors', 'get_monitor_coverage', 'create_datadog_monitor'],
-  ['write-monitors', 'create_datadog_monitor', 'validate_datadog_monitor'],
-  ['read-investigations', 'search_watchdog_stories', 'trigger_incident_investigation'],
-  ['write-investigations', 'trigger_bits_ai_investigation', 'get_bits_ai_investigation'],
-  ['read-cases', 'list_datadog_case_projects', 'create_datadog_case_project'],
-  ['write-cases', 'link_jira_issue_to_datadog_case', 'get_datadog_case_links'],
-  [
-    'read-error-tracking',
+  'datadog-mcp-write-telemetry-configuration': [
+    'delete_datadog_log_pipeline',
+    'create_observability_pipeline',
+    'manage_metric_tag_configuration',
+    'update_apm_sampling_rule',
+    'create_debugger_session',
+    'create_reference_table',
+    'upsert_reference_table_rows',
+    'ddsql_upsert_saved_query',
+  ],
+  'datadog-mcp-read-user-experience': [
+    'search_replays',
+    'run_product_analytics_journey',
     'get_datadog_error_tracking_analytics',
-    'update_datadog_error_tracking_issue',
   ],
-  [
-    'write-error-tracking',
+  'datadog-mcp-write-user-experience': [
+    'upsert_rum_metric',
+    'delete_rum_retention_filter',
     'manage_datadog_error_tracking_issue_comments',
-    'get_datadog_error_tracking_issue',
   ],
-  ['read-dashboards', 'search_datadog_notebooks', 'edit_datadog_notebook'],
-  ['write-dashboards', 'upsert_datadog_spreadsheet', 'delete_datadog_spreadsheet'],
-  ['delete-dashboards', 'delete_datadog_dashboard', 'upsert_datadog_dashboard'],
-  ['read-logs-configuration', 'get_datadog_log_archive', 'upsert_datadog_log_archive'],
-  ['write-logs-configuration', 'delete_datadog_log_pipeline', 'list_datadog_log_pipelines'],
-  ['read-security', 'get_datadog_security_aap_denylist', 'upsert_datadog_security_aap_denylist'],
-  ['write-security', 'update_datadog_security_signals_triage', 'search_datadog_security_signals'],
-  ['read-governance', 'get_tag_rule', 'delete_tag_rule'],
-  ['write-governance', 'update_governance_detection', 'get_governance_detection'],
-  ['read-software-delivery', 'get_datadog_flaky_tests', 'update_datadog_flaky_test_states'],
-  ['write-software-delivery', 'edit_synthetics_tests', 'get_synthetics_tests'],
-  ['read-feature-flags', 'list_datadog_feature_flag_allocations', 'start_experiment'],
-  ['write-feature-flags', 'create_datadog_feature_flag', 'get_datadog_feature_flag'],
-  ['read-data-observability', 'get_data_entity_lineage', 'update_entity_tags'],
-  ['write-data-observability', 'update_entity_tags', 'get_entity_tags'],
-  ['read-llm-observability', 'list_llmobs_datasets', 'add_llmobs_dataset_records'],
-  ['write-llm-observability', 'trigger_llmobs_pattern_run', 'list_llmobs_pattern_runs'],
-  ['run-ddsql-queries', 'ddsql_run_query', 'ddsql_upsert_saved_query'],
-  ['write-ddsql-saved-queries', 'ddsql_upsert_saved_query', 'ddsql_read_saved_query'],
-  ['read-reference-tables', 'list_reference_tables', 'create_reference_table'],
-  ['write-reference-tables', 'upsert_reference_table_rows', 'list_reference_table_rows'],
-  ['read-automation', 'get_datadog_workflow_step_data', 'execute_datadog_workflow'],
-  ['write-automation', 'add_datadog_managed_mcp_server_to_bits_agent', 'run_datadog_bits_agent'],
-  ['delete-automation', 'delete_datadog_workflow', 'unpublish_datadog_workflow'],
-  ['run-automation', 'run_datadog_bits_agent', 'delete_datadog_workflow'],
-  ['execute-code', 'execute_code', 'search_datadog_sdk'],
-  ['read-documentation', 'read_datadog_documentation', 'execute_code'],
-];
+  'datadog-mcp-read-monitoring-and-incidents': [
+    'get_monitor_coverage',
+    'validate_datadog_monitor',
+    'search_datadog_slos',
+    'search_watchdog_stories',
+    'get_bits_ai_investigation',
+    'update_jump_state',
+    'list_datadog_case_projects',
+    'search_datadog_users',
+  ],
+  'datadog-mcp-write-monitoring-and-incidents': [
+    'create_datadog_monitor',
+    'trigger_bits_ai_investigation',
+    'link_jira_issue_to_datadog_case',
+  ],
+  'datadog-mcp-read-dashboards': ['search_datadog_notebooks', 'get_datadog_spreadsheet_tab_data'],
+  'datadog-mcp-write-dashboards': [
+    'upsert_datadog_spreadsheet',
+    'recover_datadog_notebook',
+    'delete_datadog_dashboard',
+  ],
+  'datadog-mcp-read-security-and-governance': [
+    'get_datadog_security_aap_denylist',
+    'datadog_secrets_scan',
+    'generate_datadog_security_iac_custom_rule',
+    'get_tag_rule',
+  ],
+  'datadog-mcp-write-security-and-governance': [
+    'update_datadog_security_signals_triage',
+    'publish_datadog_security_iac_custom_rule',
+    'update_governance_detection',
+    'delete_tag_rule',
+  ],
+  'datadog-mcp-read-software-delivery': [
+    'get_datadog_flaky_tests',
+    'get_synthetics_tests',
+    'list_datadog_feature_flag_allocations',
+    'get_experiment_results',
+  ],
+  'datadog-mcp-write-software-delivery': [
+    'edit_synthetics_tests',
+    'create_datadog_feature_flag',
+    'conclude_experiment',
+  ],
+  'datadog-mcp-read-data-and-llm-observability': [
+    'get_data_entity_lineage',
+    'list_llmobs_datasets',
+    'estimate_llmobs_topic_discovery_cost',
+  ],
+  'datadog-mcp-write-data-and-llm-observability': [
+    'update_entity_tags',
+    'trigger_llmobs_pattern_run',
+    'delete_llmobs_annotations',
+  ],
+  'datadog-mcp-read-automation': [
+    'get_datadog_workflow_step_data',
+    'validate_datadog_workflow',
+    'list_assistant_conversations',
+  ],
+  'datadog-mcp-write-automation': [
+    'add_datadog_managed_mcp_server_to_bits_agent',
+    'publish_datadog_form',
+    'delete_datadog_workflow',
+  ],
+  'datadog-mcp-run-actions-and-code': [
+    'execute_datadog_workflow',
+    'run_datadog_bits_agent',
+    'send_message_to_assistant',
+    'run_network_path',
+    'datadog_remote_action_restricted_shell_run_command',
+    'execute_code',
+  ],
+  'datadog-mcp-read-reference': [
+    'read_datadog_documentation',
+    'search_datadog_sdk',
+    'kubernetes_onboarding',
+    'list_reference_tables',
+  ],
+};
 
 describe('builtin schemas: datadog-mcp', () => {
   it('scope matches every regional MCP host and nothing else', () => {
@@ -201,17 +255,53 @@ describe('builtin schemas: datadog-mcp', () => {
     expect(matches('datadog-mcp-write-all', toolRequest('unknown_tool'))).toBe(false);
   });
 
+  it('every tool is covered by exactly one fine-grained schema', () => {
+    const representedTools = Object.values(FINE_GRAINED).flat();
+    for (const tool of [...READ_TOOLS, ...WRITE_TOOLS, ...representedTools]) {
+      const matching = Object.keys(FINE_GRAINED).filter((schema) =>
+        matches(schema, toolRequest(tool))
+      );
+      expect(matching, tool).toHaveLength(1);
+    }
+  });
+
+  it('fine-grained schemas stay on one side of the read/write split', () => {
+    for (const [schema, tools] of Object.entries(FINE_GRAINED)) {
+      const expectedSide = schema.includes('-read-')
+        ? 'datadog-mcp-read-all'
+        : 'datadog-mcp-write-all';
+      for (const tool of tools) {
+        expect(matches(expectedSide, toolRequest(tool)), `${schema} ${tool}`).toBe(true);
+      }
+    }
+  });
+
   it('fine-grained schemas match their tools and nothing else', () => {
-    for (const [suffix, included, excluded] of FINE_GRAINED) {
-      const schema = `datadog-mcp-${suffix}`;
-      expect(matches(schema, toolRequest(included)), `${schema} ${included}`).toBe(true);
-      expect(matches(schema, toolRequest(excluded)), `${schema} ${excluded}`).toBe(false);
+    for (const [schema, tools] of Object.entries(FINE_GRAINED)) {
+      for (const tool of tools) {
+        expect(matches(schema, toolRequest(tool)), `${schema} ${tool}`).toBe(true);
+      }
       expect(matches(schema, rpcRequest('initialize')), schema).toBe(false);
       expect(matches(schema, rpcRequest('tools/list')), schema).toBe(false);
-      expect(matches(schema, mcpRequest(DOMAIN, '/v1/other', mcpToolCall(included))), schema).toBe(
+      expect(matches(schema, toolRequest('unknown_tool')), schema).toBe(false);
+      expect(matches(schema, mcpRequest(DOMAIN, '/v1/other', mcpToolCall(tools[0]!))), schema).toBe(
         false
       );
     }
+    expect(matches('datadog-mcp-read-telemetry', toolRequest('create_derived_metric'))).toBe(false);
+    expect(
+      matches('datadog-mcp-write-telemetry-configuration', toolRequest('get_metric_tags'))
+    ).toBe(false);
+    expect(matches('datadog-mcp-read-telemetry', toolRequest('run_network_path'))).toBe(false);
+    expect(matches('datadog-mcp-write-automation', toolRequest('execute_datadog_workflow'))).toBe(
+      false
+    );
+    expect(matches('datadog-mcp-run-actions-and-code', toolRequest('search_datadog_sdk'))).toBe(
+      false
+    );
+    expect(matches('datadog-mcp-read-dashboards', toolRequest('ddsql_upsert_saved_query'))).toBe(
+      false
+    );
   });
 
   it('permission schemas accept the legacy unstable endpoint path too', () => {
@@ -221,7 +311,7 @@ describe('builtin schemas: datadog-mcp', () => {
       mcpToolCall('search_datadog_logs')
     );
     expect(matches('datadog-mcp-read-all', legacy)).toBe(true);
-    expect(matches('datadog-mcp-read-logs', legacy)).toBe(true);
+    expect(matches('datadog-mcp-read-telemetry', legacy)).toBe(true);
     expect(
       matches(
         'datadog-mcp-session',

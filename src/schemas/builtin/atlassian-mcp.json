@@ -455,8 +455,8 @@
       "parsedBody"
     ]
   },
-  "atlassian-mcp-read-account": {
-    "$comment": "Identify the signed-in Atlassian user, list the Atlassian sites and apps they can access, and look up content formatting guidance. Needed before most other Atlassian tools can be used.",
+  "atlassian-mcp-read-account-and-tool-catalog": {
+    "$comment": "Identify the signed-in Atlassian user, list the Atlassian sites and apps they can access, look up content formatting guidance, and browse the catalog of additional Atlassian tools that are not shown by default and run the read-only ones found there. Needed before most other Atlassian tools can be used.",
     "properties": {
       "method": {
         "const": "POST"
@@ -478,48 +478,7 @@
                 "enum": [
                   "atlassianUserInfo",
                   "getAccessibleAtlassianResources",
-                  "getContentFormatGuide"
-                ]
-              }
-            },
-            "required": [
-              "name"
-            ]
-          }
-        },
-        "required": [
-          "method",
-          "params"
-        ]
-      }
-    },
-    "required": [
-      "method",
-      "path",
-      "parsedBody"
-    ]
-  },
-  "atlassian-mcp-read-tool-catalog": {
-    "$comment": "Browse the catalog of additional Atlassian tools that are not shown by default and run the read-only ones found there.",
-    "properties": {
-      "method": {
-        "const": "POST"
-      },
-      "path": {
-        "type": "string",
-        "pattern": "^/v2/mcp/?$"
-      },
-      "parsedBody": {
-        "type": "object",
-        "properties": {
-          "method": {
-            "const": "tools/call"
-          },
-          "params": {
-            "type": "object",
-            "properties": {
-              "name": {
-                "enum": [
+                  "getContentFormatGuide",
                   "discover",
                   "executeRead"
                 ]
@@ -658,7 +617,7 @@
     ]
   },
   "atlassian-mcp-write-jira": {
-    "$comment": "Create and edit Jira work items, change their status or sprint, add comments, worklogs, links, attachments and watchers, and manage versions, sprints and boards. Does not delete anything or change project settings.",
+    "$comment": "Create and edit Jira work items, change their status or sprint, add comments, worklogs, links, attachments and watchers, manage versions, sprints and boards, and make administrative changes such as creating projects, changing project settings and editing screens. Does not delete anything.",
     "properties": {
       "method": {
         "const": "POST"
@@ -692,7 +651,10 @@
                   "uploadAttachmentToJiraIssue",
                   "editJiraEntityProperty",
                   "createJiraIssueRemoteIssueLink",
-                  "convertJiraIssueHierarchy"
+                  "convertJiraIssueHierarchy",
+                  "createJiraProject",
+                  "updateJiraProject",
+                  "updateJiraScreen"
                 ]
               }
             },
@@ -757,52 +719,8 @@
       "parsedBody"
     ]
   },
-  "atlassian-mcp-manage-jira": {
-    "$comment": "Make administrative changes in Jira: create projects, change project settings, and add or reorder fields on screens.",
-    "properties": {
-      "method": {
-        "const": "POST"
-      },
-      "path": {
-        "type": "string",
-        "pattern": "^/v2/mcp/?$"
-      },
-      "parsedBody": {
-        "type": "object",
-        "properties": {
-          "method": {
-            "const": "tools/call"
-          },
-          "params": {
-            "type": "object",
-            "properties": {
-              "name": {
-                "enum": [
-                  "createJiraProject",
-                  "updateJiraProject",
-                  "updateJiraScreen"
-                ]
-              }
-            },
-            "required": [
-              "name"
-            ]
-          }
-        },
-        "required": [
-          "method",
-          "params"
-        ]
-      }
-    },
-    "required": [
-      "method",
-      "path",
-      "parsedBody"
-    ]
-  },
-  "atlassian-mcp-read-confluence": {
-    "$comment": "View and search Confluence pages, blog posts, live docs, whiteboards, databases and other content, including spaces, comments, versions, attachments, exports, tasks, templates, reactions and sharing settings.",
+  "atlassian-mcp-read-confluence-and-loom": {
+    "$comment": "View and search Confluence pages, blog posts, live docs, whiteboards, databases and other content, including spaces, comments, versions, attachments, exports, tasks, templates, reactions and sharing settings; and browse Loom videos and folders, read video details and transcripts, and get video download links.",
     "properties": {
       "method": {
         "const": "POST"
@@ -847,7 +765,12 @@
                   "listConfluenceTemplates",
                   "getConfluenceTemplate",
                   "resolveConfluenceContentMacros",
-                  "getConfluenceMauiApp"
+                  "getConfluenceMauiApp",
+                  "getLoomObjectsContent",
+                  "listLoomObjects",
+                  "getLoomVideoDownloadUrl",
+                  "listLoomObjectFolders",
+                  "getLoomVideo"
                 ]
               }
             },
@@ -868,8 +791,8 @@
       "parsedBody"
     ]
   },
-  "atlassian-mcp-write-confluence": {
-    "$comment": "Create, edit, copy, move, archive and restore Confluence content and spaces; add comments, labels, reactions, attachments, stars and watches; complete tasks; change who can see content, including public links; and generate infographics and interactive visualizations.",
+  "atlassian-mcp-write-confluence-and-loom": {
+    "$comment": "Create, edit, copy, move, archive and restore Confluence content and spaces; add comments, labels, reactions, attachments, stars and watches; complete tasks; change who can see content, including public links; generate infographics and interactive visualizations; and upload, publish, edit, share, comment on and organize Loom videos.",
     "properties": {
       "method": {
         "const": "POST"
@@ -927,7 +850,16 @@
                   "createConfluenceInfographicForPage",
                   "editConfluenceInfographicForPage",
                   "createConfluenceMauiApp",
-                  "editConfluenceMauiApp"
+                  "editConfluenceMauiApp",
+                  "createLoomObjectUpload",
+                  "publishLoomObject",
+                  "updateLoomObjectMetadata",
+                  "updateLoomObjectVisibility",
+                  "shareLoomObject",
+                  "addLoomInteraction",
+                  "createLoomObjectFolder",
+                  "moveLoomObjectToFolder",
+                  "recoverLoomVideo"
                 ]
               }
             },
@@ -949,7 +881,7 @@
     ]
   },
   "atlassian-mcp-read-jsm": {
-    "$comment": "View and search Jira Service Management customer requests, request types and their fields, resolver plans, agent availability, and Operations alerts, on-call schedules and teams.",
+    "$comment": "View and search Jira Service Management customer requests, request types and their fields, resolver plans, agent availability, Operations alerts, on-call schedules and teams, and the objects, object types and schemas in Assets.",
     "properties": {
       "method": {
         "const": "POST"
@@ -978,7 +910,20 @@
                   "getJsmRequestActionMetadata",
                   "getJsmRequestCreationOptions",
                   "getJsmRequestTypeFields",
-                  "getJsmAgentAvailability"
+                  "getJsmAgentAvailability",
+                  "getAssetsObject",
+                  "getAssetsObjectsById",
+                  "getAssetsObjectSchema",
+                  "getAssetsObjectType",
+                  "getAssetsServiceObjectsById",
+                  "listAssetsObjectSchemas",
+                  "listAssetsObjectTypeAttributes",
+                  "queryAssetsObjects",
+                  "queryAssetsObjectSchemaAttributes",
+                  "queryAssetsObjectsUsingAql",
+                  "queryAssetsObjectTypes",
+                  "queryAssetsReferenceTypes",
+                  "searchAssetsObjects"
                 ]
               }
             },
@@ -1046,8 +991,8 @@
       "parsedBody"
     ]
   },
-  "atlassian-mcp-read-bitbucket": {
-    "$comment": "View Bitbucket workspaces, repositories, files, branches, commits, code insight reports, pull requests with their diffs, comments and tasks, pipelines with their logs, deployments and environments.",
+  "atlassian-mcp-read-bitbucket-and-code": {
+    "$comment": "View Bitbucket workspaces, repositories, files, branches, commits, code insight reports, pull requests with their diffs, comments and tasks, pipelines with their logs, deployments and environments; and search and read source code in any repository connected to Atlassian: files, directory listings, symbol definitions and the code affected by a change.",
     "properties": {
       "method": {
         "const": "POST"
@@ -1091,7 +1036,13 @@
                   "listBitbucketRepoDeployments",
                   "getBitbucketRepoDeployment",
                   "listBitbucketRepoEnvironments",
-                  "getBitbucketRepoEnvironment"
+                  "getBitbucketRepoEnvironment",
+                  "searchCode",
+                  "getCodeFile",
+                  "listCodeDirectory",
+                  "scanCodeRepo",
+                  "getCodeSymbol",
+                  "diffCodeSymbols"
                 ]
               }
             },
@@ -1166,8 +1117,8 @@
       "parsedBody"
     ]
   },
-  "atlassian-mcp-read-teamwork-graph": {
-    "$comment": "Search across all Atlassian products and connected apps, and explore the Teamwork Graph: how people, work, documents and pull requests relate to each other, who works on what and with whom.",
+  "atlassian-mcp-read-teamwork": {
+    "$comment": "View and search Atlassian Home goals, projects (cross-product project pages, not Jira projects), teams and focus areas with their progress updates; search across all Atlassian products and connected apps; and explore the Teamwork Graph: how people, work, documents and pull requests relate to each other, who works on what and with whom.",
     "properties": {
       "method": {
         "const": "POST"
@@ -1194,548 +1145,16 @@
                   "getWorkPortfolio",
                   "getWorkActivity",
                   "getPullRequests",
-                  "getCollaborators"
-                ]
-              }
-            },
-            "required": [
-              "name"
-            ]
-          }
-        },
-        "required": [
-          "method",
-          "params"
-        ]
-      }
-    },
-    "required": [
-      "method",
-      "path",
-      "parsedBody"
-    ]
-  },
-  "atlassian-mcp-write-teamwork-graph": {
-    "$comment": "Record a new relationship between two items in the Atlassian Teamwork Graph.",
-    "properties": {
-      "method": {
-        "const": "POST"
-      },
-      "path": {
-        "type": "string",
-        "pattern": "^/v2/mcp/?$"
-      },
-      "parsedBody": {
-        "type": "object",
-        "properties": {
-          "method": {
-            "const": "tools/call"
-          },
-          "params": {
-            "type": "object",
-            "properties": {
-              "name": {
-                "const": "addTeamworkGraphContext"
-              }
-            },
-            "required": [
-              "name"
-            ]
-          }
-        },
-        "required": [
-          "method",
-          "params"
-        ]
-      }
-    },
-    "required": [
-      "method",
-      "path",
-      "parsedBody"
-    ]
-  },
-  "atlassian-mcp-read-code": {
-    "$comment": "Search and read source code in repositories connected to Atlassian: files, directory listings, symbol definitions and the code affected by a change.",
-    "properties": {
-      "method": {
-        "const": "POST"
-      },
-      "path": {
-        "type": "string",
-        "pattern": "^/v2/mcp/?$"
-      },
-      "parsedBody": {
-        "type": "object",
-        "properties": {
-          "method": {
-            "const": "tools/call"
-          },
-          "params": {
-            "type": "object",
-            "properties": {
-              "name": {
-                "enum": [
-                  "searchCode",
-                  "getCodeFile",
-                  "listCodeDirectory",
-                  "scanCodeRepo",
-                  "getCodeSymbol",
-                  "diffCodeSymbols"
-                ]
-              }
-            },
-            "required": [
-              "name"
-            ]
-          }
-        },
-        "required": [
-          "method",
-          "params"
-        ]
-      }
-    },
-    "required": [
-      "method",
-      "path",
-      "parsedBody"
-    ]
-  },
-  "atlassian-mcp-read-assets": {
-    "$comment": "View, query and search objects, object types and schemas in Jira Service Management Assets.",
-    "properties": {
-      "method": {
-        "const": "POST"
-      },
-      "path": {
-        "type": "string",
-        "pattern": "^/v2/mcp/?$"
-      },
-      "parsedBody": {
-        "type": "object",
-        "properties": {
-          "method": {
-            "const": "tools/call"
-          },
-          "params": {
-            "type": "object",
-            "properties": {
-              "name": {
-                "enum": [
-                  "getAssetsObject",
-                  "getAssetsObjectsById",
-                  "getAssetsObjectSchema",
-                  "getAssetsObjectType",
-                  "getAssetsServiceObjectsById",
-                  "listAssetsObjectSchemas",
-                  "listAssetsObjectTypeAttributes",
-                  "queryAssetsObjects",
-                  "queryAssetsObjectSchemaAttributes",
-                  "queryAssetsObjectsUsingAql",
-                  "queryAssetsObjectTypes",
-                  "queryAssetsReferenceTypes",
-                  "searchAssetsObjects"
-                ]
-              }
-            },
-            "required": [
-              "name"
-            ]
-          }
-        },
-        "required": [
-          "method",
-          "params"
-        ]
-      }
-    },
-    "required": [
-      "method",
-      "path",
-      "parsedBody"
-    ]
-  },
-  "atlassian-mcp-read-loom": {
-    "$comment": "Browse Loom videos and folders, read video details and transcripts, and get video download links.",
-    "properties": {
-      "method": {
-        "const": "POST"
-      },
-      "path": {
-        "type": "string",
-        "pattern": "^/v2/mcp/?$"
-      },
-      "parsedBody": {
-        "type": "object",
-        "properties": {
-          "method": {
-            "const": "tools/call"
-          },
-          "params": {
-            "type": "object",
-            "properties": {
-              "name": {
-                "enum": [
-                  "getLoomObjectsContent",
-                  "listLoomObjects",
-                  "getLoomVideoDownloadUrl",
-                  "listLoomObjectFolders",
-                  "getLoomVideo"
-                ]
-              }
-            },
-            "required": [
-              "name"
-            ]
-          }
-        },
-        "required": [
-          "method",
-          "params"
-        ]
-      }
-    },
-    "required": [
-      "method",
-      "path",
-      "parsedBody"
-    ]
-  },
-  "atlassian-mcp-write-loom": {
-    "$comment": "Upload and publish Loom videos, edit their titles, descriptions and visibility, share them, add comments and reactions, organize them into folders, and reprocess failed videos.",
-    "properties": {
-      "method": {
-        "const": "POST"
-      },
-      "path": {
-        "type": "string",
-        "pattern": "^/v2/mcp/?$"
-      },
-      "parsedBody": {
-        "type": "object",
-        "properties": {
-          "method": {
-            "const": "tools/call"
-          },
-          "params": {
-            "type": "object",
-            "properties": {
-              "name": {
-                "enum": [
-                  "createLoomObjectUpload",
-                  "publishLoomObject",
-                  "updateLoomObjectMetadata",
-                  "updateLoomObjectVisibility",
-                  "shareLoomObject",
-                  "addLoomInteraction",
-                  "createLoomObjectFolder",
-                  "moveLoomObjectToFolder",
-                  "recoverLoomVideo"
-                ]
-              }
-            },
-            "required": [
-              "name"
-            ]
-          }
-        },
-        "required": [
-          "method",
-          "params"
-        ]
-      }
-    },
-    "required": [
-      "method",
-      "path",
-      "parsedBody"
-    ]
-  },
-  "atlassian-mcp-read-goals": {
-    "$comment": "View and search Atlassian goals, their progress updates and goal types.",
-    "properties": {
-      "method": {
-        "const": "POST"
-      },
-      "path": {
-        "type": "string",
-        "pattern": "^/v2/mcp/?$"
-      },
-      "parsedBody": {
-        "type": "object",
-        "properties": {
-          "method": {
-            "const": "tools/call"
-          },
-          "params": {
-            "type": "object",
-            "properties": {
-              "name": {
-                "enum": [
+                  "getCollaborators",
                   "searchGoals",
                   "getGoal",
                   "getGoalUpdate",
-                  "getGoalTypes"
-                ]
-              }
-            },
-            "required": [
-              "name"
-            ]
-          }
-        },
-        "required": [
-          "method",
-          "params"
-        ]
-      }
-    },
-    "required": [
-      "method",
-      "path",
-      "parsedBody"
-    ]
-  },
-  "atlassian-mcp-write-goals": {
-    "$comment": "Create Atlassian goals and success measures, post progress updates, and connect goals to other work.",
-    "properties": {
-      "method": {
-        "const": "POST"
-      },
-      "path": {
-        "type": "string",
-        "pattern": "^/v2/mcp/?$"
-      },
-      "parsedBody": {
-        "type": "object",
-        "properties": {
-          "method": {
-            "const": "tools/call"
-          },
-          "params": {
-            "type": "object",
-            "properties": {
-              "name": {
-                "enum": [
-                  "createGoal",
-                  "createGoalUpdate",
-                  "addConnectionsToGoals"
-                ]
-              }
-            },
-            "required": [
-              "name"
-            ]
-          }
-        },
-        "required": [
-          "method",
-          "params"
-        ]
-      }
-    },
-    "required": [
-      "method",
-      "path",
-      "parsedBody"
-    ]
-  },
-  "atlassian-mcp-read-projects": {
-    "$comment": "View and search Atlassian Home projects (cross-product project pages, not Jira projects) and their progress updates.",
-    "properties": {
-      "method": {
-        "const": "POST"
-      },
-      "path": {
-        "type": "string",
-        "pattern": "^/v2/mcp/?$"
-      },
-      "parsedBody": {
-        "type": "object",
-        "properties": {
-          "method": {
-            "const": "tools/call"
-          },
-          "params": {
-            "type": "object",
-            "properties": {
-              "name": {
-                "enum": [
+                  "getGoalTypes",
                   "searchProjects",
                   "getProject",
-                  "getProjectUpdate"
-                ]
-              }
-            },
-            "required": [
-              "name"
-            ]
-          }
-        },
-        "required": [
-          "method",
-          "params"
-        ]
-      }
-    },
-    "required": [
-      "method",
-      "path",
-      "parsedBody"
-    ]
-  },
-  "atlassian-mcp-write-projects": {
-    "$comment": "Create Atlassian Home projects (not Jira projects), post progress updates, and connect them to other work.",
-    "properties": {
-      "method": {
-        "const": "POST"
-      },
-      "path": {
-        "type": "string",
-        "pattern": "^/v2/mcp/?$"
-      },
-      "parsedBody": {
-        "type": "object",
-        "properties": {
-          "method": {
-            "const": "tools/call"
-          },
-          "params": {
-            "type": "object",
-            "properties": {
-              "name": {
-                "enum": [
-                  "createProject",
-                  "createProjectUpdate",
-                  "addConnectionsToProjects"
-                ]
-              }
-            },
-            "required": [
-              "name"
-            ]
-          }
-        },
-        "required": [
-          "method",
-          "params"
-        ]
-      }
-    },
-    "required": [
-      "method",
-      "path",
-      "parsedBody"
-    ]
-  },
-  "atlassian-mcp-read-teams": {
-    "$comment": "Search Atlassian teams and view their details and members.",
-    "properties": {
-      "method": {
-        "const": "POST"
-      },
-      "path": {
-        "type": "string",
-        "pattern": "^/v2/mcp/?$"
-      },
-      "parsedBody": {
-        "type": "object",
-        "properties": {
-          "method": {
-            "const": "tools/call"
-          },
-          "params": {
-            "type": "object",
-            "properties": {
-              "name": {
-                "enum": [
+                  "getProjectUpdate",
                   "searchTeams",
-                  "getTeam"
-                ]
-              }
-            },
-            "required": [
-              "name"
-            ]
-          }
-        },
-        "required": [
-          "method",
-          "params"
-        ]
-      }
-    },
-    "required": [
-      "method",
-      "path",
-      "parsedBody"
-    ]
-  },
-  "atlassian-mcp-write-teams": {
-    "$comment": "Create Atlassian teams and update their details.",
-    "properties": {
-      "method": {
-        "const": "POST"
-      },
-      "path": {
-        "type": "string",
-        "pattern": "^/v2/mcp/?$"
-      },
-      "parsedBody": {
-        "type": "object",
-        "properties": {
-          "method": {
-            "const": "tools/call"
-          },
-          "params": {
-            "type": "object",
-            "properties": {
-              "name": {
-                "enum": [
-                  "createTeam",
-                  "updateTeam"
-                ]
-              }
-            },
-            "required": [
-              "name"
-            ]
-          }
-        },
-        "required": [
-          "method",
-          "params"
-        ]
-      }
-    },
-    "required": [
-      "method",
-      "path",
-      "parsedBody"
-    ]
-  },
-  "atlassian-mcp-read-focus-areas": {
-    "$comment": "View and search Atlassian focus areas and their type hierarchy.",
-    "properties": {
-      "method": {
-        "const": "POST"
-      },
-      "path": {
-        "type": "string",
-        "pattern": "^/v2/mcp/?$"
-      },
-      "parsedBody": {
-        "type": "object",
-        "properties": {
-          "method": {
-            "const": "tools/call"
-          },
-          "params": {
-            "type": "object",
-            "properties": {
-              "name": {
-                "enum": [
+                  "getTeam",
                   "searchFocusAreas",
                   "getFocusArea",
                   "getFocusAreaTypes"
@@ -1759,8 +1178,8 @@
       "parsedBody"
     ]
   },
-  "atlassian-mcp-write-focus-areas": {
-    "$comment": "Create and update Atlassian focus areas, post status updates on them, and link focus areas together.",
+  "atlassian-mcp-write-teamwork": {
+    "$comment": "Create Atlassian Home goals, projects (not Jira projects), teams and focus areas, update them, post progress and status updates, connect them to other work, and record new relationships in the Teamwork Graph.",
     "properties": {
       "method": {
         "const": "POST"
@@ -1780,6 +1199,15 @@
             "properties": {
               "name": {
                 "enum": [
+                  "addTeamworkGraphContext",
+                  "createGoal",
+                  "createGoalUpdate",
+                  "addConnectionsToGoals",
+                  "createProject",
+                  "createProjectUpdate",
+                  "addConnectionsToProjects",
+                  "createTeam",
+                  "updateTeam",
                   "createFocusArea",
                   "updateFocusArea",
                   "createFocusAreaStatusUpdate",
@@ -1804,8 +1232,8 @@
       "parsedBody"
     ]
   },
-  "atlassian-mcp-read-talent": {
-    "$comment": "View and search positions, reporting lines and headcount metrics in Atlassian Talent.",
+  "atlassian-mcp-read-workforce-planning": {
+    "$comment": "View and search positions, reporting lines, skills and headcount metrics in Atlassian Talent, and view capacity plan allocations and non-project work in Atlassian capacity planning.",
     "properties": {
       "method": {
         "const": "POST"
@@ -1830,92 +1258,7 @@
                   "searchTalentPositions",
                   "getTalentPosition",
                   "getTalentPositionsByEntity",
-                  "getTalentGroupMetrics"
-                ]
-              }
-            },
-            "required": [
-              "name"
-            ]
-          }
-        },
-        "required": [
-          "method",
-          "params"
-        ]
-      }
-    },
-    "required": [
-      "method",
-      "path",
-      "parsedBody"
-    ]
-  },
-  "atlassian-mcp-write-talent": {
-    "$comment": "Create skills, assign or decline skills for workers, and allocate positions to focus areas in Atlassian Talent.",
-    "properties": {
-      "method": {
-        "const": "POST"
-      },
-      "path": {
-        "type": "string",
-        "pattern": "^/v2/mcp/?$"
-      },
-      "parsedBody": {
-        "type": "object",
-        "properties": {
-          "method": {
-            "const": "tools/call"
-          },
-          "params": {
-            "type": "object",
-            "properties": {
-              "name": {
-                "enum": [
-                  "createTalentSkill",
-                  "updateTalentWorkerSkillMappings",
-                  "updateTalentPositionFocusAreaMappings"
-                ]
-              }
-            },
-            "required": [
-              "name"
-            ]
-          }
-        },
-        "required": [
-          "method",
-          "params"
-        ]
-      }
-    },
-    "required": [
-      "method",
-      "path",
-      "parsedBody"
-    ]
-  },
-  "atlassian-mcp-read-capacity-planning": {
-    "$comment": "View capacity plan allocations and search non-project work in Atlassian capacity planning.",
-    "properties": {
-      "method": {
-        "const": "POST"
-      },
-      "path": {
-        "type": "string",
-        "pattern": "^/v2/mcp/?$"
-      },
-      "parsedBody": {
-        "type": "object",
-        "properties": {
-          "method": {
-            "const": "tools/call"
-          },
-          "params": {
-            "type": "object",
-            "properties": {
-              "name": {
-                "enum": [
+                  "getTalentGroupMetrics",
                   "getCapacityPlanAllocations",
                   "searchCapacityPlanNonProjectWork"
                 ]
@@ -1938,8 +1281,8 @@
       "parsedBody"
     ]
   },
-  "atlassian-mcp-write-capacity-planning": {
-    "$comment": "Update capacity plan allocations and create or update non-project work in Atlassian capacity planning.",
+  "atlassian-mcp-write-workforce-planning": {
+    "$comment": "Create skills, assign or decline skills for workers and allocate positions to focus areas in Atlassian Talent, and update capacity plan allocations and create or update non-project work in Atlassian capacity planning.",
     "properties": {
       "method": {
         "const": "POST"
@@ -1959,6 +1302,9 @@
             "properties": {
               "name": {
                 "enum": [
+                  "createTalentSkill",
+                  "updateTalentWorkerSkillMappings",
+                  "updateTalentPositionFocusAreaMappings",
                   "updateCapacityPlanAllocation",
                   "createCapacityPlanNonProjectWork",
                   "updateCapacityPlanNonProjectWork"

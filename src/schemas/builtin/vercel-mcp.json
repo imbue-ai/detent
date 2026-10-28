@@ -448,8 +448,8 @@
       "parsedBody"
     ]
   },
-  "vercel-mcp-read-teams": {
-    "$comment": "Look up the signed-in user, their teams, team members, access groups and the team activity log (get_auth_user, list_teams, list_team_members, list_user_events, list_access_groups, ...).",
+  "vercel-mcp-read-account": {
+    "$comment": "See who is signed in, their teams, team members, access groups and the team activity log, view billing charges and contract commitments, and search the Vercel documentation and CLI guidance (get_auth_user, list_teams, list_team_members, list_billing_charges, search_vercel_documentation, use_vercel_cli, ...).",
     "properties": {
       "method": {
         "const": "POST"
@@ -479,7 +479,11 @@
                   "read_access_group",
                   "read_access_group_project",
                   "list_access_group_members",
-                  "list_access_group_projects"
+                  "list_access_group_projects",
+                  "list_billing_charges",
+                  "list_contract_commitments",
+                  "search_vercel_documentation",
+                  "use_vercel_cli"
                 ]
               }
             },
@@ -500,8 +504,8 @@
       "parsedBody"
     ]
   },
-  "vercel-mcp-read-billing": {
-    "$comment": "View the team's billing charges and contract commitments.",
+  "vercel-mcp-send-feedback": {
+    "$comment": "Send feedback about Vercel to Vercel.",
     "properties": {
       "method": {
         "const": "POST"
@@ -520,10 +524,7 @@
             "type": "object",
             "properties": {
               "name": {
-                "enum": [
-                  "list_billing_charges",
-                  "list_contract_commitments"
-                ]
+                "const": "submit_feedback"
               }
             },
             "required": [
@@ -543,8 +544,8 @@
       "parsedBody"
     ]
   },
-  "vercel-mcp-read-projects": {
-    "$comment": "List and inspect projects, their settings, deployment protection, project domains, microfrontends configuration and the Git repositories/namespaces available to link (list_projects, get_project, git_namespaces, search_repo, ...). Includes get_project_deletion_link, which only returns a dashboard link.",
+  "vercel-mcp-read-projects-and-deployments": {
+    "$comment": "List and inspect projects and their settings, deployments with their build logs, files and events, rolling releases, Vercel CI runs and their logs, and runs of agents built with eve; also fetch content from a deployment URL and browse the Git repositories available to link (list_projects, get_project, list_deployments, get_deployment_build_logs, get_rolling_release, list_vercel_ci_invocations, list_agent_runs, ...). Includes get_project_deletion_link, which only returns a dashboard link.",
     "properties": {
       "method": {
         "const": "POST"
@@ -574,48 +575,7 @@
                   "search_repo",
                   "get_git_deployment_context",
                   "get_microfrontends_config",
-                  "get_microfrontends_config_for_project"
-                ]
-              }
-            },
-            "required": [
-              "name"
-            ]
-          }
-        },
-        "required": [
-          "method",
-          "params"
-        ]
-      }
-    },
-    "required": [
-      "method",
-      "path",
-      "parsedBody"
-    ]
-  },
-  "vercel-mcp-read-deployments": {
-    "$comment": "List and inspect deployments, their build logs, events, files, feature flags and deployment cards, and fetch content from a deployment URL (list_deployments, get_deployment, get_deployment_build_logs, web_fetch_vercel_url, ...).",
-    "properties": {
-      "method": {
-        "const": "POST"
-      },
-      "path": {
-        "type": "string",
-        "pattern": "^/(?:[A-Za-z0-9._~-]+(?:/[A-Za-z0-9._~-]+)?/?)?$"
-      },
-      "parsedBody": {
-        "type": "object",
-        "properties": {
-          "method": {
-            "const": "tools/call"
-          },
-          "params": {
-            "type": "object",
-            "properties": {
-              "name": {
-                "enum": [
+                  "get_microfrontends_config_for_project",
                   "list_deployments",
                   "get_deployment",
                   "get_deployment_build_logs",
@@ -625,52 +585,29 @@
                   "list_deployment_files",
                   "open_deployments",
                   "ui_get_build_log_excerpt",
-                  "web_fetch_vercel_url"
-                ]
-              }
-            },
-            "required": [
-              "name"
-            ]
-          }
-        },
-        "required": [
-          "method",
-          "params"
-        ]
-      }
-    },
-    "required": [
-      "method",
-      "path",
-      "parsedBody"
-    ]
-  },
-  "vercel-mcp-read-rolling-releases": {
-    "$comment": "View the active rolling release, its configuration and billing status, and the aliases of the current promotion.",
-    "properties": {
-      "method": {
-        "const": "POST"
-      },
-      "path": {
-        "type": "string",
-        "pattern": "^/(?:[A-Za-z0-9._~-]+(?:/[A-Za-z0-9._~-]+)?/?)?$"
-      },
-      "parsedBody": {
-        "type": "object",
-        "properties": {
-          "method": {
-            "const": "tools/call"
-          },
-          "params": {
-            "type": "object",
-            "properties": {
-              "name": {
-                "enum": [
+                  "web_fetch_vercel_url",
                   "get_rolling_release",
                   "get_rolling_release_config",
                   "get_rolling_release_billing_status",
-                  "list_promote_aliases"
+                  "list_promote_aliases",
+                  "list_vercel_ci_invocations",
+                  "get_vercel_ci_invocation",
+                  "list_vercel_ci_invocation_attempts",
+                  "get_vercel_ci_invocation_tree",
+                  "get_vercel_ci_invocation_logs",
+                  "list_vercel_ci_job_definitions",
+                  "get_vercel_ci_job_definition",
+                  "list_vercel_ci_job_runs",
+                  "get_vercel_ci_job_run",
+                  "get_vercel_ci_job_run_logs",
+                  "list_vercel_ci_task_definitions",
+                  "list_vercel_ci_task_runs",
+                  "get_vercel_ci_task_logs",
+                  "get_vercel_ci_task_run_logs",
+                  "list_agent_run_projects",
+                  "list_agent_runs",
+                  "get_agent_run",
+                  "get_agent_run_trace"
                 ]
               }
             },
@@ -691,8 +628,8 @@
       "parsedBody"
     ]
   },
-  "vercel-mcp-read-observability": {
-    "$comment": "Read runtime logs, grouped runtime errors and request traces, query observability data and its schema, and inspect configured Drains (get_runtime_logs, get_runtime_errors, create_observability_query, list_drains, ...).",
+  "vercel-mcp-write-projects-and-deployments": {
+    "$comment": "Create and change projects (settings, pausing, project domains, deployment protection and bypass), create or cancel deployments, change which deployment serves production traffic by promoting, rolling back or running a rolling release, re-request deployment checks and retry Vercel CI runs (create_project, update_project, create_deployment, deploy_to_vercel, request_promote, request_rollback, retry_vercel_ci_invocation, ...).",
     "properties": {
       "method": {
         "const": "POST"
@@ -712,14 +649,30 @@
             "properties": {
               "name": {
                 "enum": [
-                  "get_runtime_logs",
-                  "get_runtime_errors",
-                  "get_project_trace",
-                  "create_observability_query",
-                  "get_observability_schema",
-                  "get_observability_configuration_projects",
-                  "get_drain",
-                  "list_drains"
+                  "create_project",
+                  "create_git_project",
+                  "update_project",
+                  "pause_project",
+                  "unpause_project",
+                  "accept_project_transfer_request",
+                  "add_project_domain",
+                  "verify_project_domain",
+                  "update_project_deployment_protection",
+                  "update_project_protection_bypass",
+                  "create_deployment",
+                  "deploy_to_vercel",
+                  "import-claude-design-from-url",
+                  "upload_file",
+                  "cancel_deployment",
+                  "get_access_to_vercel_url",
+                  "rerequest_check",
+                  "request_promote",
+                  "request_rollback",
+                  "start_rolling_release",
+                  "approve_rolling_release_stage",
+                  "complete_rolling_release",
+                  "update_rolling_release_config",
+                  "retry_vercel_ci_invocation"
                 ]
               }
             },
@@ -740,54 +693,8 @@
       "parsedBody"
     ]
   },
-  "vercel-mcp-read-analytics": {
-    "$comment": "Query Web Analytics: count and aggregate page views and custom events for a project.",
-    "properties": {
-      "method": {
-        "const": "POST"
-      },
-      "path": {
-        "type": "string",
-        "pattern": "^/(?:[A-Za-z0-9._~-]+(?:/[A-Za-z0-9._~-]+)?/?)?$"
-      },
-      "parsedBody": {
-        "type": "object",
-        "properties": {
-          "method": {
-            "const": "tools/call"
-          },
-          "params": {
-            "type": "object",
-            "properties": {
-              "name": {
-                "enum": [
-                  "get_web_analytics",
-                  "count_pageviews",
-                  "count_events",
-                  "aggregate_pageviews",
-                  "aggregate_events"
-                ]
-              }
-            },
-            "required": [
-              "name"
-            ]
-          }
-        },
-        "required": [
-          "method",
-          "params"
-        ]
-      }
-    },
-    "required": [
-      "method",
-      "path",
-      "parsedBody"
-    ]
-  },
-  "vercel-mcp-read-domains": {
-    "$comment": "List and inspect domains, DNS records, certificates, domain orders and verification status, and check domain availability and prices, including read-only purchase quotes (list_domains, get_records, search_domains, get_purchase_quote, ...).",
+  "vercel-mcp-read-domains-and-routing": {
+    "$comment": "List and inspect domains, DNS records, certificates and domain orders, check domain availability and prices (including read-only purchase quotes), view routing rules, redirects, their version history and aliases, and read the firewall configuration, bypass rules and active attack status (list_domains, get_records, search_domains, list_project_routes, list_aliases, get_firewall_config, ...). Also drafts a routing rule from a description without saving it (generate_route).",
     "properties": {
       "method": {
         "const": "POST"
@@ -829,146 +736,15 @@
                   "get_tld",
                   "get_tld_price",
                   "list_supported_tlds",
-                  "get_purchase_quote"
-                ]
-              }
-            },
-            "required": [
-              "name"
-            ]
-          }
-        },
-        "required": [
-          "method",
-          "params"
-        ]
-      }
-    },
-    "required": [
-      "method",
-      "path",
-      "parsedBody"
-    ]
-  },
-  "vercel-mcp-read-env-vars": {
-    "$comment": "Read project and shared environment variables, including their decrypted values, and inspect custom environments (filter_project_envs, get_project_env, get_shared_env_var, ...).",
-    "properties": {
-      "method": {
-        "const": "POST"
-      },
-      "path": {
-        "type": "string",
-        "pattern": "^/(?:[A-Za-z0-9._~-]+(?:/[A-Za-z0-9._~-]+)?/?)?$"
-      },
-      "parsedBody": {
-        "type": "object",
-        "properties": {
-          "method": {
-            "const": "tools/call"
-          },
-          "params": {
-            "type": "object",
-            "properties": {
-              "name": {
-                "enum": [
-                  "filter_project_envs",
-                  "get_project_env",
-                  "get_shared_env_var",
-                  "get_custom_environment",
-                  "list_project_custom_environments"
-                ]
-              }
-            },
-            "required": [
-              "name"
-            ]
-          }
-        },
-        "required": [
-          "method",
-          "params"
-        ]
-      }
-    },
-    "required": [
-      "method",
-      "path",
-      "parsedBody"
-    ]
-  },
-  "vercel-mcp-read-feature-flags": {
-    "$comment": "List and inspect feature flags, flag segments, flag versions, flag settings and SDK keys.",
-    "properties": {
-      "method": {
-        "const": "POST"
-      },
-      "path": {
-        "type": "string",
-        "pattern": "^/(?:[A-Za-z0-9._~-]+(?:/[A-Za-z0-9._~-]+)?/?)?$"
-      },
-      "parsedBody": {
-        "type": "object",
-        "properties": {
-          "method": {
-            "const": "tools/call"
-          },
-          "params": {
-            "type": "object",
-            "properties": {
-              "name": {
-                "enum": [
-                  "list_flags",
-                  "list_flags_v2",
-                  "list_team_flags",
-                  "list_team_flags_v2",
-                  "get_flag",
-                  "list_flag_versions",
-                  "get_flag_segment",
-                  "list_flag_segments",
-                  "get_flag_settings",
-                  "list_team_flag_settings",
-                  "list_feature_flag_sdk_keys"
-                ]
-              }
-            },
-            "required": [
-              "name"
-            ]
-          }
-        },
-        "required": [
-          "method",
-          "params"
-        ]
-      }
-    },
-    "required": [
-      "method",
-      "path",
-      "parsedBody"
-    ]
-  },
-  "vercel-mcp-read-firewall": {
-    "$comment": "Read the firewall configuration, system bypass rules and active attack data.",
-    "properties": {
-      "method": {
-        "const": "POST"
-      },
-      "path": {
-        "type": "string",
-        "pattern": "^/(?:[A-Za-z0-9._~-]+(?:/[A-Za-z0-9._~-]+)?/?)?$"
-      },
-      "parsedBody": {
-        "type": "object",
-        "properties": {
-          "method": {
-            "const": "tools/call"
-          },
-          "params": {
-            "type": "object",
-            "properties": {
-              "name": {
-                "enum": [
+                  "get_purchase_quote",
+                  "list_project_routes",
+                  "list_project_route_versions",
+                  "list_bulk_redirects",
+                  "list_bulk_redirect_versions",
+                  "generate_route",
+                  "list_aliases",
+                  "get_alias",
+                  "list_deployment_aliases",
                   "get_firewall_config",
                   "get_bypass_ip",
                   "get_active_attack_status"
@@ -992,627 +768,8 @@
       "parsedBody"
     ]
   },
-  "vercel-mcp-read-global-config": {
-    "$comment": "Read Global Configs (Edge Config): their items, read tokens and backups.",
-    "properties": {
-      "method": {
-        "const": "POST"
-      },
-      "path": {
-        "type": "string",
-        "pattern": "^/(?:[A-Za-z0-9._~-]+(?:/[A-Za-z0-9._~-]+)?/?)?$"
-      },
-      "parsedBody": {
-        "type": "object",
-        "properties": {
-          "method": {
-            "const": "tools/call"
-          },
-          "params": {
-            "type": "object",
-            "properties": {
-              "name": {
-                "enum": [
-                  "get_edge_configs",
-                  "get_edge_config",
-                  "get_edge_config_items",
-                  "get_edge_config_item",
-                  "get_edge_config_tokens",
-                  "get_edge_config_token",
-                  "get_edge_config_backups",
-                  "get_edge_config_backup"
-                ]
-              }
-            },
-            "required": [
-              "name"
-            ]
-          }
-        },
-        "required": [
-          "method",
-          "params"
-        ]
-      }
-    },
-    "required": [
-      "method",
-      "path",
-      "parsedBody"
-    ]
-  },
-  "vercel-mcp-read-integrations": {
-    "$comment": "Inspect integration configurations, products and billing plans, webhooks, and the connectors linked to the team's projects.",
-    "properties": {
-      "method": {
-        "const": "POST"
-      },
-      "path": {
-        "type": "string",
-        "pattern": "^/(?:[A-Za-z0-9._~-]+(?:/[A-Za-z0-9._~-]+)?/?)?$"
-      },
-      "parsedBody": {
-        "type": "object",
-        "properties": {
-          "method": {
-            "const": "tools/call"
-          },
-          "params": {
-            "type": "object",
-            "properties": {
-              "name": {
-                "enum": [
-                  "list_integration_configurations",
-                  "get_configuration",
-                  "list_integration_configuration_products",
-                  "list_integration_billing_plans",
-                  "get_webhooks",
-                  "list_connectors",
-                  "get_connector",
-                  "get_connector_project_connection",
-                  "list_connector_project_connections",
-                  "list_project_connector_connections"
-                ]
-              }
-            },
-            "required": [
-              "name"
-            ]
-          }
-        },
-        "required": [
-          "method",
-          "params"
-        ]
-      }
-    },
-    "required": [
-      "method",
-      "path",
-      "parsedBody"
-    ]
-  },
-  "vercel-mcp-read-key-management": {
-    "$comment": "List and inspect KMS issuers.",
-    "properties": {
-      "method": {
-        "const": "POST"
-      },
-      "path": {
-        "type": "string",
-        "pattern": "^/(?:[A-Za-z0-9._~-]+(?:/[A-Za-z0-9._~-]+)?/?)?$"
-      },
-      "parsedBody": {
-        "type": "object",
-        "properties": {
-          "method": {
-            "const": "tools/call"
-          },
-          "params": {
-            "type": "object",
-            "properties": {
-              "name": {
-                "enum": [
-                  "list_kms_issuers",
-                  "get_kms_issuer"
-                ]
-              }
-            },
-            "required": [
-              "name"
-            ]
-          }
-        },
-        "required": [
-          "method",
-          "params"
-        ]
-      }
-    },
-    "required": [
-      "method",
-      "path",
-      "parsedBody"
-    ]
-  },
-  "vercel-mcp-read-routing": {
-    "$comment": "View routing rules, redirects and their version history, deployment aliases, and draft a routing rule from a natural-language description without saving it (list_project_routes, list_bulk_redirects, list_aliases, generate_route, ...).",
-    "properties": {
-      "method": {
-        "const": "POST"
-      },
-      "path": {
-        "type": "string",
-        "pattern": "^/(?:[A-Za-z0-9._~-]+(?:/[A-Za-z0-9._~-]+)?/?)?$"
-      },
-      "parsedBody": {
-        "type": "object",
-        "properties": {
-          "method": {
-            "const": "tools/call"
-          },
-          "params": {
-            "type": "object",
-            "properties": {
-              "name": {
-                "enum": [
-                  "list_project_routes",
-                  "list_project_route_versions",
-                  "list_bulk_redirects",
-                  "list_bulk_redirect_versions",
-                  "generate_route",
-                  "list_aliases",
-                  "get_alias",
-                  "list_deployment_aliases"
-                ]
-              }
-            },
-            "required": [
-              "name"
-            ]
-          }
-        },
-        "required": [
-          "method",
-          "params"
-        ]
-      }
-    },
-    "required": [
-      "method",
-      "path",
-      "parsedBody"
-    ]
-  },
-  "vercel-mcp-read-sandboxes": {
-    "$comment": "Inspect sandboxes and sandbox sessions: list sessions, commands, snapshots, read command output and read files inside a sandbox.",
-    "properties": {
-      "method": {
-        "const": "POST"
-      },
-      "path": {
-        "type": "string",
-        "pattern": "^/(?:[A-Za-z0-9._~-]+(?:/[A-Za-z0-9._~-]+)?/?)?$"
-      },
-      "parsedBody": {
-        "type": "object",
-        "properties": {
-          "method": {
-            "const": "tools/call"
-          },
-          "params": {
-            "type": "object",
-            "properties": {
-              "name": {
-                "enum": [
-                  "list_named_sandboxes",
-                  "get_named_sandbox",
-                  "list_sessions",
-                  "get_session",
-                  "list_session_commands",
-                  "get_session_command",
-                  "get_session_command_logs",
-                  "list_session_snapshots",
-                  "get_session_snapshot",
-                  "read_session_file"
-                ]
-              }
-            },
-            "required": [
-              "name"
-            ]
-          }
-        },
-        "required": [
-          "method",
-          "params"
-        ]
-      }
-    },
-    "required": [
-      "method",
-      "path",
-      "parsedBody"
-    ]
-  },
-  "vercel-mcp-read-storage": {
-    "$comment": "Inspect Blob stores, build cache artifacts and Remote Caching status.",
-    "properties": {
-      "method": {
-        "const": "POST"
-      },
-      "path": {
-        "type": "string",
-        "pattern": "^/(?:[A-Za-z0-9._~-]+(?:/[A-Za-z0-9._~-]+)?/?)?$"
-      },
-      "parsedBody": {
-        "type": "object",
-        "properties": {
-          "method": {
-            "const": "tools/call"
-          },
-          "params": {
-            "type": "object",
-            "properties": {
-              "name": {
-                "enum": [
-                  "get_storage_stores_by_id",
-                  "artifact_query",
-                  "get_remote_cache_status"
-                ]
-              }
-            },
-            "required": [
-              "name"
-            ]
-          }
-        },
-        "required": [
-          "method",
-          "params"
-        ]
-      }
-    },
-    "required": [
-      "method",
-      "path",
-      "parsedBody"
-    ]
-  },
-  "vercel-mcp-read-agent-runs": {
-    "$comment": "Inspect runs of agents built with eve: run status, usage and traces.",
-    "properties": {
-      "method": {
-        "const": "POST"
-      },
-      "path": {
-        "type": "string",
-        "pattern": "^/(?:[A-Za-z0-9._~-]+(?:/[A-Za-z0-9._~-]+)?/?)?$"
-      },
-      "parsedBody": {
-        "type": "object",
-        "properties": {
-          "method": {
-            "const": "tools/call"
-          },
-          "params": {
-            "type": "object",
-            "properties": {
-              "name": {
-                "enum": [
-                  "list_agent_run_projects",
-                  "list_agent_runs",
-                  "get_agent_run",
-                  "get_agent_run_trace"
-                ]
-              }
-            },
-            "required": [
-              "name"
-            ]
-          }
-        },
-        "required": [
-          "method",
-          "params"
-        ]
-      }
-    },
-    "required": [
-      "method",
-      "path",
-      "parsedBody"
-    ]
-  },
-  "vercel-mcp-read-ci": {
-    "$comment": "Inspect Vercel CI invocations, attempts, job definitions, job runs, tasks and their logs.",
-    "properties": {
-      "method": {
-        "const": "POST"
-      },
-      "path": {
-        "type": "string",
-        "pattern": "^/(?:[A-Za-z0-9._~-]+(?:/[A-Za-z0-9._~-]+)?/?)?$"
-      },
-      "parsedBody": {
-        "type": "object",
-        "properties": {
-          "method": {
-            "const": "tools/call"
-          },
-          "params": {
-            "type": "object",
-            "properties": {
-              "name": {
-                "enum": [
-                  "list_vercel_ci_invocations",
-                  "get_vercel_ci_invocation",
-                  "list_vercel_ci_invocation_attempts",
-                  "get_vercel_ci_invocation_tree",
-                  "get_vercel_ci_invocation_logs",
-                  "list_vercel_ci_job_definitions",
-                  "get_vercel_ci_job_definition",
-                  "list_vercel_ci_job_runs",
-                  "get_vercel_ci_job_run",
-                  "get_vercel_ci_job_run_logs",
-                  "list_vercel_ci_task_definitions",
-                  "list_vercel_ci_task_runs",
-                  "get_vercel_ci_task_logs",
-                  "get_vercel_ci_task_run_logs"
-                ]
-              }
-            },
-            "required": [
-              "name"
-            ]
-          }
-        },
-        "required": [
-          "method",
-          "params"
-        ]
-      }
-    },
-    "required": [
-      "method",
-      "path",
-      "parsedBody"
-    ]
-  },
-  "vercel-mcp-read-toolbar": {
-    "$comment": "Read Vercel Toolbar comment threads and their messages.",
-    "properties": {
-      "method": {
-        "const": "POST"
-      },
-      "path": {
-        "type": "string",
-        "pattern": "^/(?:[A-Za-z0-9._~-]+(?:/[A-Za-z0-9._~-]+)?/?)?$"
-      },
-      "parsedBody": {
-        "type": "object",
-        "properties": {
-          "method": {
-            "const": "tools/call"
-          },
-          "params": {
-            "type": "object",
-            "properties": {
-              "name": {
-                "enum": [
-                  "list_toolbar_threads",
-                  "get_toolbar_thread"
-                ]
-              }
-            },
-            "required": [
-              "name"
-            ]
-          }
-        },
-        "required": [
-          "method",
-          "params"
-        ]
-      }
-    },
-    "required": [
-      "method",
-      "path",
-      "parsedBody"
-    ]
-  },
-  "vercel-mcp-read-docs": {
-    "$comment": "Search the Vercel documentation and get guidance on Vercel CLI commands.",
-    "properties": {
-      "method": {
-        "const": "POST"
-      },
-      "path": {
-        "type": "string",
-        "pattern": "^/(?:[A-Za-z0-9._~-]+(?:/[A-Za-z0-9._~-]+)?/?)?$"
-      },
-      "parsedBody": {
-        "type": "object",
-        "properties": {
-          "method": {
-            "const": "tools/call"
-          },
-          "params": {
-            "type": "object",
-            "properties": {
-              "name": {
-                "enum": [
-                  "search_vercel_documentation",
-                  "use_vercel_cli"
-                ]
-              }
-            },
-            "required": [
-              "name"
-            ]
-          }
-        },
-        "required": [
-          "method",
-          "params"
-        ]
-      }
-    },
-    "required": [
-      "method",
-      "path",
-      "parsedBody"
-    ]
-  },
-  "vercel-mcp-write-projects": {
-    "$comment": "Create projects (from scratch or from a Git repository), change project settings, pause or resume projects, add and verify project domains, accept project transfers, and change deployment protection and protection bypass (create_project, create_git_project, update_project, pause_project, ...).",
-    "properties": {
-      "method": {
-        "const": "POST"
-      },
-      "path": {
-        "type": "string",
-        "pattern": "^/(?:[A-Za-z0-9._~-]+(?:/[A-Za-z0-9._~-]+)?/?)?$"
-      },
-      "parsedBody": {
-        "type": "object",
-        "properties": {
-          "method": {
-            "const": "tools/call"
-          },
-          "params": {
-            "type": "object",
-            "properties": {
-              "name": {
-                "enum": [
-                  "create_project",
-                  "create_git_project",
-                  "update_project",
-                  "pause_project",
-                  "unpause_project",
-                  "accept_project_transfer_request",
-                  "add_project_domain",
-                  "verify_project_domain",
-                  "update_project_deployment_protection",
-                  "update_project_protection_bypass"
-                ]
-              }
-            },
-            "required": [
-              "name"
-            ]
-          }
-        },
-        "required": [
-          "method",
-          "params"
-        ]
-      }
-    },
-    "required": [
-      "method",
-      "path",
-      "parsedBody"
-    ]
-  },
-  "vercel-mcp-write-deployments": {
-    "$comment": "Create deployments from Git or uploaded files, deploy inline files or a Claude Design bundle, cancel deployments, create shareable links to protected deployments and re-request deployment checks (create_deployment, deploy_to_vercel, upload_file, cancel_deployment, ...).",
-    "properties": {
-      "method": {
-        "const": "POST"
-      },
-      "path": {
-        "type": "string",
-        "pattern": "^/(?:[A-Za-z0-9._~-]+(?:/[A-Za-z0-9._~-]+)?/?)?$"
-      },
-      "parsedBody": {
-        "type": "object",
-        "properties": {
-          "method": {
-            "const": "tools/call"
-          },
-          "params": {
-            "type": "object",
-            "properties": {
-              "name": {
-                "enum": [
-                  "create_deployment",
-                  "deploy_to_vercel",
-                  "import-claude-design-from-url",
-                  "upload_file",
-                  "cancel_deployment",
-                  "get_access_to_vercel_url",
-                  "rerequest_check"
-                ]
-              }
-            },
-            "required": [
-              "name"
-            ]
-          }
-        },
-        "required": [
-          "method",
-          "params"
-        ]
-      }
-    },
-    "required": [
-      "method",
-      "path",
-      "parsedBody"
-    ]
-  },
-  "vercel-mcp-write-rolling-releases": {
-    "$comment": "Change which deployment serves production traffic: promote or roll back a deployment, start, advance or complete a rolling release, and change rolling release settings (request_promote, request_rollback, start_rolling_release, ...).",
-    "properties": {
-      "method": {
-        "const": "POST"
-      },
-      "path": {
-        "type": "string",
-        "pattern": "^/(?:[A-Za-z0-9._~-]+(?:/[A-Za-z0-9._~-]+)?/?)?$"
-      },
-      "parsedBody": {
-        "type": "object",
-        "properties": {
-          "method": {
-            "const": "tools/call"
-          },
-          "params": {
-            "type": "object",
-            "properties": {
-              "name": {
-                "enum": [
-                  "request_promote",
-                  "request_rollback",
-                  "start_rolling_release",
-                  "approve_rolling_release_stage",
-                  "complete_rolling_release",
-                  "update_rolling_release_config"
-                ]
-              }
-            },
-            "required": [
-              "name"
-            ]
-          }
-        },
-        "required": [
-          "method",
-          "params"
-        ]
-      }
-    },
-    "required": [
-      "method",
-      "path",
-      "parsedBody"
-    ]
-  },
-  "vercel-mcp-write-domains": {
-    "$comment": "Add or transfer domains to the team, create, update or replace DNS records, and issue certificates.",
+  "vercel-mcp-write-domains-and-routing": {
+    "$comment": "Add or transfer domains, create, update or replace DNS records, issue certificates, add, edit and stage routing rules and redirects, assign aliases, change URL protection bypass, and change the firewall configuration including Attack Challenge mode (create_or_transfer_domain, create_record, add_route, stage_redirects, assign_alias, put_firewall_config, ...). Does not buy domains; that needs vercel-mcp-make-purchases.",
     "properties": {
       "method": {
         "const": "POST"
@@ -1636,7 +793,19 @@
                   "create_record",
                   "update_record",
                   "replace_domain_dns_records",
-                  "issue_cert"
+                  "issue_cert",
+                  "add_route",
+                  "edit_route",
+                  "stage_routes",
+                  "update_route_versions",
+                  "stage_redirects",
+                  "restore_redirects",
+                  "update_bulk_redirect_version",
+                  "assign_alias",
+                  "patch_url_protection_bypass",
+                  "put_firewall_config",
+                  "update_firewall_config",
+                  "update_attack_challenge_mode"
                 ]
               }
             },
@@ -1704,8 +873,85 @@
       "parsedBody"
     ]
   },
-  "vercel-mcp-write-env-vars": {
-    "$comment": "Create and edit project environment variables.",
+  "vercel-mcp-read-configuration": {
+    "$comment": "Read project and shared environment variables including their decrypted values, custom environments, feature flags, flag segments and SDK keys, Global Configs (Edge Config) with their items, read tokens and backups, integration configurations, webhooks and connectors, and KMS issuers (filter_project_envs, get_project_env, list_flags, get_edge_config_items, list_connectors, list_kms_issuers, ...).",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/(?:[A-Za-z0-9._~-]+(?:/[A-Za-z0-9._~-]+)?/?)?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "const": "tools/call"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "enum": [
+                  "filter_project_envs",
+                  "get_project_env",
+                  "get_shared_env_var",
+                  "get_custom_environment",
+                  "list_project_custom_environments",
+                  "list_flags",
+                  "list_flags_v2",
+                  "list_team_flags",
+                  "list_team_flags_v2",
+                  "get_flag",
+                  "list_flag_versions",
+                  "get_flag_segment",
+                  "list_flag_segments",
+                  "get_flag_settings",
+                  "list_team_flag_settings",
+                  "list_feature_flag_sdk_keys",
+                  "get_edge_configs",
+                  "get_edge_config",
+                  "get_edge_config_items",
+                  "get_edge_config_item",
+                  "get_edge_config_tokens",
+                  "get_edge_config_token",
+                  "get_edge_config_backups",
+                  "get_edge_config_backup",
+                  "list_integration_configurations",
+                  "get_configuration",
+                  "list_integration_configuration_products",
+                  "list_integration_billing_plans",
+                  "get_webhooks",
+                  "list_connectors",
+                  "get_connector",
+                  "get_connector_project_connection",
+                  "list_connector_project_connections",
+                  "list_project_connector_connections",
+                  "list_kms_issuers",
+                  "get_kms_issuer"
+                ]
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "params"
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "vercel-mcp-write-configuration": {
+    "$comment": "Create and edit environment variables, feature flags, flag segments, flag settings and SDK keys, create and update Global Configs (Edge Config), their items, read tokens and backups, change connector settings and project connections, and manage KMS issuers, policies and signing keys including activating and revoking them (create_project_env, create_flag, patch_edge_config_items, update_connector, create_kms_issuer, revoke_kms_signing_key, ...).",
     "properties": {
       "method": {
         "const": "POST"
@@ -1726,227 +972,19 @@
               "name": {
                 "enum": [
                   "create_project_env",
-                  "edit_project_env"
-                ]
-              }
-            },
-            "required": [
-              "name"
-            ]
-          }
-        },
-        "required": [
-          "method",
-          "params"
-        ]
-      }
-    },
-    "required": [
-      "method",
-      "path",
-      "parsedBody"
-    ]
-  },
-  "vercel-mcp-write-feature-flags": {
-    "$comment": "Create and update feature flags, flag segments and flag settings, and create SDK keys.",
-    "properties": {
-      "method": {
-        "const": "POST"
-      },
-      "path": {
-        "type": "string",
-        "pattern": "^/(?:[A-Za-z0-9._~-]+(?:/[A-Za-z0-9._~-]+)?/?)?$"
-      },
-      "parsedBody": {
-        "type": "object",
-        "properties": {
-          "method": {
-            "const": "tools/call"
-          },
-          "params": {
-            "type": "object",
-            "properties": {
-              "name": {
-                "enum": [
+                  "edit_project_env",
                   "create_flag",
                   "update_flag",
                   "update_flag_segment",
                   "update_flag_settings",
-                  "create_sdk_key"
-                ]
-              }
-            },
-            "required": [
-              "name"
-            ]
-          }
-        },
-        "required": [
-          "method",
-          "params"
-        ]
-      }
-    },
-    "required": [
-      "method",
-      "path",
-      "parsedBody"
-    ]
-  },
-  "vercel-mcp-write-firewall": {
-    "$comment": "Change the firewall configuration and toggle Attack Challenge mode.",
-    "properties": {
-      "method": {
-        "const": "POST"
-      },
-      "path": {
-        "type": "string",
-        "pattern": "^/(?:[A-Za-z0-9._~-]+(?:/[A-Za-z0-9._~-]+)?/?)?$"
-      },
-      "parsedBody": {
-        "type": "object",
-        "properties": {
-          "method": {
-            "const": "tools/call"
-          },
-          "params": {
-            "type": "object",
-            "properties": {
-              "name": {
-                "enum": [
-                  "put_firewall_config",
-                  "update_firewall_config",
-                  "update_attack_challenge_mode"
-                ]
-              }
-            },
-            "required": [
-              "name"
-            ]
-          }
-        },
-        "required": [
-          "method",
-          "params"
-        ]
-      }
-    },
-    "required": [
-      "method",
-      "path",
-      "parsedBody"
-    ]
-  },
-  "vercel-mcp-write-global-config": {
-    "$comment": "Create and update Global Configs (Edge Config), change their items in batch, create read tokens and restore backups.",
-    "properties": {
-      "method": {
-        "const": "POST"
-      },
-      "path": {
-        "type": "string",
-        "pattern": "^/(?:[A-Za-z0-9._~-]+(?:/[A-Za-z0-9._~-]+)?/?)?$"
-      },
-      "parsedBody": {
-        "type": "object",
-        "properties": {
-          "method": {
-            "const": "tools/call"
-          },
-          "params": {
-            "type": "object",
-            "properties": {
-              "name": {
-                "enum": [
+                  "create_sdk_key",
                   "create_edge_config",
                   "update_edge_config",
                   "patch_edge_config_items",
                   "create_edge_config_token",
-                  "restore_edge_config_backup"
-                ]
-              }
-            },
-            "required": [
-              "name"
-            ]
-          }
-        },
-        "required": [
-          "method",
-          "params"
-        ]
-      }
-    },
-    "required": [
-      "method",
-      "path",
-      "parsedBody"
-    ]
-  },
-  "vercel-mcp-write-integrations": {
-    "$comment": "Change connector settings and connect connectors to projects or change the environments they are available in.",
-    "properties": {
-      "method": {
-        "const": "POST"
-      },
-      "path": {
-        "type": "string",
-        "pattern": "^/(?:[A-Za-z0-9._~-]+(?:/[A-Za-z0-9._~-]+)?/?)?$"
-      },
-      "parsedBody": {
-        "type": "object",
-        "properties": {
-          "method": {
-            "const": "tools/call"
-          },
-          "params": {
-            "type": "object",
-            "properties": {
-              "name": {
-                "enum": [
+                  "restore_edge_config_backup",
                   "update_connector",
-                  "upsert_connector_project_connection"
-                ]
-              }
-            },
-            "required": [
-              "name"
-            ]
-          }
-        },
-        "required": [
-          "method",
-          "params"
-        ]
-      }
-    },
-    "required": [
-      "method",
-      "path",
-      "parsedBody"
-    ]
-  },
-  "vercel-mcp-write-key-management": {
-    "$comment": "Create and update KMS issuers and issuer policies, and create, activate or revoke signing keys.",
-    "properties": {
-      "method": {
-        "const": "POST"
-      },
-      "path": {
-        "type": "string",
-        "pattern": "^/(?:[A-Za-z0-9._~-]+(?:/[A-Za-z0-9._~-]+)?/?)?$"
-      },
-      "parsedBody": {
-        "type": "object",
-        "properties": {
-          "method": {
-            "const": "tools/call"
-          },
-          "params": {
-            "type": "object",
-            "properties": {
-              "name": {
-                "enum": [
+                  "upsert_connector_project_connection",
                   "create_kms_issuer",
                   "update_kms_issuer",
                   "create_kms_issuer_policy",
@@ -1974,8 +1012,8 @@
       "parsedBody"
     ]
   },
-  "vercel-mcp-write-routing": {
-    "$comment": "Add, edit and stage routing rules and redirects, promote, restore or discard their versions, assign aliases and change URL protection bypass (add_route, stage_routes, stage_redirects, assign_alias, ...).",
+  "vercel-mcp-read-observability-and-analytics": {
+    "$comment": "Read runtime logs, grouped runtime errors and request traces, query observability data and its schema, inspect configured Drains, and query Web Analytics page views and custom events (get_runtime_logs, get_runtime_errors, create_observability_query, list_drains, count_pageviews, aggregate_events, ...).",
     "properties": {
       "method": {
         "const": "POST"
@@ -1995,15 +1033,19 @@
             "properties": {
               "name": {
                 "enum": [
-                  "add_route",
-                  "edit_route",
-                  "stage_routes",
-                  "update_route_versions",
-                  "stage_redirects",
-                  "restore_redirects",
-                  "update_bulk_redirect_version",
-                  "assign_alias",
-                  "patch_url_protection_bypass"
+                  "get_runtime_logs",
+                  "get_runtime_errors",
+                  "get_project_trace",
+                  "create_observability_query",
+                  "get_observability_schema",
+                  "get_observability_configuration_projects",
+                  "get_drain",
+                  "list_drains",
+                  "get_web_analytics",
+                  "count_pageviews",
+                  "count_events",
+                  "aggregate_pageviews",
+                  "aggregate_events"
                 ]
               }
             },
@@ -2024,8 +1066,8 @@
       "parsedBody"
     ]
   },
-  "vercel-mcp-write-sandboxes": {
-    "$comment": "Create and manage sandboxes: run commands and kill them, write files and create directories, take snapshots, extend timeouts, change network policy and stop sessions (create_sandboxes_v4, run_session_command, write_session_files, ...).",
+  "vercel-mcp-write-observability-and-analytics": {
+    "$comment": "Create, update and test Drains that send logs, traces and analytics data to external destinations, and mint trace session tokens (create_drain, update_drain, test_drain, create_trace_session). No tool changes Web Analytics data itself.",
     "properties": {
       "method": {
         "const": "POST"
@@ -2045,6 +1087,110 @@
             "properties": {
               "name": {
                 "enum": [
+                  "create_drain",
+                  "update_drain",
+                  "test_drain",
+                  "create_trace_session"
+                ]
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "params"
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "vercel-mcp-read-storage-and-sandboxes": {
+    "$comment": "Inspect Blob stores, build cache artifacts and Remote Caching status, and inspect sandboxes and their sessions: list sessions, commands and snapshots, read command output and read files inside a sandbox (get_storage_stores_by_id, artifact_query, list_named_sandboxes, list_sessions, get_session_command_logs, read_session_file, ...).",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/(?:[A-Za-z0-9._~-]+(?:/[A-Za-z0-9._~-]+)?/?)?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "const": "tools/call"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "enum": [
+                  "get_storage_stores_by_id",
+                  "artifact_query",
+                  "get_remote_cache_status",
+                  "list_named_sandboxes",
+                  "get_named_sandbox",
+                  "list_sessions",
+                  "get_session",
+                  "list_session_commands",
+                  "get_session_command",
+                  "get_session_command_logs",
+                  "list_session_snapshots",
+                  "get_session_snapshot",
+                  "read_session_file"
+                ]
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "params"
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "vercel-mcp-write-storage-and-sandboxes": {
+    "$comment": "Create Blob stores, upload build cache artifacts and invalidate cached content, and create and manage sandboxes: run and kill commands inside them, write files, take snapshots, extend timeouts, change network policy and stop sessions (create_storage_stores_blob, upload_artifact, invalidate_by_tags, create_sandboxes_v4, run_session_command, write_session_files, ...). Commands run inside isolated Vercel sandboxes.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/(?:[A-Za-z0-9._~-]+(?:/[A-Za-z0-9._~-]+)?/?)?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "const": "tools/call"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "enum": [
+                  "create_storage_stores_blob",
+                  "upload_artifact",
+                  "record_events",
+                  "invalidate_by_tags",
+                  "invalidate_by_src_images",
                   "create_sandboxes_v2",
                   "create_sandboxes_v3",
                   "create_sandboxes_v4",
@@ -2078,8 +1224,8 @@
       "parsedBody"
     ]
   },
-  "vercel-mcp-write-storage": {
-    "$comment": "Create Blob stores, upload build cache artifacts and record cache events, and invalidate cached content by tag or source image.",
+  "vercel-mcp-read-toolbar": {
+    "$comment": "Read Vercel Toolbar comment threads and their messages.",
     "properties": {
       "method": {
         "const": "POST"
@@ -2099,56 +1245,8 @@
             "properties": {
               "name": {
                 "enum": [
-                  "create_storage_stores_blob",
-                  "upload_artifact",
-                  "record_events",
-                  "invalidate_by_tags",
-                  "invalidate_by_src_images"
-                ]
-              }
-            },
-            "required": [
-              "name"
-            ]
-          }
-        },
-        "required": [
-          "method",
-          "params"
-        ]
-      }
-    },
-    "required": [
-      "method",
-      "path",
-      "parsedBody"
-    ]
-  },
-  "vercel-mcp-write-observability": {
-    "$comment": "Create, update and test Drains that send observability data to external destinations, and mint trace session tokens (create_drain, update_drain, test_drain, create_trace_session).",
-    "properties": {
-      "method": {
-        "const": "POST"
-      },
-      "path": {
-        "type": "string",
-        "pattern": "^/(?:[A-Za-z0-9._~-]+(?:/[A-Za-z0-9._~-]+)?/?)?$"
-      },
-      "parsedBody": {
-        "type": "object",
-        "properties": {
-          "method": {
-            "const": "tools/call"
-          },
-          "params": {
-            "type": "object",
-            "properties": {
-              "name": {
-                "enum": [
-                  "create_drain",
-                  "update_drain",
-                  "test_drain",
-                  "create_trace_session"
+                  "list_toolbar_threads",
+                  "get_toolbar_thread"
                 ]
               }
             },
@@ -2195,86 +1293,6 @@
                   "add_toolbar_reaction",
                   "change_toolbar_thread_resolve_status"
                 ]
-              }
-            },
-            "required": [
-              "name"
-            ]
-          }
-        },
-        "required": [
-          "method",
-          "params"
-        ]
-      }
-    },
-    "required": [
-      "method",
-      "path",
-      "parsedBody"
-    ]
-  },
-  "vercel-mcp-write-ci": {
-    "$comment": "Retry a Vercel CI invocation.",
-    "properties": {
-      "method": {
-        "const": "POST"
-      },
-      "path": {
-        "type": "string",
-        "pattern": "^/(?:[A-Za-z0-9._~-]+(?:/[A-Za-z0-9._~-]+)?/?)?$"
-      },
-      "parsedBody": {
-        "type": "object",
-        "properties": {
-          "method": {
-            "const": "tools/call"
-          },
-          "params": {
-            "type": "object",
-            "properties": {
-              "name": {
-                "const": "retry_vercel_ci_invocation"
-              }
-            },
-            "required": [
-              "name"
-            ]
-          }
-        },
-        "required": [
-          "method",
-          "params"
-        ]
-      }
-    },
-    "required": [
-      "method",
-      "path",
-      "parsedBody"
-    ]
-  },
-  "vercel-mcp-send-feedback": {
-    "$comment": "Send feedback about Vercel to Vercel.",
-    "properties": {
-      "method": {
-        "const": "POST"
-      },
-      "path": {
-        "type": "string",
-        "pattern": "^/(?:[A-Za-z0-9._~-]+(?:/[A-Za-z0-9._~-]+)?/?)?$"
-      },
-      "parsedBody": {
-        "type": "object",
-        "properties": {
-          "method": {
-            "const": "tools/call"
-          },
-          "params": {
-            "type": "object",
-            "properties": {
-              "name": {
-                "const": "submit_feedback"
               }
             },
             "required": [

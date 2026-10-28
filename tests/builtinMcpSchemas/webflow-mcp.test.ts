@@ -56,29 +56,32 @@ const FINE_GRAINED: Record<string, string[]> = {
   'webflow-mcp-write-sites': ['data_sites_tool'],
   'webflow-mcp-write-pages': ['data_pages_tool', 'data_sitemap_tool'],
   'webflow-mcp-write-cms': ['data_cms_tool'],
-  'webflow-mcp-write-elements': [
+  'webflow-mcp-write-localization': ['data_localization_tool'],
+  'webflow-mcp-write-design': [
     'data_element_tool',
     'data_element_settings_tool',
     'data_element_builder',
     'data_whtml_builder',
-  ],
-  'webflow-mcp-write-components': [
     'data_component_tool',
     'data_component_props_tool',
     'data_component_variants_tool',
     'data_component_builder',
+    'data_style_tool',
+    'data_variable_tool',
+    'data_interactions_tool',
+    'designer_tool',
   ],
-  'webflow-mcp-write-styles': ['data_style_tool', 'data_variable_tool', 'data_interactions_tool'],
   'webflow-mcp-write-assets': ['data_assets_tool', 'data_fonts_tool', 'asset_tool'],
-  'webflow-mcp-write-forms': ['data_forms_tool'],
   'webflow-mcp-write-comments': ['data_comments_tool'],
-  'webflow-mcp-write-localization': ['data_localization_tool'],
+  'webflow-mcp-write-campaigns-and-forms': ['data_campaigns_tool', 'data_forms_tool'],
   'webflow-mcp-write-custom-code': ['data_scripts_tool'],
-  'webflow-mcp-write-admin': ['data_enterprise_tool', 'data_members_tool', 'data_webhook_tool'],
+  'webflow-mcp-write-site-settings': [
+    'data_enterprise_tool',
+    'data_members_tool',
+    'data_webhook_tool',
+    'data_agent_instructions_tool',
+  ],
   'webflow-mcp-write-cloud-apps': ['data_apps_tool'],
-  'webflow-mcp-write-campaigns': ['data_campaigns_tool'],
-  'webflow-mcp-write-agent-instructions': ['data_agent_instructions_tool'],
-  'webflow-mcp-write-designer-session': ['designer_tool'],
 };
 
 describe('builtin schemas: webflow-mcp', () => {

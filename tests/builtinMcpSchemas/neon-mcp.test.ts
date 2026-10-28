@@ -7,7 +7,7 @@ const toolRequest = (name: string) => mcpRequest(DOMAIN, PATH, mcpToolCall(name)
 const rpcRequest = (method: string) => mcpRequest(DOMAIN, PATH, mcpRpc(method));
 
 const FINE_GRAINED_READ: Record<string, string[]> = {
-  'neon-mcp-read-projects': [
+  'neon-mcp-read-projects-and-branches': [
     'list_organizations',
     'list_projects',
     'describe_project',
@@ -18,60 +18,73 @@ const FINE_GRAINED_READ: Record<string, string[]> = {
     'get_operation',
     'search',
     'fetch',
+    'list_branches',
+    'get_branch',
+    'get_default_branch',
   ],
-  'neon-mcp-read-branches': ['list_branches', 'get_branch', 'get_default_branch'],
-  'neon-mcp-read-schema': [
-    'describe_branch',
-    'get_database_tables',
-    'describe_table_schema',
-    'compare_database_schema',
-  ],
-  'neon-mcp-read-performance': ['explain_sql_statement', 'list_slow_queries', 'inspect_database'],
   'neon-mcp-read-databases': [
     'list_postgres_databases',
     'get_postgres_database',
     'list_postgres_roles',
     'get_postgres_role',
+    'describe_branch',
+    'get_database_tables',
+    'describe_table_schema',
+    'compare_database_schema',
+    'explain_sql_statement',
+    'list_slow_queries',
+    'inspect_database',
   ],
-  'neon-mcp-read-credentials': ['list_credentials'],
-  'neon-mcp-read-computes': [
+  'neon-mcp-read-auth-and-credentials': [
+    'get_auth',
+    'get_neon_auth_config',
+    'list_auth_trusted_domains',
+    'list_credentials',
+  ],
+  'neon-mcp-read-computes-and-snapshots': [
     'list_postgres_endpoints',
     'list_branch_computes',
     'get_postgres_endpoint',
+    'list_snapshots',
+    'get_snapshot_schedule',
   ],
-  'neon-mcp-read-snapshots': ['list_snapshots', 'get_snapshot_schedule'],
-  'neon-mcp-read-auth': ['get_auth', 'get_neon_auth_config', 'list_auth_trusted_domains'],
-  'neon-mcp-read-data-api': ['get_data_api'],
-  'neon-mcp-read-observability': [
-    'query_logs',
-    'list_log_fields',
-    'list_log_field_values',
-    'get_ai_gateway',
-  ],
-  'neon-mcp-read-docs': ['search_docs', 'get_doc'],
-  'neon-mcp-read-functions': [
+  'neon-mcp-read-platform-add-ons': [
+    'get_data_api',
     'list_functions',
     'get_function',
     'list_functions_custom_domains',
     'list_triggers',
     'get_trigger',
+    'get_storage',
+    'list_storage_buckets',
+    'list_storage_objects',
+    'get_realtime',
+    'get_ai_gateway',
   ],
-  'neon-mcp-read-storage': ['get_storage', 'list_storage_buckets', 'list_storage_objects'],
-  'neon-mcp-read-realtime': ['get_realtime'],
+  'neon-mcp-read-logs-and-docs': [
+    'query_logs',
+    'list_log_fields',
+    'list_log_field_values',
+    'search_docs',
+    'get_doc',
+  ],
 };
 
 const FINE_GRAINED_WRITE: Record<string, string[]> = {
-  'neon-mcp-write-projects': ['create_project', 'update_project', 'recover_project'],
-  'neon-mcp-delete-projects': ['delete_project'],
-  'neon-mcp-write-branches': [
+  'neon-mcp-write-projects-and-branches': [
+    'create_project',
+    'update_project',
+    'recover_project',
     'create_branch',
     'update_branch',
     'set_default_branch',
     'finalize_branch_restore',
+    'send_feedback',
   ],
-  'neon-mcp-delete-branches': ['delete_branch', 'reset_from_parent'],
-  'neon-mcp-run-sql': ['run_sql', 'run_sql_transaction'],
-  'neon-mcp-run-migrations': [
+  'neon-mcp-delete-projects-and-branches': ['delete_project', 'delete_branch', 'reset_from_parent'],
+  'neon-mcp-run-sql': [
+    'run_sql',
+    'run_sql_transaction',
     'prepare_database_migration',
     'complete_database_migration',
     'prepare_query_tuning',
@@ -84,24 +97,7 @@ const FINE_GRAINED_WRITE: Record<string, string[]> = {
     'reset_postgres_role_password',
   ],
   'neon-mcp-delete-databases': ['delete_postgres_database', 'delete_postgres_role'],
-  'neon-mcp-get-connection-strings': ['get_connection_string'],
-  'neon-mcp-write-credentials': ['create_credential', 'rotate_credential', 'revoke_credential'],
-  'neon-mcp-write-computes': [
-    'create_postgres_endpoint',
-    'update_postgres_endpoint',
-    'delete_postgres_endpoint',
-    'start_postgres_endpoint',
-    'suspend_postgres_endpoint',
-    'restart_postgres_endpoint',
-  ],
-  'neon-mcp-write-snapshots': [
-    'create_snapshot',
-    'update_snapshot',
-    'delete_snapshot',
-    'set_snapshot_schedule',
-    'restore_snapshot',
-  ],
-  'neon-mcp-write-auth': [
+  'neon-mcp-write-auth-and-credentials': [
     'provision_neon_auth',
     'update_auth_config',
     'disable_auth',
@@ -114,9 +110,28 @@ const FINE_GRAINED_WRITE: Record<string, string[]> = {
     'create_auth_user',
     'update_auth_user_role',
     'delete_auth_user',
+    'create_credential',
+    'rotate_credential',
+    'revoke_credential',
   ],
-  'neon-mcp-write-data-api': ['provision_neon_data_api', 'update_data_api', 'delete_data_api'],
-  'neon-mcp-write-functions': [
+  'neon-mcp-get-connection-strings': ['get_connection_string'],
+  'neon-mcp-write-computes-and-snapshots': [
+    'create_postgres_endpoint',
+    'update_postgres_endpoint',
+    'delete_postgres_endpoint',
+    'start_postgres_endpoint',
+    'suspend_postgres_endpoint',
+    'restart_postgres_endpoint',
+    'create_snapshot',
+    'update_snapshot',
+    'delete_snapshot',
+    'set_snapshot_schedule',
+    'restore_snapshot',
+  ],
+  'neon-mcp-write-platform-add-ons': [
+    'provision_neon_data_api',
+    'update_data_api',
+    'delete_data_api',
     'deploy_function',
     'update_function',
     'delete_function',
@@ -125,21 +140,16 @@ const FINE_GRAINED_WRITE: Record<string, string[]> = {
     'create_trigger',
     'update_trigger',
     'delete_trigger',
-  ],
-  'neon-mcp-write-storage': [
     'create_storage_bucket',
     'delete_storage_bucket',
     'delete_storage_object',
     'delete_storage_objects_by_prefix',
     'presign_storage_object',
-  ],
-  'neon-mcp-write-realtime': [
     'enable_realtime',
     'disable_realtime',
     'get_realtime_secret',
     'rotate_realtime_secret',
   ],
-  'neon-mcp-send-feedback': ['send_feedback'],
 };
 
 const READ_TOOLS = Object.values(FINE_GRAINED_READ).flat();

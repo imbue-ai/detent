@@ -270,7 +270,7 @@
     ]
   },
   "cal-com-mcp-read-docs": {
-    "$comment": "Search the Cal.com documentation and build links to pages in the Cal.com web app.",
+    "$comment": "Search the Cal.com documentation, build links to pages in the Cal.com web app, and browse the catalog of Cal.com API operations and the inputs they take, without running any of them.",
     "properties": {
       "method": {
         "const": "POST"
@@ -291,7 +291,9 @@
               "name": {
                 "enum": [
                   "get_app_link",
-                  "search_docs"
+                  "search_docs",
+                  "find_api_operation",
+                  "describe_api_operation"
                 ]
               }
             },
@@ -440,7 +442,7 @@
     ]
   },
   "cal-com-mcp-write-event-types": {
-    "$comment": "Create, edit or duplicate event types. Does not allow deleting them.",
+    "$comment": "Create, edit, duplicate or delete event types.",
     "properties": {
       "method": {
         "const": "POST"
@@ -462,90 +464,8 @@
                 "enum": [
                   "create_event_type",
                   "update_event_type",
-                  "duplicate_event_type"
-                ]
-              }
-            },
-            "required": [
-              "name"
-            ]
-          }
-        },
-        "required": [
-          "method",
-          "params"
-        ]
-      }
-    },
-    "required": [
-      "method",
-      "path",
-      "parsedBody"
-    ]
-  },
-  "cal-com-mcp-delete-event-types": {
-    "$comment": "Delete event types.",
-    "properties": {
-      "method": {
-        "const": "POST"
-      },
-      "path": {
-        "type": "string",
-        "pattern": "^/mcp/?$"
-      },
-      "parsedBody": {
-        "type": "object",
-        "properties": {
-          "method": {
-            "const": "tools/call"
-          },
-          "params": {
-            "type": "object",
-            "properties": {
-              "name": {
-                "const": "delete_event_type"
-              }
-            },
-            "required": [
-              "name"
-            ]
-          }
-        },
-        "required": [
-          "method",
-          "params"
-        ]
-      }
-    },
-    "required": [
-      "method",
-      "path",
-      "parsedBody"
-    ]
-  },
-  "cal-com-mcp-read-events": {
-    "$comment": "View fixed-date events (RSVP pages) that you own or co-host.",
-    "properties": {
-      "method": {
-        "const": "POST"
-      },
-      "path": {
-        "type": "string",
-        "pattern": "^/mcp/?$"
-      },
-      "parsedBody": {
-        "type": "object",
-        "properties": {
-          "method": {
-            "const": "tools/call"
-          },
-          "params": {
-            "type": "object",
-            "properties": {
-              "name": {
-                "enum": [
-                  "get_events",
-                  "get_event"
+                  "duplicate_event_type",
+                  "delete_event_type"
                 ]
               }
             },
@@ -567,7 +487,7 @@
     ]
   },
   "cal-com-mcp-read-bookings": {
-    "$comment": "View bookings, their attendees and routing details, including bookings of organization teams and users.",
+    "$comment": "View bookings, their attendees and routing details, including bookings of organization teams and users, as well as fixed-date events (RSVP pages) that you own or co-host.",
     "properties": {
       "method": {
         "const": "POST"
@@ -593,7 +513,9 @@
                   "get_booking_attendee",
                   "get_booking_routing_trace",
                   "get_org_team_bookings",
-                  "get_org_user_bookings"
+                  "get_org_user_bookings",
+                  "get_events",
+                  "get_event"
                 ]
               }
             },
@@ -662,7 +584,7 @@
     ]
   },
   "cal-com-mcp-read-schedules": {
-    "$comment": "View availability schedules, including your default schedule.",
+    "$comment": "View availability schedules (including your default schedule), check available time slots and busy times, and view connected calendars and conferencing apps.",
     "properties": {
       "method": {
         "const": "POST"
@@ -684,131 +606,7 @@
                 "enum": [
                   "get_schedules",
                   "get_schedule",
-                  "get_default_schedule"
-                ]
-              }
-            },
-            "required": [
-              "name"
-            ]
-          }
-        },
-        "required": [
-          "method",
-          "params"
-        ]
-      }
-    },
-    "required": [
-      "method",
-      "path",
-      "parsedBody"
-    ]
-  },
-  "cal-com-mcp-write-schedules": {
-    "$comment": "Create or edit availability schedules. Does not allow deleting them.",
-    "properties": {
-      "method": {
-        "const": "POST"
-      },
-      "path": {
-        "type": "string",
-        "pattern": "^/mcp/?$"
-      },
-      "parsedBody": {
-        "type": "object",
-        "properties": {
-          "method": {
-            "const": "tools/call"
-          },
-          "params": {
-            "type": "object",
-            "properties": {
-              "name": {
-                "enum": [
-                  "create_schedule",
-                  "update_schedule"
-                ]
-              }
-            },
-            "required": [
-              "name"
-            ]
-          }
-        },
-        "required": [
-          "method",
-          "params"
-        ]
-      }
-    },
-    "required": [
-      "method",
-      "path",
-      "parsedBody"
-    ]
-  },
-  "cal-com-mcp-delete-schedules": {
-    "$comment": "Delete availability schedules.",
-    "properties": {
-      "method": {
-        "const": "POST"
-      },
-      "path": {
-        "type": "string",
-        "pattern": "^/mcp/?$"
-      },
-      "parsedBody": {
-        "type": "object",
-        "properties": {
-          "method": {
-            "const": "tools/call"
-          },
-          "params": {
-            "type": "object",
-            "properties": {
-              "name": {
-                "const": "delete_schedule"
-              }
-            },
-            "required": [
-              "name"
-            ]
-          }
-        },
-        "required": [
-          "method",
-          "params"
-        ]
-      }
-    },
-    "required": [
-      "method",
-      "path",
-      "parsedBody"
-    ]
-  },
-  "cal-com-mcp-read-availability": {
-    "$comment": "Check available time slots and busy times, and view connected calendars and conferencing apps.",
-    "properties": {
-      "method": {
-        "const": "POST"
-      },
-      "path": {
-        "type": "string",
-        "pattern": "^/mcp/?$"
-      },
-      "parsedBody": {
-        "type": "object",
-        "properties": {
-          "method": {
-            "const": "tools/call"
-          },
-          "params": {
-            "type": "object",
-            "properties": {
-              "name": {
-                "enum": [
+                  "get_default_schedule",
                   "get_availability",
                   "get_busy_times",
                   "get_connected_calendars",
@@ -833,8 +631,52 @@
       "parsedBody"
     ]
   },
-  "cal-com-mcp-read-teams": {
-    "$comment": "View the teams you belong to, organization teams and their memberships.",
+  "cal-com-mcp-write-schedules": {
+    "$comment": "Create, edit or delete availability schedules.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/mcp/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "const": "tools/call"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "enum": [
+                  "create_schedule",
+                  "update_schedule",
+                  "delete_schedule"
+                ]
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "params"
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "cal-com-mcp-read-teams-and-organizations": {
+    "$comment": "View the teams you belong to, organization teams and their memberships, organization memberships, organization attributes and the attributes assigned to users.",
     "properties": {
       "method": {
         "const": "POST"
@@ -857,93 +699,7 @@
                   "get_my_teams",
                   "get_org_teams",
                   "get_team_memberships",
-                  "get_team_membership"
-                ]
-              }
-            },
-            "required": [
-              "name"
-            ]
-          }
-        },
-        "required": [
-          "method",
-          "params"
-        ]
-      }
-    },
-    "required": [
-      "method",
-      "path",
-      "parsedBody"
-    ]
-  },
-  "cal-com-mcp-write-teams": {
-    "$comment": "Invite people to teams, and add, change or remove team memberships.",
-    "properties": {
-      "method": {
-        "const": "POST"
-      },
-      "path": {
-        "type": "string",
-        "pattern": "^/mcp/?$"
-      },
-      "parsedBody": {
-        "type": "object",
-        "properties": {
-          "method": {
-            "const": "tools/call"
-          },
-          "params": {
-            "type": "object",
-            "properties": {
-              "name": {
-                "enum": [
-                  "create_team_invite",
-                  "create_team_membership",
-                  "update_team_membership",
-                  "delete_team_membership"
-                ]
-              }
-            },
-            "required": [
-              "name"
-            ]
-          }
-        },
-        "required": [
-          "method",
-          "params"
-        ]
-      }
-    },
-    "required": [
-      "method",
-      "path",
-      "parsedBody"
-    ]
-  },
-  "cal-com-mcp-read-organizations": {
-    "$comment": "View organization memberships, organization attributes and the attributes assigned to users.",
-    "properties": {
-      "method": {
-        "const": "POST"
-      },
-      "path": {
-        "type": "string",
-        "pattern": "^/mcp/?$"
-      },
-      "parsedBody": {
-        "type": "object",
-        "properties": {
-          "method": {
-            "const": "tools/call"
-          },
-          "params": {
-            "type": "object",
-            "properties": {
-              "name": {
-                "enum": [
+                  "get_team_membership",
                   "get_org_memberships",
                   "get_org_membership",
                   "get_org_attributes",
@@ -971,8 +727,8 @@
       "parsedBody"
     ]
   },
-  "cal-com-mcp-write-organizations": {
-    "$comment": "Add, change or remove organization memberships, and assign, update or unassign attributes on users.",
+  "cal-com-mcp-write-teams-and-organizations": {
+    "$comment": "Invite people to teams; add, change or remove team and organization memberships; and assign, update or unassign attributes on users.",
     "properties": {
       "method": {
         "const": "POST"
@@ -992,6 +748,10 @@
             "properties": {
               "name": {
                 "enum": [
+                  "create_team_invite",
+                  "create_team_membership",
+                  "update_team_membership",
+                  "delete_team_membership",
                   "create_org_membership",
                   "update_org_membership",
                   "delete_org_membership",
@@ -1089,49 +849,6 @@
                   "create_routing_form",
                   "edit_routing_form_routes",
                   "edit_routing_form_fields"
-                ]
-              }
-            },
-            "required": [
-              "name"
-            ]
-          }
-        },
-        "required": [
-          "method",
-          "params"
-        ]
-      }
-    },
-    "required": [
-      "method",
-      "path",
-      "parsedBody"
-    ]
-  },
-  "cal-com-mcp-read-api-catalog": {
-    "$comment": "Browse the catalog of Cal.com API operations and look up what inputs they take, without running any of them.",
-    "properties": {
-      "method": {
-        "const": "POST"
-      },
-      "path": {
-        "type": "string",
-        "pattern": "^/mcp/?$"
-      },
-      "parsedBody": {
-        "type": "object",
-        "properties": {
-          "method": {
-            "const": "tools/call"
-          },
-          "params": {
-            "type": "object",
-            "properties": {
-              "name": {
-                "enum": [
-                  "find_api_operation",
-                  "describe_api_operation"
                 ]
               }
             },
