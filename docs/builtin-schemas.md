@@ -267,23 +267,6 @@ See the main [README](../README.md) for how schemas and rules work together.
 - `dropbox-file-requests`
 - `dropbox-contacts`
 
-### evernote-mcp
-
-- `evernote-mcp-api` *(scope)*
-- `evernote-mcp-session`
-- `evernote-mcp-read-all`
-- `evernote-mcp-write-all`
-- `evernote-mcp-read-notes`
-- `evernote-mcp-write-notes`
-- `evernote-mcp-delete-notes`
-- `evernote-mcp-read-notebooks`
-- `evernote-mcp-write-notebooks`
-- `evernote-mcp-read-tags`
-- `evernote-mcp-write-tags`
-- `evernote-mcp-read-tasks`
-- `evernote-mcp-write-tasks`
-- `evernote-mcp-delete-tasks`
-
 ### fastmail
 
 - `fastmail-api` *(scope)*
