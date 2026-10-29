@@ -5,7 +5,7 @@ import {
   RequestSchema,
   RequestSchemaError,
   SchemaRegistry,
-  getAllBuiltinSchemas,
+  builtinSchemas,
 } from './schemas/requestSchema.js';
 import { decomposeRequest, type CustomMetadata } from './decomposedRequest.js';
 import { runHooksAll, type HookSpec } from './hooks.js';
@@ -105,16 +105,8 @@ export function createSchemaRegistry(
   rawConfig: RawConfig,
   doNotUseBuiltinSchemas: boolean
 ): SchemaRegistry {
-  const schemas: Record<string, Record<string, unknown>> = {};
-
-  if (!doNotUseBuiltinSchemas) {
-    Object.assign(schemas, getAllBuiltinSchemas());
-  }
-
   // User schemas override builtins with the same name.
-  Object.assign(schemas, rawConfig.schemas);
-
-  return new SchemaRegistry(schemas);
+  return new SchemaRegistry(rawConfig.schemas, doNotUseBuiltinSchemas ? undefined : builtinSchemas);
 }
 
 export class Config {

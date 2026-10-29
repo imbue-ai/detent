@@ -1,0 +1,836 @@
+{
+  "webflow-mcp-api": {
+    "$comment": "Identifies requests to the Webflow hosted MCP server (mcp.webflow.com).",
+    "properties": {
+      "domain": {
+        "const": "mcp.webflow.com"
+      }
+    },
+    "required": [
+      "domain"
+    ]
+  },
+  "webflow-mcp-session": {
+    "$comment": "Open and maintain an MCP session: initialize, list tools/prompts/resources, ping, and send notifications. Required for any MCP client to function; does not read or modify Webflow content.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/mcp/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "enum": [
+              "initialize",
+              "notifications/initialized",
+              "notifications/cancelled",
+              "ping",
+              "tools/list",
+              "prompts/list",
+              "prompts/get",
+              "resources/list",
+              "resources/read",
+              "resources/templates/list",
+              "resources/subscribe",
+              "resources/unsubscribe",
+              "completion/complete",
+              "logging/setLevel"
+            ]
+          }
+        },
+        "required": [
+          "method"
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "webflow-mcp-read-all": {
+    "$comment": "Use every Webflow MCP tool that only looks things up: site analytics (Analyze, AEO and Optimize reports), image previews and canvas snapshots, Webflow's built-in assistant and workflow guidance. Most other Webflow tools can both view and change a site and are therefore in the write permission. Includes the MCP session handshake.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/mcp/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "anyOf": [
+          {
+            "type": "object",
+            "properties": {
+              "method": {
+                "enum": [
+                  "initialize",
+                  "notifications/initialized",
+                  "notifications/cancelled",
+                  "ping",
+                  "tools/list",
+                  "prompts/list",
+                  "prompts/get",
+                  "resources/list",
+                  "resources/read",
+                  "resources/templates/list",
+                  "resources/subscribe",
+                  "resources/unsubscribe",
+                  "completion/complete",
+                  "logging/setLevel"
+                ]
+              }
+            },
+            "required": [
+              "method"
+            ]
+          },
+          {
+            "type": "object",
+            "properties": {
+              "method": {
+                "const": "tools/call"
+              },
+              "params": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "enum": [
+                      "data_aeo_tool",
+                      "data_analyze_tool",
+                      "data_optimize_tool",
+                      "element_snapshot_tool",
+                      "get_asset_preview",
+                      "ask_webflow_ai",
+                      "webflow_guide_tool",
+                      "get_more_tools"
+                    ]
+                  }
+                },
+                "required": [
+                  "name"
+                ]
+              }
+            },
+            "required": [
+              "method",
+              "params"
+            ]
+          }
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "webflow-mcp-write-all": {
+    "$comment": "Use every Webflow MCP tool that can change a site or workspace: pages, CMS content, page elements, components, styles, assets, forms, comments, translations, custom code, access and settings, Webflow Cloud apps, campaigns, agent instructions, the live Designer session, and publishing. These tools also view the things they manage. Includes the MCP session handshake.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/mcp/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "anyOf": [
+          {
+            "type": "object",
+            "properties": {
+              "method": {
+                "enum": [
+                  "initialize",
+                  "notifications/initialized",
+                  "notifications/cancelled",
+                  "ping",
+                  "tools/list",
+                  "prompts/list",
+                  "prompts/get",
+                  "resources/list",
+                  "resources/read",
+                  "resources/templates/list",
+                  "resources/subscribe",
+                  "resources/unsubscribe",
+                  "completion/complete",
+                  "logging/setLevel"
+                ]
+              }
+            },
+            "required": [
+              "method"
+            ]
+          },
+          {
+            "type": "object",
+            "properties": {
+              "method": {
+                "const": "tools/call"
+              },
+              "params": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "enum": [
+                      "data_sites_tool",
+                      "data_pages_tool",
+                      "data_sitemap_tool",
+                      "data_cms_tool",
+                      "data_element_tool",
+                      "data_element_settings_tool",
+                      "data_element_builder",
+                      "data_whtml_builder",
+                      "data_component_tool",
+                      "data_component_props_tool",
+                      "data_component_variants_tool",
+                      "data_component_builder",
+                      "data_style_tool",
+                      "data_variable_tool",
+                      "data_interactions_tool",
+                      "data_assets_tool",
+                      "data_fonts_tool",
+                      "asset_tool",
+                      "data_forms_tool",
+                      "data_comments_tool",
+                      "data_localization_tool",
+                      "data_scripts_tool",
+                      "data_enterprise_tool",
+                      "data_members_tool",
+                      "data_webhook_tool",
+                      "data_apps_tool",
+                      "data_campaigns_tool",
+                      "data_agent_instructions_tool",
+                      "designer_tool"
+                    ]
+                  }
+                },
+                "required": [
+                  "name"
+                ]
+              }
+            },
+            "required": [
+              "method",
+              "params"
+            ]
+          }
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "webflow-mcp-read-analytics": {
+    "$comment": "View site analytics: visitor traffic, top pages, engagement and goals (Analyze), how AI assistants and crawlers see and cite the site (AEO), and the results of A/B tests and optimizations (Optimize). Read-only.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/mcp/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "const": "tools/call"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "enum": [
+                  "data_aeo_tool",
+                  "data_analyze_tool",
+                  "data_optimize_tool"
+                ]
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "params"
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "webflow-mcp-read-guidance": {
+    "$comment": "Ask Webflow's built-in assistant questions about Webflow, read the recommended workflows and best practices, and request extra tools for capabilities not already available. Does not look at or change any site.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/mcp/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "const": "tools/call"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "enum": [
+                  "ask_webflow_ai",
+                  "webflow_guide_tool",
+                  "get_more_tools"
+                ]
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "params"
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "webflow-mcp-read-previews": {
+    "$comment": "View images: preview an image from a site's asset library, or capture a picture of how an element currently looks on the Designer canvas (requires the Designer to be open).",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/mcp/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "const": "tools/call"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "enum": [
+                  "get_asset_preview",
+                  "element_snapshot_tool"
+                ]
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "params"
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "webflow-mcp-write-sites": {
+    "$comment": "List the sites the connection can access, view a site's details, and publish a site so changes go live.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/mcp/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "const": "tools/call"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "const": "data_sites_tool"
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "params"
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "webflow-mcp-write-pages": {
+    "$comment": "List pages, create new pages and edit page settings such as titles, slugs, SEO and structured data; manage page branches and choose which pages and CMS items appear in the sitemap.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/mcp/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "const": "tools/call"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "enum": [
+                  "data_pages_tool",
+                  "data_sitemap_tool"
+                ]
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "params"
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "webflow-mcp-write-cms": {
+    "$comment": "View, create, edit and delete CMS collections, their fields and their items (blog posts, team members, products and other structured content), including publishing items live.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/mcp/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "const": "tools/call"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "const": "data_cms_tool"
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "params"
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "webflow-mcp-write-localization": {
+    "$comment": "Read the text of pages and components and translate it into a site's secondary languages.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/mcp/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "const": "tools/call"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "const": "data_localization_tool"
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "params"
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "webflow-mcp-write-design": {
+    "$comment": "Design pages in the Designer: inspect, add, move, remove and edit the elements on a page (including from HTML and CSS); create and edit reusable components, their properties and variants, and place component instances; create and edit styles (classes), design variables such as colors and spacing, and animations and interactions; and work with a live Designer session (see the current page, branch and selection, select elements, move around the canvas, create page folders). The live-session actions require the Designer to be open.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/mcp/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "const": "tools/call"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "enum": [
+                  "data_element_tool",
+                  "data_element_settings_tool",
+                  "data_element_builder",
+                  "data_whtml_builder",
+                  "data_component_tool",
+                  "data_component_props_tool",
+                  "data_component_variants_tool",
+                  "data_component_builder",
+                  "data_style_tool",
+                  "data_variable_tool",
+                  "data_interactions_tool",
+                  "designer_tool"
+                ]
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "params"
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "webflow-mcp-write-assets": {
+    "$comment": "Upload, organize, update, compress and delete images, files, asset folders and custom fonts in a site's asset library.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/mcp/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "const": "tools/call"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "enum": [
+                  "data_assets_tool",
+                  "data_fonts_tool",
+                  "asset_tool"
+                ]
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "params"
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "webflow-mcp-write-comments": {
+    "$comment": "Read comment threads left on a site in the Designer, look up who took part in them, and post replies.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/mcp/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "const": "tools/call"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "const": "data_comments_tool"
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "params"
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "webflow-mcp-write-campaigns-and-forms": {
+    "$comment": "Manage marketing campaigns and forms: generate campaign landing pages, create and edit page variations and personalized content, and read campaign performance; view a site's forms and their fields, and view, update or delete the submissions people have sent through them.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/mcp/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "const": "tools/call"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "enum": [
+                  "data_campaigns_tool",
+                  "data_forms_tool"
+                ]
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "params"
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "webflow-mcp-write-custom-code": {
+    "$comment": "Add, apply and remove custom code on a site or its pages, including scripts and head and footer code blocks.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/mcp/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "const": "tools/call"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "const": "data_scripts_tool"
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "params"
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "webflow-mcp-write-site-settings": {
+    "$comment": "Administer a site and workspace: manage who has access and their roles, send invitations, set up redirects, robots.txt and well-known files, manage webhooks that notify other services about site events, review the site activity log, and view, create, edit and delete the rules and skills the site stores to guide AI agents working on it.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/mcp/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "const": "tools/call"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "enum": [
+                  "data_enterprise_tool",
+                  "data_members_tool",
+                  "data_webhook_tool",
+                  "data_agent_instructions_tool"
+                ]
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "params"
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "webflow-mcp-write-cloud-apps": {
+    "$comment": "Inspect and manage Webflow Cloud apps hosted alongside a site: their environments, deployments, domains and logs, including triggering new deployments or deleting apps.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/mcp/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "const": "tools/call"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "const": "data_apps_tool"
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "params"
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  }
+}

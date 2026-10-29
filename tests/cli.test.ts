@@ -141,6 +141,8 @@ describe('CLI', () => {
     );
     const { stdout } = await execFileAsync('node', [cliPath, 'dump'], {
       env: { ...process.env, DETENT_CONFIG: configPath },
+      // The dump includes every built-in schema, which exceeds the default 1 MiB buffer.
+      maxBuffer: 16 * 1024 * 1024,
     });
     const parsed = JSON.parse(stdout) as { schemas: object; rules: object[] };
     expect(parsed.schemas).toHaveProperty('everything');

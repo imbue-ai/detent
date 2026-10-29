@@ -7,11 +7,14 @@ export type { RawConfig, RawRule, RawRuleBody, RawRuleObjectBody } from './confi
 export { HookExecutionError } from './hooks.js';
 export type { HookSpec, HookOutcome } from './hooks.js';
 export {
+  BuiltinSchemaLookup,
   RequestSchema,
   RequestSchemaError,
   SchemaRegistry,
+  builtinSchemas,
   getAllBuiltinSchemas,
 } from './schemas/requestSchema.js';
+export type { RawSchemaLookup, RawSchemaSource } from './schemas/requestSchema.js';
 export { decomposeRequest } from './decomposedRequest.js';
 export type { DecomposedRequest, CustomMetadata } from './decomposedRequest.js';
 export { CustomMetadataError } from './environment.js';

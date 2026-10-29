@@ -1,7 +1,10 @@
 import { Validator } from '@cfworker/json-schema';
 import { decomposedRequestPropertyNames } from '../decomposedRequest.js';
 import type { DecomposedRequest } from '../decomposedRequest.js';
-import { generatedBuiltinSchemas } from './generatedBuiltinSchemas.js';
+import {
+  builtinSchemaJsonSourceByService,
+  builtinSchemaServiceByName,
+} from './generatedBuiltinSchemas.js';
 
 export class RequestSchemaError extends Error {
   constructor(message: string) {
@@ -79,6 +82,30 @@ function findDefinitionReferences(value: unknown, found: Set<string>): void {
 }
 
 /**
+ * Read-only access to named raw schemas. Implementations may load schemas lazily.
+ */
+export interface RawSchemaLookup {
+  has(name: string): boolean;
+  get(name: string): Record<string, unknown> | undefined;
+}
+
+export type RawSchemaSource = Readonly<Record<string, Record<string, unknown>>> | RawSchemaLookup;
+
+function isRawSchemaLookup(source: RawSchemaSource): source is RawSchemaLookup {
+  return typeof source.has === 'function' && typeof source.get === 'function';
+}
+
+function toRawSchemaLookup(source: RawSchemaSource): RawSchemaLookup {
+  if (isRawSchemaLookup(source)) {
+    return source;
+  }
+  return {
+    has: (name) => Object.hasOwn(source, name),
+    get: (name) => source[name],
+  };
+}
+
+/**
  * The transitive closure of the named schemas referenced by `schema`, ready to be
  * embedded as the `$defs` of the compiled schema. Schemas defined inline in the
  * schema's own `$defs` shadow equally-named ones from `availableSchemas`.
@@ -86,7 +113,7 @@ function findDefinitionReferences(value: unknown, found: Set<string>): void {
 function resolveReferencedDefinitions(
   name: string,
   schema: Record<string, unknown>,
-  availableSchemas: Readonly<Record<string, Record<string, unknown>>>
+  availableSchemas: RawSchemaLookup
 ): Record<string, Record<string, unknown>> {
   const inlineDefinitions = schema.$defs;
   const inlineDefinitionNames =
@@ -105,12 +132,12 @@ function resolveReferencedDefinitions(
       if (inlineDefinitionNames.has(referencedName)) continue;
       if (Object.hasOwn(resolvedDefinitions, referencedName)) continue;
 
-      if (!Object.hasOwn(availableSchemas, referencedName)) {
+      const referencedSchema = availableSchemas.get(referencedName);
+      if (referencedSchema === undefined) {
         throw new RequestSchemaError(
           `Schema "${name}" references unknown schema "${definitionReferencePrefix}${referencedName}"`
         );
       }
-      const referencedSchema = availableSchemas[referencedName]!;
       resolvedDefinitions[referencedName] = referencedSchema;
       pending.push(referencedSchema);
     }
@@ -135,7 +162,7 @@ export class RequestSchema {
   constructor(
     name: string,
     schema: Record<string, unknown>,
-    availableSchemas: Readonly<Record<string, Record<string, unknown>>> = {}
+    availableSchemas: RawSchemaSource = {}
   ) {
     this.name = name;
     this.schema = schema;
@@ -148,7 +175,11 @@ export class RequestSchema {
       );
     }
 
-    const referencedDefinitions = resolveReferencedDefinitions(name, schema, availableSchemas);
+    const referencedDefinitions = resolveReferencedDefinitions(
+      name,
+      schema,
+      toRawSchemaLookup(availableSchemas)
+    );
     const inlineDefinitions = schema.$defs as Record<string, unknown> | undefined;
     const definitions = { ...referencedDefinitions, ...inlineDefinitions };
 
@@ -167,14 +198,72 @@ export class RequestSchema {
 }
 
 /**
+ * Built-in schemas, parsed from their embedded JSON one service at a time on first use,
+ * so that checking a request only pays for the services its rules reference.
+ */
+export class BuiltinSchemaLookup implements RawSchemaLookup {
+  private readonly parsedServices = new Map<string, Record<string, Record<string, unknown>>>();
+
+  has(name: string): boolean {
+    return Object.hasOwn(builtinSchemaServiceByName, name);
+  }
+
+  get(name: string): Record<string, unknown> | undefined {
+    const serviceName = builtinSchemaServiceByName[name];
+    if (serviceName === undefined) {
+      return undefined;
+    }
+    return this.schemasOfService(serviceName)[name];
+  }
+
+  names(): readonly string[] {
+    return Object.keys(builtinSchemaServiceByName);
+  }
+
+  all(): Readonly<Record<string, Record<string, unknown>>> {
+    const merged: Record<string, Record<string, unknown>> = {};
+    for (const serviceName of Object.keys(builtinSchemaJsonSourceByService)) {
+      Object.assign(merged, this.schemasOfService(serviceName));
+    }
+    return merged;
+  }
+
+  private schemasOfService(serviceName: string): Record<string, Record<string, unknown>> {
+    const cached = this.parsedServices.get(serviceName);
+    if (cached !== undefined) {
+      return cached;
+    }
+    const jsonSource = builtinSchemaJsonSourceByService[serviceName];
+    if (jsonSource === undefined) {
+      throw new RequestSchemaError(`Unknown built-in schema service "${serviceName}"`);
+    }
+    const parsed = JSON.parse(jsonSource) as Record<string, Record<string, unknown>>;
+    this.parsedServices.set(serviceName, parsed);
+    return parsed;
+  }
+}
+
+export const builtinSchemas = new BuiltinSchemaLookup();
+
+/**
  * Holds raw schemas and compiles them into RequestSchema instances on demand.
+ * Schemas passed explicitly take precedence over equally-named built-in ones.
  */
 export class SchemaRegistry {
   private readonly rawSchemas: Readonly<Record<string, Record<string, unknown>>>;
+  private readonly builtinLookup: BuiltinSchemaLookup | undefined;
   private readonly compiledSchemas = new Map<string, RequestSchema>();
+  private readonly rawLookup: RawSchemaLookup = {
+    has: (name) => this.has(name),
+    get: (name) => this.getRaw(name),
+  };
 
-  constructor(rawSchemas: Readonly<Record<string, Record<string, unknown>>>) {
+  constructor(
+    rawSchemas: Readonly<Record<string, Record<string, unknown>>>,
+    builtinLookup?: BuiltinSchemaLookup
+  ) {
     this.rawSchemas = { ...rawSchemas };
+    this.builtinLookup = builtinLookup;
   }
 
   get(name: string): RequestSchema | undefined {
@@ -183,21 +272,22 @@ export class SchemaRegistry {
       return cached;
     }
 
-    if (!Object.hasOwn(this.rawSchemas, name)) {
+    const rawSchema = this.getRaw(name);
+    if (rawSchema === undefined) {
       return undefined;
     }
 
-    const requestSchema = new RequestSchema(name, this.rawSchemas[name]!, this.rawSchemas);
+    const requestSchema = new RequestSchema(name, rawSchema, this.rawLookup);
     this.compiledSchemas.set(name, requestSchema);
     return requestSchema;
   }
 
   has(name: string): boolean {
-    return Object.hasOwn(this.rawSchemas, name);
+    return Object.hasOwn(this.rawSchemas, name) || (this.builtinLookup?.has(name) ?? false);
   }
 
   compileAll(): void {
-    for (const name of Object.keys(this.rawSchemas)) {
+    for (const name of Object.keys(this.allSchemas())) {
       if (!this.compiledSchemas.has(name)) {
         this.get(name);
       }
@@ -205,10 +295,14 @@ export class SchemaRegistry {
   }
 
   allSchemas(): Readonly<Record<string, Record<string, unknown>>> {
-    return this.rawSchemas;
+    return { ...this.builtinLookup?.all(), ...this.rawSchemas };
+  }
+
+  private getRaw(name: string): Record<string, unknown> | undefined {
+    return this.rawSchemas[name] ?? this.builtinLookup?.get(name);
   }
 }
 
 export function getAllBuiltinSchemas(): Readonly<Record<string, Record<string, unknown>>> {
-  return generatedBuiltinSchemas;
+  return builtinSchemas.all();
 }

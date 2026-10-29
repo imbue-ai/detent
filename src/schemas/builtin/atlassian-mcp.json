@@ -1,0 +1,1331 @@
+{
+  "atlassian-mcp-api": {
+    "$comment": "Identifies requests to the Atlassian hosted MCP server (mcp.atlassian.com).",
+    "properties": {
+      "domain": {
+        "const": "mcp.atlassian.com"
+      }
+    },
+    "required": [
+      "domain"
+    ]
+  },
+  "atlassian-mcp-session": {
+    "$comment": "Open and maintain an MCP session: initialize, list tools/prompts/resources, ping, and send notifications. Required for any MCP client to function; does not read or modify Atlassian content.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/v2/mcp/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "enum": [
+              "initialize",
+              "notifications/initialized",
+              "notifications/cancelled",
+              "ping",
+              "tools/list",
+              "prompts/list",
+              "prompts/get",
+              "resources/list",
+              "resources/read",
+              "resources/templates/list",
+              "resources/subscribe",
+              "resources/unsubscribe",
+              "completion/complete",
+              "logging/setLevel"
+            ]
+          }
+        },
+        "required": [
+          "method"
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "atlassian-mcp-read-all": {
+    "$comment": "Run any read-only Atlassian MCP tool: view and search Jira, Confluence, Jira Service Management, Bitbucket, Assets, Loom, goals, projects, teams, focus areas, talent, capacity plans, code and the Teamwork Graph, plus the MCP session handshake.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/v2/mcp/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "anyOf": [
+          {
+            "type": "object",
+            "properties": {
+              "method": {
+                "enum": [
+                  "initialize",
+                  "notifications/initialized",
+                  "notifications/cancelled",
+                  "ping",
+                  "tools/list",
+                  "prompts/list",
+                  "prompts/get",
+                  "resources/list",
+                  "resources/read",
+                  "resources/templates/list",
+                  "resources/subscribe",
+                  "resources/unsubscribe",
+                  "completion/complete",
+                  "logging/setLevel"
+                ]
+              }
+            },
+            "required": [
+              "method"
+            ]
+          },
+          {
+            "type": "object",
+            "properties": {
+              "method": {
+                "const": "tools/call"
+              },
+              "params": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "enum": [
+                      "atlassianUserInfo",
+                      "getAccessibleAtlassianResources",
+                      "getContentFormatGuide",
+                      "discover",
+                      "executeRead",
+                      "getJiraIssue",
+                      "searchJiraIssuesUsingJql",
+                      "listJiraProjects",
+                      "listJiraProjectIssueTypesMetadata",
+                      "getJiraIssueTypeMetaWithFields",
+                      "listJiraIssueTransitions",
+                      "listJiraIssueLinkTypes",
+                      "listJiraIssueRemoteIssueLinks",
+                      "listJiraIssueWorklogs",
+                      "lookupJiraAccountId",
+                      "listJiraIssueAssignableUsers",
+                      "listJiraIssueComments",
+                      "listJiraIssueChangelogs",
+                      "getJiraCurrentUser",
+                      "getJiraUser",
+                      "listJiraStatuses",
+                      "listJiraProjectComponents",
+                      "getJiraProjectVersions",
+                      "getJiraProjectVersionRelatedWork",
+                      "listJiraBoards",
+                      "getJiraBoardConfig",
+                      "getJiraBoardIssueData",
+                      "getJiraBoardSprintData",
+                      "listJiraBoardSprints",
+                      "listJiraFilters",
+                      "listJiraDashboards",
+                      "getJiraEntityProperty",
+                      "downloadJiraIssueAttachment",
+                      "getJiraWorkflows",
+                      "getJiraWorkflowEditorLink",
+                      "getJiraScreen",
+                      "getConfluenceContent",
+                      "searchConfluence",
+                      "listConfluenceContent",
+                      "listConfluenceSpaces",
+                      "getConfluenceSpace",
+                      "getConfluenceSpaceInstructions",
+                      "getConfluencePersonalSpace",
+                      "listConfluenceComments",
+                      "getConfluenceComment",
+                      "listConfluenceContentVersions",
+                      "getConfluenceContentVersion",
+                      "diffConfluenceContentVersions",
+                      "listConfluenceAttachments",
+                      "getConfluenceAttachment",
+                      "downloadConfluenceAttachment",
+                      "exportConfluenceContent",
+                      "getConfluenceContentPermissions",
+                      "getConfluenceContentRestrictionState",
+                      "getConfluencePublicLinkStatus",
+                      "getConfluenceReactions",
+                      "getConfluenceTask",
+                      "listConfluenceTasks",
+                      "listConfluenceTemplates",
+                      "getConfluenceTemplate",
+                      "resolveConfluenceContentMacros",
+                      "getConfluenceMauiApp",
+                      "getJsmOpsAlerts",
+                      "getJsmOpsScheduleInfo",
+                      "getJsmOpsTeamInfo",
+                      "getJsmRequestResolverPlans",
+                      "searchJsmRequests",
+                      "getJsmRequest",
+                      "getJsmRequestActionMetadata",
+                      "getJsmRequestCreationOptions",
+                      "getJsmRequestTypeFields",
+                      "getJsmAgentAvailability",
+                      "listBitbucketWorkspaces",
+                      "getBitbucketWorkspace",
+                      "listBitbucketRepositories",
+                      "getBitbucketRepository",
+                      "getBitbucketRepoDefaultReviewers",
+                      "getBitbucketRepoFileContent",
+                      "getBitbucketRepoBranch",
+                      "getBitbucketRepoCommit",
+                      "listBitbucketRepoCommitReports",
+                      "getBitbucketRepoCommitReport",
+                      "getBitbucketRepoCommitReportAnnotations",
+                      "listBitbucketRepoPullRequests",
+                      "getBitbucketRepoPullRequest",
+                      "getBitbucketRepoPullRequestDiff",
+                      "listBitbucketRepoPullRequestComments",
+                      "listBitbucketRepoPullRequestTasks",
+                      "listBitbucketRepoPipelines",
+                      "getBitbucketRepoPipeline",
+                      "listBitbucketRepoPipelineSteps",
+                      "getBitbucketRepoPipelineStep",
+                      "getBitbucketRepoPipelineStepLog",
+                      "listBitbucketRepoDeployments",
+                      "getBitbucketRepoDeployment",
+                      "listBitbucketRepoEnvironments",
+                      "getBitbucketRepoEnvironment",
+                      "search",
+                      "getTeamworkGraphContext",
+                      "getTeamworkGraphObject",
+                      "getPeopleInfo",
+                      "getWorkPortfolio",
+                      "getWorkActivity",
+                      "getPullRequests",
+                      "getCollaborators",
+                      "searchCode",
+                      "getCodeFile",
+                      "listCodeDirectory",
+                      "scanCodeRepo",
+                      "getCodeSymbol",
+                      "diffCodeSymbols",
+                      "getAssetsObject",
+                      "getAssetsObjectsById",
+                      "getAssetsObjectSchema",
+                      "getAssetsObjectType",
+                      "getAssetsServiceObjectsById",
+                      "listAssetsObjectSchemas",
+                      "listAssetsObjectTypeAttributes",
+                      "queryAssetsObjects",
+                      "queryAssetsObjectSchemaAttributes",
+                      "queryAssetsObjectsUsingAql",
+                      "queryAssetsObjectTypes",
+                      "queryAssetsReferenceTypes",
+                      "searchAssetsObjects",
+                      "getLoomObjectsContent",
+                      "listLoomObjects",
+                      "getLoomVideoDownloadUrl",
+                      "listLoomObjectFolders",
+                      "getLoomVideo",
+                      "searchGoals",
+                      "getGoal",
+                      "getGoalUpdate",
+                      "getGoalTypes",
+                      "searchProjects",
+                      "getProject",
+                      "getProjectUpdate",
+                      "searchTeams",
+                      "getTeam",
+                      "searchFocusAreas",
+                      "getFocusArea",
+                      "getFocusAreaTypes",
+                      "getTalentUser",
+                      "getTalentFields",
+                      "searchTalentPositions",
+                      "getTalentPosition",
+                      "getTalentPositionsByEntity",
+                      "getTalentGroupMetrics",
+                      "getCapacityPlanAllocations",
+                      "searchCapacityPlanNonProjectWork"
+                    ]
+                  }
+                },
+                "required": [
+                  "name"
+                ]
+              }
+            },
+            "required": [
+              "method",
+              "params"
+            ]
+          }
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "atlassian-mcp-write-all": {
+    "$comment": "Run any Atlassian MCP tool that creates, changes or deletes something in Jira, Confluence, Jira Service Management, Bitbucket, Loom, goals, projects, teams, focus areas, talent, capacity plans or the Teamwork Graph, plus the MCP session handshake.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/v2/mcp/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "anyOf": [
+          {
+            "type": "object",
+            "properties": {
+              "method": {
+                "enum": [
+                  "initialize",
+                  "notifications/initialized",
+                  "notifications/cancelled",
+                  "ping",
+                  "tools/list",
+                  "prompts/list",
+                  "prompts/get",
+                  "resources/list",
+                  "resources/read",
+                  "resources/templates/list",
+                  "resources/subscribe",
+                  "resources/unsubscribe",
+                  "completion/complete",
+                  "logging/setLevel"
+                ]
+              }
+            },
+            "required": [
+              "method"
+            ]
+          },
+          {
+            "type": "object",
+            "properties": {
+              "method": {
+                "const": "tools/call"
+              },
+              "params": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "enum": [
+                      "executeWrite",
+                      "executeDestructive",
+                      "createJiraIssue",
+                      "editJiraIssue",
+                      "transitionJiraIssue",
+                      "addOrEditJiraIssueComment",
+                      "addOrEditJiraIssueWorklog",
+                      "createJiraIssueLink",
+                      "manageJiraProjectVersion",
+                      "manageJiraProjectVersionRelatedWork",
+                      "manageJiraSprint",
+                      "createJiraBoard",
+                      "watchJiraIssue",
+                      "uploadAttachmentToJiraIssue",
+                      "editJiraEntityProperty",
+                      "createJiraIssueRemoteIssueLink",
+                      "convertJiraIssueHierarchy",
+                      "deleteJiraIssue",
+                      "deleteJiraComment",
+                      "deleteJiraIssueAttachment",
+                      "createJiraProject",
+                      "updateJiraProject",
+                      "updateJiraScreen",
+                      "createConfluenceContent",
+                      "updateConfluenceContent",
+                      "createConfluenceSpace",
+                      "setConfluenceSpaceInstructions",
+                      "copyConfluenceContent",
+                      "moveConfluenceContent",
+                      "archiveConfluenceContent",
+                      "unarchiveConfluenceContent",
+                      "restoreConfluenceContentVersion",
+                      "convertConfluenceContentMode",
+                      "setConfluenceContentStatus",
+                      "createConfluenceComment",
+                      "updateConfluenceComment",
+                      "updateConfluenceCommentResolution",
+                      "createConfluenceAttachment",
+                      "addLabelsToConfluenceContent",
+                      "addConfluenceReaction",
+                      "addConfluenceContentPermissions",
+                      "removeConfluenceContentPermissions",
+                      "replaceConfluenceContentPermissions",
+                      "setConfluenceContentRestrictionState",
+                      "enableConfluencePublicLink",
+                      "disableConfluencePublicLink",
+                      "completeConfluenceTask",
+                      "reopenConfluenceTask",
+                      "starConfluenceContent",
+                      "unstarConfluenceContent",
+                      "starConfluenceSpace",
+                      "unstarConfluenceSpace",
+                      "watchConfluenceContent",
+                      "unwatchConfluenceContent",
+                      "watchConfluenceSpace",
+                      "unwatchConfluenceSpace",
+                      "watchConfluenceLabel",
+                      "unwatchConfluenceLabel",
+                      "createConfluenceInfographicForPage",
+                      "editConfluenceInfographicForPage",
+                      "createConfluenceMauiApp",
+                      "editConfluenceMauiApp",
+                      "updateJsmOpsAlert",
+                      "approveJsmRequestResolverPlans",
+                      "transitionJsmRequest",
+                      "createJsmRequest",
+                      "decideJsmRequestApproval",
+                      "setJsmAgentAvailability",
+                      "createBitbucketRepoPullRequest",
+                      "updateBitbucketRepoPullRequest",
+                      "mergeBitbucketRepoPullRequest",
+                      "approveBitbucketRepoPullRequest",
+                      "requestChangesOnBitbucketRepoPullRequest",
+                      "addBitbucketRepoPullRequestComment",
+                      "resolveBitbucketRepoPullRequestComment",
+                      "reopenBitbucketRepoPullRequestComment",
+                      "createBitbucketRepoPullRequestTask",
+                      "setBitbucketRepoPullRequestTaskState",
+                      "createBitbucketRepoBranch",
+                      "createBitbucketRepoCommit",
+                      "runBitbucketRepoPipeline",
+                      "addTeamworkGraphContext",
+                      "createLoomObjectUpload",
+                      "publishLoomObject",
+                      "updateLoomObjectMetadata",
+                      "updateLoomObjectVisibility",
+                      "shareLoomObject",
+                      "addLoomInteraction",
+                      "createLoomObjectFolder",
+                      "moveLoomObjectToFolder",
+                      "recoverLoomVideo",
+                      "createGoal",
+                      "createGoalUpdate",
+                      "addConnectionsToGoals",
+                      "createProject",
+                      "createProjectUpdate",
+                      "addConnectionsToProjects",
+                      "createTeam",
+                      "updateTeam",
+                      "createFocusArea",
+                      "updateFocusArea",
+                      "createFocusAreaStatusUpdate",
+                      "linkToFocusArea",
+                      "createTalentSkill",
+                      "updateTalentWorkerSkillMappings",
+                      "updateTalentPositionFocusAreaMappings",
+                      "updateCapacityPlanAllocation",
+                      "createCapacityPlanNonProjectWork",
+                      "updateCapacityPlanNonProjectWork"
+                    ]
+                  }
+                },
+                "required": [
+                  "name"
+                ]
+              }
+            },
+            "required": [
+              "method",
+              "params"
+            ]
+          }
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "atlassian-mcp-read-account-and-tool-catalog": {
+    "$comment": "Identify the signed-in Atlassian user, list the Atlassian sites and apps they can access, look up content formatting guidance, and browse the catalog of additional Atlassian tools that are not shown by default and run the read-only ones found there. Needed before most other Atlassian tools can be used.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/v2/mcp/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "const": "tools/call"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "enum": [
+                  "atlassianUserInfo",
+                  "getAccessibleAtlassianResources",
+                  "getContentFormatGuide",
+                  "discover",
+                  "executeRead"
+                ]
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "params"
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "atlassian-mcp-write-tool-catalog": {
+    "$comment": "Run additional Atlassian catalog tools that create, change or permanently delete things in any Atlassian product.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/v2/mcp/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "const": "tools/call"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "enum": [
+                  "executeWrite",
+                  "executeDestructive"
+                ]
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "params"
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "atlassian-mcp-read-jira": {
+    "$comment": "View and search Jira work items, comments, worklogs, attachments, history, projects, boards, sprints, filters, dashboards, workflows, screens and users.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/v2/mcp/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "const": "tools/call"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "enum": [
+                  "getJiraIssue",
+                  "searchJiraIssuesUsingJql",
+                  "listJiraProjects",
+                  "listJiraProjectIssueTypesMetadata",
+                  "getJiraIssueTypeMetaWithFields",
+                  "listJiraIssueTransitions",
+                  "listJiraIssueLinkTypes",
+                  "listJiraIssueRemoteIssueLinks",
+                  "listJiraIssueWorklogs",
+                  "lookupJiraAccountId",
+                  "listJiraIssueAssignableUsers",
+                  "listJiraIssueComments",
+                  "listJiraIssueChangelogs",
+                  "getJiraCurrentUser",
+                  "getJiraUser",
+                  "listJiraStatuses",
+                  "listJiraProjectComponents",
+                  "getJiraProjectVersions",
+                  "getJiraProjectVersionRelatedWork",
+                  "listJiraBoards",
+                  "getJiraBoardConfig",
+                  "getJiraBoardIssueData",
+                  "getJiraBoardSprintData",
+                  "listJiraBoardSprints",
+                  "listJiraFilters",
+                  "listJiraDashboards",
+                  "getJiraEntityProperty",
+                  "downloadJiraIssueAttachment",
+                  "getJiraWorkflows",
+                  "getJiraWorkflowEditorLink",
+                  "getJiraScreen"
+                ]
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "params"
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "atlassian-mcp-write-jira": {
+    "$comment": "Create and edit Jira work items, change their status or sprint, add comments, worklogs, links, attachments and watchers, manage versions, sprints and boards, and make administrative changes such as creating projects, changing project settings and editing screens. Does not delete anything.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/v2/mcp/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "const": "tools/call"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "enum": [
+                  "createJiraIssue",
+                  "editJiraIssue",
+                  "transitionJiraIssue",
+                  "addOrEditJiraIssueComment",
+                  "addOrEditJiraIssueWorklog",
+                  "createJiraIssueLink",
+                  "manageJiraProjectVersion",
+                  "manageJiraProjectVersionRelatedWork",
+                  "manageJiraSprint",
+                  "createJiraBoard",
+                  "watchJiraIssue",
+                  "uploadAttachmentToJiraIssue",
+                  "editJiraEntityProperty",
+                  "createJiraIssueRemoteIssueLink",
+                  "convertJiraIssueHierarchy",
+                  "createJiraProject",
+                  "updateJiraProject",
+                  "updateJiraScreen"
+                ]
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "params"
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "atlassian-mcp-delete-jira": {
+    "$comment": "Permanently delete Jira work items, comments and attachments.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/v2/mcp/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "const": "tools/call"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "enum": [
+                  "deleteJiraIssue",
+                  "deleteJiraComment",
+                  "deleteJiraIssueAttachment"
+                ]
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "params"
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "atlassian-mcp-read-confluence-and-loom": {
+    "$comment": "View and search Confluence pages, blog posts, live docs, whiteboards, databases and other content, including spaces, comments, versions, attachments, exports, tasks, templates, reactions and sharing settings; and browse Loom videos and folders, read video details and transcripts, and get video download links.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/v2/mcp/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "const": "tools/call"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "enum": [
+                  "getConfluenceContent",
+                  "searchConfluence",
+                  "listConfluenceContent",
+                  "listConfluenceSpaces",
+                  "getConfluenceSpace",
+                  "getConfluenceSpaceInstructions",
+                  "getConfluencePersonalSpace",
+                  "listConfluenceComments",
+                  "getConfluenceComment",
+                  "listConfluenceContentVersions",
+                  "getConfluenceContentVersion",
+                  "diffConfluenceContentVersions",
+                  "listConfluenceAttachments",
+                  "getConfluenceAttachment",
+                  "downloadConfluenceAttachment",
+                  "exportConfluenceContent",
+                  "getConfluenceContentPermissions",
+                  "getConfluenceContentRestrictionState",
+                  "getConfluencePublicLinkStatus",
+                  "getConfluenceReactions",
+                  "getConfluenceTask",
+                  "listConfluenceTasks",
+                  "listConfluenceTemplates",
+                  "getConfluenceTemplate",
+                  "resolveConfluenceContentMacros",
+                  "getConfluenceMauiApp",
+                  "getLoomObjectsContent",
+                  "listLoomObjects",
+                  "getLoomVideoDownloadUrl",
+                  "listLoomObjectFolders",
+                  "getLoomVideo"
+                ]
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "params"
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "atlassian-mcp-write-confluence-and-loom": {
+    "$comment": "Create, edit, copy, move, archive and restore Confluence content and spaces; add comments, labels, reactions, attachments, stars and watches; complete tasks; change who can see content, including public links; generate infographics and interactive visualizations; and upload, publish, edit, share, comment on and organize Loom videos.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/v2/mcp/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "const": "tools/call"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "enum": [
+                  "createConfluenceContent",
+                  "updateConfluenceContent",
+                  "createConfluenceSpace",
+                  "setConfluenceSpaceInstructions",
+                  "copyConfluenceContent",
+                  "moveConfluenceContent",
+                  "archiveConfluenceContent",
+                  "unarchiveConfluenceContent",
+                  "restoreConfluenceContentVersion",
+                  "convertConfluenceContentMode",
+                  "setConfluenceContentStatus",
+                  "createConfluenceComment",
+                  "updateConfluenceComment",
+                  "updateConfluenceCommentResolution",
+                  "createConfluenceAttachment",
+                  "addLabelsToConfluenceContent",
+                  "addConfluenceReaction",
+                  "addConfluenceContentPermissions",
+                  "removeConfluenceContentPermissions",
+                  "replaceConfluenceContentPermissions",
+                  "setConfluenceContentRestrictionState",
+                  "enableConfluencePublicLink",
+                  "disableConfluencePublicLink",
+                  "completeConfluenceTask",
+                  "reopenConfluenceTask",
+                  "starConfluenceContent",
+                  "unstarConfluenceContent",
+                  "starConfluenceSpace",
+                  "unstarConfluenceSpace",
+                  "watchConfluenceContent",
+                  "unwatchConfluenceContent",
+                  "watchConfluenceSpace",
+                  "unwatchConfluenceSpace",
+                  "watchConfluenceLabel",
+                  "unwatchConfluenceLabel",
+                  "createConfluenceInfographicForPage",
+                  "editConfluenceInfographicForPage",
+                  "createConfluenceMauiApp",
+                  "editConfluenceMauiApp",
+                  "createLoomObjectUpload",
+                  "publishLoomObject",
+                  "updateLoomObjectMetadata",
+                  "updateLoomObjectVisibility",
+                  "shareLoomObject",
+                  "addLoomInteraction",
+                  "createLoomObjectFolder",
+                  "moveLoomObjectToFolder",
+                  "recoverLoomVideo"
+                ]
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "params"
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "atlassian-mcp-read-jsm": {
+    "$comment": "View and search Jira Service Management customer requests, request types and their fields, resolver plans, agent availability, Operations alerts, on-call schedules and teams, and the objects, object types and schemas in Assets.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/v2/mcp/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "const": "tools/call"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "enum": [
+                  "getJsmOpsAlerts",
+                  "getJsmOpsScheduleInfo",
+                  "getJsmOpsTeamInfo",
+                  "getJsmRequestResolverPlans",
+                  "searchJsmRequests",
+                  "getJsmRequest",
+                  "getJsmRequestActionMetadata",
+                  "getJsmRequestCreationOptions",
+                  "getJsmRequestTypeFields",
+                  "getJsmAgentAvailability",
+                  "getAssetsObject",
+                  "getAssetsObjectsById",
+                  "getAssetsObjectSchema",
+                  "getAssetsObjectType",
+                  "getAssetsServiceObjectsById",
+                  "listAssetsObjectSchemas",
+                  "listAssetsObjectTypeAttributes",
+                  "queryAssetsObjects",
+                  "queryAssetsObjectSchemaAttributes",
+                  "queryAssetsObjectsUsingAql",
+                  "queryAssetsObjectTypes",
+                  "queryAssetsReferenceTypes",
+                  "searchAssetsObjects"
+                ]
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "params"
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "atlassian-mcp-write-jsm": {
+    "$comment": "Create and transition Jira Service Management requests, approve or decline approvals and resolver plans, set agent availability, and acknowledge, close or escalate Operations alerts.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/v2/mcp/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "const": "tools/call"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "enum": [
+                  "updateJsmOpsAlert",
+                  "approveJsmRequestResolverPlans",
+                  "transitionJsmRequest",
+                  "createJsmRequest",
+                  "decideJsmRequestApproval",
+                  "setJsmAgentAvailability"
+                ]
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "params"
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "atlassian-mcp-read-bitbucket-and-code": {
+    "$comment": "View Bitbucket workspaces, repositories, files, branches, commits, code insight reports, pull requests with their diffs, comments and tasks, pipelines with their logs, deployments and environments; and search and read source code in any repository connected to Atlassian: files, directory listings, symbol definitions and the code affected by a change.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/v2/mcp/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "const": "tools/call"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "enum": [
+                  "listBitbucketWorkspaces",
+                  "getBitbucketWorkspace",
+                  "listBitbucketRepositories",
+                  "getBitbucketRepository",
+                  "getBitbucketRepoDefaultReviewers",
+                  "getBitbucketRepoFileContent",
+                  "getBitbucketRepoBranch",
+                  "getBitbucketRepoCommit",
+                  "listBitbucketRepoCommitReports",
+                  "getBitbucketRepoCommitReport",
+                  "getBitbucketRepoCommitReportAnnotations",
+                  "listBitbucketRepoPullRequests",
+                  "getBitbucketRepoPullRequest",
+                  "getBitbucketRepoPullRequestDiff",
+                  "listBitbucketRepoPullRequestComments",
+                  "listBitbucketRepoPullRequestTasks",
+                  "listBitbucketRepoPipelines",
+                  "getBitbucketRepoPipeline",
+                  "listBitbucketRepoPipelineSteps",
+                  "getBitbucketRepoPipelineStep",
+                  "getBitbucketRepoPipelineStepLog",
+                  "listBitbucketRepoDeployments",
+                  "getBitbucketRepoDeployment",
+                  "listBitbucketRepoEnvironments",
+                  "getBitbucketRepoEnvironment",
+                  "searchCode",
+                  "getCodeFile",
+                  "listCodeDirectory",
+                  "scanCodeRepo",
+                  "getCodeSymbol",
+                  "diffCodeSymbols"
+                ]
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "params"
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "atlassian-mcp-write-bitbucket": {
+    "$comment": "Create branches and commits in Bitbucket, open, update, approve, request changes on and merge pull requests, add and resolve pull request comments and tasks, and run pipelines.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/v2/mcp/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "const": "tools/call"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "enum": [
+                  "createBitbucketRepoPullRequest",
+                  "updateBitbucketRepoPullRequest",
+                  "mergeBitbucketRepoPullRequest",
+                  "approveBitbucketRepoPullRequest",
+                  "requestChangesOnBitbucketRepoPullRequest",
+                  "addBitbucketRepoPullRequestComment",
+                  "resolveBitbucketRepoPullRequestComment",
+                  "reopenBitbucketRepoPullRequestComment",
+                  "createBitbucketRepoPullRequestTask",
+                  "setBitbucketRepoPullRequestTaskState",
+                  "createBitbucketRepoBranch",
+                  "createBitbucketRepoCommit",
+                  "runBitbucketRepoPipeline"
+                ]
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "params"
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "atlassian-mcp-read-teamwork": {
+    "$comment": "View and search Atlassian Home goals, projects (cross-product project pages, not Jira projects), teams and focus areas with their progress updates; search across all Atlassian products and connected apps; and explore the Teamwork Graph: how people, work, documents and pull requests relate to each other, who works on what and with whom.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/v2/mcp/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "const": "tools/call"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "enum": [
+                  "search",
+                  "getTeamworkGraphContext",
+                  "getTeamworkGraphObject",
+                  "getPeopleInfo",
+                  "getWorkPortfolio",
+                  "getWorkActivity",
+                  "getPullRequests",
+                  "getCollaborators",
+                  "searchGoals",
+                  "getGoal",
+                  "getGoalUpdate",
+                  "getGoalTypes",
+                  "searchProjects",
+                  "getProject",
+                  "getProjectUpdate",
+                  "searchTeams",
+                  "getTeam",
+                  "searchFocusAreas",
+                  "getFocusArea",
+                  "getFocusAreaTypes"
+                ]
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "params"
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "atlassian-mcp-write-teamwork": {
+    "$comment": "Create Atlassian Home goals, projects (not Jira projects), teams and focus areas, update them, post progress and status updates, connect them to other work, and record new relationships in the Teamwork Graph.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/v2/mcp/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "const": "tools/call"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "enum": [
+                  "addTeamworkGraphContext",
+                  "createGoal",
+                  "createGoalUpdate",
+                  "addConnectionsToGoals",
+                  "createProject",
+                  "createProjectUpdate",
+                  "addConnectionsToProjects",
+                  "createTeam",
+                  "updateTeam",
+                  "createFocusArea",
+                  "updateFocusArea",
+                  "createFocusAreaStatusUpdate",
+                  "linkToFocusArea"
+                ]
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "params"
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "atlassian-mcp-read-workforce-planning": {
+    "$comment": "View and search positions, reporting lines, skills and headcount metrics in Atlassian Talent, and view capacity plan allocations and non-project work in Atlassian capacity planning.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/v2/mcp/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "const": "tools/call"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "enum": [
+                  "getTalentUser",
+                  "getTalentFields",
+                  "searchTalentPositions",
+                  "getTalentPosition",
+                  "getTalentPositionsByEntity",
+                  "getTalentGroupMetrics",
+                  "getCapacityPlanAllocations",
+                  "searchCapacityPlanNonProjectWork"
+                ]
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "params"
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  },
+  "atlassian-mcp-write-workforce-planning": {
+    "$comment": "Create skills, assign or decline skills for workers and allocate positions to focus areas in Atlassian Talent, and update capacity plan allocations and create or update non-project work in Atlassian capacity planning.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/v2/mcp/?$"
+      },
+      "parsedBody": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "const": "tools/call"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "enum": [
+                  "createTalentSkill",
+                  "updateTalentWorkerSkillMappings",
+                  "updateTalentPositionFocusAreaMappings",
+                  "updateCapacityPlanAllocation",
+                  "createCapacityPlanNonProjectWork",
+                  "updateCapacityPlanNonProjectWork"
+                ]
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "params"
+        ]
+      }
+    },
+    "required": [
+      "method",
+      "path",
+      "parsedBody"
+    ]
+  }
+}
