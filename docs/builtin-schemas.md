@@ -54,6 +54,23 @@ See the main [README](../README.md) for how schemas and rules work together.
 - `anydo-mcp-delete-calendar-events`
 - `anydo-mcp-read-account`
 
+### asana
+
+- `asana-api` *(scope)*
+- `asana-read-all`
+- `asana-write-all`
+- `asana-read-tasks`
+- `asana-write-tasks`
+- `asana-read-comments`
+- `asana-write-comments`
+- `asana-read-projects`
+- `asana-write-projects`
+- `asana-read-portfolios-and-goals`
+- `asana-write-portfolios-and-goals`
+- `asana-read-workspace`
+- `asana-write-workspace`
+- `asana-batch`
+
 ### atlassian-mcp
 
 - `atlassian-mcp-api` *(scope)*

@@ -1,0 +1,240 @@
+{
+  "asana-api": {
+    "$comment": "Any request to the Asana API.",
+    "properties": {
+      "domain": {
+        "const": "app.asana.com"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/api/1\\.0/"
+      }
+    },
+    "required": [
+      "domain",
+      "path"
+    ]
+  },
+  "asana-read-all": {
+    "$comment": "Read anything in Asana.",
+    "properties": {
+      "method": {
+        "const": "GET"
+      }
+    },
+    "required": [
+      "method"
+    ]
+  },
+  "asana-write-all": {
+    "$comment": "Create, change, or delete anything in Asana.",
+    "properties": {
+      "method": {
+        "enum": [
+          "POST",
+          "PUT",
+          "DELETE"
+        ]
+      }
+    },
+    "required": [
+      "method"
+    ]
+  },
+  "asana-read-tasks": {
+    "$comment": "Read tasks and subtasks, including their details, dependencies, followers, time tracking, and task search. Does not include comments or attachments.",
+    "properties": {
+      "method": {
+        "const": "GET"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/api/1\\.0/(tasks(/[^/]+(/(?!stories$|attachments$)[^/]+)?)?|(projects|sections|tags|user_task_lists)/[^/]+/tasks|workspaces/[^/]+/tasks/search|time_tracking_entries/[^/]+)$"
+      }
+    },
+    "required": [
+      "method",
+      "path"
+    ]
+  },
+  "asana-write-tasks": {
+    "$comment": "Create, change, complete, move, or delete tasks and subtasks, including their assignees, due dates, dependencies, followers, tags, and time tracking. Does not include comments or attachments.",
+    "properties": {
+      "method": {
+        "enum": [
+          "POST",
+          "PUT",
+          "DELETE"
+        ]
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/api/1\\.0/(tasks(/[^/]+(/(?!stories$|attachments$)[^/]+)?)?|sections/[^/]+/addTask|time_tracking_entries/[^/]+)$"
+      }
+    },
+    "required": [
+      "method",
+      "path"
+    ]
+  },
+  "asana-read-comments": {
+    "$comment": "Read comments, activity history, and attachments on tasks.",
+    "properties": {
+      "method": {
+        "const": "GET"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/api/1\\.0/((stories|attachments)(/[^/]+)?|tasks/[^/]+/(stories|attachments))$"
+      }
+    },
+    "required": [
+      "method",
+      "path"
+    ]
+  },
+  "asana-write-comments": {
+    "$comment": "Post, edit, or delete comments and upload or delete attachments on tasks.",
+    "properties": {
+      "method": {
+        "enum": [
+          "POST",
+          "PUT",
+          "DELETE"
+        ]
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/api/1\\.0/((stories|attachments)(/[^/]+)?|tasks/[^/]+/(stories|attachments))$"
+      }
+    },
+    "required": [
+      "method",
+      "path"
+    ]
+  },
+  "asana-read-projects": {
+    "$comment": "Read projects, sections, project templates, project briefs, status updates, and project members. Does not include the tasks inside projects.",
+    "properties": {
+      "method": {
+        "const": "GET"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/api/1\\.0/((projects|sections|project_templates|project_briefs|project_statuses|status_updates|project_memberships)(/[^/]+(/(?!tasks$)[^/]+)?)?|(workspaces|teams)/[^/]+/(projects|project_templates))$"
+      }
+    },
+    "required": [
+      "method",
+      "path"
+    ]
+  },
+  "asana-write-projects": {
+    "$comment": "Create, change, or delete projects, sections, project templates, project briefs, status updates, and project members. Does not include the tasks inside projects.",
+    "properties": {
+      "method": {
+        "enum": [
+          "POST",
+          "PUT",
+          "DELETE"
+        ]
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/api/1\\.0/((projects|sections|project_templates|project_briefs|project_statuses|status_updates|project_memberships)(/[^/]+(/(?!tasks$|addTask$)[^/]+)?)?|projects/[^/]+/sections/insert)$"
+      }
+    },
+    "required": [
+      "method",
+      "path"
+    ]
+  },
+  "asana-read-portfolios-and-goals": {
+    "$comment": "Read portfolios, goals, their status updates, and the projects and people linked to them.",
+    "properties": {
+      "method": {
+        "const": "GET"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/api/1\\.0/(portfolios|portfolio_memberships|goals|goal_relationships|time_periods|status_updates)(/.*)?$"
+      }
+    },
+    "required": [
+      "method",
+      "path"
+    ]
+  },
+  "asana-write-portfolios-and-goals": {
+    "$comment": "Create, change, or delete portfolios and goals, post status updates on them, and link projects or people to them.",
+    "properties": {
+      "method": {
+        "enum": [
+          "POST",
+          "PUT",
+          "DELETE"
+        ]
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/api/1\\.0/(portfolios|portfolio_memberships|goals|goal_relationships|time_periods|status_updates)(/.*)?$"
+      }
+    },
+    "required": [
+      "method",
+      "path"
+    ]
+  },
+  "asana-read-workspace": {
+    "$comment": "Read workspace-level information: workspaces, teams, people and their memberships, tags, custom fields, name lookup, webhooks, and audit logs. Does not include tasks, projects, or goals.",
+    "properties": {
+      "method": {
+        "const": "GET"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/api/1\\.0/(workspaces|teams|users|user_task_lists|workspace_memberships|team_memberships|memberships|custom_fields|enum_options|tags|webhooks|events|audit_log_events|organization_exports|allocations)(/[^/]+(/(?!tasks$|projects$|project_templates$|goals$)[^/]+)?)?$"
+      }
+    },
+    "required": [
+      "method",
+      "path"
+    ]
+  },
+  "asana-write-workspace": {
+    "$comment": "Manage workspace-level settings: teams and their members, inviting or removing people, tags, custom fields, webhooks, and exports. Does not include tasks, projects, or goals.",
+    "properties": {
+      "method": {
+        "enum": [
+          "POST",
+          "PUT",
+          "DELETE"
+        ]
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/api/1\\.0/(workspaces|teams|users|user_task_lists|workspace_memberships|team_memberships|memberships|custom_fields|enum_options|tags|webhooks|events|audit_log_events|organization_exports|allocations)(/[^/]+(/(?!tasks$|projects$|project_templates$|goals$)[^/]+)?)?$"
+      }
+    },
+    "required": [
+      "method",
+      "path"
+    ]
+  },
+  "asana-batch": {
+    "$comment": "Send several reads and writes together in one batch request.",
+    "properties": {
+      "method": {
+        "const": "POST"
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^/api/1\\.0/batch$"
+      }
+    },
+    "required": [
+      "method",
+      "path"
+    ]
+  }
+}
