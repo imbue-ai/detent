@@ -3778,3 +3778,145 @@ describe('builtin schemas: fastmail (DAV scope)', () => {
     ).toBe(false);
   });
 });
+
+describe('builtin schemas: asana', () => {
+  it('asana scope matches app.asana.com', () => {
+    expectSchemaExists('asana-api');
+    expect(
+      builtinRegistry
+        .get('asana-api')!
+        .match(makeRequest({ domain: 'app.asana.com', path: '/api/1.0/tasks' }))
+    ).toBe(true);
+    expect(
+      builtinRegistry.get('asana-api')!.match(makeRequest({ domain: 'asana.example.com' }))
+    ).toBe(false);
+    expect(
+      builtinRegistry
+        .get('asana-api')!
+        .match(makeRequest({ domain: 'app.asana.com', path: '/0/inbox' }))
+    ).toBe(false);
+  });
+
+  it('asana-read-tasks covers tasks, subtasks, project tasks, and search but not comments', () => {
+    expectSchemaExists('asana-read-tasks');
+    const readTasks = builtinRegistry.get('asana-read-tasks')!;
+    expect(readTasks.match(makeRequest({ method: 'GET', path: '/api/1.0/tasks' }))).toBe(true);
+    expect(readTasks.match(makeRequest({ method: 'GET', path: '/api/1.0/tasks/1/subtasks' }))).toBe(
+      true
+    );
+    expect(readTasks.match(makeRequest({ method: 'GET', path: '/api/1.0/projects/1/tasks' }))).toBe(
+      true
+    );
+    expect(
+      readTasks.match(makeRequest({ method: 'GET', path: '/api/1.0/workspaces/1/tasks/search' }))
+    ).toBe(true);
+    expect(readTasks.match(makeRequest({ method: 'GET', path: '/api/1.0/tasks/1/stories' }))).toBe(
+      false
+    );
+    expect(readTasks.match(makeRequest({ method: 'GET', path: '/api/1.0/projects/1' }))).toBe(
+      false
+    );
+  });
+
+  it('asana-write-tasks covers task changes and moves but not comments or attachments', () => {
+    expectSchemaExists('asana-write-tasks');
+    const writeTasks = builtinRegistry.get('asana-write-tasks')!;
+    expect(writeTasks.match(makeRequest({ method: 'POST', path: '/api/1.0/tasks' }))).toBe(true);
+    expect(writeTasks.match(makeRequest({ method: 'PUT', path: '/api/1.0/tasks/1' }))).toBe(true);
+    expect(
+      writeTasks.match(makeRequest({ method: 'POST', path: '/api/1.0/tasks/1/addProject' }))
+    ).toBe(true);
+    expect(
+      writeTasks.match(makeRequest({ method: 'POST', path: '/api/1.0/sections/1/addTask' }))
+    ).toBe(true);
+    expect(
+      writeTasks.match(makeRequest({ method: 'POST', path: '/api/1.0/tasks/1/stories' }))
+    ).toBe(false);
+    expect(
+      writeTasks.match(makeRequest({ method: 'POST', path: '/api/1.0/tasks/1/attachments' }))
+    ).toBe(false);
+  });
+
+  it('asana-write-comments covers stories and attachments', () => {
+    expectSchemaExists('asana-write-comments');
+    const writeComments = builtinRegistry.get('asana-write-comments')!;
+    expect(
+      writeComments.match(makeRequest({ method: 'POST', path: '/api/1.0/tasks/1/stories' }))
+    ).toBe(true);
+    expect(writeComments.match(makeRequest({ method: 'PUT', path: '/api/1.0/stories/1' }))).toBe(
+      true
+    );
+    expect(writeComments.match(makeRequest({ method: 'POST', path: '/api/1.0/attachments' }))).toBe(
+      true
+    );
+    expect(writeComments.match(makeRequest({ method: 'PUT', path: '/api/1.0/tasks/1' }))).toBe(
+      false
+    );
+  });
+
+  it('asana-read-projects excludes the tasks inside projects and sections', () => {
+    expectSchemaExists('asana-read-projects');
+    const readProjects = builtinRegistry.get('asana-read-projects')!;
+    expect(readProjects.match(makeRequest({ method: 'GET', path: '/api/1.0/projects/1' }))).toBe(
+      true
+    );
+    expect(
+      readProjects.match(makeRequest({ method: 'GET', path: '/api/1.0/projects/1/sections' }))
+    ).toBe(true);
+    expect(
+      readProjects.match(makeRequest({ method: 'GET', path: '/api/1.0/workspaces/1/projects' }))
+    ).toBe(true);
+    expect(
+      readProjects.match(makeRequest({ method: 'GET', path: '/api/1.0/projects/1/tasks' }))
+    ).toBe(false);
+    expect(
+      readProjects.match(makeRequest({ method: 'GET', path: '/api/1.0/sections/1/tasks' }))
+    ).toBe(false);
+  });
+
+  it('asana-write-projects covers section insertion but not moving tasks', () => {
+    expectSchemaExists('asana-write-projects');
+    const writeProjects = builtinRegistry.get('asana-write-projects')!;
+    expect(
+      writeProjects.match(
+        makeRequest({ method: 'POST', path: '/api/1.0/projects/1/sections/insert' })
+      )
+    ).toBe(true);
+    expect(
+      writeProjects.match(makeRequest({ method: 'POST', path: '/api/1.0/sections/1/addTask' }))
+    ).toBe(false);
+  });
+
+  it('asana-read-workspace excludes projects, tasks, and goals under workspaces', () => {
+    expectSchemaExists('asana-read-workspace');
+    const readWorkspace = builtinRegistry.get('asana-read-workspace')!;
+    expect(readWorkspace.match(makeRequest({ method: 'GET', path: '/api/1.0/users/me' }))).toBe(
+      true
+    );
+    expect(
+      readWorkspace.match(makeRequest({ method: 'GET', path: '/api/1.0/workspaces/1/typeahead' }))
+    ).toBe(true);
+    expect(
+      readWorkspace.match(makeRequest({ method: 'GET', path: '/api/1.0/workspaces/1/projects' }))
+    ).toBe(false);
+    expect(
+      readWorkspace.match(
+        makeRequest({ method: 'GET', path: '/api/1.0/workspaces/1/tasks/search' })
+      )
+    ).toBe(false);
+  });
+
+  it('asana-batch matches POST to the batch endpoint only', () => {
+    expectSchemaExists('asana-batch');
+    expect(
+      builtinRegistry
+        .get('asana-batch')!
+        .match(makeRequest({ method: 'POST', path: '/api/1.0/batch' }))
+    ).toBe(true);
+    expect(
+      builtinRegistry
+        .get('asana-batch')!
+        .match(makeRequest({ method: 'GET', path: '/api/1.0/batch' }))
+    ).toBe(false);
+  });
+});
